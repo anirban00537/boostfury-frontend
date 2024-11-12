@@ -391,7 +391,7 @@ const Sidebar = () => {
             src="/logo.svg"
             height={28}
             width={120}
-            alt="Buildsocialpost.com"
+            alt="boostfury.com"
             className="w-auto"
           />
         </Link>

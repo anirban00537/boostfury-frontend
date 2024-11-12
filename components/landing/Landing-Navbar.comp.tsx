@@ -21,7 +21,7 @@ const LandingNavbar = () => {
               src="/logo.svg"
               height={150}
               width={150}
-              alt="buildsocialpost.com"
+              alt="boostfury.com"
             />
           </Link>
           <div className="hidden md:flex flex-grow items-center justify-center">

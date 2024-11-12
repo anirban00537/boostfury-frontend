@@ -32,7 +32,7 @@ const people = [
     name: "Sarah Johnson",
     designation: "LinkedIn Strategist",
     image: "/persons/person-1.jpeg",
-    alt: "Sarah Johnson - LinkedIn Growth Expert using BuildSocialPost",
+    alt: "Sarah Johnson - LinkedIn Growth Expert using BoostFury",
   },
   {
     id: 2,
@@ -266,8 +266,8 @@ const Hero = () => {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            name: "BuildSocialPost LinkedIn Carousel Creator",
-            applicationCategory: "BusinessApplication",
+            name: "BoostFury LinkedIn Growth Tool",
+            applicationCategory: "BusinessApplication, SocialMedia",
             offers: {
               "@type": "Offer",
               price: "0",

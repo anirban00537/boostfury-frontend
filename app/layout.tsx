@@ -11,12 +11,12 @@ const poppins = Poppins({
   display: "swap",
 });
 
-const defaultUrl = "https://buildsocialpost.com";
+const defaultUrl = "https://boostfury.com";
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
   title:
-    "Linkedin Growth Tool | Linkedin Personal Branding Tool | BuildSocialPost",
+    "Linkedin Growth Tool | Linkedin Personal Branding Tool | BoostFury",
   description:
     "Grow your LinkedIn profile with AI-powered tools. Create professional LinkedIn posts, carousels, and more with our easy-to-use tools.",
   keywords: [
@@ -59,13 +59,13 @@ export const metadata = {
       "AI Carousel Maker | Create Professional Social Media Carousels Instantly",
     description:
       "Transform your content into engaging carousels for LinkedIn, TikTok & Instagram using AI. No design skills needed. Features: instant generation, professional templates, multi-platform support. Start creating for free!",
-    siteName: "BuildSocialPost",
+    siteName: "BoostFury",
     images: [
       {
         url: `${defaultUrl}/og/hero-image.png`,
         width: 1200,
         height: 630,
-        alt: "BuildSocialPost - Professional AI Carousel Generator",
+        alt: "BoostFury - Professional AI Carousel Generator",
       },
       {
         url: `${defaultUrl}/og/feature-showcase.png`,
@@ -83,12 +83,12 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Create Professional Carousels with AI | BuildSocialPost",
+    title: "Grow Your LinkedIn Audience with AI | BoostFury",
     description:
-      "Transform your content into engaging carousels for LinkedIn, TikTok & Instagram. AI-powered, professional templates, instant generation. Start free!",
+      "Grow your LinkedIn profile with AI-powered tools. Create professional LinkedIn posts, carousels, and more with our easy-to-use tools.",
     images: [`${defaultUrl}/og/twitter-card.jpg`],
-    creator: "@buildsocialpost",
-    site: "@buildsocialpost",
+    creator: "@boostfury",
+    site: "@boostfury",
   },
   robots: {
     index: true,
@@ -106,15 +106,15 @@ export const metadata = {
     google: process.env.GOOGLE_SITE_VERIFICATION,
     bing: process.env.BING_SITE_VERIFICATION,
   },
-  applicationName: "BuildSocialPost",
+  applicationName: "BoostFury",
   category: "Technology",
-  classification: "Social Media Tools",
+  classification: "Social Media",
   // Additional metadata for rich results
   jsonLd: {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "BuildSocialPost",
-    applicationCategory: "DesignApplication",
+    name: "BoostFury",
+    applicationCategory: "Social Media",
     operatingSystem: "Web",
     offers: {
       "@type": "Offer",
@@ -123,10 +123,11 @@ export const metadata = {
     },
     features: [
       "AI-powered content generation",
-      "Professional templates",
+      "Post scheduling",
       "Multi-platform support",
-      "Instant carousel creation",
+      "LinkedIn carousel creation",
       "No design skills required",
+      "Viral post generator",
     ],
   },
 };
@@ -142,9 +143,9 @@ export default function RootLayout({
         {/* Analytics Script */}
         <Script
           defer
-          src="https://umami.buildsocialpost.com/script.js"
+          src="https://umami.boostfury.com/script.js"
           data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
-          data-host-url="https://umami.buildsocialpost.com"
+          data-host-url="https://umami.boostfury.com"
           strategy="afterInteractive"
         />
         {/* Preconnect to key domains */}

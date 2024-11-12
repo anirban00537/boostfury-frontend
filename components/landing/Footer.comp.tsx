@@ -19,7 +19,7 @@ const Footer = () => {
               src="/single-logo.svg"
               height={50}
               width={50}
-              alt="buildsocialpost.com"
+              alt="boostfury.com"
               className="mb-3"
             />
             <p className="text-textColor/80 text-sm text-center md:text-left">
@@ -102,8 +102,7 @@ const Footer = () => {
         {/* Copyright */}
         <div className="border-t border-borderColor/30 pt-6 text-center">
           <p className="text-textColor/70 text-xs">
-            © {new Date().getFullYear()} Buildsocialpost.com. All rights
-            reserved.
+            © {new Date().getFullYear()} boostfury.com. All rights reserved.
           </p>
         </div>
       </div>

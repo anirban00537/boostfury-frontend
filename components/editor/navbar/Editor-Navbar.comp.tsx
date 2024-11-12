@@ -138,7 +138,7 @@ const EditorNavbar: React.FC = () => {
                   src="/single-logo.svg"
                   height={40}
                   width={40}
-                  alt="Buildsocialpost.com"
+                  alt="boostfury.com"
                 />
               </Link>
 

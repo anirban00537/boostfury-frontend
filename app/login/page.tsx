@@ -51,7 +51,7 @@ const LoginPage = () => {
                 src="/logo-white.svg"
                 height={80}
                 width={80}
-                alt="Buildsocialpost.com"
+                alt="BoostFury.com"
                 className="relative"
               />
             </div>
@@ -101,7 +101,7 @@ const LoginPage = () => {
                     src="/logo.svg"
                     height={64}
                     width={64}
-                    alt="Buildsocialpost.com"
+                    alt="BoostFury.com"
                     className="relative"
                   />
                 </div>
@@ -111,7 +111,7 @@ const LoginPage = () => {
               Welcome Back
             </h2>
             <p className="text-gray-600">
-              Sign in to continue to Buildsocialpost.com
+              Sign in to continue to BoostFury.com
             </p>
           </div>
 

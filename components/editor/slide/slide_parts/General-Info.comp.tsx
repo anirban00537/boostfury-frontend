@@ -59,7 +59,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({
               color: color2,
             }}
           >
-            {name || "BuildSocialPost"}
+            {name || "BoostFury"}
           </div>
           <div
             style={{
@@ -68,7 +68,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({
               color: color2,
             }}
           >
-            {handle || "@buildsocialpost"}
+            {handle || "@boostfury"}
           </div>
         </div>
       </div>
