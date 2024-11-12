@@ -33,14 +33,14 @@ const SlideComponent: React.FC<SlideProps> = ({
     globalBackground,
   } = useSelector((state: RootState) => state.slides);
   const { gradient } = useSelector((state: RootState) => state.slides.layout);
-  const { subscribed } = useSelector((state: RootState) => state.user);
+  const { subscription } = useSelector((state: RootState) => state.user);
   const { fontFamily } = useSelector((state: RootState) => state.slides);
   const selectedFont = fontOptions.find((font) => font.slug === fontFamily);
   const { handle, headshot, name } = useSelector(
     (state: RootState) => state.branding
   );
   const { pattern, backgroundOpacity } = layout;
-
+  const subscribed = subscription?.isSubscribed;
   const { color1, color2, color3, color4 } = useSelector(
     (state: RootState) => state.slides.background
   );
