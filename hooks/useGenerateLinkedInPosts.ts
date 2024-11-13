@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from "react-query";
 import { generateLinkedInPosts } from "@/services/ai-content";
-import { GenerateLinkedInPostsDTO } from "@/types";
+import { ApiError, GenerateLinkedInPostsDTO } from "@/types";
 import toast from "react-hot-toast";
 import { useState, useEffect } from "react";
 import { useAuth } from "./useAuth";
+import { processApiResponse } from "@/lib/functions";
 
 export const useGenerateLinkedInPosts = () => {
   const queryClient = useQueryClient();
@@ -39,17 +40,15 @@ export const useGenerateLinkedInPosts = () => {
         }
       },
       onError: async (error: Error) => {
-        toast.error(`Error generating content: ${error.message}`);
-        console.error("Generation error:", error);
-        
-        // Still try to refresh subscription data on error
         try {
+          console.log("error in useGenerateLinkedInPosts", error);
+          processApiResponse(error);
           await Promise.all([
             queryClient.invalidateQueries(["subscription"]),
             refetchSubscription()
           ]);
         } catch (refreshError) {
-          console.error("Error refreshing subscription data:", refreshError);
+          processApiResponse(refreshError as ApiError);
         }
       },
     }

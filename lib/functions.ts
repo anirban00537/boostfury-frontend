@@ -9,14 +9,11 @@ interface ApiResponse {
 interface ApiError {
   response?: {
     data?: {
-      statusCode?: number;
       message?: string | string[];
       error?: string;
     };
   };
   message?: string;
-  error?: string;
-  statusCode?: number;
 }
 
 export const processApiResponse = (
@@ -37,32 +34,32 @@ export const processApiResponse = (
 
   // Handle error responses
   try {
-    // Case 1: Direct error object
-    if (result.message && typeof result.message === "string") {
-      toast.error(result.message);
-      return null;
-    }
-
-    // Case 2: Nested error in response.data
-    if (result.response?.data) {
-      const errorData = result.response.data;
-      
-      if (typeof errorData.message === "string") {
-        toast.error(errorData.message);
-      } else if (Array.isArray(errorData.message)) {
-        errorData.message.forEach(msg => toast.error(msg));
-      } else if (errorData.error) {
-        toast.error(`${errorData.error}: ${errorData.statusCode || 'Error'}`);
+    // First check for response.data.message
+    if (result.response?.data?.message) {
+      const message = result.response.data.message;
+      if (Array.isArray(message)) {
+        message.forEach(msg => toast.error(msg));
+      } else {
+        toast.error(message);
       }
       return null;
     }
 
-    // Case 3: Fallback error message
-    toast.error("An unexpected error occurred");
+    // Fallback to response.data.error
+    if (result.response?.data?.error) {
+      toast.error(result.response.data.error);
+      return null;
+    }
+
+    // Last fallback to direct message
+    if (result.message) {
+      toast.error(result.message);
+      return null;
+    }
+
     return null;
   } catch (err) {
     console.error("Error processing API response:", err);
-    toast.error("An unexpected error occurred");
     return null;
   }
 };
