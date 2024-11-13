@@ -1,23 +1,24 @@
 "use client";
 import { useAuth } from "@/hooks/useAuth";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import FullScreenLoading from "../utils-components/loading/Fullscreen.loading.comp";
 import useBranding from "@/hooks/useBranding";
 import { setBackground, setNewCarousel } from "@/state/slice/carousel.slice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { darkColorPresets, lightColorPresets } from "@/lib/color-presets";
 import useLinkedIn from "@/hooks/useLinkedIn";
+import { RootState } from "@/state/store";
 
 // Define public routes that don't require authentication
 const publicRoutes = ['/', '/login', '/signup', '/forgot-password'];
 
 const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isLoading } = useAuth();
+  const loggedin = useSelector((state: RootState) => state.user.loggedin);
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
-  const [isValidating, setIsValidating] = useState(true);
   
   useBranding();
   useLinkedIn();
@@ -38,21 +39,16 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
 
   // Auth check effect
   useEffect(() => {
-    const validateAuth = async () => {
-      const isPublicRoute = publicRoutes.includes(pathname || '');
-      
-      if (!isLoading) {
-        if (!isAuthenticated && !isPublicRoute) {
-          await router.push(`/login?from=${encodeURIComponent(pathname || '')}`);
-        } else if (isAuthenticated && pathname === '/login') {
-          await router.push('/ai-writer');
-        }
-        setIsValidating(false);
+    const isPublicRoute = publicRoutes.includes(pathname || '');
+    
+    if (!isLoading) {
+      if (!loggedin && !isPublicRoute) {
+        router.push(`/login?from=${encodeURIComponent(pathname || '')}`);
+      } else if (loggedin && pathname === '/login') {
+        router.push('/ai-writer');
       }
-    };
-
-    validateAuth();
-  }, [isAuthenticated, isLoading, pathname, router]);
+    }
+  }, [loggedin, isLoading, pathname, router]);
 
   // Keyboard shortcut effect
   useEffect(() => {
@@ -67,15 +63,15 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, [router]);
 
-  // Show loading state while checking auth or validating route
-  if (isLoading || isValidating) {
+  // Only show loading on initial auth check
+  if (isLoading) {
     return <FullScreenLoading />;
   }
 
-  // Only render children if we're done validating and the route is accessible
+  // Check if current route is accessible
   const isPublicRoute = publicRoutes.includes(pathname || '');
-  if (!isAuthenticated && !isPublicRoute) {
-    return <FullScreenLoading />;
+  if (!loggedin && !isPublicRoute) {
+    return null; // Return null instead of loading screen to prevent flash
   }
 
   return <>{children}</>;
