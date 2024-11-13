@@ -68,7 +68,7 @@ export const Header = () => {
         {/* Decorative background elements */}
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                       w-[200%] h-[200%] rounded-full bg-gradient-to-br 
+                       w-[100%] h-[100%] rounded-full bg-gradient-to-br 
                        from-primary/5 via-transparent to-primary/5 
                        blur-3xl opacity-20" />
         </div>

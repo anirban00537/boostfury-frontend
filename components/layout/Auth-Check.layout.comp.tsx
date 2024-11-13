@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "@/hooks/useAuth";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FullScreenLoading from "../utils-components/loading/Fullscreen.loading.comp";
 import useBranding from "@/hooks/useBranding";
 import { setBackground, setNewCarousel } from "@/state/slice/carousel.slice";
@@ -9,21 +9,25 @@ import { useDispatch } from "react-redux";
 import { darkColorPresets, lightColorPresets } from "@/lib/color-presets";
 import useLinkedIn from "@/hooks/useLinkedIn";
 
+// Define public routes that don't require authentication
+const publicRoutes = ['/', '/login', '/signup', '/forgot-password'];
+
 const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuth();
   const pathname = usePathname();
-  useBranding();
+  const router = useRouter();
   const dispatch = useDispatch();
+  const [isValidating, setIsValidating] = useState(true);
+  
+  useBranding();
   useLinkedIn();
+
   const chooseColorFromColorPalette = useCallback(() => {
-    const lightPreset =
-      lightColorPresets[Math.floor(Math.random() * lightColorPresets.length)];
-    const darkPreset =
-      darkColorPresets[Math.floor(Math.random() * darkColorPresets.length)];
+    const lightPreset = lightColorPresets[Math.floor(Math.random() * lightColorPresets.length)];
+    const darkPreset = darkColorPresets[Math.floor(Math.random() * darkColorPresets.length)];
     const randomPreset = Math.random() < 0.5 ? lightPreset : darkPreset;
     dispatch(setBackground(randomPreset));
   }, [dispatch]);
-  const router = useRouter();
 
   useEffect(() => {
     if (pathname) {
@@ -32,29 +36,45 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [pathname, dispatch, chooseColorFromColorPalette]);
 
+  // Auth check effect
+  useEffect(() => {
+    const validateAuth = async () => {
+      const isPublicRoute = publicRoutes.includes(pathname || '');
+      
+      if (!isLoading) {
+        if (!isAuthenticated && !isPublicRoute) {
+          await router.push(`/login?from=${encodeURIComponent(pathname || '')}`);
+        } else if (isAuthenticated && pathname === '/login') {
+          await router.push('/ai-writer');
+        }
+        setIsValidating(false);
+      }
+    };
+
+    validateAuth();
+  }, [isAuthenticated, isLoading, pathname, router]);
+
+  // Keyboard shortcut effect
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      // Check for Ctrl+Alt+N (Windows/Linux) or Cmd+Alt+N (Mac)
-      if (
-        (event.ctrlKey || event.metaKey) &&
-        event.altKey &&
-        event.key.toLowerCase() === "n"
-      ) {
-        event.preventDefault(); // Prevent default browser behavior
+      if ((event.ctrlKey || event.metaKey) && event.altKey && event.key.toLowerCase() === "n") {
+        event.preventDefault();
         router.push("/compose");
       }
     };
 
-    // Add event listener
     window.addEventListener("keydown", handleKeyPress);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress);
-    };
+    return () => window.removeEventListener("keydown", handleKeyPress);
   }, [router]);
 
-  if (isLoading) {
+  // Show loading state while checking auth or validating route
+  if (isLoading || isValidating) {
+    return <FullScreenLoading />;
+  }
+
+  // Only render children if we're done validating and the route is accessible
+  const isPublicRoute = publicRoutes.includes(pathname || '');
+  if (!isAuthenticated && !isPublicRoute) {
     return <FullScreenLoading />;
   }
 
