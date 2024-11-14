@@ -17,7 +17,7 @@ export const useGenerateContent = () => {
   const dispatch = useDispatch();
   const { refetchSubscription } = useAuth();
 
-  const generateContent = async (e: React.FormEvent<HTMLFormElement>) => {
+  const generateContent = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {

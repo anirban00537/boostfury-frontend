@@ -40,7 +40,7 @@ const SlideComponent: React.FC<SlideProps> = ({
     (state: RootState) => state.branding
   );
   const { pattern, backgroundOpacity } = layout;
-  const subscribed = subscription?.isSubscribed;
+  const subscribed = subscription?.isActive;
   const { color1, color2, color3, color4 } = useSelector(
     (state: RootState) => state.slides.background
   );

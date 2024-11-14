@@ -168,12 +168,41 @@ export interface SubscriptionDetails {
 }
 
 export interface SubscriptionState {
-  isSubscribed: boolean;
-  plan: "starter" | "pro" | null;
-  expiresAt: string | null;
-  subscription: SubscriptionDetails | null;
-  isTrial: boolean;
-  limits: SubscriptionLimits;
+  isActive: boolean;
+  subscription: {
+    id: string;
+    status: string;
+    isTrial: boolean;
+    startDate: string;
+    endDate: string;
+    package: {
+      name: string;
+      type: string;
+    };
+    features: {
+      aiWriting: boolean;
+      hasScheduling: boolean;
+    };
+  } | null;
+  usage: {
+    words: {
+      used: number;
+      limit: number;
+      nextReset: string;
+    };
+    linkedin: {
+      accountsUsed: number;
+      accountsLimit: number;
+      postsUsed: number;
+      postsLimit: number;
+      nextReset: string;
+    };
+    carousels: {
+      used: number;
+      limit: number;
+      nextReset: string;
+    };
+  };
 }
 
 export interface UserState {
@@ -181,9 +210,8 @@ export interface UserState {
   loggedin: boolean;
   loading: boolean;
   carouselDownloading: boolean;
-  currentWorkspace: Workspace | null;
-  wordUsage: WordUsage;
-  linkedinProfiles: LinkedInProfile[];
+  currentWorkspace: any;
+  linkedinProfiles: LinkedInProfileUI[];
   subscription: SubscriptionState;
 }
 

@@ -7,7 +7,6 @@ import {
   logout,
   setLoading,
   setCurrentWorkspace,
-  setWordUsage,
   setSubscriptionData,
 } from "@/state/slice/user.slice";
 import { useCallback, useEffect } from "react";
@@ -53,22 +52,13 @@ export const useAuth = () => {
     onSuccess: (data: ResponseData) => {
       try {
         if (data?.data) {
-          dispatch(setSubscriptionData({
-            isSubscribed: data.data.isSubscribed,
-            plan: data.data.plan,
-            expiresAt: data.data.expiresAt,
-            subscription: data.data.subscription,
-              limits: data.data.limits,
-              isTrial: data.data.isTrial,
+          dispatch(
+            setSubscriptionData({
+              isActive: data.data.isActive,
+              subscription: data.data.subscription,
+              usage: data.data.usage,
             })
           );
-
-          if (data.data.userWordUsage) {
-            dispatch(setWordUsage({
-              usage: data.data.userWordUsage.usage,
-              percentage: data.data.userWordUsage.percentage
-            }));
-          }
         }
       } catch (error) {
         console.error('Error processing subscription data:', error);

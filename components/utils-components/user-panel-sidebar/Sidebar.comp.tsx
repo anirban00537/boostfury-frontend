@@ -211,16 +211,16 @@ const Navigation = () => {
 
 const Sidebar = () => {
   const router = useRouter();
-  const { userinfo, currentWorkspace, wordUsage, subscription } = useSelector(
+  const { userinfo, currentWorkspace, subscription } = useSelector(
     (state: RootState) => state.user
   );
   const [isManageModalOpen, setIsManageModalOpen] = useState(false);
-  const aiUsage = {
-    used: wordUsage?.usage?.used || 0,
-    remaining: wordUsage?.usage?.remaining || 0,
-    total: wordUsage?.usage?.total || 0,
-    percentage: wordUsage?.percentage?.used || 0,
-    isActive: wordUsage?.usage?.isActive || false,
+
+  // Get word usage from the new subscription structure
+  const wordUsage = {
+    used: subscription.usage.words.used,
+    limit: subscription.usage.words.limit,
+    percentage: (subscription.usage.words.used / subscription.usage.words.limit) * 100 || 0
   };
 
   const formatTokens = (tokens: number) => {
@@ -304,7 +304,7 @@ const Sidebar = () => {
 
       {/* Fixed Bottom Section - Removed extra padding/spacing */}
       <div className="shrink-0 border-t border-gray-100">
-        {/* AI Usage Section - Tightened padding */}
+        {/* AI Usage Section */}
         <div className="px-4 py-2 border-b border-gray-100">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
@@ -314,17 +314,17 @@ const Sidebar = () => {
               </span>
             </div>
             <span className="text-xs font-medium text-gray-500">
-              {formatTokens(aiUsage.used)} / {formatTokens(aiUsage.total)}
+              {formatTokens(wordUsage.used)} / {formatTokens(wordUsage.limit)}
             </span>
           </div>
           <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
             <div
               className={cn(
                 "h-full transition-all duration-300 ease-in-out",
-                aiUsage.percentage > 80 ? "bg-red-500" : "bg-primary"
+                wordUsage.percentage > 80 ? "bg-red-500" : "bg-primary"
               )}
               style={{
-                width: `${aiUsage.percentage}%`,
+                width: `${wordUsage.percentage}%`,
               }}
             />
           </div>

@@ -18,6 +18,16 @@ import { RootState } from "@/state/store";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
+import { useRouter } from "next/navigation";
+
+const TooltipComponent = ({ id, content }: { id: string; content: string }) => (
+  <Tooltip
+    id={id}
+    place="left"
+    className="z-50 text-xs bg-white text-gray-700 border border-gray-200 rounded-lg shadow-lg p-2"
+    data-tooltip-content={content}
+  />
+);
 
 const AiSettingsComponent = () => {
   const {
@@ -42,12 +52,21 @@ const AiSettingsComponent = () => {
   } = useGenerateContent();
 
   const { subscription } = useSelector((state: RootState) => state.user);
-  const isSubscribed =
-    subscription.isSubscribed && subscription.subscription?.status === "active";
+  const isSubscribed = subscription.isActive;
 
-  const getButtonState = () => {
-    if (loading) {
-      return {
+  const router = useRouter();
+
+  const handleButtonClick = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubscribed) {
+      generateContent(e);
+    } else {
+      router.push("/pricing");
+    }
+  };
+
+  const buttonState = loading
+    ? {
         disabled: true,
         content: (
           <>
@@ -75,30 +94,14 @@ const AiSettingsComponent = () => {
           </>
         ),
         className: "bg-blue-600 text-white hover:bg-blue-700",
+      }
+    : {
+        disabled: false,
+        content: isSubscribed ? "Generate Content" : "Upgrade to Premium",
+        className: isSubscribed
+          ? "bg-blue-600 text-white hover:bg-blue-700"
+          : "bg-blue-50 text-blue-700 ring-1 ring-blue-200",
       };
-    }
-
-    if (!isSubscribed) {
-      return {
-        disabled: true,
-        content: (
-          <span className="flex items-center justify-center gap-2">
-            <Image src={"/premium.svg"} width={20} height={20} alt="Premium" />
-            Upgrade to {subscription.subscription?.productName || "Premium"}
-          </span>
-        ),
-        className: "bg-blue-50 text-blue-700 ring-1 ring-blue-200",
-      };
-    }
-
-    return {
-      disabled: false,
-      content: "Generate Content",
-      className: "bg-blue-600 text-white hover:bg-blue-700",
-    };
-  };
-
-  const buttonState = getButtonState();
 
   return (
     <div className="w-full h-full flex flex-col bg-white">
@@ -108,7 +111,7 @@ const AiSettingsComponent = () => {
           AI Content Generator
         </h2>
       </div>
-      <form onSubmit={generateContent} className="flex flex-col h-full">
+      <form onSubmit={handleButtonClick} className="flex flex-col h-full">
         <div className="flex-grow overflow-y-auto p-6 space-y-6">
           {/* Topic Input */}
           <div className="space-y-2">
@@ -309,49 +312,26 @@ const AiSettingsComponent = () => {
 
           {!isSubscribed && (
             <p className="text-xs text-gray-500 mt-2 text-center">
-              Subscribe to {subscription.subscription?.productName || "Premium"}{" "}
-              to access AI content generation
+              Subscribe to{" "}
+              {subscription.subscription?.package.name || "Premium"} to access
+              AI content generation
             </p>
           )}
         </div>
       </form>
 
       {/* Tooltips with updated styling */}
-      <Tooltip
-        id="topic-tooltip"
-        place="left"
-        className="z-50 text-xs bg-white text-gray-700 border border-gray-200 rounded-lg shadow-lg p-2"
-      />
-      <Tooltip
-        id="theme-tooltip"
-        place="left"
-        className="z-50 text-xs bg-white text-gray-700 border border-gray-200 rounded-lg shadow-lg p-2"
-      />
-      <Tooltip
-        id="slides-tooltip"
-        place="left"
-        className="z-50 text-xs bg-white text-gray-700 border border-gray-200 rounded-lg shadow-lg p-2"
-      />
-      <Tooltip
-        id="style-tooltip"
-        place="left"
-        className="z-50 text-xs bg-white text-gray-700 border border-gray-200 rounded-lg shadow-lg p-2"
-      />
-      <Tooltip
-        id="audience-tooltip"
-        place="left"
-        className="z-50 text-xs bg-white text-gray-700 border border-gray-200 rounded-lg shadow-lg p-2"
-      />
-      <Tooltip
-        id="mood-tooltip"
-        place="left"
-        className="z-50 text-xs bg-white text-gray-700 border border-gray-200 rounded-lg shadow-lg p-2"
-      />
-      <Tooltip
-        id="language-tooltip"
-        place="left"
-        className="z-50 text-xs bg-white text-gray-700 border border-gray-200 rounded-lg shadow-lg p-2"
-      />
+      {[
+        { id: "topic-tooltip", content: "Main subject for AI content" },
+        { id: "theme-tooltip", content: "Color theme for slides" },
+        { id: "slides-tooltip", content: "Select slide count" },
+        { id: "style-tooltip", content: "Choose writing style" },
+        { id: "audience-tooltip", content: "Select target audience" },
+        { id: "mood-tooltip", content: "Set content tone" },
+        { id: "language-tooltip", content: "Choose content language" },
+      ].map(({ id, content }) => (
+        <TooltipComponent key={id} id={id} content={content} />
+      ))}
     </div>
   );
 };

@@ -68,6 +68,7 @@ export const useCarouselManager = () => {
       enabled: loggedin && !!currentWorkspace,
       onSuccess: (response) => {},
       onError: (error: any) => processApiResponse(error),
+      retry: false,
     }
   );
 
@@ -78,7 +79,7 @@ export const useCarouselManager = () => {
     async ({ newName, id }) => {
       if (id) {
         return updateCarousel({
-          id: Number(id),
+          id: id,
           data: CarouselData,
           workspaceId: currentWorkspace?.id || 0,
         });
@@ -145,8 +146,6 @@ export const useCarouselManager = () => {
     }
   );
 
- 
-
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
   };
@@ -164,6 +163,6 @@ export const useCarouselManager = () => {
     handlePageChange,
     currentPage,
     pageSize,
-    isLoadingCarouselDetails
+    isLoadingCarouselDetails,
   };
 };

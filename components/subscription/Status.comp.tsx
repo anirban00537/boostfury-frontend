@@ -15,11 +15,12 @@ import { motion } from "framer-motion";
 import moment from "moment";
 
 const SubscriptionInfo = () => {
-  const { subscription }: any = useSelector((state: RootState) => state.user);
-  const isActive = subscription.isSubscribed;
-  const plan = subscription.plan || "Free Plan";
-  const expiresAt = subscription.expiresAt;
-  const isTrial = subscription.subscription?.isTrial;
+  const { subscription } = useSelector((state: RootState) => state.user);
+  const isActive = subscription.isActive;
+  const subscriptionData = subscription.subscription;
+  const isTrial = subscriptionData?.isTrial;
+  const plan = subscriptionData?.package?.name || "Free Plan";
+  const expiresAt = subscriptionData?.endDate;
 
   if (!isActive) {
     return (
@@ -77,7 +78,7 @@ const SubscriptionInfo = () => {
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold text-blue-800">
-                  {plan} Plan
+                  {plan}
                 </span>
                 {isTrial && (
                   <span className="text-xs px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded-full">
@@ -100,7 +101,7 @@ const SubscriptionInfo = () => {
               <div className="flex items-center gap-2">
                 <Crown className="w-5 h-5 text-blue-600" />
                 <span className="font-semibold text-gray-900">
-                  {plan} Plan Benefits
+                  {plan} Benefits
                 </span>
               </div>
               {isTrial && (

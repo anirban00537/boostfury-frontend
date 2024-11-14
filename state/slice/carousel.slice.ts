@@ -12,7 +12,7 @@ import { sharedElements } from "@/lib/core-constants";
 const initialState: CarouselState = initialCarousel;
 
 type UpdatePayload = {
-  key: keyof CarouselState;
+  key: any;
   value: any;
 };
 
