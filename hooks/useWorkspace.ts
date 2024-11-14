@@ -4,7 +4,7 @@ import {
   createWorkspace,
   updateWorkspace as updateWorkspaceService,
   deleteWorkspace,
-} from "@/services/workspace";
+} from "@/services/workspace.service";
 import { ResponseData, Workspace } from "@/types";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/state/store";

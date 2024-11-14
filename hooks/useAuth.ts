@@ -12,11 +12,11 @@ import {
 import { useCallback, useEffect } from "react";
 import { CredentialResponse } from "@react-oauth/google";
 import { googleSignIn, profile } from "@/services/auth";
-import { checkSubscription } from "@/services/subscription";
+import { checkSubscription } from "@/services/subscription.service";
 import Cookies from "js-cookie";
 import { RootState } from "@/state/store";
 import { ResponseData, UserInfo } from "@/types";
-import { getMyWorkspaces } from "@/services/workspace";
+import { getMyWorkspaces } from "@/services/workspace.service";
 import { useWorkspaces } from "./useWorkspace";
 
 export const useAuth = () => {
@@ -61,8 +61,8 @@ export const useAuth = () => {
           );
         }
       } catch (error) {
-        console.error('Error processing subscription data:', error);
-        toast.error('Error processing subscription data');
+        console.error("Error processing subscription data:", error);
+        toast.error("Error processing subscription data");
       }
     },
     onError: (error: Error) => {

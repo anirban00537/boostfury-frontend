@@ -1,5 +1,4 @@
 import React from "react";
-import PricingModal from "./Pricing-Modal.comp";
 import { Button } from "../ui/button";
 import { RootState } from "@/state/store";
 import { useSelector } from "react-redux";
@@ -22,24 +21,6 @@ const SubscriptionInfo = () => {
   const plan = subscriptionData?.package?.name || "Free Plan";
   const expiresAt = subscriptionData?.endDate;
 
-  if (!isActive) {
-    return (
-      <PricingModal
-        buttonElement={
-          <Button
-            variant="ghost"
-            size="sm"
-            className="w-full h-8 flex items-center justify-center gap-2 text-primary hover:text-primary bg-primary/10 hover:bg-blue-100 rounded-lg transition-colors border border-blue-100"
-          >
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4" />
-              <span className="text-sm font-medium">Upgrade to Pro</span>
-            </div>
-          </Button>
-        }
-      />
-    );
-  }
 
   const expiryMoment = moment(expiresAt);
   const daysRemaining = expiryMoment.diff(moment(), "days");
