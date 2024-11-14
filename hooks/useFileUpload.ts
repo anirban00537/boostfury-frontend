@@ -55,7 +55,7 @@ export const useFileUpload = (isOpen: boolean) => {
   const { userinfo, subscription, loggedin, currentWorkspace } = useSelector(
     (state: RootState) => state.user
   );
-  const { isSubscribed } = subscription;
+  const isSubscribed = subscription.isActive;
   const [currentPage, setCurrentPage] = useState(1);
   const [jumpToPage, setJumpToPage] = useState("");
   const imagesPerPage = 9;
@@ -131,7 +131,7 @@ export const useFileUpload = (isOpen: boolean) => {
 
       try {
         const response = await uploadFileService(file);
-        
+
         // Clear interval and set to 100%
         clearInterval(interval);
         setUploadProgress(100);
@@ -141,7 +141,7 @@ export const useFileUpload = (isOpen: boolean) => {
 
         // Refetch both images and usage data
         await Promise.all([refetchImages(), refetchUsage()]);
-        
+
         return response;
       } catch (error: any) {
         clearInterval(interval);
