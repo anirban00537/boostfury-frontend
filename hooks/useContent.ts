@@ -79,7 +79,7 @@ export const useContentPosting = () => {
 
   const { isLoading: isLoadingDraft } = useQuery(
     ["draftDetails", draftId],
-    () => getDraftPostDetails(Number(draftId)),
+    () => getDraftPostDetails(draftId || ""),
     {
       enabled: !!draftId,
       onSuccess: (response) => {
@@ -159,7 +159,7 @@ export const useContentPosting = () => {
         postId,
         scheduleData,
       }: {
-        postId: number;
+        postId: string;
         scheduleData: SchedulePostType;
       }) => schedulePost(postId, scheduleData),
       onSuccess: (response) => {
@@ -328,8 +328,6 @@ export const useContentPosting = () => {
           return;
         }
 
-    
-
         // Show scheduling feedback
         toast.loading("Scheduling post...", { id: "scheduling" });
 
@@ -339,7 +337,7 @@ export const useContentPosting = () => {
         };
 
         await schedulePostMutation({
-          postId: Number(draftId),
+          postId: draftId,
           scheduleData,
         });
 
@@ -425,7 +423,7 @@ export const useContentPosting = () => {
         // Show posting feedback
         toast.loading("Publishing post...", { id: "posting" });
 
-        await postNowMutation(Number(draftId));
+        await postNowMutation(draftId);
 
         // Success toast will be shown by postNowMutation's onSuccess handler
         toast.dismiss("posting");
