@@ -310,6 +310,49 @@ export const PostPreview = ({
                     {content}
                   </div>
 
+                  {/* Add PDF Viewer */}
+                  {documentUrl && (
+                    <div className="mt-4 border rounded-lg overflow-hidden">
+                      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                        <div style={{ height: '500px' }}>
+                          <Viewer
+                            fileUrl={documentUrl}
+                            plugins={[pageNavigationPluginInstance]}
+                            defaultScale={SpecialZoomLevel.PageFit}
+                            onDocumentLoad={(e) => {
+                              setNumPages(e.doc.numPages);
+                              setIsLoading(false);
+                            }}
+                            onPageChange={(e) => setCurrentPage(e.currentPage)}
+                          />
+                        </div>
+                      </Worker>
+                      {numPages > 0 && (
+                        <div className="flex items-center justify-between p-2 border-t bg-gray-50">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handlePrevPage}
+                            disabled={currentPage === 0}
+                          >
+                            <FiChevronLeft className="h-4 w-4" />
+                          </Button>
+                          <span className="text-sm text-gray-600">
+                            Page {currentPage + 1} of {numPages}
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleNextPage}
+                            disabled={currentPage === numPages - 1}
+                          >
+                            <FiChevronRight className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Image Grid */}
                   {imageUrls.length > 0 && (
                     <div
