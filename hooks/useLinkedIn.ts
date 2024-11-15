@@ -138,9 +138,9 @@ const useLinkedIn = () => {
   const { mutate: disconnectProfile } = useMutation<
     LinkedInResponse,
     Error,
-    number
+    string
   >(
-    async (profileId: number) => {
+    async (profileId: string) => {
       const response = await disconnectLinkedInProfile(profileId);
       return response;
     },

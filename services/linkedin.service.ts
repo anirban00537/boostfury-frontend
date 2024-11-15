@@ -14,7 +14,7 @@ interface LinkedInCallbackResponse {
   message: string;
   data: {
     profile?: {
-      id: number;
+      id: string;
       name: string;
       profileImage: string;
       type: 'linkedin';
@@ -43,7 +43,7 @@ export const getLinkedInProfiles = async () => {
   return response.data;
 };
 
-export const disconnectLinkedInProfile = async (profileId: number) => {
+export const disconnectLinkedInProfile = async (profileId: string) => {
   const response = await request.delete(`/linkedin/disconnect/${profileId}`);
   return response.data;
 }; 

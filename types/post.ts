@@ -88,7 +88,7 @@ export interface CreateDraftPostType extends Required<Omit<CreateDraftParams, 'p
   postType: PostContentType;
   carouselTitle?: string;
   videoTitle?: string;
-  id?: number;
+  id?: string;
 }
 
 // API Response Types

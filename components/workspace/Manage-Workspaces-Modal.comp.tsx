@@ -147,7 +147,7 @@ const ManageWorkspacesModal: FC<ManageWorkspacesModalProps> = ({
                 </Button>
 
                 <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
-                  {workspaces.map((workspace: Workspace, index) => (
+                  {workspaces?.map((workspace: Workspace, index) => (
                     <motion.div
                       key={workspace.id}
                       initial={{ opacity: 0, y: 20 }}

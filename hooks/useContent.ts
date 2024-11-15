@@ -193,7 +193,7 @@ export const useContentPosting = () => {
         }
 
         const draftData = {
-          ...(draftId && { id: Number(draftId) }),
+          ...(draftId && { id: draftId }),
           content: content.trim(),
           postType: "text" as const,
           workspaceId: currentWorkspace.id,
@@ -245,7 +245,7 @@ export const useContentPosting = () => {
         const response = await createUpdateDraftMutation({
           ...draftData,
           workspaceId: currentWorkspace.id,
-          ...(draftId && { id: Number(draftId) }),
+          ...(draftId && { id: draftId }),
         });
 
         if (!draftId && response.data?.post?.id) {
