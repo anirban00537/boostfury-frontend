@@ -138,7 +138,7 @@ export interface UserInfo {
 export interface Workspace {
   createdAt: string;
   description: string | null;
-  id: number;
+  id: string;
   isDefault: boolean;
   name: string;
   updatedAt: string;

@@ -37,7 +37,7 @@ interface CarouselResponse {
 
 interface CarouselItem {
   id: string;
-  userId: number;
+  userId: string;
   name: string;
   // ... other properties ...
 }

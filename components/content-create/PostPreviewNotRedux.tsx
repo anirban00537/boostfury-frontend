@@ -18,7 +18,7 @@ import {
 import Image from "next/image";
 
 interface LinkedInProfile {
-  id: number;
+  id: string;
   name: string;
   email: string;
   avatarUrl: string;
@@ -26,7 +26,7 @@ interface LinkedInProfile {
 }
 
 interface PostUser {
-  id: number;
+  id: string;
   email: string;
   first_name: string;
   last_name: string;
@@ -35,7 +35,7 @@ interface PostUser {
 }
 
 interface PostLog {
-  id: number;
+  id: string;
   status: string;
   message: string;
   timestamp: string;

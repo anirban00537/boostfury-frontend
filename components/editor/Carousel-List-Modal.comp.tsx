@@ -20,7 +20,7 @@ interface CarouselListModalProps {
 
 interface CarouselItem {
   id: string;
-  userId: number;
+  userId: string;
   data: {
     name: string;
     // ... other properties

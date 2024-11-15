@@ -22,7 +22,8 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({
   onClose,
   workspace,
 }) => {
-  const { createNewWorkspace, updateWorkspace, isWorkspaceLoading } = useWorkspaces();
+  const { createNewWorkspace, updateWorkspace, isWorkspaceLoading } =
+    useWorkspaces();
   const {
     control,
     handleSubmit,
@@ -43,7 +44,7 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({
   const onSubmit = async (data: FormData) => {
     if (workspace) {
       await updateWorkspace({
-        id: Number(workspace.id),
+        id: workspace.id,
         name: data.name.trim(),
         description: data.description.trim(),
       });
@@ -154,9 +155,7 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({
               {descriptionValue.length}/{descriptionMaxLength} characters
             </span>
             {errors.description && (
-              <span className="text-red-500">
-                {errors.description.message}
-              </span>
+              <span className="text-red-500">{errors.description.message}</span>
             )}
           </div>
         </div>
@@ -174,4 +173,3 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({
 };
 
 export default WorkspaceForm;
-

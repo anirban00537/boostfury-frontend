@@ -2,7 +2,7 @@ import { POST_STATUS } from "@/lib/core-constants";
 
 // Base Post Types
 export interface Post {
-  id: number;
+  id: string;
   content: string;
   visibility: string;
   postType: PostContentType;
@@ -23,9 +23,9 @@ export interface Post {
   carouselTitle: string | null;
   videoTitle: string | null;
   publishingErrorCode: string | null;
-  userId: number;
-  workspaceId: number;
-  linkedInProfileId: number;
+  userId: string;
+  workspaceId: string;
+  linkedInProfileId: string;
   statusLabel: string;
   linkedInProfile: LinkedInProfile;
   user: PostUser;
@@ -66,7 +66,7 @@ export type GetPostsType = {
   page: number;
   pageSize: number;
   status: PostType;
-  workspace_id: number;
+  workspace_id: string;
 };
 
 // Draft Creation Types
@@ -75,8 +75,8 @@ export type PostContentType = "text" | "image" | "video" | "document";
 export interface CreateDraftParams {
   content: string;
   postType?: PostContentType;
-  workspaceId?: number;
-  linkedInProfileId?: number | null;
+  workspaceId?: string;
+  linkedInProfileId?: string | null;
   imageUrls?: string[] | null;
   videoUrl?: string | null;
   documentUrl?: string | null;
@@ -110,7 +110,7 @@ export interface PostsResponse {
 
 // Define a simplified LinkedInProfile for UI purposes
 export interface LinkedInProfileUI {
-  id: number;
+  id: string;
   name: string;
   avatarUrl: string;
   type: 'linkedin';
@@ -131,7 +131,7 @@ export interface LinkedInProfile extends LinkedInProfileUI {
 }
 
 export interface PostUser {
-  id: number;
+  id: string;
   email: string;
   first_name: string;
   last_name: string;
@@ -140,8 +140,8 @@ export interface PostUser {
 }
 
 export interface PostLog {
-  id: number;
-  linkedInPostId?: number;
+  id: string;
+  linkedInPostId?: string;
   status: string;
   message: string;
   timestamp: string;
@@ -150,13 +150,13 @@ export interface PostLog {
 }
 
 export interface Workspace {
-  id: number;
+  id: string;
   name: string;
   description: string | null;
   isDefault: boolean;
   createdAt: string;
   updatedAt: string;
-  userId: number;
+  userId: string;
 }
 
 export interface SchedulePostType {

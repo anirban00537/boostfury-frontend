@@ -13,9 +13,10 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setLinkedInProfiles } from "@/state/slice/user.slice";
+import { LinkedInProfileUI } from "@/types/post";
 
 interface LinkedInProfile {
-  id: number;
+  id: string;
   name: string;
   avatarUrl: string;
   type: "linkedin";
@@ -100,7 +101,9 @@ const useLinkedIn = () => {
     async () => {
       const response = await getLinkedInProfiles();
       if (!response.success) {
-        throw new Error(response.message || "Failed to fetch LinkedIn profiles");
+        throw new Error(
+          response.message || "Failed to fetch LinkedIn profiles"
+        );
       }
       return response.data.profiles;
     },
@@ -109,8 +112,8 @@ const useLinkedIn = () => {
       staleTime: 5 * 60 * 1000,
       retry: 2,
       onSuccess: (profiles) => {
-        dispatch(setLinkedInProfiles(profiles));
-      }
+        dispatch(setLinkedInProfiles(profiles as unknown as LinkedInProfileUI[]));
+      },
     }
   );
 

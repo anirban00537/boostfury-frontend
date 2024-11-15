@@ -10,10 +10,10 @@ import {
 interface PostTypeSelectorProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  selectedTemplate: number | null;
-  setSelectedTemplate: (id: number | null) => void;
+  selectedTemplate: string | null;
+  setSelectedTemplate: (id: string | null) => void;
   carouselTemplates: Array<{
-    id: number;
+    id: string;
     name: string;
     slides: number;
     icon: string;

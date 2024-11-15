@@ -4,7 +4,7 @@ import request from "@/lib/request";
 export const getCarousels = async (
   page: number,
   pageSize: number,
-  workspaceId: number
+  workspaceId: string
 ) => {
   const response = await request.get("/my-carousels/get", {
     params: { page, pageSize, workspaceId },
@@ -35,7 +35,7 @@ export const deleteCarousel = async (id: string) => {
   return response.data;
 };
 
-export const getCarouselDetails = async (id: string, workspaceId: number) => {
+export const getCarouselDetails = async (id: string, workspaceId: string) => {
   const response = await request.get("/my-carousels/get-details", {
     params: { id, workspaceId },
   });

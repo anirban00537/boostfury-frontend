@@ -34,7 +34,7 @@ interface ComposeSectionProps {
   onSchedule: (date: Date) => void;
   isEditing?: boolean;
   postDetails?: Post | null;
-  onPostNow: (linkedinProfileId: number) => void;
+  onPostNow: (linkedinProfileId: string) => void;
   isPosting: boolean;
   selectedLinkedInProfile: LinkedInProfileUI | null;
   onProfileSelect: (profile: LinkedInProfileUI) => void;

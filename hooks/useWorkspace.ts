@@ -42,7 +42,7 @@ export const useWorkspaces = () => {
     ResponseData,
     Error,
     {
-      id: number;
+      id: string;
       name: string;
       description: string;
     }

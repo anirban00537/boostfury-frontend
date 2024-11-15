@@ -32,9 +32,8 @@ interface DraftResponse {
   message: string;
   data: {
     post: {
-      id: number;
+      id: string;
       content: string;
-      // ... other post properties
     };
   };
 }
@@ -178,7 +177,7 @@ export const useContentPosting = () => {
 
   // Keep the original handleCreateUpdateDraft
   const handleCreateUpdateDraft = useCallback(
-    async (linkedinProfileId: number) => {
+    async (linkedinProfileId: string) => {
       if (isCreatingDraft) return;
 
       try {
@@ -193,7 +192,7 @@ export const useContentPosting = () => {
         }
 
         const draftData = {
-          ...(draftId && { id: draftId }),
+          ...(draftId && { id: String(draftId) }),
           content: content.trim(),
           postType: "text" as const,
           workspaceId: currentWorkspace.id,
@@ -406,7 +405,7 @@ export const useContentPosting = () => {
   );
 
   const handlePostNow = useCallback(
-    async (linkedinProfileId: number) => {
+    async (linkedinProfileId: string) => {
       try {
         if (!draftId) {
           toast.error("No draft found to publish");
