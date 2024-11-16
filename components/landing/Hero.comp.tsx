@@ -206,7 +206,7 @@ const Hero = () => {
             >
               <ShimmerButton
                 className="shadow-2xl w-full sm:w-auto"
-                background="#3369E7"
+                background="linear-gradient(145deg, #4f46e5, #0747d1)"
               >
                 <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-lg">
                   Get Started - 7 Days Free Trial

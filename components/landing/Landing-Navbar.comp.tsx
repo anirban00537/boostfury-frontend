@@ -19,8 +19,8 @@ const LandingNavbar = () => {
           <Link href="/" className="flex-shrink-0">
             <Image
               src="/logo.svg"
-              height={150}
-              width={150}
+              height={200}
+              width={200}
               alt="boostfury.com"
             />
           </Link>
