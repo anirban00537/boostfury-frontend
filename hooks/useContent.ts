@@ -230,26 +230,23 @@ export const useContentPosting = () => {
     ]
   );
 
-  // Modify debouncedSaveDraft to accept full draft data
+  // Create debounced function
   const debouncedSaveDraft = useCallback(
     debounce(async (draftData: Omit<CreateDraftPostType, "workspaceId">) => {
       if (
         !draftData.content.trim() ||
         !currentWorkspace?.id ||
-        !draftData.linkedInProfileId
+        !draftData.linkedInProfileId ||
+        !draftId
       )
         return;
 
-      console.log(
-        draftId,
-        "draftIddraftIddraftIddraftIddraftIddraftIddraftIddraftIddraftIddraftId"
-      );
       try {
         setIsAutoSaving(true);
         const response = await createUpdateDraftMutation({
           ...draftData,
           workspaceId: currentWorkspace.id,
-          ...(draftId && { id: draftId }),
+          id: draftId,
         });
 
         if (!draftId && response.data?.post?.id) {
@@ -266,37 +263,44 @@ export const useContentPosting = () => {
     [currentWorkspace?.id, createUpdateDraftMutation, draftId]
   );
 
-  // Watch for changes in any draft-related field
+  // Add cleanup
   useEffect(() => {
-    if (!selectedProfile?.id) return;
+    // Cleanup function to cancel any pending debounced saves
+    return () => {
+      debouncedSaveDraft.cancel();
+    };
+  }, [debouncedSaveDraft]);
 
-    const draftData = {
-      content: content.trim(),
-      postType: "text" as const,
-      linkedInProfileId: selectedProfile.id,
+  // Handle content change
+  const handleContentChange = useCallback(
+    (newContent: string) => {
+      setContent(newContent);
+
+      // Only trigger debounced save if we have a draftId
+      if (draftId && selectedProfile?.id) {
+        debouncedSaveDraft({
+          content: newContent,
+          postType: "text",
+          linkedInProfileId: selectedProfile.id,
+          imageUrls,
+          videoUrl,
+          documentUrl,
+          hashtags,
+          mentions,
+        });
+      }
+    },
+    [
+      debouncedSaveDraft,
+      selectedProfile?.id,
+      draftId,
       imageUrls,
       videoUrl,
       documentUrl,
       hashtags,
       mentions,
-    };
-
-    debouncedSaveDraft(draftData);
-  }, [
-    content,
-    selectedProfile?.id,
-    imageUrls,
-    videoUrl,
-    documentUrl,
-    hashtags,
-    mentions,
-    debouncedSaveDraft,
-  ]);
-
-  // Modify handleContentChange to only update content
-  const handleContentChange = useCallback((newContent: string) => {
-    setContent(newContent);
-  }, []);
+    ]
+  );
 
   // Add handlers for other fields
   const handleImageUrlsChange = useCallback((urls: string[]) => {
