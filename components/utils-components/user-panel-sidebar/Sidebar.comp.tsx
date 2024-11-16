@@ -85,21 +85,21 @@ const navigationItems: NavigationItem[] = [
     badge: "AI",
     badgeColor: "bg-gradient-to-r from-indigo-500 to-blue-500 text-white",
   },
-  {
-    id: "carousel-editor",
-    name: "Carousel Editor",
-    icon: Layers,
-    href: "/carousel-editor",
-    badge: "New",
-    badgeColor: "bg-gradient-to-r from-green-500 to-emerald-500 text-white",
-  },
+  // {
+  //   id: "carousel-editor",
+  //   name: "Carousel Editor",
+  //   icon: Layers,
+  //   href: "/carousel-editor",
+  //   badge: "New",
+  //   badgeColor: "bg-gradient-to-r from-green-500 to-emerald-500 text-white",
+  // },
   // Management items
-  {
-    id: "carousels",
-    name: "My Carousels",
-    icon: LayoutTemplate,
-    href: "/carousels",
-  },
+  // {
+  //   id: "carousels",
+  //   name: "My Carousels",
+  //   icon: LayoutTemplate,
+  //   href: "/carousels",
+  // },
   {
     id: "my-posts",
     name: "My Posts",

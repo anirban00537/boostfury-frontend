@@ -47,7 +47,12 @@ export const Header = () => {
                        [text-shadow:_0_1px_3px_rgb(0_0_0_/_10%)]
                        relative z-10"
           >
-            What Viral Post Would You Like to Create?
+            What{' '}
+            <span className="bg-gradient-to-r from-primary to-primary/80 
+                           inline-block text-transparent bg-clip-text">
+              Viral Post
+            </span>{' '}
+            Would You Like to Create?
             <span className="absolute -top-1 -right-1 text-primary/20">
               <Sparkles className="w-6 h-6" />
             </span>
