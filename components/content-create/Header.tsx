@@ -48,7 +48,7 @@ export const Header = () => {
                        relative z-10"
           >
             What{' '}
-            <span className="bg-gradient-to-r from-primary to-primary/80 
+            <span className="bg-gradient-to-br from-primary to-secondary
                            inline-block text-transparent bg-clip-text">
               Viral Post
             </span>{' '}

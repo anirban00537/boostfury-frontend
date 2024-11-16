@@ -28,11 +28,11 @@ const config: Config = {
         ring: "#c0c0c0",
         foreground: "#000000",
         primary: {
-          DEFAULT: "#1769FF",
+          DEFAULT: "#4f46e5",
           foreground: "#ffffff",
         },
         secondary: {
-          DEFAULT: "#F1F3F5",
+          DEFAULT: "#2563eb",
           foreground: "#000000",
         },
         destructive: {
@@ -105,15 +105,16 @@ const config: Config = {
         },
         slide: {
           to: { transform: "translate(calc(100cqw - 100%), 0)" },
-        }
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        scroll: "scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite",
+        scroll:
+          "scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite",
         shimmer: "shimmer 8s infinite",
         "spin-around": "spin-around calc(var(--speed) * 2) infinite linear",
-        slide: "slide var(--speed) ease-in-out infinite alternate"
+        slide: "slide var(--speed) ease-in-out infinite alternate",
       },
     },
   },

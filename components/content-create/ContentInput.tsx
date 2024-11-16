@@ -277,14 +277,8 @@ export const ContentInput = ({
           <ShimmerButton
             onClick={onGenerate}
             disabled={isGeneratingContent || !isValidLength}
-            className={`
-              w-full py-4 text-sm font-medium rounded-xl transition-all duration-300
-           
-              ${isGeneratingContent ? "bg-gray-100" : ""}
-              text-white flex items-center justify-center gap-3
-              hover:shadow-lg active:shadow-md transform active:scale-[0.98]
-            `}
-            background="linear-gradient(to right, #1769FF, #1764FF)"
+            background="linear-gradient(145deg, #1769FF, #0747d1)"
+            className="w-full py-4" 
           >
             {isGeneratingContent ? (
               <>

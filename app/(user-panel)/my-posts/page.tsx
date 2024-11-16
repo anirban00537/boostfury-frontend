@@ -33,6 +33,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Link from "next/link";
+import { GradientButton } from "@/components/ui/gradient-button";
 
 interface PostConfig {
   id: PostTabId;
@@ -93,22 +94,22 @@ const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange }) => {
 
           <div className="flex items-center gap-3">
             <Link href="/compose">
-              <Button
+              <GradientButton
+                variant="primary"
                 size="sm"
-                className="gap-2 bg-primary text-white hover:bg-primary/90 border-primary"
+                leftIcon={<Plus className="w-4 h-4" />}
               >
-                <Plus className="w-4 h-4" />
                 Create New
-              </Button>
+              </GradientButton>
             </Link>
             <Link href="/ai-writer">
-              <Button
+              <GradientButton
+                variant="default"
                 size="sm"
-              className="gap-2 bg-primary text-white hover:bg-primary/90 border-primary"
-            >
-                <Plus className="w-4 h-4" />
+                leftIcon={<Plus className="w-4 h-4" />}
+              >
                 Viral Post Generator
-              </Button>
+              </GradientButton>
             </Link>
           </div>
         </div>

@@ -3,9 +3,10 @@ import React, { useState } from "react";
 import { createCheckout, getPackages } from "@/services/subscription.service";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
-import { Check } from "lucide-react";
+import { Check, Sparkles, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useQuery } from "react-query";
+import { cn } from "@/lib/utils";
 
 interface Package {
   id: string;
@@ -79,116 +80,157 @@ const Pricing = () => {
   const currentPackages = packages?.[selectedPlan] || [];
 
   return (
-    <div className="flex flex-col h-full bg-white text-gray-800 overflow-y-auto">
+    <div className="flex flex-col h-full bg-gradient-to-b from-white to-blue-50/30 text-gray-800 overflow-y-auto">
       {/* Header Section */}
-      <div className="flex-shrink-0 p-6 text-center">
-        <h2 className="text-3xl font-bold mb-2 text-gray-900">Pricing</h2>
-        <p className="text-gray-600 mb-6">
-          Choose the perfect plan for your needs
+      <div className="flex-shrink-0 p-12 text-center max-w-3xl mx-auto">
+        <h2 className="text-4xl font-bold mb-4 text-gray-900 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+          Choose Your Perfect Plan
+        </h2>
+        <p className="text-lg text-gray-600 mb-3 max-w-2xl mx-auto">
+          Get started with the features you need today and upgrade as you grow
+        </p>
+        <p className="text-sm text-gray-500 max-w-xl mx-auto">
+          All plans include core features like AI writing assistance, LinkedIn integration, and premium support
         </p>
 
         {/* Billing Toggle */}
-        <div className="flex justify-center mb-8">
-          <div className="bg-gray-100 p-1 rounded-lg inline-flex">
+        <div className="flex justify-center items-center gap-4 mt-8 mb-4">
+          <span className="text-sm font-medium text-gray-600">Monthly</span>
+          <div className="bg-white p-1 rounded-lg inline-flex shadow-[0_2px_8px_-3px_rgba(0,0,0,0.1)] border border-blue-100">
             <button
-              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+              className={`px-6 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
                 selectedPlan === "monthly"
-                  ? "bg-white text-gray-900 shadow"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-blue-50"
               }`}
               onClick={() => setSelectedPlan("monthly")}
             >
               Monthly
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+              className={`px-6 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
                 selectedPlan === "yearly"
-                  ? "bg-white text-gray-900 shadow"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-blue-50"
               }`}
               onClick={() => setSelectedPlan("yearly")}
             >
               Yearly
             </button>
           </div>
+          <span className="text-sm font-medium text-gray-600">Yearly</span>
         </div>
+        {selectedPlan === "yearly" && (
+          <p className="text-sm text-blue-600 font-medium mt-2">
+            Save up to 20% with yearly billing
+          </p>
+        )}
       </div>
 
       {/* Plans Grid */}
-      <div className="flex-grow flex items-start justify-center gap-6 px-4 pb-6">
+      <div className="flex-grow flex items-start justify-center gap-6 px-4 pb-12">
         {currentPackages.map((plan: Package) => (
           <div key={plan.id} className="w-full max-w-sm">
-            <div className="bg-white rounded-lg overflow-hidden shadow-lg border border-gray-200 h-full">
-              <div className="relative p-6">
+            <div className={cn(
+              "bg-white rounded-2xl overflow-hidden h-full border transition-all duration-200",
+              "hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.12)] hover:border-blue-200/60",
+              plan.id === "pro" 
+                ? "shadow-[0_4px_24px_-4px_rgba(0,0,0,0.08)] border-blue-200"
+                : "shadow-[0_4px_12px_-4px_rgba(0,0,0,0.05)] border-gray-200"
+            )}>
+              <div className="relative p-8">
                 {plan.id === "pro" && (
-                  <div className="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
-                    Most Popular
+                  <div className="absolute top-6 right-6">
+                    <span className="inline-flex items-center gap-1 bg-gradient-to-r from-blue-500 to-indigo-600 
+                                   text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                      <Sparkles className="w-3 h-3" />
+                      Most Popular
+                    </span>
                   </div>
                 )}
-                <h3 className="text-2xl font-bold mb-2 text-gray-900">
-                  {plan.name}
-                </h3>
-                <p className="text-sm text-gray-600 mb-4">{plan.description}</p>
+                
+                <div className="flex flex-col h-full">
+                  <h3 className="text-2xl font-bold mb-2 text-gray-900">
+                    {plan.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-6">{plan.description}</p>
 
-                <div className="text-center mb-6">
-                  <span className="text-4xl font-bold text-gray-900">
-                    ${getPrice(plan)}
-                  </span>
-                  <span className="text-gray-600">
-                    /{plan.billing.interval}
-                  </span>
+                  <div className="mb-6">
+                    <div className="flex items-baseline gap-1 justify-center">
+                      <span className="text-5xl font-bold text-gray-900">
+                        ${getPrice(plan)}
+                      </span>
+                      <span className="text-gray-500">
+                        /{plan.billing.interval}
+                      </span>
+                    </div>
+                    {selectedPlan === "yearly" && (
+                      <p className="text-xs text-green-600 text-center mt-2">
+                        Save ${getPrice(plan) * 2.4} yearly
+                      </p>
+                    )}
+                  </div>
+
+                  <button
+                    className={cn(
+                      "w-full py-3 px-4 rounded-xl font-medium transition-all duration-200",
+                      plan.id === "pro"
+                        ? "bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30"
+                        : "bg-gray-100 hover:bg-gray-200 text-gray-900"
+                    )}
+                    onClick={() => buyProduct(plan)}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Processing...
+                      </span>
+                    ) : (
+                      "Get Started"
+                    )}
+                  </button>
                 </div>
-
-                <button
-                  className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${
-                    plan.id === "pro"
-                      ? "bg-blue-500 hover:bg-blue-600 text-white"
-                      : "bg-gray-100 hover:bg-gray-200 text-gray-900"
-                  }`}
-                  onClick={() => buyProduct(plan)}
-                  disabled={loading}
-                >
-                  {loading ? "Processing..." : "Get Started"}
-                </button>
               </div>
 
-              <div className="bg-gray-50 p-6">
-                <h4 className="font-medium mb-3 text-gray-900">
-                  Features included:
+              <div className="bg-gray-50 p-8">
+                <h4 className="font-semibold mb-4 text-gray-900 flex items-center gap-2">
+                  <Check className="w-5 h-5 text-blue-500" />
+                  Everything you get:
                 </h4>
-                <ul className="space-y-2">
-                  <li className="flex items-center text-sm text-gray-700">
-                    <Check className="w-4 h-4 mr-2 text-blue-500 flex-shrink-0" />
-                    {plan.features.wordGeneration.description}
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-3 text-sm text-gray-700">
+                    <Check className="w-4 h-4 mt-0.5 text-blue-500 flex-shrink-0" />
+                    <span>{plan.features.wordGeneration.description}</span>
                   </li>
-                  <li className="flex items-center text-sm text-gray-700">
-                    <Check className="w-4 h-4 mr-2 text-blue-500 flex-shrink-0" />
-                    {plan.features.linkedin.accounts.description}
+                  <li className="flex items-start gap-3 text-sm text-gray-700">
+                    <Check className="w-4 h-4 mt-0.5 text-blue-500 flex-shrink-0" />
+                    <span>{plan.features.linkedin.accounts.description}</span>
                   </li>
-                  <li className="flex items-center text-sm text-gray-700">
-                    <Check className="w-4 h-4 mr-2 text-blue-500 flex-shrink-0" />
-                    {plan.features.linkedin.posts.description}
+                  <li className="flex items-start gap-3 text-sm text-gray-700">
+                    <Check className="w-4 h-4 mt-0.5 text-blue-500 flex-shrink-0" />
+                    <span>{plan.features.linkedin.posts.description}</span>
                   </li>
-                  <li className="flex items-center text-sm text-gray-700">
-                    <Check className="w-4 h-4 mr-2 text-blue-500 flex-shrink-0" />
-                    {plan.features.carousels.description}
+                  <li className="flex items-start gap-3 text-sm text-gray-700">
+                    <Check className="w-4 h-4 mt-0.5 text-blue-500 flex-shrink-0" />
+                    <span>{plan.features.carousels.description}</span>
                   </li>
                   {plan.features.core.map((feature, idx) => (
                     <li
                       key={idx}
-                      className="flex items-center text-sm text-gray-700"
+                      className="flex items-start gap-3 text-sm text-gray-700"
                     >
-                      <Check className="w-4 h-4 mr-2 text-blue-500 flex-shrink-0" />
-                      {feature}
+                      <Check className="w-4 h-4 mt-0.5 text-blue-500 flex-shrink-0" />
+                      <span>{feature}</span>
                     </li>
                   ))}
                   {plan.features.additional.map((feature, idx) => (
                     <li
                       key={idx}
-                      className="flex items-center text-sm text-gray-700"
+                      className="flex items-start gap-3 text-sm text-gray-700"
                     >
-                      <Check className="w-4 h-4 mr-2 text-blue-500 flex-shrink-0" />
-                      {feature}
+                      <Check className="w-4 h-4 mt-0.5 text-blue-500 flex-shrink-0" />
+                      <span>{feature}</span>
                     </li>
                   ))}
                 </ul>

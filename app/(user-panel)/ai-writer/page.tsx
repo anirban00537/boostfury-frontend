@@ -36,13 +36,51 @@ const ContentCreationTools: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative">
           {/* Left Column - Input Section */}
           <div className="max-w-[800px] w-full mx-auto lg:mx-0">
-            <div className="relative overflow-hidden rounded-2xl border border-gray-200/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-sm">
-              {/* Gradient Backgrounds */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white via-priamry/50 to-indigo-100/30" />
-              <div className="absolute inset-0 bg-white/50 backdrop-blur-[2px]" />
+            <div className="relative overflow-hidden rounded-2xl 
+                          border-t-gray-200/60 border-l-gray-200/60 
+                          border-r-gray-300/70 border-b-gray-400/70 
+                          shadow-[6px_6px_12px_rgba(0,0,0,0.1),_-2px_-2px_8px_rgba(255,255,255,0.9),_inset_1px_1px_1px_rgba(255,255,255,0.8),_inset_-1px_-1px_1px_rgba(0,0,0,0.05)] 
+                          backdrop-blur-sm 
+                          bg-gradient-to-br from-white/90 via-white/95 to-gray-100/90
+                          hover:shadow-[8px_8px_16px_rgba(0,0,0,0.12),_-3px_-3px_12px_rgba(255,255,255,0.95),_inset_1px_1px_1px_rgba(255,255,255,0.8),_inset_-1px_-1px_1px_rgba(0,0,0,0.05)]
+                          hover:translate-y-[-2px] hover:translate-x-[-1px]
+                          active:translate-y-[1px] active:translate-x-[0px]
+                          active:shadow-[4px_4px_8px_rgba(0,0,0,0.08),_-2px_-2px_8px_rgba(255,255,255,0.9),_inset_1px_1px_1px_rgba(255,255,255,0.8),_inset_-1px_-1px_1px_rgba(0,0,0,0.05)]
+                          transition-all duration-300">
+              {/* Main Background with 3D Gradient */}
+              <div className="absolute inset-0 bg-[linear-gradient(145deg,#ffffff,#f8fafc,#f1f5f9)]" />
+              
+              {/* Subtle Color Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-50/10 via-transparent to-indigo-50/10" />
+              
+              {/* Top Edge Highlight */}
+              <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-white to-transparent opacity-80" />
+              
+              {/* Left Edge Highlight */}
+              <div className="absolute inset-y-0 left-0 w-[2px] bg-gradient-to-b from-transparent via-white to-transparent opacity-80" />
+              
+              {/* Bottom Edge Shadow */}
+              <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-gray-400/20 to-transparent" />
+              
+              {/* Right Edge Shadow */}
+              <div className="absolute inset-y-0 right-0 w-[1px] bg-gradient-to-b from-transparent via-gray-400/20 to-transparent" />
+              
+              {/* Inner Glow */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/50 via-transparent to-gray-100/50 
+                            shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),inset_0_-1px_1px_rgba(0,0,0,0.05)]" />
+              
+              {/* Subtle Pattern Overlay */}
+              <div className="absolute inset-0 opacity-5"
+                   style={{
+                     backgroundImage: `radial-gradient(circle at 1px 1px, gray 1px, transparent 0)`,
+                     backgroundSize: '32px 32px'
+                   }} />
 
-              {/* Content */}
-              <div className="relative px-8 py-6">
+              {/* Inner Shadow Overlay */}
+              <div className="absolute inset-0 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]" />
+
+              {/* Content Container with Inner Padding Glow */}
+              <div className="relative px-8 py-6 bg-gradient-to-b from-transparent via-white/20 to-transparent">
                 <ContentInput
                   {...{
                     contentSource,
@@ -89,13 +127,51 @@ const ContentCreationTools: React.FC = () => {
                 transition={{ duration: 0.3, ease: "easeOut" }}
                 className="h-full"
               >
-                <div className="relative overflow-hidden rounded-2xl border border-gray-200/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-sm">
-                  {/* Gradient Backgrounds */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-white via-priamry/50 to-indigo-100/30" />
-                  <div className="absolute inset-0 bg-white/50 backdrop-blur-[2px]" />
+                <div className="relative overflow-hidden rounded-2xl 
+                              border-t-gray-200/60 border-l-gray-200/60 
+                              border-r-gray-300/70 border-b-gray-400/70 
+                              shadow-[6px_6px_12px_rgba(0,0,0,0.1),_-2px_-2px_8px_rgba(255,255,255,0.9),_inset_1px_1px_1px_rgba(255,255,255,0.8),_inset_-1px_-1px_1px_rgba(0,0,0,0.05)] 
+                              backdrop-blur-sm 
+                              bg-gradient-to-br from-white/90 via-white/95 to-gray-100/90
+                              hover:shadow-[8px_8px_16px_rgba(0,0,0,0.12),_-3px_-3px_12px_rgba(255,255,255,0.95),_inset_1px_1px_1px_rgba(255,255,255,0.8),_inset_-1px_-1px_1px_rgba(0,0,0,0.05)]
+                              hover:translate-y-[-2px] hover:translate-x-[-1px]
+                              active:translate-y-[1px] active:translate-x-[0px]
+                              active:shadow-[4px_4px_8px_rgba(0,0,0,0.08),_-2px_-2px_8px_rgba(255,255,255,0.9),_inset_1px_1px_1px_rgba(255,255,255,0.8),_inset_-1px_-1px_1px_rgba(0,0,0,0.05)]
+                              transition-all duration-300">
+                  {/* Main Background with 3D Gradient */}
+                  <div className="absolute inset-0 bg-[linear-gradient(145deg,#ffffff,#f8fafc,#f1f5f9)]" />
+                  
+                  {/* Subtle Color Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50/10 via-transparent to-indigo-50/10" />
+                  
+                  {/* Top Edge Highlight */}
+                  <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-white to-transparent opacity-80" />
+                  
+                  {/* Left Edge Highlight */}
+                  <div className="absolute inset-y-0 left-0 w-[2px] bg-gradient-to-b from-transparent via-white to-transparent opacity-80" />
+                  
+                  {/* Bottom Edge Shadow */}
+                  <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-gray-400/20 to-transparent" />
+                  
+                  {/* Right Edge Shadow */}
+                  <div className="absolute inset-y-0 right-0 w-[1px] bg-gradient-to-b from-transparent via-gray-400/20 to-transparent" />
+                  
+                  {/* Inner Glow */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/50 via-transparent to-gray-100/50 
+                                shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),inset_0_-1px_1px_rgba(0,0,0,0.05)]" />
+                  
+                  {/* Subtle Pattern Overlay */}
+                  <div className="absolute inset-0 opacity-5"
+                       style={{
+                         backgroundImage: `radial-gradient(circle at 1px 1px, gray 1px, transparent 0)`,
+                         backgroundSize: '32px 32px'
+                       }} />
 
-                  {/* Content */}
-                  <div className="relative px-8 py-6">
+                  {/* Inner Shadow Overlay */}
+                  <div className="absolute inset-0 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]" />
+
+                  {/* Content Container with Inner Padding Glow */}
+                  <div className="relative px-8 py-6 bg-gradient-to-b from-transparent via-white/20 to-transparent">
                     <AIWritingPreview
                       isGenerating={isGeneratingLinkedinPosts}
                       generatedPost={generatedPost}

@@ -21,6 +21,7 @@ import {
   Shield,
   HelpCircle,
   Key,
+  Sparkles,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -38,6 +39,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { GradientButton } from "@/components/ui/gradient-button";
+import { motion } from "framer-motion";
 
 // Define base interface for navigation items
 interface BaseNavigationItem {
@@ -127,66 +130,35 @@ const NavigationItem: React.FC<{
   isActive: boolean;
   hasSubItems?: boolean;
 }> = ({ item, isActive, hasSubItems }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const pathname = usePathname();
-  const isSettings = item.id === "settings";
-
   return (
-    <div>
-      {isSettings ? (
-        <div
-          onClick={() => setIsExpanded(!isExpanded)}
-          className={cn(
-            "flex items-center gap-x-3 px-3 py-2 rounded-lg cursor-pointer",
-            isActive || (isSettings && pathname.startsWith("/settings"))
-              ? "bg-[#EEF4FF] text-blue-600"
-              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-            "group"
-          )}
-        >
-          <item.icon
-            className={cn(
-              "h-4 w-4",
-              isActive
-                ? "text-blue-600"
-                : "text-gray-400 group-hover:text-gray-500"
-            )}
-          />
-          <span className="text-sm font-medium flex-1">{item.name}</span>
-        </div>
-      ) : (
-        <Link
-          href={item.href}
-          className={cn(
-            "flex items-center gap-x-3 px-3 py-2 rounded-lg cursor-pointer",
-            isActive
-              ? "bg-white/80 text-blue-600"
-              : "text-gray-600 hover:bg-white/60 hover:text-gray-900",
-            "group"
-          )}
-        >
-          <item.icon
-            className={cn(
-              "h-4 w-4",
-              isActive
-                ? "text-blue-600"
-                : "text-gray-400 group-hover:text-gray-500"
-            )}
-          />
-          <span className="text-sm font-medium flex-1">{item.name}</span>
-          {item.badge && (
-            <span
-              className={cn(
-                "px-2 py-0.5 text-xs font-medium rounded-full",
-                item.badgeColor || "bg-blue-100 text-blue-600"
-              )}
-            >
-              {item.badge}
-            </span>
-          )}
-        </Link>
+    <Link
+      href={item.href}
+      className={cn(
+        "flex items-center gap-x-3 px-3 py-2 rounded-lg cursor-pointer",
+        isActive
+          ? "bg-blue-100/80 text-gray-800"
+          : "text-gray-600 hover:bg-blue-50/80 hover:text-gray-800",
+        "group transition-all duration-200"
       )}
-    </div>
+    >
+      <item.icon
+        className={cn(
+          "h-4 w-4",
+          isActive ? "text-gray-700" : "text-gray-500 group-hover:text-gray-600"
+        )}
+      />
+      <span className="text-sm font-medium flex-1">{item.name}</span>
+      {item.badge && (
+        <span
+          className={cn(
+            "px-2 py-0.5 text-xs font-medium rounded-full",
+            item.badgeColor || "bg-blue-100 text-gray-700"
+          )}
+        >
+          {item.badge}
+        </span>
+      )}
+    </Link>
   );
 };
 
@@ -220,7 +192,9 @@ const Sidebar = () => {
   const wordUsage = {
     used: subscription.usage.words.used,
     limit: subscription.usage.words.limit,
-    percentage: (subscription.usage.words.used / subscription.usage.words.limit) * 100 || 0
+    percentage:
+      (subscription.usage.words.used / subscription.usage.words.limit) * 100 ||
+      0,
   };
 
   const formatTokens = (tokens: number) => {
@@ -245,12 +219,18 @@ const Sidebar = () => {
   }, [router]);
 
   return (
-    <div className="w-72 h-screen flex flex-col bg-gradient-to-br from-blue-100 via-blue-50 to-white border-r border-gray-200">
-      {/* Fixed Top Section */}
-      <div className="shrink-0">
+    <div className="w-72 h-screen flex flex-col 
+                    bg-gradient-to-b from-[#F1F5FF] via-[#F8FAFF] to-[#E8EFFF] 
+                    border-r border-blue-100/60
+                    shadow-[4px_0_24px_-2px_rgba(0,0,0,0.05)]
+                    relative z-10">
+      {/* Header Section */}
+      <div className="shrink-0 border-b border-blue-100/60 
+                      bg-white/80 backdrop-blur-sm 
+                      shadow-[0_1px_3px_-1px_rgba(0,0,0,0.02)]">
         {/* Logo */}
-        <div className="px-6 py-4 border-b border-gray-100">
-          <Link href="/" className="block">
+        <div className="px-6 py-4 border-b border-blue-100/60">
+          <Link href="/" className="block transition-opacity hover:opacity-80">
             <Image
               src="/logo.svg"
               height={28}
@@ -261,88 +241,140 @@ const Sidebar = () => {
           </Link>
         </div>
 
+        {/* Workspace Selector */}
         <div className="p-3">
           <Button
             variant="outline"
             onClick={() => setIsManageModalOpen(true)}
-            className="w-full h-9 justify-between text-gray-600 bg-gray-50/50 border border-gray-200 hover:bg-gray-100/50"
+            className="w-full h-9 justify-between text-gray-700 
+                     bg-gradient-to-b from-white to-blue-50/80
+                     border border-blue-200/60
+                     shadow-[0_1px_2px_rgba(59,130,246,0.05)]
+                     hover:bg-gradient-to-b hover:from-blue-50 hover:to-blue-100/50
+                     hover:border-blue-300/60
+                     transition-all duration-200"
           >
             <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-gray-400" />
-              <span className="text-sm">
+              <Users className="h-4 w-4 text-gray-500" />
+              <span className="text-sm font-medium">
                 {currentWorkspace?.name || "Select workspace..."}
               </span>
             </div>
-            <ChevronDown className="h-4 w-4 text-gray-400" />
+            <ChevronDown className="h-4 w-4 text-gray-500" />
           </Button>
         </div>
 
         {/* Create Button */}
-        <div className="px-3 pb-2">
-          <button
+        <div className="px-3 pb-3">
+          <GradientButton
+            variant="primary"
             onClick={() => router.push("/compose")}
-            className="w-full inline-flex items-center justify-between h-9 px-4 py-2 
-                     bg-primary hover:bg-primary/90 text-white rounded-md
-                     transition-colors duration-200 focus:outline-none focus:ring-2 
-                     focus:ring-primary/20 focus:ring-offset-1"
+            fullWidth
+            leftIcon={<Plus className="h-4 w-4" />}
+            kbd="Ctrl + N"
+            className="shadow-lg shadow-blue-500/10 hover:shadow-xl hover:shadow-blue-500/20"
           >
-            <div className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              <span>Create New</span>
-            </div>
-            <kbd className="text-xs bg-white/10 px-1.5 py-0.5 rounded">
-              Ctrl + N
-            </kbd>
-          </button>
+            Create New
+          </GradientButton>
         </div>
       </div>
 
-      {/* Navigation Section - Adjusted padding */}
-      <div className="h-auto flex-1 overflow-y-auto px-3 pb-0">
+      {/* Navigation Section */}
+      <div className="flex-1 overflow-y-auto px-3 py-2 
+                      bg-gradient-to-br from-white/50 via-blue-50/30 to-white/50
+                      scrollbar-thin scrollbar-track-blue-50 scrollbar-thumb-blue-200/50">
         <Navigation />
       </div>
 
-      {/* Fixed Bottom Section - Removed extra padding/spacing */}
-      <div className="shrink-0 border-t border-gray-100">
+      {/* Footer Section */}
+      <div className="shrink-0 border-t border-blue-100/60 
+                      bg-white/80 backdrop-blur-sm
+                      shadow-[0_-1px_3px_-1px_rgba(0,0,0,0.02)]">
         {/* AI Usage Section */}
-        <div className="px-4 py-2 border-b border-gray-100">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <Wand2 className="h-4 w-4 text-gray-400" />
-              <span className="text-sm font-medium text-gray-700">
-                AI Credits
+        {subscription.isActive && (
+          <div className="px-4 py-3 border-b border-blue-100/60">
+            <div className="flex items-center justify-between mb-2.5">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-50 to-blue-100/80 
+                              border border-blue-200/40 shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]
+                              flex items-center justify-center">
+                  <Wand2 className="h-3.5 w-3.5 text-gray-600" />
+                </div>
+                <span className="text-sm font-medium text-gray-800">AI Credits</span>
+              </div>
+              <span className="text-xs font-medium text-gray-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                {formatTokens(wordUsage.used)} / {formatTokens(wordUsage.limit)}
               </span>
             </div>
-            <span className="text-xs font-medium text-gray-500">
-              {formatTokens(wordUsage.used)} / {formatTokens(wordUsage.limit)}
-            </span>
+            <div className="w-full h-2 bg-gradient-to-r from-blue-50 to-blue-100/50 rounded-full overflow-hidden 
+                           border border-blue-200/20 shadow-[inset_0_1px_2px_rgba(59,130,246,0.1)]">
+              <div
+                className={cn(
+                  "h-full transition-all duration-300 ease-in-out bg-gradient-to-r",
+                  wordUsage.percentage > 80
+                    ? "from-red-500 to-red-600"
+                    : "from-blue-400 to-blue-500"
+                )}
+                style={{ width: `${wordUsage.percentage}%` }}
+              />
+            </div>
           </div>
-          <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-            <div
-              className={cn(
-                "h-full transition-all duration-300 ease-in-out",
-                wordUsage.percentage > 80 ? "bg-red-500" : "bg-primary"
-              )}
-              style={{
-                width: `${wordUsage.percentage}%`,
-              }}
-            />
-          </div>
-        </div>
+        )}
 
-        {/* Subscription Info - No additional padding needed */}
-        <div className="border-b border-gray-100">
+        {/* Upgrade Button - Restored and improved */}
+        {!subscription.isActive && (
+          <div className="px-4 py-3 border-b border-blue-100/60">
+            <Button
+              variant="default"
+              onClick={() => router.push('/pricing')}
+              className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white 
+                       h-9 font-medium
+                       shadow-[0_4px_12px_-2px_rgba(59,130,246,0.3)] 
+                       hover:shadow-[0_6px_16px_-2px_rgba(59,130,246,0.4)]
+                       transition-all duration-200"
+            >
+              <div className="flex items-center justify-center gap-2">
+                <Sparkles className="h-4 w-4" />
+                <span>Upgrade Now</span>
+                <motion.span
+                  className="ml-1"
+                  animate={{
+                    x: [0, 3, 0],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                  }}
+                >
+                  →
+                </motion.span>
+              </div>
+            </Button>
+          </div>
+        )}
+
+        {/* Subscription Info */}
+        <div className="border-b border-blue-100/60 hover:bg-blue-50/30 transition-colors">
           <SubscriptionInfo />
         </div>
 
-        {/* User Profile - Reduced padding */}
-        <div className="px-4 py-2.5 flex items-center justify-between group hover:bg-gray-50/80 transition-colors duration-150 cursor-pointer">
+        {/* User Profile */}
+        <div className="px-4 py-3 flex items-center justify-between 
+                      group hover:bg-gradient-to-r hover:from-blue-50/80 hover:to-blue-100/60 
+                      transition-all duration-200 cursor-pointer
+                      rounded-b-lg">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 group-hover:bg-gray-200 transition-colors duration-150">
+            <div className="w-9 h-9 rounded-full 
+                          bg-gradient-to-br from-blue-50 to-blue-100
+                          border border-blue-200/40 
+                          shadow-[0_2px_4px_-1px_rgba(0,0,0,0.03)]
+                          flex items-center justify-center text-gray-700 
+                          group-hover:shadow-[0_3px_6px_-2px_rgba(0,0,0,0.05)]
+                          transition-all duration-200">
               {userinfo?.first_name?.charAt(0) || "U"}
             </div>
             <div className="flex flex-col">
-              <span className="text-sm font-medium text-gray-900">
+              <span className="text-sm font-medium text-gray-800">
                 {userinfo?.first_name || "User"}
               </span>
               <span className="text-xs text-gray-500">
@@ -350,7 +382,8 @@ const Sidebar = () => {
               </span>
             </div>
           </div>
-          <ChevronDown className="h-4 w-4 text-gray-400 group-hover:text-gray-500 transition-colors duration-150" />
+          <ChevronDown className="h-4 w-4 text-gray-400 group-hover:text-gray-600 
+                                 transition-colors duration-200" />
         </div>
       </div>
 
