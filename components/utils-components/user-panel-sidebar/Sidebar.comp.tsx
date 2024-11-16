@@ -41,6 +41,8 @@ import {
 } from "@/components/ui/accordion";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { motion } from "framer-motion";
+import { useContentPosting } from "@/hooks/useContent";
+import { toast } from "react-hot-toast";
 
 // Define base interface for navigation items
 interface BaseNavigationItem {
@@ -188,6 +190,33 @@ const Sidebar = () => {
   );
   const [isManageModalOpen, setIsManageModalOpen] = useState(false);
 
+  const { handleCreateDraftFromGenerated } = useContentPosting();
+
+  const handleCreateNew = async () => {
+    try {
+      // Create a blank draft
+      const draftId = await handleCreateDraftFromGenerated({
+        content: "", // Blank content
+        postType: "text",
+        workspaceId: currentWorkspace?.id,
+        linkedInProfileId: null,
+        imageUrls: [],
+        videoUrl: "",
+        documentUrl: "",
+        hashtags: [],
+        mentions: [],
+      });
+
+      if (draftId) {
+        // Redirect to compose with the new draft ID
+        router.push(`/compose?draft_id=${draftId}`);
+      }
+    } catch (error) {
+      console.error("Error creating new draft:", error);
+      toast.error("Failed to create new draft");
+    }
+  };
+
   // Get word usage from the new subscription structure
   const wordUsage = {
     used: subscription.usage.words.used,
@@ -268,7 +297,7 @@ const Sidebar = () => {
         <div className="px-3 pb-3">
           <GradientButton
             variant="primary"
-            onClick={() => router.push("/compose")}
+            onClick={handleCreateNew}
             fullWidth
             leftIcon={<Plus className="h-4 w-4" />}
             kbd="Ctrl + N"

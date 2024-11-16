@@ -182,6 +182,7 @@ const ContentManager = () => {
     handleTabChange,
     pagination,
     handlePageChange,
+    handleDeletePost
   } = useContentManagement();
 
   // Handle URL query params for active tab
@@ -218,6 +219,9 @@ const ContentManager = () => {
     );
     if (confirmed) {
       console.log("Deleting post:", postId);
+    }
+    if (confirmed) {
+      await handleDeletePost(postId);
     }
   };
 

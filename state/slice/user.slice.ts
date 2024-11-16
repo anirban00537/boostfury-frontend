@@ -10,7 +10,7 @@ const initialState: UserState = {
   currentWorkspace: null,
   linkedinProfiles: [],
   subscription: {
-    isActive: false,
+    isActive: true,
     subscription: null,
     usage: {
       words: {

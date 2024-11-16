@@ -181,7 +181,7 @@ export const ContentInput = ({
               value={contentSource === "plain-prompt" ? content : undefined}
               onChange={onTextChange}
               className="relative w-full px-5 py-4 h-[120px] max-h-[200px]
-                       resize-none outline-none bg-transparent
+                       resize-none outline-none border  bg-transparent
                        placeholder:text-gray-400 text-gray-600 text-sm
                        transition-all duration-200
                        overflow-y-auto leading-relaxed"
@@ -277,8 +277,8 @@ export const ContentInput = ({
           <ShimmerButton
             onClick={onGenerate}
             disabled={isGeneratingContent || !isValidLength}
-            background="linear-gradient(145deg, #1769FF, #0747d1)"
-            className="w-full py-4" 
+            background="linear-gradient(145deg, #4f46e5, #2563eb)"
+            className="w-full py-4"
           >
             {isGeneratingContent ? (
               <>

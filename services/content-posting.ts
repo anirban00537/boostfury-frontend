@@ -35,3 +35,8 @@ export const schedulePost = async (postId: string, scheduleData: SchedulePostTyp
   );
   return response.data;
 };
+
+export const deletePost = async (postId: string) => {
+  const response = await request.delete(`/content-posting/delete-post/${postId}`);
+  return response.data;
+};

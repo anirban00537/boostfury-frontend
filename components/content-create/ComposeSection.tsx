@@ -118,11 +118,10 @@ export const ComposeSection = ({
   };
 
   return (
-    <div className="flex flex-col bg-white/80 backdrop-blur-sm rounded-2xl overflow-hidden 
+    <div className="flex flex-col bg-gray-50/95 backdrop-blur-sm rounded-2xl overflow-hidden 
                     border border-primary/10 shadow-[0_8px_40px_rgb(var(--primary-rgb),0.08)]">
       {/* Editor Header */}
-      <div className="px-6 py-4 border-b border-primary/5 
-                    bg-gradient-to-r from-primary/5 via-white to-primary/5">
+      <div className="px-6 py-4 border-b border-primary/5 bg-gray-50/95">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
@@ -153,7 +152,7 @@ export const ComposeSection = ({
 
       {/* Editor Toolbar */}
       <div className="px-6 py-3 border-b border-primary/5 flex items-center justify-between 
-                    bg-gradient-to-b from-white to-primary/5">
+                    bg-gray-50/95">
         <div className="flex items-center gap-2">
           {/* Media Tools */}
           <div className="flex items-center gap-1 p-1 bg-white/80 rounded-lg 
@@ -260,7 +259,7 @@ export const ComposeSection = ({
       </div>
 
       {/* Editor Content */}
-      <div className="flex-grow relative bg-gradient-to-br from-white via-primary/5 to-primary/5">
+      <div className="flex-grow relative bg-gray-50/95">
         <textarea
           ref={textareaRef}
           value={content}
@@ -292,8 +291,7 @@ export const ComposeSection = ({
 
       {/* Image Preview Section */}
       {imageUrls.length > 0 && (
-        <div className="px-6 py-4 border-t border-primary/5 
-                     bg-gradient-to-b from-white to-primary/5">
+        <div className="px-6 py-4 border-t border-primary/5 bg-gray-50/95">
           <div className="flex flex-wrap gap-3">
             {imageUrls.map((url, index) => (
               <div key={index} className="relative group">
@@ -321,8 +319,7 @@ export const ComposeSection = ({
       )}
 
       {/* Editor Footer */}
-      <div className="px-6 py-4 border-t border-primary/5 
-                   bg-gradient-to-b from-primary/5 to-white backdrop-blur-sm">
+      <div className="px-6 py-4 border-t border-primary/5 bg-gray-50/95 backdrop-blur-sm">
         <div className="flex items-center justify-between">
           <Button
             variant="outline"
@@ -340,7 +337,7 @@ export const ComposeSection = ({
             variant="default"
             size="sm"
             className={cn(
-              "h-9 px-4 gap-2 bg-primary text-white hover:bg-primary/90 shadow-md",
+              "h-9 px-4 gap-2 bg-gradient-to-br from-primary to-primary text-white hover:bg-primary/90 shadow-md",
               (!selectedLinkedInProfile ||
                 characterCount > CHAR_LIMIT ||
                 !content.trim() ||

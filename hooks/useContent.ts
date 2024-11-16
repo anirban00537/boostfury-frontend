@@ -5,6 +5,7 @@ import {
   getDraftPostDetails,
   postNow,
   schedulePost,
+  deletePost,
 } from "@/services/content-posting";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
@@ -239,6 +240,10 @@ export const useContentPosting = () => {
       )
         return;
 
+      console.log(
+        draftId,
+        "draftIddraftIddraftIddraftIddraftIddraftIddraftIddraftIddraftIddraftId"
+      );
       try {
         setIsAutoSaving(true);
         const response = await createUpdateDraftMutation({
@@ -370,11 +375,6 @@ export const useContentPosting = () => {
     }: CreateDraftParams) => {
       if (!workspaceId) {
         toast.error("Please select a workspace first");
-        return null;
-      }
-
-      if (!content.trim()) {
-        toast.error("Please add some content first");
         return null;
       }
 
@@ -533,7 +533,29 @@ export const useContentManagement = () => {
       },
     }
   );
+  const { mutateAsync: deletePostMutation, isLoading: isDeleting } =
+    useMutation({
+      mutationFn: (postId: string) => deletePost(postId),
+      onSuccess: (response) => {
+        processApiResponse(response);
+      },
+      onError: (error: Error) => {
+        toast.error(`Error deleting post`);
+        console.error("Deleting error:", error);
+      },
+    });
 
+  const handleDeletePost = useCallback(
+    async (postId: string) => {
+      try {
+        await deletePostMutation(postId);
+        refetchPosts();
+      } catch (error) {
+        console.error("Error deleting post:", error);
+      }
+    },
+    [deletePostMutation]
+  );
   // Helper function to organize posts by date
   const organizePostsByDate = (posts: Post[]): PostGroup[] => {
     if (!Array.isArray(posts)) return [];
@@ -586,5 +608,6 @@ export const useContentManagement = () => {
     refetchPosts,
     pagination,
     handlePageChange,
+    handleDeletePost,
   };
 };

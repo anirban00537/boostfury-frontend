@@ -20,7 +20,6 @@ const ContentCreationTools: React.FC = () => {
     handleLinkedInTextChange,
     postTone,
     setPostTone,
-  
   } = useGenerateLinkedInPosts();
 
   const handleLocalTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -29,7 +28,7 @@ const ContentCreationTools: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen ">
       <Header />
 
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6">
@@ -37,50 +36,25 @@ const ContentCreationTools: React.FC = () => {
           {/* Left Column - Input Section */}
           <div className="max-w-[800px] w-full mx-auto lg:mx-0">
             <div className="relative overflow-hidden rounded-2xl 
-                          border-t-gray-200/60 border-l-gray-200/60 
-                          border-r-gray-300/70 border-b-gray-400/70 
-                          shadow-[6px_6px_12px_rgba(0,0,0,0.1),_-2px_-2px_8px_rgba(255,255,255,0.9),_inset_1px_1px_1px_rgba(255,255,255,0.8),_inset_-1px_-1px_1px_rgba(0,0,0,0.05)] 
-                          backdrop-blur-sm 
-                          bg-gradient-to-br from-white/90 via-white/95 to-gray-100/90
-                          hover:shadow-[8px_8px_16px_rgba(0,0,0,0.12),_-3px_-3px_12px_rgba(255,255,255,0.95),_inset_1px_1px_1px_rgba(255,255,255,0.8),_inset_-1px_-1px_1px_rgba(0,0,0,0.05)]
-                          hover:translate-y-[-2px] hover:translate-x-[-1px]
-                          active:translate-y-[1px] active:translate-x-[0px]
-                          active:shadow-[4px_4px_8px_rgba(0,0,0,0.08),_-2px_-2px_8px_rgba(255,255,255,0.9),_inset_1px_1px_1px_rgba(255,255,255,0.8),_inset_-1px_-1px_1px_rgba(0,0,0,0.05)]
+                          border border-gray-200
+                          bg-white
+                          shadow-[0_8px_24px_rgba(0,0,0,0.08)]
+                          hover:shadow-[0_16px_32px_rgba(0,0,0,0.12),0_4px_8px_rgba(0,0,0,0.02)]
+                          hover:translate-y-[-2px]
+                          active:translate-y-[1px]
                           transition-all duration-300">
-              {/* Main Background with 3D Gradient */}
-              <div className="absolute inset-0 bg-[linear-gradient(145deg,#ffffff,#f8fafc,#f1f5f9)]" />
+              {/* Card Header Accent */}
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
               
-              {/* Subtle Color Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-50/10 via-transparent to-indigo-50/10" />
-              
-              {/* Top Edge Highlight */}
-              <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-white to-transparent opacity-80" />
-              
-              {/* Left Edge Highlight */}
-              <div className="absolute inset-y-0 left-0 w-[2px] bg-gradient-to-b from-transparent via-white to-transparent opacity-80" />
-              
-              {/* Bottom Edge Shadow */}
-              <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-gray-400/20 to-transparent" />
-              
-              {/* Right Edge Shadow */}
-              <div className="absolute inset-y-0 right-0 w-[1px] bg-gradient-to-b from-transparent via-gray-400/20 to-transparent" />
-              
-              {/* Inner Glow */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/50 via-transparent to-gray-100/50 
-                            shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),inset_0_-1px_1px_rgba(0,0,0,0.05)]" />
-              
-              {/* Subtle Pattern Overlay */}
-              <div className="absolute inset-0 opacity-5"
+              {/* Subtle Pattern */}
+              <div className="absolute inset-0 opacity-[0.02]"
                    style={{
                      backgroundImage: `radial-gradient(circle at 1px 1px, gray 1px, transparent 0)`,
-                     backgroundSize: '32px 32px'
+                     backgroundSize: '24px 24px'
                    }} />
 
-              {/* Inner Shadow Overlay */}
-              <div className="absolute inset-0 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]" />
-
-              {/* Content Container with Inner Padding Glow */}
-              <div className="relative px-8 py-6 bg-gradient-to-b from-transparent via-white/20 to-transparent">
+              {/* Content */}
+              <div className="relative px-8 py-6">
                 <ContentInput
                   {...{
                     contentSource,
@@ -103,16 +77,17 @@ const ContentCreationTools: React.FC = () => {
           {/* Center Separator */}
           <div className="hidden lg:block absolute right-1/2 top-1/2 -translate-y-1/2 z-10">
             <motion.div
-              className="w-14 h-14 rounded-full bg-gradient-to-br from-white to-priamry shadow-md 
-                       flex items-center justify-center transform -translate-x-1/2 backdrop-blur-sm"
+              className="w-16 h-16 rounded-full bg-white shadow-[0_8px_32px_rgba(0,0,0,0.12)] 
+                       flex items-center justify-center transform -translate-x-1/2 
+                       border-4 border-white"
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
             >
               <div
-                className="w-10 h-10 rounded-full bg-gradient-to-br from-primary via-primary to-primary 
-                            flex items-center justify-center shadow-md"
+                className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/80 
+                         flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)]"
               >
-                <Sparkles className="w-5 h-5 text-white" />
+                <Sparkles className="w-6 h-6 text-white" />
               </div>
             </motion.div>
           </div>
@@ -128,50 +103,25 @@ const ContentCreationTools: React.FC = () => {
                 className="h-full"
               >
                 <div className="relative overflow-hidden rounded-2xl 
-                              border-t-gray-200/60 border-l-gray-200/60 
-                              border-r-gray-300/70 border-b-gray-400/70 
-                              shadow-[6px_6px_12px_rgba(0,0,0,0.1),_-2px_-2px_8px_rgba(255,255,255,0.9),_inset_1px_1px_1px_rgba(255,255,255,0.8),_inset_-1px_-1px_1px_rgba(0,0,0,0.05)] 
-                              backdrop-blur-sm 
-                              bg-gradient-to-br from-white/90 via-white/95 to-gray-100/90
-                              hover:shadow-[8px_8px_16px_rgba(0,0,0,0.12),_-3px_-3px_12px_rgba(255,255,255,0.95),_inset_1px_1px_1px_rgba(255,255,255,0.8),_inset_-1px_-1px_1px_rgba(0,0,0,0.05)]
-                              hover:translate-y-[-2px] hover:translate-x-[-1px]
-                              active:translate-y-[1px] active:translate-x-[0px]
-                              active:shadow-[4px_4px_8px_rgba(0,0,0,0.08),_-2px_-2px_8px_rgba(255,255,255,0.9),_inset_1px_1px_1px_rgba(255,255,255,0.8),_inset_-1px_-1px_1px_rgba(0,0,0,0.05)]
+                              border border-gray-200
+                              bg-white
+                              shadow-[0_8px_24px_rgba(0,0,0,0.08)]
+                              hover:shadow-[0_16px_32px_rgba(0,0,0,0.12),0_4px_8px_rgba(0,0,0,0.02)]
+                              hover:translate-y-[-2px]
+                              active:translate-y-[1px]
                               transition-all duration-300">
-                  {/* Main Background with 3D Gradient */}
-                  <div className="absolute inset-0 bg-[linear-gradient(145deg,#ffffff,#f8fafc,#f1f5f9)]" />
+                  {/* Card Header Accent */}
+                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
                   
-                  {/* Subtle Color Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50/10 via-transparent to-indigo-50/10" />
-                  
-                  {/* Top Edge Highlight */}
-                  <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-white to-transparent opacity-80" />
-                  
-                  {/* Left Edge Highlight */}
-                  <div className="absolute inset-y-0 left-0 w-[2px] bg-gradient-to-b from-transparent via-white to-transparent opacity-80" />
-                  
-                  {/* Bottom Edge Shadow */}
-                  <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-gray-400/20 to-transparent" />
-                  
-                  {/* Right Edge Shadow */}
-                  <div className="absolute inset-y-0 right-0 w-[1px] bg-gradient-to-b from-transparent via-gray-400/20 to-transparent" />
-                  
-                  {/* Inner Glow */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/50 via-transparent to-gray-100/50 
-                                shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),inset_0_-1px_1px_rgba(0,0,0,0.05)]" />
-                  
-                  {/* Subtle Pattern Overlay */}
-                  <div className="absolute inset-0 opacity-5"
+                  {/* Subtle Pattern */}
+                  <div className="absolute inset-0 opacity-[0.02]"
                        style={{
                          backgroundImage: `radial-gradient(circle at 1px 1px, gray 1px, transparent 0)`,
-                         backgroundSize: '32px 32px'
+                         backgroundSize: '24px 24px'
                        }} />
 
-                  {/* Inner Shadow Overlay */}
-                  <div className="absolute inset-0 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]" />
-
-                  {/* Content Container with Inner Padding Glow */}
-                  <div className="relative px-8 py-6 bg-gradient-to-b from-transparent via-white/20 to-transparent">
+                  {/* Content */}
+                  <div className="relative px-8 py-6">
                     <AIWritingPreview
                       isGenerating={isGeneratingLinkedinPosts}
                       generatedPost={generatedPost}
