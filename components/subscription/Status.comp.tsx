@@ -45,14 +45,16 @@ const SubscriptionInfo = () => {
             {/* Left Section */}
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className={cn(
-                  "w-10 h-10 rounded-lg flex items-center justify-center shadow-lg",
-                  daysRemaining <= 0
-                    ? "bg-gradient-to-br from-red-500 to-red-600 shadow-red-500/20"
-                    : daysRemaining <= 7
-                    ? "bg-gradient-to-br from-orange-500 to-orange-600 shadow-orange-500/20"
-                    : "bg-gradient-to-br from-blue-500 to-indigo-600 shadow-blue-500/20"
-                )}>
+                <div
+                  className={cn(
+                    "w-10 h-10 rounded-lg flex items-center justify-center shadow-lg",
+                    daysRemaining <= 0
+                      ? "bg-gradient-to-br from-red-500 to-red-600 shadow-red-500/20"
+                      : daysRemaining <= 7
+                      ? "bg-gradient-to-br from-orange-500 to-orange-600 shadow-orange-500/20"
+                      : "bg-gradient-to-br from-blue-500 to-indigo-600 shadow-blue-500/20"
+                  )}
+                >
                   <DiamondSVG className="w-5 h-5 text-white" />
                   <motion.div
                     className={cn(
@@ -80,31 +82,33 @@ const SubscriptionInfo = () => {
                     {plan}
                   </span>
                   {isTrial && (
-                    <span className="text-[10px] px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 
-                                  text-white rounded-full font-medium tracking-wide shadow-sm">
+                    <span
+                      className="text-[10px] px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 
+                                  text-white rounded-full font-medium tracking-wide shadow-sm"
+                    >
                       TRIAL
                     </span>
                   )}
-                  {daysRemaining <= 0 && (
-                    <span className="text-[10px] px-1.5 py-0.5 bg-gradient-to-r from-red-500 to-red-600 
-                                  text-white rounded-full font-medium tracking-wide shadow-sm">
-                      EXPIRED
-                    </span>
-                  )}
+
                   {!isTrial && daysRemaining <= 7 && daysRemaining > 0 && (
-                    <span className="text-[10px] px-1.5 py-0.5 bg-gradient-to-r from-orange-500 to-orange-600 
-                                  text-white rounded-full font-medium tracking-wide shadow-sm">
+                    <span
+                      className="text-[10px] px-1.5 py-0.5 bg-gradient-to-r from-orange-500 to-orange-600 
+                                  text-white rounded-full font-medium tracking-wide shadow-sm"
+                    >
                       EXPIRING SOON
                     </span>
                   )}
                 </div>
                 <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
-                  <span>{daysRemaining > 0 
-                    ? `Valid until ${expiryFormatted}` 
-                    : "Subscription expired"}</span>
+                  <span>
+                    {daysRemaining > 0
+                      ? `Valid until ${expiryFormatted}`
+                      : "Subscription expired"}
+                  </span>
                   {daysRemaining > 0 && (
                     <span className="px-1.5 py-0.5 bg-gray-100 rounded-full text-[10px]">
-                      {daysRemaining} {daysRemaining === 1 ? "day" : "days"} left
+                      {daysRemaining} {daysRemaining === 1 ? "day" : "days"}{" "}
+                      left
                     </span>
                   )}
                 </div>
@@ -123,9 +127,7 @@ const SubscriptionInfo = () => {
             </div>
 
             {/* Status Details */}
-            <div className="space-y-3">
-              {/* ... Status items ... */}
-            </div>
+            <div className="space-y-3">{/* ... Status items ... */}</div>
 
             {/* Status Messages */}
             {daysRemaining <= 7 && daysRemaining > 0 && (
@@ -154,7 +156,7 @@ const SubscriptionInfo = () => {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    router.push('/pricing');
+                    router.push("/pricing");
                   }}
                 >
                   <span className="flex items-center justify-center gap-2">

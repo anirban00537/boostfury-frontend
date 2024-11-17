@@ -248,15 +248,19 @@ const Sidebar = () => {
   }, [router]);
 
   return (
-    <div className="w-72 h-screen flex flex-col 
+    <div
+      className="w-72 h-screen flex flex-col 
                     bg-gradient-to-b from-[#F1F5FF] via-[#F8FAFF] to-[#E8EFFF] 
                     border-r border-blue-100/60
                     shadow-[4px_0_24px_-2px_rgba(0,0,0,0.05)]
-                    relative z-10">
+                    relative z-10"
+    >
       {/* Header Section */}
-      <div className="shrink-0 border-b border-blue-100/60 
+      <div
+        className="shrink-0 border-b border-blue-100/60 
                       bg-white/80 backdrop-blur-sm 
-                      shadow-[0_1px_3px_-1px_rgba(0,0,0,0.02)]">
+                      shadow-[0_1px_3px_-1px_rgba(0,0,0,0.02)]"
+      >
         {/* Logo */}
         <div className="px-6 py-4 border-b border-blue-100/60">
           <Link href="/" className="block transition-opacity hover:opacity-80">
@@ -309,34 +313,44 @@ const Sidebar = () => {
       </div>
 
       {/* Navigation Section */}
-      <div className="flex-1 overflow-y-auto px-3 py-2 
+      <div
+        className="flex-1 overflow-y-auto px-3 py-2 
                       bg-gradient-to-br from-white/50 via-blue-50/30 to-white/50
-                      scrollbar-thin scrollbar-track-blue-50 scrollbar-thumb-blue-200/50">
+                      scrollbar-thin scrollbar-track-blue-50 scrollbar-thumb-blue-200/50"
+      >
         <Navigation />
       </div>
 
       {/* Footer Section */}
-      <div className="shrink-0 border-t border-blue-100/60 
+      <div
+        className="shrink-0 border-t border-blue-100/60 
                       bg-white/80 backdrop-blur-sm
-                      shadow-[0_-1px_3px_-1px_rgba(0,0,0,0.02)]">
+                      shadow-[0_-1px_3px_-1px_rgba(0,0,0,0.02)]"
+      >
         {/* AI Usage Section */}
         {subscription.isActive && (
           <div className="px-4 py-3 border-b border-blue-100/60">
             <div className="flex items-center justify-between mb-2.5">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-50 to-blue-100/80 
+                <div
+                  className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-50 to-blue-100/80 
                               border border-blue-200/40 shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]
-                              flex items-center justify-center">
+                              flex items-center justify-center"
+                >
                   <Wand2 className="h-3.5 w-3.5 text-gray-600" />
                 </div>
-                <span className="text-sm font-medium text-gray-800">AI Credits</span>
+                <span className="text-sm font-medium text-gray-800">
+                  AI Credits
+                </span>
               </div>
               <span className="text-xs font-medium text-gray-600 bg-blue-50 px-2 py-0.5 rounded-full">
                 {formatTokens(wordUsage.used)} / {formatTokens(wordUsage.limit)}
               </span>
             </div>
-            <div className="w-full h-2 bg-gradient-to-r from-blue-50 to-blue-100/50 rounded-full overflow-hidden 
-                           border border-blue-200/20 shadow-[inset_0_1px_2px_rgba(59,130,246,0.1)]">
+            <div
+              className="w-full h-2 bg-gradient-to-r from-blue-50 to-blue-100/50 rounded-full overflow-hidden 
+                           border border-blue-200/20 shadow-[inset_0_1px_2px_rgba(59,130,246,0.1)]"
+            >
               <div
                 className={cn(
                   "h-full transition-all duration-300 ease-in-out bg-gradient-to-r",
@@ -349,13 +363,12 @@ const Sidebar = () => {
             </div>
           </div>
         )}
-
         {/* Upgrade Button - Restored and improved */}
         {!subscription.isActive && (
           <div className="px-4 py-3 border-b border-blue-100/60">
             <Button
               variant="default"
-              onClick={() => router.push('/pricing')}
+              onClick={() => router.push("/pricing")}
               className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white 
                        h-9 font-medium
                        shadow-[0_4px_12px_-2px_rgba(59,130,246,0.3)] 
@@ -381,25 +394,29 @@ const Sidebar = () => {
             </Button>
           </div>
         )}
-
         {/* Subscription Info */}
-        <div className="border-b border-blue-100/60 hover:bg-blue-50/30 transition-colors">
-          <SubscriptionInfo />
-        </div>
-
+        {subscription.isActive && (
+          <div className="border-b border-blue-100/60 hover:bg-blue-50/30 transition-colors">
+            <SubscriptionInfo />
+          </div>
+        )}
         {/* User Profile */}
-        <div className="px-4 py-3 flex items-center justify-between 
+        <div
+          className="px-4 py-3 flex items-center justify-between 
                       group hover:bg-gradient-to-r hover:from-blue-50/80 hover:to-blue-100/60 
                       transition-all duration-200 cursor-pointer
-                      rounded-b-lg">
+                      rounded-b-lg"
+        >
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full 
+            <div
+              className="w-9 h-9 rounded-full 
                           bg-gradient-to-br from-blue-50 to-blue-100
                           border border-blue-200/40 
                           shadow-[0_2px_4px_-1px_rgba(0,0,0,0.03)]
                           flex items-center justify-center text-gray-700 
                           group-hover:shadow-[0_3px_6px_-2px_rgba(0,0,0,0.05)]
-                          transition-all duration-200">
+                          transition-all duration-200"
+            >
               {userinfo?.first_name?.charAt(0) || "U"}
             </div>
             <div className="flex flex-col">
@@ -411,8 +428,10 @@ const Sidebar = () => {
               </span>
             </div>
           </div>
-          <ChevronDown className="h-4 w-4 text-gray-400 group-hover:text-gray-600 
-                                 transition-colors duration-200" />
+          <ChevronDown
+            className="h-4 w-4 text-gray-400 group-hover:text-gray-600 
+                                 transition-colors duration-200"
+          />
         </div>
       </div>
 
