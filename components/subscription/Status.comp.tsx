@@ -20,7 +20,7 @@ const SubscriptionInfo = () => {
   const subscriptionData = subscription.subscription;
   const plan = subscriptionData?.package?.name || "Free Plan";
   const expiresAt = subscriptionData?.endDate;
-  const expiryFormatted = moment(expiresAt).format("MMM DD, YYYY");
+  const expiryFormatted = moment.utc(expiresAt).format("MMM DD, YYYY");
 
   return (
     <TooltipProvider>
