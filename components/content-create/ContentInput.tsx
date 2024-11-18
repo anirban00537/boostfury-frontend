@@ -18,6 +18,7 @@ import {
   MessagesSquare,
   FileText,
   Zap,
+  Wand2,
 } from "lucide-react";
 import ShimmerButton from "@/components/magicui/Shimmer-Button.comp";
 import {
@@ -25,6 +26,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { useCallback } from "react";
+import { toast } from "react-hot-toast";
 
 interface ContentInputProps {
   contentSource: string;
@@ -144,6 +148,17 @@ export const ContentInput = ({
   const charCount = content.length;
   const isValidLength = charCount >= MIN_CHARS;
 
+  const handleGenerateTopic = useCallback(async () => {
+    try {
+      // Add your topic generation logic here
+      toast.loading("Generating topic suggestion...");
+      // Example: const topic = await generateTopic();
+      // setContent(topic);
+    } catch (error) {
+      toast.error("Failed to generate topic");
+    }
+  }, []);
+
   return (
     <div className="space-y-8">
       {/* Content Input Section */}
@@ -160,6 +175,18 @@ export const ContentInput = ({
               <p className="text-sm text-gray-500">Write about your ideas</p>
             </div>
           </div>
+          
+          {/* Add Generate Topic Button */}
+          <Button
+            onClick={handleGenerateTopic}
+            variant="outline"
+            className="h-9 px-3 rounded-xl border border-primary/20 text-primary 
+                     hover:bg-primary hover:text-white hover:border-primary
+                     transition-all duration-200"
+          >
+            <Wand2 className="h-4 w-4 mr-2" />
+            Generate Topic
+          </Button>
         </div>
 
         {/* Enhanced Content Input */}
