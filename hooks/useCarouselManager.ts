@@ -63,7 +63,7 @@ export const useCarouselManager = () => {
     refetch: refetchCarousels,
   } = useQuery<CarouselResponse>(
     ["carousels", currentPage, pageSize, currentWorkspace?.id],
-    () => getCarousels(currentPage, pageSize, currentWorkspace?.id || 0),
+    () => getCarousels(currentPage, pageSize, currentWorkspace?.id || ""),
     {
       enabled: loggedin && !!currentWorkspace,
       onSuccess: (response) => {},
@@ -133,7 +133,7 @@ export const useCarouselManager = () => {
     Error
   >(
     ["carouselDetails", carouselId],
-    () => getCarouselDetails(carouselId!, currentWorkspace?.id || 0),
+    () => getCarouselDetails(carouselId!, currentWorkspace?.id || ""),
     {
       enabled: !!carouselId && !!currentWorkspace,
       onSuccess: (data: any) => {
