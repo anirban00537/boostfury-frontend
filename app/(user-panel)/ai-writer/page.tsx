@@ -38,16 +38,9 @@ const ContentCreationTools: React.FC = () => {
             <div
               className="relative overflow-hidden rounded-2xl 
                           border border-gray-200
-                          bg-white
-                          shadow-[0_8px_24px_rgba(0,0,0,0.08)]
-                          hover:shadow-[0_16px_32px_rgba(0,0,0,0.12),0_4px_8px_rgba(0,0,0,0.02)]
-                          hover:translate-y-[-2px]
-                          active:translate-y-[1px]
-                          transition-all duration-300"
+                          bg-white shadow-md
+                          "
             >
-              {/* Card Header Accent */}
-              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
-
               {/* Subtle Pattern */}
               <div
                 className="absolute inset-0 opacity-[0.02]"
@@ -78,24 +71,6 @@ const ContentCreationTools: React.FC = () => {
             </div>
           </div>
 
-          {/* Center Separator */}
-          <div className="hidden lg:block absolute right-1/2 top-1/2 -translate-y-1/2 z-10">
-            <motion.div
-              className="w-16 h-16 rounded-full bg-white shadow-[0_8px_32px_rgba(0,0,0,0.12)] 
-                       flex items-center justify-center transform -translate-x-1/2 
-                       border-4 border-white"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            >
-              <div
-                className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/80 
-                         flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)]"
-              >
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-            </motion.div>
-          </div>
-
           {/* Right Column - Preview Section */}
           <div className="max-w-[800px] w-full mx-auto lg:mx-0">
             <AnimatePresence mode="wait">
@@ -109,16 +84,9 @@ const ContentCreationTools: React.FC = () => {
                 <div
                   className="relative overflow-hidden rounded-2xl 
                               border border-gray-200
-                              bg-white
-                              shadow-[0_8px_24px_rgba(0,0,0,0.08)]
-                              hover:shadow-[0_16px_32px_rgba(0,0,0,0.12),0_4px_8px_rgba(0,0,0,0.02)]
-                              hover:translate-y-[-2px]
-                              active:translate-y-[1px]
-                              transition-all duration-300"
+                              bg-white shadow-md
+                              "
                 >
-                  {/* Card Header Accent */}
-                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
-
                   {/* Subtle Pattern */}
                   <div
                     className="absolute inset-0 opacity-[0.02]"

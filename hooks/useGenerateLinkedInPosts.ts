@@ -1,5 +1,8 @@
 import { useMutation, useQueryClient } from "react-query";
-import { generateLinkedInPosts } from "@/services/ai-content";
+import {
+  generateContentIdeasForWorkspace,
+  generateLinkedInPosts,
+} from "@/services/ai-content";
 import { ApiError, GenerateLinkedInPostsDTO } from "@/types";
 import toast from "react-hot-toast";
 import { useState, useEffect } from "react";
@@ -29,7 +32,7 @@ export const useGenerateLinkedInPosts = () => {
           try {
             await Promise.all([
               queryClient.invalidateQueries(["subscription"]),
-              refetchSubscription()
+              refetchSubscription(),
             ]);
           } catch (error) {
             console.error("Error refreshing subscription data:", error);
@@ -45,7 +48,7 @@ export const useGenerateLinkedInPosts = () => {
           processApiResponse(error);
           await Promise.all([
             queryClient.invalidateQueries(["subscription"]),
-            refetchSubscription()
+            refetchSubscription(),
           ]);
         } catch (refreshError) {
           processApiResponse(refreshError as ApiError);
@@ -99,7 +102,7 @@ export const useGenerateLinkedInPosts = () => {
       try {
         await Promise.all([
           queryClient.invalidateQueries(["subscription"]),
-          refetchSubscription()
+          refetchSubscription(),
         ]);
       } catch (refreshError) {
         console.error("Error refreshing subscription data:", refreshError);
@@ -117,4 +120,21 @@ export const useGenerateLinkedInPosts = () => {
     postTone,
     setPostTone,
   };
+};
+
+export const useGenerateContentIdeas = () => {
+  const queryClient = useQueryClient();
+  const [ideas, setIdeas] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const generateContentIdeas = async (id: string) => {
+    setLoading(true);
+    const result = await generateContentIdeasForWorkspace(id);
+    queryClient.invalidateQueries(["subscription"]);
+    setLoading(false);
+    if (result.success) {
+      setIdeas(result.data);
+    }
+    return result;
+  };
+  return { generateContentIdeas, loading, ideas };
 };

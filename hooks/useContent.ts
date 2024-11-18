@@ -27,6 +27,7 @@ import { POST_STATUS } from "@/lib/core-constants";
 import { useRouter, useSearchParams } from "next/navigation";
 import { processApiResponse } from "@/lib/functions";
 import debounce from "lodash/debounce";
+import { generateContentIdeasForWorkspace } from "@/services/ai-content";
 
 interface DraftResponse {
   success: boolean;
@@ -416,12 +417,7 @@ export const useContentPosting = () => {
           return;
         }
 
-        // First save the draft
-        // const savedDraft = await handleCreateUpdateDraft(linkedinProfileId);
-        // if (!savedDraft?.success) {
-        //   toast.error("Failed to save draft before publishing");
-        //   return;
-        // }
+     
 
         // Show posting feedback
         toast.loading("Publishing post...", { id: "posting" });
@@ -517,7 +513,7 @@ export const useContentManagement = () => {
     ["posts", currentWorkspace?.id, activeTab, pagination.currentPage],
     () =>
       getPosts({
-        workspace_id: currentWorkspace?.id || 0,
+        workspace_id: currentWorkspace?.id || "",
         status: getStatusFromTab(activeTab),
         page: pagination.currentPage,
         pageSize: pagination.pageSize,

@@ -83,19 +83,3 @@ export const useGenerateContent = () => {
     setThemeActive,
   };
 };
-
-export const useGenerateContentIdeas = () => {
-  const [ideas, setIdeas] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-  const generateContentIdeas = async (id: string) => {
-    setLoading(true);
-    const result = await generateContentIdeasForWorkspace(id);
-    setLoading(false);
-    console.log(result.data, "resultsssssssss");
-    if (result.success) {
-      setIdeas(result.data);
-    }
-    return result;
-  };
-  return { generateContentIdeas, loading, ideas };
-};

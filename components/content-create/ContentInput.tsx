@@ -34,7 +34,7 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
 import { AISettingsModal } from "@/components/ai-settings/AISettingsModal";
-import { useGenerateContentIdeas } from "@/hooks/useGenerateContent";
+import { useGenerateContentIdeas } from "@/hooks/useGenerateLinkedInPosts";
 
 interface ContentInputProps {
   contentSource: string;
@@ -166,6 +166,12 @@ export const ContentInput = ({
     }
   }, [currentWorkspace?.id]);
 
+  // Add handler for topic selection
+  const handleTopicSelect = useCallback((topic: any) => {
+    setContent(topic.idea);
+    toast.success("Topic selected!");
+  }, [setContent]);
+
   return (
     <div className="space-y-2">
       {/* Content Input Section */}
@@ -187,11 +193,12 @@ export const ContentInput = ({
             {/* Fancy AI Generate Topic Button */}
             <button
               onClick={handleGenerateTopic}
+              disabled={loading}
               className="group relative flex-1 sm:flex-none h-9 px-3 rounded-lg
                        overflow-hidden bg-gradient-to-r from-primary to-secondary
                        text-white font-medium text-xs
                        transition-all duration-300 hover:shadow-lg hover:shadow-primary/30
-                       active:scale-[0.98]"
+                       active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
             >
               <div
                 className="absolute inset-0 bg-white/30 group-hover:bg-transparent 
@@ -199,10 +206,14 @@ export const ContentInput = ({
               />
               <div className="relative flex items-center justify-center gap-1.5 text-sm">
                 <div className="w-4 h-4 rounded-md bg-white/20 flex items-center justify-center">
-                  <Wand2 className="h-3 w-3" />
+                  {loading ? (
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  ) : (
+                    <Wand2 className="h-3 w-3" />
+                  )}
                 </div>
                 <span className="inline-flex items-center gap-1">
-                  Generate Topic
+                  {loading ? "Generating..." : "Generate Ideas"}
                   <span className="hidden sm:inline-block bg-white/20 px-1 py-0.5 rounded text-[9px]">
                     AI
                   </span>
@@ -265,16 +276,20 @@ export const ContentInput = ({
               <Tooltip delayDuration={100}>
                 <TooltipTrigger asChild>
                   <button
-                    onClick={() => {
-                      toast.loading("Finding something interesting...");
-                    }}
+                    onClick={handleGenerateTopic}
+                    disabled={loading}
                     className="group h-8 w-8 flex items-center justify-center rounded-xl
                              bg-gradient-to-br from-purple-500/80 to-indigo-500/80 
                              hover:from-purple-500 hover:to-indigo-500
                              text-white shadow-lg shadow-indigo-500/25
-                             transition-all duration-200 hover:scale-105 active:scale-95"
+                             transition-all duration-200 hover:scale-105 active:scale-95
+                             disabled:opacity-70 disabled:cursor-not-allowed"
                   >
-                    <Lightbulb className="h-4 w-4 transition-transform duration-200 group-hover:rotate-12" />
+                    {loading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Lightbulb className="h-4 w-4 transition-transform duration-200 group-hover:rotate-12" />
+                    )}
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="left">
@@ -290,9 +305,7 @@ export const ContentInput = ({
             {ideas?.map((topic: any, index: number) => (
               <button
                 key={index}
-                onClick={() => {
-                  toast.success("Topic selected!");
-                }}
+                onClick={() => handleTopicSelect(topic)}
                 className="group relative px-3 py-2.5 rounded-lg border border-gray-200 bg-white/50 
                          hover:border-primary/20 hover:bg-white/80
                          transition-all duration-200 text-left
