@@ -167,10 +167,13 @@ export const ContentInput = ({
   }, [currentWorkspace?.id]);
 
   // Add handler for topic selection
-  const handleTopicSelect = useCallback((topic: any) => {
-    setContent(topic.idea);
-    toast.success("Topic selected!");
-  }, [setContent]);
+  const handleTopicSelect = useCallback(
+    (topic: any) => {
+      setContent(topic.idea);
+      toast.success("Topic selected!");
+    },
+    [setContent]
+  );
 
   return (
     <div className="space-y-2">
@@ -186,64 +189,6 @@ export const ContentInput = ({
             <h3 className="text-base font-semibold text-gray-900">
               Content Topic
             </h3>
-          </div>
-
-          {/* Button Group */}
-          <div className="flex items-center gap-2">
-            {/* Fancy AI Generate Topic Button */}
-            <button
-              onClick={handleGenerateTopic}
-              disabled={loading}
-              className="group relative flex-1 sm:flex-none h-9 px-3 rounded-lg
-                       overflow-hidden bg-gradient-to-r from-primary to-secondary
-                       text-white font-medium text-xs
-                       transition-all duration-300 hover:shadow-lg hover:shadow-primary/30
-                       active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              <div
-                className="absolute inset-0 bg-white/30 group-hover:bg-transparent 
-                            transition-colors duration-300"
-              />
-              <div className="relative flex items-center justify-center gap-1.5 text-sm">
-                <div className="w-4 h-4 rounded-md bg-white/20 flex items-center justify-center">
-                  {loading ? (
-                    <Loader2 className="h-3 w-3 animate-spin" />
-                  ) : (
-                    <Wand2 className="h-3 w-3" />
-                  )}
-                </div>
-                <span className="inline-flex items-center gap-1">
-                  {loading ? "Generating..." : "Generate Ideas"}
-                  <span className="hidden sm:inline-block bg-white/20 px-1 py-0.5 rounded text-[9px]">
-                    AI
-                  </span>
-                </span>
-              </div>
-              <div
-                className="absolute inset-0 bg-gradient-to-r from-primary/40 via-secondary/40 to-primary/40 
-                            opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-300"
-              />
-            </button>
-
-            {/* AI Settings Modal Trigger */}
-            <AISettingsModal
-              trigger={
-                <button
-                  className="group h-9 w-9 flex items-center justify-center rounded-lg
-                           bg-gray-50 hover:bg-gray-100
-                           border border-gray-200
-                           transition-all duration-200 hover:shadow-sm
-                           active:scale-[0.98]"
-                >
-                  <div
-                    className="w-5 h-5 rounded-md bg-gradient-to-br from-primary/10 to-secondary/10 
-                               flex items-center justify-center"
-                  >
-                    <Settings className="h-3.5 w-3.5 text-primary" />
-                  </div>
-                </button>
-              }
-            />
           </div>
         </div>
 
@@ -299,35 +244,127 @@ export const ContentInput = ({
             </div>
           </div>
 
-          {/* Topic Suggestions Section */}
-          <div className="grid grid-cols-2 gap-2">
-            {/* Topic Cards */}
-            {ideas?.map((topic: any, index: number) => (
-              <button
-                key={index}
-                onClick={() => handleTopicSelect(topic)}
-                className="group relative px-3 py-2.5 rounded-lg border border-gray-200 bg-white/50 
-                         hover:border-primary/20 hover:bg-white/80
-                         transition-all duration-200 text-left
-                         active:scale-[0.98] min-h-[52px]"
-              >
-                <div className="flex items-center gap-2">
+          {/* Ideas Section */}
+          <div className="space-y-4">
+            {/* Header with Generate Button */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center shadow-inner">
+                  <Lightbulb className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="text-base font-semibold text-gray-900">
+                  Content Ideas
+                </h3>
+              </div>
+
+              {/* Generate Ideas Button */}
+              <div className="flex items-center gap-2">
+                {/* Fancy AI Generate Topic Button */}
+                <button
+                  onClick={handleGenerateTopic}
+                  disabled={loading}
+                  className="group relative flex-1 sm:flex-none h-9 px-3 rounded-lg
+                       overflow-hidden bg-gradient-to-r from-primary to-secondary
+                       text-white font-medium text-xs
+                       transition-all duration-300 hover:shadow-lg hover:shadow-primary/30
+                       active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+                >
                   <div
-                    className="w-6 h-6 rounded-md bg-gradient-to-br from-primary/10 to-secondary/10 
-                               flex items-center justify-center flex-shrink-0"
-                  >
-                    <Lightbulb className="h-3.5 w-3.5 text-primary" />
+                    className="absolute inset-0 bg-white/30 group-hover:bg-transparent 
+                            transition-colors duration-300"
+                  />
+                  <div className="relative flex items-center justify-center gap-1.5 text-sm">
+                    <div className="w-4 h-4 rounded-md bg-white/20 flex items-center justify-center">
+                      {loading ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <Wand2 className="h-3 w-3" />
+                      )}
+                    </div>
+                    <span className="inline-flex items-center gap-1">
+                      {loading ? "Generating..." : "Generate Ideas"}
+                      <span className="hidden sm:inline-block bg-white/20 px-1 py-0.5 rounded text-[9px]">
+                        AI
+                      </span>
+                    </span>
                   </div>
-                  <p className="text-xs text-gray-600 break-words">
-                    {topic.idea}
+                  <div
+                    className="absolute inset-0 bg-gradient-to-r from-primary/40 via-secondary/40 to-primary/40 
+                            opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-300"
+                  />
+                </button>
+
+                {/* AI Settings Modal Trigger */}
+                <AISettingsModal
+                  trigger={
+                    <button
+                      className="group h-9 w-9 flex items-center justify-center rounded-lg
+                           bg-gray-50 hover:bg-gray-100
+                           border border-gray-200
+                           transition-all duration-200 hover:shadow-sm
+                           active:scale-[0.98]"
+                    >
+                      <div
+                        className="w-5 h-5 rounded-md bg-gradient-to-br from-primary/10 to-secondary/10 
+                               flex items-center justify-center"
+                      >
+                        <Settings className="h-3.5 w-3.5 text-primary" />
+                      </div>
+                    </button>
+                  }
+                />
+              </div>
+            </div>
+
+            {/* Ideas Grid */}
+            <div className="min-h-[200px] rounded-xl border border-gray-200 bg-white/50">
+              {!ideas || ideas.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center p-8 text-center">
+                  <div
+                    className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 
+                               flex items-center justify-center mb-4"
+                  >
+                    <Lightbulb className="h-8 w-8 text-primary/40" />
+                  </div>
+                  <h4 className="text-sm font-medium text-gray-900 mb-1">
+                    No ideas generated yet
+                  </h4>
+                  <p className="text-xs text-gray-500 max-w-[240px]">
+                    Click the generate button above to get AI-powered content
+                    ideas based on your preferences
                   </p>
                 </div>
-                <div
-                  className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-primary to-secondary 
-                             scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
-                />
-              </button>
-            ))}
+              ) : (
+                <div className="grid grid-cols-2 gap-2 p-3">
+                  {ideas.map((topic: any, index: number) => (
+                    <button
+                      key={index}
+                      onClick={() => handleTopicSelect(topic)}
+                      className="group relative px-3 py-2.5 rounded-lg border border-gray-200 bg-white/50 
+                               hover:border-primary/20 hover:bg-white/80
+                               transition-all duration-200 text-left
+                               active:scale-[0.98] min-h-[52px]"
+                    >
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="w-6 h-6 rounded-md bg-gradient-to-br from-primary/10 to-secondary/10 
+                                     flex items-center justify-center flex-shrink-0"
+                        >
+                          <Lightbulb className="h-3.5 w-3.5 text-primary" />
+                        </div>
+                        <p className="text-xs text-gray-600 break-words">
+                          {topic.idea}
+                        </p>
+                      </div>
+                      <div
+                        className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-primary to-secondary 
+                                   scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
