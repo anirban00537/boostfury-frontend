@@ -46,9 +46,9 @@ export const Header = () => {
           />
 
           <h1
-            className="text-4xl font-bold tracking-tight lg:text-5xl 
-                       bg-gradient-to-br from-gray-900 to-gray-700
-                       inline-block text-transparent bg-clip-text
+            className="text-4xl font-bold tracking-tight lg:text-5xl
+                       bg-gradient-to-br from-gray-900 to-gray-700 inline-block
+                        text-transparent bg-clip-text
                        [text-shadow:_0_1px_3px_rgb(0_0_0_/_10%)]
                        relative z-10"
           >

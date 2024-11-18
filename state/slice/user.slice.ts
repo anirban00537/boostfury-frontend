@@ -1,6 +1,8 @@
-import { UserInfo, UserState, SubscriptionState } from "@/types";
+import { UserInfo, UserState, SubscriptionState, Workspace } from "@/types";
 import { LinkedInProfileUI } from "@/types/post";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+
 
 const initialState: UserState = {
   userinfo: null,
@@ -54,7 +56,7 @@ const userSlice = createSlice({
     setCarouselDownloading: (state, action: PayloadAction<boolean>) => {
       state.carouselDownloading = action.payload;
     },
-    setCurrentWorkspace: (state, action: PayloadAction<any>) => {
+    setCurrentWorkspace: (state, action: PayloadAction<Workspace>) => {
       state.currentWorkspace = action.payload;
     },
     setLinkedInProfiles: (

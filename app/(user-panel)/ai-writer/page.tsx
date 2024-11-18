@@ -35,23 +35,27 @@ const ContentCreationTools: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative">
           {/* Left Column - Input Section */}
           <div className="max-w-[800px] w-full mx-auto lg:mx-0">
-            <div className="relative overflow-hidden rounded-2xl 
+            <div
+              className="relative overflow-hidden rounded-2xl 
                           border border-gray-200
                           bg-white
                           shadow-[0_8px_24px_rgba(0,0,0,0.08)]
                           hover:shadow-[0_16px_32px_rgba(0,0,0,0.12),0_4px_8px_rgba(0,0,0,0.02)]
                           hover:translate-y-[-2px]
                           active:translate-y-[1px]
-                          transition-all duration-300">
+                          transition-all duration-300"
+            >
               {/* Card Header Accent */}
               <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
-              
+
               {/* Subtle Pattern */}
-              <div className="absolute inset-0 opacity-[0.02]"
-                   style={{
-                     backgroundImage: `radial-gradient(circle at 1px 1px, gray 1px, transparent 0)`,
-                     backgroundSize: '24px 24px'
-                   }} />
+              <div
+                className="absolute inset-0 opacity-[0.02]"
+                style={{
+                  backgroundImage: `radial-gradient(circle at 1px 1px, gray 1px, transparent 0)`,
+                  backgroundSize: "24px 24px",
+                }}
+              />
 
               {/* Content */}
               <div className="relative px-8 py-6">
@@ -102,23 +106,27 @@ const ContentCreationTools: React.FC = () => {
                 transition={{ duration: 0.3, ease: "easeOut" }}
                 className="h-full"
               >
-                <div className="relative overflow-hidden rounded-2xl 
+                <div
+                  className="relative overflow-hidden rounded-2xl 
                               border border-gray-200
                               bg-white
                               shadow-[0_8px_24px_rgba(0,0,0,0.08)]
                               hover:shadow-[0_16px_32px_rgba(0,0,0,0.12),0_4px_8px_rgba(0,0,0,0.02)]
                               hover:translate-y-[-2px]
                               active:translate-y-[1px]
-                              transition-all duration-300">
+                              transition-all duration-300"
+                >
                   {/* Card Header Accent */}
                   <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
-                  
+
                   {/* Subtle Pattern */}
-                  <div className="absolute inset-0 opacity-[0.02]"
-                       style={{
-                         backgroundImage: `radial-gradient(circle at 1px 1px, gray 1px, transparent 0)`,
-                         backgroundSize: '24px 24px'
-                       }} />
+                  <div
+                    className="absolute inset-0 opacity-[0.02]"
+                    style={{
+                      backgroundImage: `radial-gradient(circle at 1px 1px, gray 1px, transparent 0)`,
+                      backgroundSize: "24px 24px",
+                    }}
+                  />
 
                   {/* Content */}
                   <div className="relative px-8 py-6">

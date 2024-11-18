@@ -136,12 +136,15 @@ export interface UserInfo {
 }
 
 export interface Workspace {
-  createdAt: string;
-  description: string | null;
   id: string;
-  isDefault: boolean;
   name: string;
+  description: string | null;
+  isDefault: boolean;
+  createdAt: string;
   updatedAt: string;
+  userId: string;
+  whoAmI: string | null;
+  topics: string[];
 }
 
 export interface LinkedInProfile {
@@ -210,7 +213,7 @@ export interface UserState {
   loggedin: boolean;
   loading: boolean;
   carouselDownloading: boolean;
-  currentWorkspace: any;
+  currentWorkspace: Workspace | null;
   linkedinProfiles: LinkedInProfileUI[];
   subscription: SubscriptionState;
 }
@@ -220,4 +223,12 @@ export interface GenerateLinkedInPostsDTO {
   language?: string;
   tone?: string;
   writingStyle?: string;
+}
+
+export interface UpdateWorkspacePayload {
+  id: string;
+  name: string;
+  description: string;
+  whoAmI: string | null;
+  topics: string[];
 }

@@ -15,6 +15,8 @@ export const createWorkspace = async (data: {
 export const updateWorkspace = async (data: {
   name: string;
   description: string;
+  whoAmI: string | null;
+  topics: string[];
   id: string;
 }) => {
   const response = await request.post("/workspace/update-workspace", data);
@@ -25,3 +27,16 @@ export const deleteWorkspace = async ({ id }: { id: string }) => {
   const response = await request.delete(`/workspace/delete-workspace/${id}`);
   return response.data;
 };
+
+
+export const getMyWorkspaceById = async ({
+  workspaceId,
+}: {
+  workspaceId: string;
+}) => {
+  const response = await request.get(
+    `/workspace/get-my-workspace-by-id/${workspaceId}`
+  );
+  return response.data;
+};
+

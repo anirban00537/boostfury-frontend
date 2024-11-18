@@ -1,8 +1,14 @@
-import { generateCarouselContent } from "@/services/ai-content";
+import {
+  generateCarouselContent,
+  generateContentIdeasForWorkspace,
+} from "@/services/ai-content";
 import { addAllSlides, setBackground } from "@/state/slice/carousel.slice";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "./useAuth";
+import { RootState } from "@/state/store";
+import { useQuery } from "react-query";
+import { ResponseData } from "@/types";
 
 export const useGenerateContent = () => {
   const [topic, setTopic] = useState("");
@@ -76,4 +82,20 @@ export const useGenerateContent = () => {
     themeActive,
     setThemeActive,
   };
+};
+
+export const useGenerateContentIdeas = () => {
+  const [ideas, setIdeas] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const generateContentIdeas = async (id: string) => {
+    setLoading(true);
+    const result = await generateContentIdeasForWorkspace(id);
+    setLoading(false);
+    console.log(result.data, "resultsssssssss");
+    if (result.success) {
+      setIdeas(result.data);
+    }
+    return result;
+  };
+  return { generateContentIdeas, loading, ideas };
 };

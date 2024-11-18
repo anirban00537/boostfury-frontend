@@ -4,21 +4,16 @@ import {
   HelpCircle,
   Pencil,
   MessageCircle,
-  BookOpen,
   Lightbulb,
   Smile,
   Briefcase,
   Sparkles,
   Code,
   BookMarked,
-  ArrowRightCircle,
-  GraduationCap,
-  Target,
-  BarChart2,
-  MessagesSquare,
   FileText,
   Zap,
   Wand2,
+  Settings,
 } from "lucide-react";
 import ShimmerButton from "@/components/magicui/Shimmer-Button.comp";
 import {
@@ -36,6 +31,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useSelector } from "react-redux";
+import { RootState } from "@/state/store";
+import { AISettingsModal } from "@/components/ai-settings/AISettingsModal";
+import { useGenerateContentIdeas } from "@/hooks/useGenerateContent";
 
 interface ContentInputProps {
   contentSource: string;
@@ -151,20 +150,21 @@ export const ContentInput = ({
     contentSource === "plain-prompt"
       ? handleLinkedInTextChange
       : handleTextChange;
-
+  const { currentWorkspace } = useSelector((state: RootState) => state.user);
   const charCount = content.length;
   const isValidLength = charCount >= MIN_CHARS;
-
+  const { generateContentIdeas, loading, ideas } = useGenerateContentIdeas();
   const handleGenerateTopic = useCallback(async () => {
     try {
-      // Add your topic generation logic here
-      toast.loading("Generating topic suggestion...");
-      // Example: const topic = await generateTopic();
-      // setContent(topic);
+      // toast.loading("Generating topic suggestion...");
+      console.log(currentWorkspace?.id, "currentWorkspace?.id");
+      currentWorkspace?.id &&
+        (await generateContentIdeas(currentWorkspace?.id));
+      // toast.dismiss();
     } catch (error) {
       toast.error("Failed to generate topic");
     }
-  }, []);
+  }, [currentWorkspace?.id]);
 
   return (
     <div className="space-y-2">
@@ -181,70 +181,146 @@ export const ContentInput = ({
               Content Topic
             </h3>
           </div>
-          
-          {/* Only Generate Topic Button */}
-          <Button
-            onClick={handleGenerateTopic}
-            variant="outline"
-            className="flex-1 sm:flex-none h-9 px-3 rounded-xl border border-primary/20 text-primary 
-                     hover:bg-primary hover:text-white hover:border-primary
-                     transition-all duration-200 shadow-sm text-sm"
-          >
-            <Wand2 className="h-4 w-4 mr-2" />
-            Generate Topic
-          </Button>
+
+          {/* Button Group */}
+          <div className="flex items-center gap-2">
+            {/* Fancy AI Generate Topic Button */}
+            <button
+              onClick={handleGenerateTopic}
+              className="group relative flex-1 sm:flex-none h-9 px-3 rounded-lg
+                       overflow-hidden bg-gradient-to-r from-primary to-secondary
+                       text-white font-medium text-xs
+                       transition-all duration-300 hover:shadow-lg hover:shadow-primary/30
+                       active:scale-[0.98]"
+            >
+              <div
+                className="absolute inset-0 bg-white/30 group-hover:bg-transparent 
+                            transition-colors duration-300"
+              />
+              <div className="relative flex items-center justify-center gap-1.5 text-sm">
+                <div className="w-4 h-4 rounded-md bg-white/20 flex items-center justify-center">
+                  <Wand2 className="h-3 w-3" />
+                </div>
+                <span className="inline-flex items-center gap-1">
+                  Generate Topic
+                  <span className="hidden sm:inline-block bg-white/20 px-1 py-0.5 rounded text-[9px]">
+                    AI
+                  </span>
+                </span>
+              </div>
+              <div
+                className="absolute inset-0 bg-gradient-to-r from-primary/40 via-secondary/40 to-primary/40 
+                            opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-300"
+              />
+            </button>
+
+            {/* AI Settings Modal Trigger */}
+            <AISettingsModal
+              trigger={
+                <button
+                  className="group h-9 w-9 flex items-center justify-center rounded-lg
+                           bg-gray-50 hover:bg-gray-100
+                           border border-gray-200
+                           transition-all duration-200 hover:shadow-sm
+                           active:scale-[0.98]"
+                >
+                  <div
+                    className="w-5 h-5 rounded-md bg-gradient-to-br from-primary/10 to-secondary/10 
+                               flex items-center justify-center"
+                  >
+                    <Settings className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                </button>
+              }
+            />
+          </div>
         </div>
 
         {/* Enhanced Content Input with Surprise Button */}
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 rounded-xl" />
-          <textarea
-            value={contentSource === "plain-prompt" ? content : undefined}
-            onChange={onTextChange}
-            className="relative w-full px-5 py-4 h-[120px] max-h-[200px]
-                     resize-none outline-none rounded-xl
-                     bg-white/50 backdrop-blur-sm
-                     border border-gray-200
-                     placeholder:text-gray-400 text-gray-600 text-sm
-                     transition-all duration-200
-                     overflow-y-auto leading-relaxed
-                     focus:ring-2 focus:ring-primary/10 focus:border-primary"
-            placeholder="What would you like to write about? Be specific to get better results..."
-            maxLength={MAX_CHARS}
-          />
-          <div className="absolute bottom-3 right-3 flex items-center gap-2">
-            <div className="px-2.5 py-1 rounded-lg 
-                          bg-gray-50/80 backdrop-blur-sm
-                          text-[10px] font-medium text-gray-500">
-              {charCount}/{MAX_CHARS}
+        <div className="space-y-3">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 rounded-xl" />
+            <textarea
+              value={contentSource === "plain-prompt" ? content : undefined}
+              onChange={onTextChange}
+              className="relative w-full px-5 py-4 h-[120px] max-h-[200px]
+                       resize-none outline-none rounded-xl
+                       bg-white/50 backdrop-blur-sm
+                       border border-gray-200
+                       placeholder:text-gray-400 text-gray-600 text-sm
+                       transition-all duration-200
+                       overflow-y-auto leading-relaxed
+                       focus:ring-2 focus:ring-primary/10 focus:border-primary"
+              placeholder="What would you like to write about? Be specific to get better results..."
+              maxLength={MAX_CHARS}
+            />
+            <div className="absolute bottom-3 right-3 flex items-center gap-2">
+              <div
+                className="px-2.5 py-1 rounded-lg 
+                            bg-gray-50/80 backdrop-blur-sm
+                            text-[10px] font-medium text-gray-500"
+              >
+                {charCount}/{MAX_CHARS}
+              </div>
+              <Tooltip delayDuration={100}>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => {
+                      toast.loading("Finding something interesting...");
+                    }}
+                    className="group h-8 w-8 flex items-center justify-center rounded-xl
+                             bg-gradient-to-br from-purple-500/80 to-indigo-500/80 
+                             hover:from-purple-500 hover:to-indigo-500
+                             text-white shadow-lg shadow-indigo-500/25
+                             transition-all duration-200 hover:scale-105 active:scale-95"
+                  >
+                    <Lightbulb className="h-4 w-4 transition-transform duration-200 group-hover:rotate-12" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="left">
+                  <p className="text-xs">Surprise me with a random topic</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
-            <Tooltip delayDuration={100}>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => {
-                    toast.loading("Finding something interesting...");
-                  }}
-                  className="group h-8 w-8 flex items-center justify-center rounded-xl
-                           bg-gradient-to-br from-purple-500/80 to-indigo-500/80 
-                           hover:from-purple-500 hover:to-indigo-500
-                           text-white shadow-lg shadow-indigo-500/25
-                           transition-all duration-200 hover:scale-105 active:scale-95"
-                >
-                  <Lightbulb className="h-4 w-4 transition-transform duration-200 group-hover:rotate-12" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="left">
-                <p className="text-xs">Surprise me with a random topic</p>
-              </TooltipContent>
-            </Tooltip>
+          </div>
+
+          {/* Topic Suggestions Section */}
+          <div className="grid grid-cols-2 gap-2">
+            {/* Topic Cards */}
+            {ideas?.map((topic: any, index: number) => (
+              <button
+                key={index}
+                onClick={() => {
+                  toast.success("Topic selected!");
+                }}
+                className="group relative px-3 py-2.5 rounded-lg border border-gray-200 bg-white/50 
+                         hover:border-primary/20 hover:bg-white/80
+                         transition-all duration-200 text-left
+                         active:scale-[0.98] min-h-[52px]"
+              >
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-6 h-6 rounded-md bg-gradient-to-br from-primary/10 to-secondary/10 
+                               flex items-center justify-center flex-shrink-0"
+                  >
+                    <Lightbulb className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                  <p className="text-xs text-gray-600 break-words">
+                    {topic.idea}
+                  </p>
+                </div>
+                <div
+                  className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-primary to-secondary 
+                             scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
+                />
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Style Settings Section */}
-      <div className="relative p-4 space-y-4 rounded-xl bg-white/50 backdrop-blur-sm">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 rounded-xl" />
-
+      {/* Style Settings Section - removed background and adjusted spacing */}
+      <div className="space-y-4">
         {/* Header with Tone Label */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -270,7 +346,7 @@ export const ContentInput = ({
           </div>
         </div>
 
-        {/* Tone Selection - Now using Select component */}
+        {/* Tone Selection */}
         <Select value={postTone} onValueChange={setPostTone}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select a tone" />
@@ -279,7 +355,9 @@ export const ContentInput = ({
             {Object.entries(toneConfig).map(([tone, config]) => (
               <SelectItem key={tone} value={tone}>
                 <div className="flex items-center gap-2">
-                  <span className={`w-5 h-5 rounded-lg flex items-center justify-center ${config.iconBg}`}>
+                  <span
+                    className={`w-5 h-5 rounded-lg flex items-center justify-center ${config.iconBg}`}
+                  >
                     {config.icon}
                   </span>
                   <span>{tone}</span>

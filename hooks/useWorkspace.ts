@@ -4,6 +4,7 @@ import {
   createWorkspace,
   updateWorkspace as updateWorkspaceService,
   deleteWorkspace,
+  getMyWorkspaceById,
 } from "@/services/workspace.service";
 import { ResponseData, Workspace } from "@/types";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,7 +14,6 @@ import { useState } from "react";
 
 export const useWorkspaces = () => {
   const { loggedin } = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch();
   const [workspaces, setWorkspacesData] = useState<Workspace[]>([]);
   const { refetch: refetchWorkspace, isLoading: isWorkspaceLoading } = useQuery<
     ResponseData,
@@ -45,6 +45,8 @@ export const useWorkspaces = () => {
       id: string;
       name: string;
       description: string;
+      whoAmI: string | null;
+      topics: string[];
     }
   >(updateWorkspaceService, {
     onSuccess: () => {
@@ -67,4 +69,16 @@ export const useWorkspaces = () => {
     isWorkspaceLoading,
     deleteWorkspaceFunction,
   };
+};
+
+export const useWorkspaceById = () => {
+  const { currentWorkspace } = useSelector((state: RootState) => state.user);
+  const { data, isLoading } = useQuery<ResponseData, Error>(
+    ["workspace", currentWorkspace?.id],
+    () => getMyWorkspaceById({ workspaceId: currentWorkspace?.id || "" }),
+    {
+      enabled: !!currentWorkspace?.id,
+    }
+  );
+  return { data, isLoading };
 };
