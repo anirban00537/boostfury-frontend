@@ -29,6 +29,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { useCallback } from "react";
 import { toast } from "react-hot-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ContentInputProps {
   contentSource: string;
@@ -160,171 +167,150 @@ export const ContentInput = ({
   }, []);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-2">
       {/* Content Input Section */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
+      <div className="space-y-2">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+          {/* Title Group */}
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center shadow-inner">
               <Pencil className="h-5 w-5 text-primary" />
             </div>
-            <div>
-              <h3 className="text-base font-semibold text-gray-900">
-                Content Topic
-              </h3>
-              <p className="text-sm text-gray-500">Write about your ideas</p>
-            </div>
+            <h3 className="text-base font-semibold text-gray-900">
+              Content Topic
+            </h3>
           </div>
           
-          {/* Add Generate Topic Button */}
+          {/* Only Generate Topic Button */}
           <Button
             onClick={handleGenerateTopic}
             variant="outline"
-            className="h-9 px-3 rounded-xl border border-primary/20 text-primary 
+            className="flex-1 sm:flex-none h-9 px-3 rounded-xl border border-primary/20 text-primary 
                      hover:bg-primary hover:text-white hover:border-primary
-                     transition-all duration-200"
+                     transition-all duration-200 shadow-sm text-sm"
           >
             <Wand2 className="h-4 w-4 mr-2" />
             Generate Topic
           </Button>
         </div>
 
-        {/* Enhanced Content Input */}
-        <div className="space-y-2">
-          <div
-            className={`
-            relative overflow-hidden rounded-xl bg-white
-            ${
-              !isValidLength && charCount > 0
-                ? "border-red-200"
-                : "border-gray-200"
-            }
-            transition-all duration-200 group
-            shadow-sm hover:shadow-md
-          `}
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5" />
-            <textarea
-              value={contentSource === "plain-prompt" ? content : undefined}
-              onChange={onTextChange}
-              className="relative w-full px-5 py-4 h-[120px] max-h-[200px]
-                       resize-none outline-none border  bg-transparent
-                       placeholder:text-gray-400 text-gray-600 text-sm
-                       transition-all duration-200
-                       overflow-y-auto leading-relaxed"
-              placeholder="What would you like to write about? Be specific to get better results..."
-              maxLength={MAX_CHARS}
-            />
-            <div
-              className="absolute bottom-2 right-3 px-2 py-1 rounded-md bg-gray-50/80 backdrop-blur-sm
-                          text-[10px] font-medium text-gray-400"
-            >
+        {/* Enhanced Content Input with Surprise Button */}
+        <div className="relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 rounded-xl" />
+          <textarea
+            value={contentSource === "plain-prompt" ? content : undefined}
+            onChange={onTextChange}
+            className="relative w-full px-5 py-4 h-[120px] max-h-[200px]
+                     resize-none outline-none rounded-xl
+                     bg-white/50 backdrop-blur-sm
+                     border border-gray-200
+                     placeholder:text-gray-400 text-gray-600 text-sm
+                     transition-all duration-200
+                     overflow-y-auto leading-relaxed
+                     focus:ring-2 focus:ring-primary/10 focus:border-primary"
+            placeholder="What would you like to write about? Be specific to get better results..."
+            maxLength={MAX_CHARS}
+          />
+          <div className="absolute bottom-3 right-3 flex items-center gap-2">
+            <div className="px-2.5 py-1 rounded-lg 
+                          bg-gray-50/80 backdrop-blur-sm
+                          text-[10px] font-medium text-gray-500">
               {charCount}/{MAX_CHARS}
             </div>
+            <Tooltip delayDuration={100}>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => {
+                    toast.loading("Finding something interesting...");
+                  }}
+                  className="group h-8 w-8 flex items-center justify-center rounded-xl
+                           bg-gradient-to-br from-purple-500/80 to-indigo-500/80 
+                           hover:from-purple-500 hover:to-indigo-500
+                           text-white shadow-lg shadow-indigo-500/25
+                           transition-all duration-200 hover:scale-105 active:scale-95"
+                >
+                  <Lightbulb className="h-4 w-4 transition-transform duration-200 group-hover:rotate-12" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="left">
+                <p className="text-xs">Surprise me with a random topic</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </div>
 
-      {/* Enhanced Post Settings Section */}
-      <div className="space-y-6 rounded-xl border border-gray-200 overflow-hidden bg-white/50 backdrop-blur-sm">
-        <div className="relative p-6 space-y-6">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5" />
+      {/* Style Settings Section */}
+      <div className="relative p-4 space-y-4 rounded-xl bg-white/50 backdrop-blur-sm">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 rounded-xl" />
 
-          {/* Section Header */}
-          <div className="relative flex items-center gap-3">
+        {/* Header with Tone Label */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center shadow-inner">
               <Zap className="h-5 w-5 text-primary" />
             </div>
-            <div>
-              <h3 className="text-base font-semibold text-gray-900">
-                Style Settings
-              </h3>
-              <p className="text-sm text-gray-500">
-                Customize your content's voice
-              </p>
-            </div>
+            <h3 className="text-base font-semibold text-gray-900">
+              Style Settings
+            </h3>
           </div>
-
-          {/* Settings Grid */}
-          <div className="relative grid gap-8">
-            {/* Tone Selection */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <h4 className="text-sm font-medium text-gray-700">
-                  Tone of Voice
-                </h4>
-                <Tooltip delayDuration={100}>
-                  <TooltipTrigger>
-                    <HelpCircle className="h-4 w-4 text-gray-400" />
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-gray-900 text-white">
-                    <p className="text-xs">
-                      Select the tone that best matches your intended audience
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-
-              <div className="flex flex-wrap gap-2.5">
-                {Object.entries(toneConfig).map(([tone, config]) => (
-                  <button
-                    key={tone}
-                    onClick={() => setPostTone(tone)}
-                    className={`
-                      group px-2 py-1 flex items-center gap-2.5 text-sm rounded-xl border 
-                      transition-all duration-200 relative overflow-hidden
-                      ${
-                        tone === postTone
-                          ? `${config.activeColor} shadow-sm`
-                          : `border-gray-200/80 text-gray-600 ${config.hoverColor} hover:border`
-                      }
-                      hover:shadow-md active:scale-95
-                    `}
-                  >
-                    <span
-                      className={`
-                      w-6 h-6 rounded-md flex items-center justify-center
-                      ${tone === postTone ? config.iconBg : "bg-gray-100"}
-                      group-hover:${config.iconBg.replace(
-                        "bg-",
-                        ""
-                      )} transition-colors duration-200
-                    `}
-                    >
-                      {config.icon}
-                    </span>
-                    {tone}
-                  </button>
-                ))}
-              </div>
-            </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600">Tone of Voice</span>
+            <Tooltip delayDuration={100}>
+              <TooltipTrigger>
+                <HelpCircle className="h-4 w-4 text-gray-400" />
+              </TooltipTrigger>
+              <TooltipContent className="bg-gray-900 text-white">
+                <p className="text-xs">
+                  Select the tone that best matches your intended audience
+                </p>
+              </TooltipContent>
+            </Tooltip>
           </div>
-
-          {/* Enhanced Generate Button */}
-          <ShimmerButton
-            onClick={onGenerate}
-            disabled={isGeneratingContent || !isValidLength}
-            background="linear-gradient(145deg, #4f46e5, #2563eb)"
-            className="w-full py-4"
-          >
-            {isGeneratingContent ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Generating your content...</span>
-              </>
-            ) : (
-              <div className="flex items-center justify-center gap-2">
-                <span>Generate Content</span>
-                <div className="flex items-center gap-1 text-[10px] bg-white/20 px-1.5 py-0.5 rounded">
-                  <span>
-                    {navigator.platform.includes("Mac") ? "⌘" : "Ctrl"}
-                  </span>
-                  <ArrowRight className="h-3 w-3" />
-                </div>
-              </div>
-            )}
-          </ShimmerButton>
         </div>
+
+        {/* Tone Selection - Now using Select component */}
+        <Select value={postTone} onValueChange={setPostTone}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a tone" />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.entries(toneConfig).map(([tone, config]) => (
+              <SelectItem key={tone} value={tone}>
+                <div className="flex items-center gap-2">
+                  <span className={`w-5 h-5 rounded-lg flex items-center justify-center ${config.iconBg}`}>
+                    {config.icon}
+                  </span>
+                  <span>{tone}</span>
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* Generate Content Button */}
+        <ShimmerButton
+          onClick={onGenerate}
+          disabled={isGeneratingContent || !isValidLength}
+          background="linear-gradient(145deg, #4f46e5, #2563eb)"
+          className="w-full py-3 rounded-xl"
+        >
+          {isGeneratingContent ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Generating your content...</span>
+            </>
+          ) : (
+            <div className="flex items-center justify-center gap-2">
+              <span>Generate Content</span>
+              <div className="flex items-center gap-1 text-[10px] bg-white/20 px-1.5 py-0.5 rounded">
+                <span>{navigator.platform.includes("Mac") ? "⌘" : "Ctrl"}</span>
+                <ArrowRight className="h-3 w-3" />
+              </div>
+            </div>
+          )}
+        </ShimmerButton>
       </div>
     </div>
   );
