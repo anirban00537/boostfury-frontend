@@ -22,7 +22,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { toast } from "react-hot-toast";
 import {
   Select,
@@ -151,17 +151,32 @@ export const ContentInput = ({
   const charCount = content.length;
   const isValidLength = charCount >= MIN_CHARS;
   const { generateContentIdeas, loading, ideas } = useGenerateContentIdeas();
+  const aiSettingsButtonRef = useRef<HTMLButtonElement>(null);
+
   const handleGenerateTopic = useCallback(async () => {
     try {
-      // toast.loading("Generating topic suggestion...");
-      console.log(currentWorkspace?.id, "currentWorkspace?.id");
-      currentWorkspace?.id &&
-        (await generateContentIdeas(currentWorkspace?.id));
-      // toast.dismiss();
+      if (!currentWorkspace?.id) {
+        toast.error("Please select a workspace first");
+        return;
+      }
+
+      if (!personalAiVoice) {
+        toast.error("Please set up your AI voice first to get personalized content ideas", {
+          duration: 4000,
+          icon: '🎯',
+        });
+        aiSettingsButtonRef.current?.click();
+        return;
+      }
+
+      const loadingToast = toast.loading("Finding something interesting...");
+      await generateContentIdeas(currentWorkspace.id);
+      toast.dismiss(loadingToast);
+      toast.success("Topics generated successfully!");
     } catch (error) {
-      toast.error("Failed to generate topic");
+      toast.error("Failed to generate topics");
     }
-  }, [currentWorkspace?.id]);
+  }, [currentWorkspace?.id, personalAiVoice, generateContentIdeas]);
 
   // Add handler for topic selection
   const handleTopicSelect = useCallback(
@@ -227,6 +242,7 @@ export const ContentInput = ({
             <AISettingsModal
               trigger={
                 <button
+                  ref={aiSettingsButtonRef}
                   className="group h-9 w-9 flex items-center justify-center rounded-lg
                            bg-gray-50 hover:bg-gray-100
                            border border-gray-200
@@ -284,13 +300,13 @@ export const ContentInput = ({
             >
               <div className="flex items-center justify-center gap-2">
                 <div className="w-5 h-5 rounded-md bg-white/20 flex items-center justify-center">
-                  {loading ? (
+                  {isGeneratingContent ? (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
                   ) : (
                     <Wand2 className="h-3.5 w-3.5" />
                   )}
                 </div>
-                <span>{loading ? "Generating..." : "Generate"}</span>
+                <span>{isGeneratingContent ? "Generating..." : "Generate Content"}</span>
               </div>
             </ShimmerButton>
 
@@ -328,7 +344,7 @@ export const ContentInput = ({
           <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.02] to-transparent -z-1" />
 
           {/* Content Container */}
-          <div className="relative space-y-4 p-6">
+          <div className="relative space-y-4 p-6 border">
             {/* Header with Generate Button */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">

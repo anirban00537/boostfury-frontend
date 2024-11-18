@@ -2,8 +2,6 @@ import { UserInfo, UserState, SubscriptionState, Workspace } from "@/types";
 import { LinkedInProfileUI } from "@/types/post";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-
-
 const initialState: UserState = {
   userinfo: null,
   loggedin: false,
@@ -18,19 +16,19 @@ const initialState: UserState = {
       words: {
         used: 0,
         limit: 0,
-        nextReset: '',
+        nextReset: "",
       },
       linkedin: {
         accountsUsed: 0,
         accountsLimit: 0,
         postsUsed: 0,
         postsLimit: 0,
-        nextReset: '',
+        nextReset: "",
       },
       carousels: {
         used: 0,
         limit: 0,
-        nextReset: '',
+        nextReset: "",
       },
     },
   },
@@ -68,6 +66,11 @@ const userSlice = createSlice({
     setSubscriptionData: (state, action: PayloadAction<SubscriptionState>) => {
       state.subscription = action.payload;
     },
+    setPersonalAiVoice: (state, action: PayloadAction<string>) => {
+      if (state.currentWorkspace) {
+        state.currentWorkspace.personalAiVoice = action.payload;
+      }
+    },
   },
 });
 
@@ -80,5 +83,6 @@ export const {
   setCurrentWorkspace,
   setLinkedInProfiles,
   setSubscriptionData,
+  setPersonalAiVoice,
 } = userSlice.actions;
 export default userSlice.reducer;

@@ -14,49 +14,50 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/state/store";
 import { useWorkspaceById } from "@/hooks/useWorkspace";
 import { updateWorkspace } from "@/services/workspace.service";
 import LoadingSection from "@/components/utils-components/loading/LoadingSection.comp";
+import { setPersonalAiVoice } from "@/state/slice/user.slice";
 
 interface AISettingsModalProps {
   trigger: React.ReactNode;
 }
 
 export const AISettingsModal = ({ trigger }: AISettingsModalProps) => {
-  const [personalAiVoice, setPersonalAiVoice] = React.useState("");
+  const [personalAiVoiceState, setPersonalAiVoiceState] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const { currentWorkspace } = useSelector((state: RootState) => state.user);
   const { data, isLoading } = useWorkspaceById();
-
+  const dispatch = useDispatch();
   // Set initial values when data is loaded
   React.useEffect(() => {
     if (data?.data) {
-      setPersonalAiVoice(data.data.personalAiVoice || "");
+      setPersonalAiVoiceState(data.data.personalAiVoice || "");
     }
   }, [data]);
-
- 
-
 
   const handleSave = useCallback(async () => {
     try {
       if (!currentWorkspace?.id) return;
-      
-      await updateWorkspace({
+
+      const response = await updateWorkspace({
         id: currentWorkspace.id,
         name: currentWorkspace.name,
         description: currentWorkspace.description || "",
-        personalAiVoice: personalAiVoice || "",
+        personalAiVoice: personalAiVoiceState || "",
       });
-
-      toast.success("AI settings saved successfully");
-      setOpen(false);
+      console.log(response, "response");
+      if (response.success) {
+        dispatch(setPersonalAiVoice(personalAiVoiceState));
+        toast.success("AI settings saved successfully");
+        setOpen(false);
+      }
     } catch (error) {
       toast.error("Failed to save AI settings");
     }
-  }, [currentWorkspace, personalAiVoice, updateWorkspace]);
+  }, [currentWorkspace, personalAiVoiceState, dispatch]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -91,9 +92,9 @@ export const AISettingsModal = ({ trigger }: AISettingsModalProps) => {
                     </h3>
                   </div>
                   <p className="text-sm text-gray-600 leading-relaxed pl-10">
-                    Describe your professional background, role, and expertise. This
-                    helps our AI understand your perspective and create content that
-                    matches your professional voice.
+                    Describe your professional background, role, and expertise.
+                    This helps our AI understand your perspective and create
+                    content that matches your professional voice.
                   </p>
                 </div>
                 <textarea
@@ -104,12 +105,10 @@ export const AISettingsModal = ({ trigger }: AISettingsModalProps) => {
                            placeholder:text-gray-400
                            transition-all duration-200
                            outline-none"
-                  value={personalAiVoice}
-                  onChange={(e) => setPersonalAiVoice(e.target.value)}
+                  value={personalAiVoiceState}
+                  onChange={(e) => setPersonalAiVoiceState(e.target.value)}
                 />
               </div>
-
-         
             </div>
 
             {/* Footer */}
