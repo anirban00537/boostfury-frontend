@@ -62,10 +62,6 @@ interface ToneConfigType {
   [key: string]: StyleConfigItem;
 }
 
-interface StyleConfigType {
-  [key: string]: StyleConfigItem;
-}
-
 // Update the tone configuration with proper typing
 const toneConfig: ToneConfigType = {
   Professional: {
@@ -151,6 +147,7 @@ export const ContentInput = ({
       ? handleLinkedInTextChange
       : handleTextChange;
   const { currentWorkspace } = useSelector((state: RootState) => state.user);
+  const personalAiVoice = currentWorkspace?.personalAiVoice;
   const charCount = content.length;
   const isValidLength = charCount >= MIN_CHARS;
   const { generateContentIdeas, loading, ideas } = useGenerateContentIdeas();
@@ -179,7 +176,7 @@ export const ContentInput = ({
     <div className="space-y-2">
       {/* Content Input Section */}
       <div className="space-y-2">
-        {/* Header */}
+        {/* Header with Title and Style Settings */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
           {/* Title Group */}
           <div className="flex items-center gap-3">
@@ -190,139 +187,195 @@ export const ContentInput = ({
               Content Topic
             </h3>
           </div>
-        </div>
 
-        {/* Enhanced Content Input with Surprise Button */}
-        <div className="space-y-3">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 rounded-xl" />
-            <textarea
-              value={contentSource === "plain-prompt" ? content : undefined}
-              onChange={onTextChange}
-              className="relative w-full px-5 py-4 h-[120px] max-h-[200px]
-                       resize-none outline-none rounded-xl
-                       bg-white/50 backdrop-blur-sm
-                       border border-gray-200
-                       placeholder:text-gray-400 text-gray-600 text-sm
-                       transition-all duration-200
-                       overflow-y-auto leading-relaxed
-                       focus:ring-2 focus:ring-primary/10 focus:border-primary"
-              placeholder="What would you like to write about? Be specific to get better results..."
-              maxLength={MAX_CHARS}
-            />
-            <div className="absolute bottom-3 right-3 flex items-center gap-2">
-              <div
-                className="px-2.5 py-1 rounded-lg 
-                            bg-gray-50/80 backdrop-blur-sm
-                            text-[10px] font-medium text-gray-500"
-              >
-                {charCount}/{MAX_CHARS}
-              </div>
-              <Tooltip delayDuration={100}>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={handleGenerateTopic}
-                    disabled={loading}
-                    className="group h-8 w-8 flex items-center justify-center rounded-xl
-                             bg-gradient-to-br from-purple-500/80 to-indigo-500/80 
-                             hover:from-purple-500 hover:to-indigo-500
-                             text-white shadow-lg shadow-indigo-500/25
-                             transition-all duration-200 hover:scale-105 active:scale-95
-                             disabled:opacity-70 disabled:cursor-not-allowed"
-                  >
-                    {loading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Lightbulb className="h-4 w-4 transition-transform duration-200 group-hover:rotate-12" />
-                    )}
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="left">
-                  <p className="text-xs">Surprise me with a random topic</p>
-                </TooltipContent>
-              </Tooltip>
+          {/* Style Settings */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">Tone:</span>
+              <Select value={postTone} onValueChange={setPostTone}>
+                <SelectTrigger className="w-[140px] h-9">
+                  <SelectValue placeholder="Select tone" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(toneConfig).map(([tone, config]) => (
+                    <SelectItem key={tone} value={tone}>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`w-5 h-5 rounded-lg flex items-center justify-center ${config.iconBg}`}
+                        >
+                          {config.icon}
+                        </span>
+                        <span>{tone}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          </div>
 
-          {/* Ideas Section */}
-          <div className="space-y-4">
-            {/* Header with Generate Button */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center shadow-inner">
-                  <Lightbulb className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="text-base font-semibold text-gray-900">
-                  Content Ideas
-                </h3>
-              </div>
+            <Tooltip delayDuration={100}>
+              <TooltipTrigger>
+                <HelpCircle className="h-4 w-4 text-gray-400" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-xs">
+                  Select the tone that best matches your intended audience
+                </p>
+              </TooltipContent>
+            </Tooltip>
 
-              {/* Generate Ideas Button */}
-              <div className="flex items-center gap-2">
-                {/* Fancy AI Generate Topic Button */}
+            <AISettingsModal
+              trigger={
                 <button
-                  onClick={handleGenerateTopic}
-                  disabled={loading}
-                  className="group relative flex-1 sm:flex-none h-9 px-3 rounded-lg
-                       overflow-hidden bg-gradient-to-r from-primary to-secondary
-                       text-white font-medium text-xs
-                       transition-all duration-300 hover:shadow-lg hover:shadow-primary/30
-                       active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  <div
-                    className="absolute inset-0 bg-white/30 group-hover:bg-transparent 
-                            transition-colors duration-300"
-                  />
-                  <div className="relative flex items-center justify-center gap-1.5 text-sm">
-                    <div className="w-4 h-4 rounded-md bg-white/20 flex items-center justify-center">
-                      {loading ? (
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                      ) : (
-                        <Wand2 className="h-3 w-3" />
-                      )}
-                    </div>
-                    <span className="inline-flex items-center gap-1">
-                      {loading ? "Generating..." : "Generate Ideas"}
-                      <span className="hidden sm:inline-block bg-white/20 px-1 py-0.5 rounded text-[9px]">
-                        AI
-                      </span>
-                    </span>
-                  </div>
-                  <div
-                    className="absolute inset-0 bg-gradient-to-r from-primary/40 via-secondary/40 to-primary/40 
-                            opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-300"
-                  />
-                </button>
-
-                {/* AI Settings Modal Trigger */}
-                <AISettingsModal
-                  trigger={
-                    <button
-                      className="group h-9 w-9 flex items-center justify-center rounded-lg
+                  className="group h-9 w-9 flex items-center justify-center rounded-lg
                            bg-gray-50 hover:bg-gray-100
                            border border-gray-200
                            transition-all duration-200 hover:shadow-sm
                            active:scale-[0.98]"
-                    >
-                      <div
-                        className="w-5 h-5 rounded-md bg-gradient-to-br from-primary/10 to-secondary/10 
-                               flex items-center justify-center"
-                      >
-                        <Settings className="h-3.5 w-3.5 text-primary" />
-                      </div>
-                    </button>
-                  }
-                />
+                >
+                  <div
+                    className="w-5 h-5 rounded-md bg-gradient-to-br from-primary/10 to-secondary/10 
+                           flex items-center justify-center"
+                  >
+                    <Settings className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                </button>
+              }
+            />
+          </div>
+        </div>
+
+        {/* Text Input Area */}
+        <div className="relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 rounded-xl" />
+          <textarea
+            value={contentSource === "plain-prompt" ? content : undefined}
+            onChange={onTextChange}
+            className="relative w-full px-5 py-4 h-[120px] max-h-[200px]
+                     resize-none outline-none rounded-xl
+                     bg-white/50 backdrop-blur-sm
+                     border border-gray-200
+                     placeholder:text-gray-400 text-gray-600 text-sm
+                     transition-all duration-200
+                     overflow-y-auto leading-relaxed
+                     focus:ring-2 focus:ring-primary/10 focus:border-primary
+                     pr-[180px]"
+            placeholder="What would you like to write about? Be specific to get better results..."
+            maxLength={MAX_CHARS}
+          />
+
+          {/* Buttons Container */}
+          <div className="absolute bottom-3 right-3 flex items-center gap-2">
+            {/* Character Count */}
+            <div
+              className="px-2.5 py-1 rounded-lg 
+                          bg-gray-50/80 backdrop-blur-sm
+                          text-[10px] font-medium text-gray-500"
+            >
+              {charCount}/{MAX_CHARS}
+            </div>
+
+            {/* Generate Button with Shimmer */}
+            <ShimmerButton
+              onClick={onGenerate}
+              disabled={isGeneratingContent || !isValidLength}
+              background="linear-gradient(145deg, #4f46e5, #2563eb)"
+              className="h-9 px-4 rounded-lg text-sm font-medium"
+            >
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-5 h-5 rounded-md bg-white/20 flex items-center justify-center">
+                  {loading ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Wand2 className="h-3.5 w-3.5" />
+                  )}
+                </div>
+                <span>{loading ? "Generating..." : "Generate"}</span>
               </div>
+            </ShimmerButton>
+
+            {/* Surprise Me Button */}
+            {/* <Tooltip delayDuration={100}>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={handleGenerateTopic}
+                  disabled={loading}
+                  className="group h-8 w-8 flex items-center justify-center rounded-xl
+                         bg-gradient-to-br from-purple-500/80 to-indigo-500/80 
+                         hover:from-purple-500 hover:to-indigo-500
+                         text-white shadow-lg shadow-indigo-500/25
+                         transition-all duration-200 hover:scale-105 active:scale-95
+                         disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {loading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Lightbulb className="h-4 w-4 transition-transform duration-200 group-hover:rotate-12" />
+                  )}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="left">
+                <p className="text-xs">Surprise me with a random topic</p>
+              </TooltipContent>
+            </Tooltip> */}
+          </div>
+        </div>
+
+        {/* Ideas Section */}
+        <div className="relative overflow-hidden rounded-2xl border border-gray-200/50 bg-gradient-to-b from-white to-gray-50/50 backdrop-blur-xl">
+          {/* Decorative Elements */}
+          <div className="absolute inset-0 bg-grid-black/[0.02] -z-1" />
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.02] to-transparent -z-1" />
+
+          {/* Content Container */}
+          <div className="relative space-y-4 p-6">
+            {/* Header with Generate Button */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center shadow-inner ring-1 ring-primary/5">
+                  <Lightbulb className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-gray-900">
+                    Content Ideas
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    AI-powered topic suggestions
+                  </p>
+                </div>
+              </div>
+
+              {/* Generate Ideas Button */}
+              <ShimmerButton
+                onClick={handleGenerateTopic}
+                disabled={loading}
+                enableShimmer={false}
+                background="linear-gradient(145deg, #4f46e5, #2563eb)"
+                className="h-9 px-4 rounded-lg text-sm font-medium"
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 rounded-md bg-white/20 flex items-center justify-center">
+                    {loading ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <Wand2 className="h-3.5 w-3.5" />
+                    )}
+                  </div>
+                  <span>{loading ? "Generating..." : "Generate Ideas"}</span>
+                  <span className="hidden sm:inline-block bg-white/20 px-1.5 py-0.5 rounded text-[10px]">
+                    AI
+                  </span>
+                </div>
+              </ShimmerButton>
             </div>
 
             {/* Ideas Grid */}
-            <div className="min-h-[200px] rounded-xl border border-gray-200 bg-white/50">
+            <div className="relative min-h-[200px] rounded-xl bg-primary/5 border border-gray-200/50 backdrop-blur-sm ring-1 ring-black/5">
               {!ideas || ideas.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center p-8 text-center">
                   <div
                     className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 
-                               flex items-center justify-center mb-4"
+                       flex items-center justify-center mb-4 ring-1 ring-primary/10"
                   >
                     <Lightbulb className="h-8 w-8 text-primary/40" />
                   </div>
@@ -335,30 +388,33 @@ export const ContentInput = ({
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-2 p-3">
+                <div className="grid grid-cols-2 gap-3 p-3">
                   {ideas.map((topic: any, index: number) => (
                     <button
                       key={index}
                       onClick={() => handleTopicSelect(topic)}
-                      className="group relative px-3 py-2.5 rounded-lg border border-gray-200 bg-white/50 
-                               hover:border-primary/20 hover:bg-white/80
-                               transition-all duration-200 text-left
-                               active:scale-[0.98] min-h-[52px]"
+                      className="group relative px-4 py-3 rounded-lg 
+                       bg-gradient-to-br from-white to-gray-50/50
+                       border border-gray-200/50 hover:border-primary/20
+                       ring-1 ring-black/[0.02] hover:ring-primary/10
+                       shadow-sm hover:shadow
+                       transition-all duration-200 text-left
+                       active:scale-[0.98] min-h-[52px]"
                     >
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
                         <div
-                          className="w-6 h-6 rounded-md bg-gradient-to-br from-primary/10 to-secondary/10 
-                                     flex items-center justify-center flex-shrink-0"
+                          className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 
+                             flex items-center justify-center flex-shrink-0 ring-1 ring-primary/10"
                         >
-                          <Lightbulb className="h-3.5 w-3.5 text-primary" />
+                          <Lightbulb className="h-4 w-4 text-primary" />
                         </div>
-                        <p className="text-xs text-gray-600 break-words">
+                        <p className="text-sm text-gray-600 break-words">
                           {topic.idea}
                         </p>
                       </div>
                       <div
                         className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-primary to-secondary 
-                                   scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
+                           scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
                       />
                     </button>
                   ))}
@@ -367,78 +423,6 @@ export const ContentInput = ({
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Style Settings Section - removed background and adjusted spacing */}
-      <div className="space-y-4">
-        {/* Header with Tone Label */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center shadow-inner">
-              <Zap className="h-5 w-5 text-primary" />
-            </div>
-            <h3 className="text-base font-semibold text-gray-900">
-              Style Settings
-            </h3>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Tone of Voice</span>
-            <Tooltip delayDuration={100}>
-              <TooltipTrigger>
-                <HelpCircle className="h-4 w-4 text-gray-400" />
-              </TooltipTrigger>
-              <TooltipContent className="bg-gray-900 text-white">
-                <p className="text-xs">
-                  Select the tone that best matches your intended audience
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
-        </div>
-
-        {/* Tone Selection */}
-        <Select value={postTone} onValueChange={setPostTone}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a tone" />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.entries(toneConfig).map(([tone, config]) => (
-              <SelectItem key={tone} value={tone}>
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`w-5 h-5 rounded-lg flex items-center justify-center ${config.iconBg}`}
-                  >
-                    {config.icon}
-                  </span>
-                  <span>{tone}</span>
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* Generate Content Button */}
-        <ShimmerButton
-          onClick={onGenerate}
-          disabled={isGeneratingContent || !isValidLength}
-          background="linear-gradient(145deg, #4f46e5, #2563eb)"
-          className="w-full py-3 rounded-xl"
-        >
-          {isGeneratingContent ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              <span>Generating your content...</span>
-            </>
-          ) : (
-            <div className="flex items-center justify-center gap-2">
-              <span>Generate Content</span>
-              <div className="flex items-center gap-1 text-[10px] bg-white/20 px-1.5 py-0.5 rounded">
-                <span>{navigator.platform.includes("Mac") ? "⌘" : "Ctrl"}</span>
-                <ArrowRight className="h-3 w-3" />
-              </div>
-            </div>
-          )}
-        </ShimmerButton>
       </div>
     </div>
   );

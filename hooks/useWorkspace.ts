@@ -45,8 +45,7 @@ export const useWorkspaces = () => {
       id: string;
       name: string;
       description: string;
-      whoAmI: string | null;
-      topics: string[];
+      personalAiVoice: string;
     }
   >(updateWorkspaceService, {
     onSuccess: () => {

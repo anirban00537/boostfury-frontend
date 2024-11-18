@@ -15,8 +15,7 @@ export const createWorkspace = async (data: {
 export const updateWorkspace = async (data: {
   name: string;
   description: string;
-  whoAmI: string | null;
-  topics: string[];
+  personalAiVoice: string;
   id: string;
 }) => {
   const response = await request.post("/workspace/update-workspace", data);
@@ -28,7 +27,6 @@ export const deleteWorkspace = async ({ id }: { id: string }) => {
   return response.data;
 };
 
-
 export const getMyWorkspaceById = async ({
   workspaceId,
 }: {
@@ -39,4 +37,3 @@ export const getMyWorkspaceById = async ({
   );
   return response.data;
 };
-

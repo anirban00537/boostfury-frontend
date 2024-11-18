@@ -143,8 +143,7 @@ export interface Workspace {
   createdAt: string;
   updatedAt: string;
   userId: string;
-  whoAmI: string | null;
-  topics: string[];
+  personalAiVoice: string | null;
 }
 
 export interface LinkedInProfile {
@@ -229,6 +228,5 @@ export interface UpdateWorkspacePayload {
   id: string;
   name: string;
   description: string;
-  whoAmI: string | null;
-  topics: string[];
+  personalAiVoice: string;
 }
