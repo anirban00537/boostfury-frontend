@@ -38,7 +38,7 @@ export default function DashboardLayout({
         <Sidebar onClose={() => setIsSidebarOpen(false)} />
       </div>
 
-      <div className="flex-1 lg:ml-72">
+      <div className="flex-1 ">
         <main>
           <div className="px-4 sm:px-6 py-8">{children}</div>
         </main>
