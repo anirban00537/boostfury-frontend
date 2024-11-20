@@ -23,6 +23,7 @@ import {
   Key,
   Sparkles,
   X,
+  LogOut,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -44,6 +45,14 @@ import { GradientButton } from "@/components/ui/gradient-button";
 import { motion } from "framer-motion";
 import { useContentPosting } from "@/hooks/useContent";
 import { toast } from "react-hot-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/hooks/useAuth";
 
 // Define base interface for navigation items
 interface BaseNavigationItem {
@@ -198,6 +207,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   const [isManageModalOpen, setIsManageModalOpen] = useState(false);
 
   const { handleCreateDraftFromGenerated } = useContentPosting();
+  const { logoutUser } = useAuth();
 
   const handleCreateNew = async () => {
     try {
@@ -415,39 +425,87 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
             <SubscriptionInfo />
           </div>
         )}
-        {/* User Profile */}
-        <div
-          className="px-4 py-3 flex items-center justify-between 
-                      group hover:bg-gradient-to-r hover:from-blue-50/80 hover:to-blue-100/60 
-                      transition-all duration-200 cursor-pointer
-                      rounded-b-lg"
-        >
-          <div className="flex items-center gap-3">
+        {/* Update User Profile Section */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <div
-              className="w-9 h-9 rounded-full 
-                          bg-gradient-to-br from-blue-50 to-blue-100
-                          border border-blue-200/40 
-                          shadow-[0_2px_4px_-1px_rgba(0,0,0,0.03)]
-                          flex items-center justify-center text-gray-700 
-                          group-hover:shadow-[0_3px_6px_-2px_rgba(0,0,0,0.05)]
-                          transition-all duration-200"
+              className="px-4 py-3 flex items-center justify-between 
+                group hover:bg-gradient-to-r hover:from-blue-50/80 hover:to-blue-100/60 
+                transition-all duration-200 cursor-pointer
+                rounded-b-lg"
             >
-              {userinfo?.first_name?.charAt(0) || "U"}
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-9 h-9 rounded-full 
+                    bg-gradient-to-br from-blue-50 to-blue-100
+                    border border-blue-200/40 
+                    shadow-[0_2px_4px_-1px_rgba(0,0,0,0.03)]
+                    flex items-center justify-center text-gray-700 
+                    group-hover:shadow-[0_3px_6px_-2px_rgba(0,0,0,0.05)]
+                    transition-all duration-200"
+                >
+                  {userinfo?.first_name?.charAt(0) || "U"}
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-gray-800">
+                    {userinfo?.first_name || "User"}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    {userinfo?.email || "user@email.com"}
+                  </span>
+                </div>
+              </div>
+              <ChevronDown
+                className="h-4 w-4 text-gray-400 group-hover:text-gray-600 
+                  transition-colors duration-200"
+              />
             </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium text-gray-800">
-                {userinfo?.first_name || "User"}
-              </span>
-              <span className="text-xs text-gray-500">
-                {userinfo?.email || "user@email.com"}
-              </span>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent
+            className="w-64 mr-2.5 mb-2.5"
+            align="end"
+            alignOffset={-5}
+            sideOffset={5}
+          >
+            <div className="flex items-center gap-3 px-3 py-2 mb-1">
+              <div
+                className="w-9 h-9 rounded-full 
+                  bg-gradient-to-br from-blue-50 to-blue-100
+                  border border-blue-200/40 
+                  flex items-center justify-center text-gray-700"
+              >
+                {userinfo?.first_name?.charAt(0) || "U"}
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-gray-800">
+                  {userinfo?.first_name || "User"}
+                </span>
+                <span className="text-xs text-gray-500">
+                  {userinfo?.email || "user@email.com"}
+                </span>
+              </div>
             </div>
-          </div>
-          <ChevronDown
-            className="h-4 w-4 text-gray-400 group-hover:text-gray-600 
-                                 transition-colors duration-200"
-          />
-        </div>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              className="px-3 py-2.5 cursor-pointer"
+              onClick={() => router.push("/settings/profile")}
+            >
+              <User className="mr-2 h-4 w-4" />
+              <span>Profile Settings</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              className="px-3 py-2.5 cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
+              onClick={logoutUser}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Sign Out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Modals */}

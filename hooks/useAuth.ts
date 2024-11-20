@@ -95,7 +95,7 @@ export const useAuth = () => {
           Cookies.set("user", JSON.stringify(user), { expires: 7 });
 
           toast.success("Logged in successfully");
-          router.push("/dashboard");
+          router.push("/dashboard/ai-writer");
         } else {
           toast.error(`Failed to log in: ${result.message}`);
         }
