@@ -22,6 +22,7 @@ import {
   HelpCircle,
   Key,
   Sparkles,
+  X,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -183,7 +184,13 @@ const Navigation = () => {
   );
 };
 
-const Sidebar = () => {
+// Add onClose prop to the interface
+interface SidebarProps {
+  onClose?: () => void;
+}
+
+// Update the Sidebar component
+const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   const router = useRouter();
   const { userinfo, currentWorkspace, subscription } = useSelector(
     (state: RootState) => state.user
@@ -249,12 +256,20 @@ const Sidebar = () => {
 
   return (
     <div
-      className="w-72 h-screen flex flex-col 
-                    bg-gradient-to-b from-[#F1F5FF] via-[#F8FAFF] to-[#E8EFFF] 
-                    border-r border-blue-100/60
-                    shadow-[4px_0_24px_-2px_rgba(0,0,0,0.05)]
-                    relative z-10"
+      className="w-[280px] sm:w-72 h-screen flex flex-col 
+                bg-gradient-to-b from-[#F1F5FF] via-[#F8FAFF] to-[#E8EFFF] 
+                border-r border-blue-100/60
+                shadow-[4px_0_24px_-2px_rgba(0,0,0,0.05)]
+                relative z-10"
     >
+      {/* Close button for mobile */}
+      <button
+        onClick={onClose}
+        className="lg:hidden absolute top-4 right-4 p-2 rounded-lg hover:bg-gray-100"
+      >
+        <X className="h-5 w-5 text-gray-500" />
+      </button>
+
       {/* Header Section */}
       <div
         className="shrink-0 border-b border-blue-100/60 
@@ -262,7 +277,7 @@ const Sidebar = () => {
                       shadow-[0_1px_3px_-1px_rgba(0,0,0,0.02)]"
       >
         {/* Logo */}
-        <div className="px-6 py-4 border-b border-blue-100/60">
+        <div className="px-6 py-4 border-b border-blue-100/60 flex items-center justify-between">
           <Link href="/" className="block transition-opacity hover:opacity-80">
             <Image
               src="/logo.svg"
