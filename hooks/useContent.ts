@@ -438,6 +438,27 @@ export const useContentPosting = () => {
     setSelectedProfile(null);
   }, []);
 
+  // Effect to save draft on initial load and when dependencies change
+  useEffect(() => {
+    if (selectedProfile?.id && content.trim()) {
+      debouncedSaveDraft({
+        content: content,
+        postType: "text",
+        linkedInProfileId: selectedProfile.id,
+        imageUrls: imageUrls || [],
+        videoUrl: "",
+        documentUrl: documentUrl || "",
+        hashtags: [],
+        mentions: [],
+      });
+    }
+  }, [
+    content,
+    selectedProfile?.id,
+    imageUrls,
+    documentUrl,
+  ]);
+
   return {
     // State
     content,
