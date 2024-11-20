@@ -4,16 +4,20 @@ import {
   HelpCircle,
   Pencil,
   MessageCircle,
+  BookOpen,
   Lightbulb,
   Smile,
   Briefcase,
   Sparkles,
   Code,
   BookMarked,
+  ArrowRightCircle,
+  GraduationCap,
+  Target,
+  BarChart2,
+  MessagesSquare,
   FileText,
   Zap,
-  Wand2,
-  Settings,
 } from "lucide-react";
 import ShimmerButton from "@/components/magicui/Shimmer-Button.comp";
 import {
@@ -21,20 +25,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
-import { useCallback, useRef } from "react";
-import { toast } from "react-hot-toast";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useSelector } from "react-redux";
-import { RootState } from "@/state/store";
-import { AISettingsModal } from "@/components/ai-settings/AISettingsModal";
-import { useGenerateContentIdeas } from "@/hooks/useGenerateLinkedInPosts";
 
 interface ContentInputProps {
   contentSource: string;
@@ -56,70 +46,84 @@ interface StyleConfigItem {
   activeColor: string;
   hoverColor: string;
   iconBg: string;
+  description: string;
+  category?: string;
 }
 
 interface ToneConfigType {
   [key: string]: StyleConfigItem;
 }
 
+interface StyleConfigType {
+  [key: string]: StyleConfigItem;
+}
+
 // Update the tone configuration with proper typing
 const toneConfig: ToneConfigType = {
   Professional: {
-    icon: <Briefcase className="h-3.5 w-3.5" />,
-    activeColor:
-      "bg-gradient-to-r from-blue-50 to-blue-100/50 text-blue-600 border-blue-200 ring-blue-200",
-    hoverColor: "hover:bg-blue-50/50 hover:border-blue-200/60",
-    iconBg: "bg-blue-100",
+    icon: <Briefcase className="h-4 w-4" />,
+    activeColor: "bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600 border-blue-200",
+    hoverColor: "hover:bg-blue-50/80 hover:border-blue-200",
+    iconBg: "bg-gradient-to-br from-blue-100 to-blue-200",
+    description: "Business and corporate content",
+    category: "Business"
   },
   Casual: {
-    icon: <Smile className="h-3.5 w-3.5" />,
-    activeColor:
-      "bg-gradient-to-r from-green-50 to-green-100/50 text-green-600 border-green-200 ring-green-200",
-    hoverColor: "hover:bg-green-50/50 hover:border-green-200/60",
-    iconBg: "bg-green-100",
+    icon: <Smile className="h-4 w-4" />,
+    activeColor: "bg-gradient-to-br from-green-50 to-green-100 text-green-600 border-green-200",
+    hoverColor: "hover:bg-green-50/80 hover:border-green-200",
+    iconBg: "bg-gradient-to-br from-green-100 to-green-200",
+    description: "Relaxed and conversational",
+    category: "Social"
   },
   Friendly: {
-    icon: <MessageCircle className="h-3.5 w-3.5" />,
-    activeColor:
-      "bg-gradient-to-r from-purple-50 to-purple-100/50 text-purple-600 border-purple-200 ring-purple-200",
-    hoverColor: "hover:bg-purple-50/50 hover:border-purple-200/60",
-    iconBg: "bg-purple-100",
+    icon: <MessageCircle className="h-4 w-4" />,
+    activeColor: "bg-gradient-to-br from-purple-50 to-purple-100 text-purple-600 border-purple-200",
+    hoverColor: "hover:bg-purple-50/80 hover:border-purple-200",
+    iconBg: "bg-gradient-to-br from-purple-100 to-purple-200",
+    description: "Warm and approachable tone",
+    category: "Social"
   },
   Authoritative: {
-    icon: <BookMarked className="h-3.5 w-3.5" />,
-    activeColor:
-      "bg-gradient-to-r from-red-50 to-red-100/50 text-red-600 border-red-200 ring-red-200",
-    hoverColor: "hover:bg-red-50/50 hover:border-red-200/60",
-    iconBg: "bg-red-100",
+    icon: <BookMarked className="h-4 w-4" />,
+    activeColor: "bg-gradient-to-br from-red-50 to-red-100 text-red-600 border-red-200",
+    hoverColor: "hover:bg-red-50/80 hover:border-red-200",
+    iconBg: "bg-gradient-to-br from-red-100 to-red-200",
+    description: "Expert and commanding voice",
+    category: "Professional"
   },
   Humorous: {
-    icon: <Sparkles className="h-3 w-3" />,
-    activeColor:
-      "bg-gradient-to-r from-yellow-50 to-yellow-100/50 text-yellow-600 border-yellow-200 ring-yellow-200",
-    hoverColor: "hover:bg-yellow-50/50 hover:border-yellow-200/60",
-    iconBg: "bg-yellow-100",
+    icon: <Sparkles className="h-4 w-4" />,
+    activeColor: "bg-gradient-to-br from-yellow-50 to-yellow-100 text-yellow-600 border-yellow-200",
+    hoverColor: "hover:bg-yellow-50/80 hover:border-yellow-200",
+    iconBg: "bg-gradient-to-br from-yellow-100 to-yellow-200",
+    description: "Light and entertaining style",
+    category: "Creative"
   },
   Formal: {
-    icon: <FileText className="h-3 w-3" />,
-    activeColor:
-      "bg-gradient-to-r from-gray-50 to-gray-100/50 text-gray-600 border-gray-200 ring-gray-200",
-    hoverColor: "hover:bg-gray-50/50 hover:border-gray-200/60",
-    iconBg: "bg-gray-100",
+    icon: <FileText className="h-4 w-4" />,
+    activeColor: "bg-gradient-to-br from-gray-50 to-gray-100 text-gray-600 border-gray-200",
+    hoverColor: "hover:bg-gray-50/80 hover:border-gray-200",
+    iconBg: "bg-gradient-to-br from-gray-100 to-gray-200",
+    description: "Traditional and proper tone",
+    category: "Professional"
   },
   Inspirational: {
-    icon: <Lightbulb className="h-3 w-3" />,
-    activeColor:
-      "bg-gradient-to-r from-amber-50 to-amber-100/50 text-amber-600 border-amber-200 ring-amber-200",
-    hoverColor: "hover:bg-amber-50/50 hover:border-amber-200/60",
-    iconBg: "bg-amber-100",
+    icon: <Lightbulb className="h-4 w-4" />,
+    activeColor: "bg-gradient-to-br from-amber-50 to-amber-100 text-amber-600 border-amber-200",
+    hoverColor: "hover:bg-amber-50/80 hover:border-amber-200",
+    iconBg: "bg-gradient-to-br from-amber-100 to-amber-200",
+    description: "Motivational and uplifting",
+    category: "Creative"
   },
   Technical: {
-    icon: <Code className="h-3 w-3" />,
-    activeColor:
-      "bg-gradient-to-r from-indigo-50 to-indigo-100/50 text-indigo-600 border-indigo-200 ring-indigo-200",
-    hoverColor: "hover:bg-indigo-50/50 hover:border-indigo-200/60",
-    iconBg: "bg-indigo-100",
-  },
+    icon: <Code className="h-4 w-4" />,
+    activeColor: "bg-gradient-to-br from-indigo-50 to-indigo-100 text-indigo-600 border-indigo-200",
+    hoverColor: "hover:bg-indigo-50/80 hover:border-indigo-200",
+    iconBg: "bg-gradient-to-br from-indigo-100 to-indigo-200",
+    description: "Detailed and precise content",
+    category: "Technical"
+  }
 };
 
 const MIN_CHARS = 10;
@@ -146,161 +150,132 @@ export const ContentInput = ({
     contentSource === "plain-prompt"
       ? handleLinkedInTextChange
       : handleTextChange;
-  const { currentWorkspace } = useSelector((state: RootState) => state.user);
-  const personalAiVoice = currentWorkspace?.personalAiVoice;
+
   const charCount = content.length;
   const isValidLength = charCount >= MIN_CHARS;
-  const { generateContentIdeas, loading, ideas } = useGenerateContentIdeas();
-  const aiSettingsButtonRef = useRef<HTMLButtonElement>(null);
-
-  const handleGenerateTopic = useCallback(async () => {
-    try {
-      if (!currentWorkspace?.id) {
-        toast.error("Please select a workspace first");
-        return;
-      }
-
-      if (!personalAiVoice) {
-        toast.error("Please set up your AI voice first to get personalized content ideas", {
-          duration: 4000,
-          icon: '🎯',
-        });
-        aiSettingsButtonRef.current?.click();
-        return;
-      }
-
-      const loadingToast = toast.loading("Finding something interesting...");
-      await generateContentIdeas(currentWorkspace.id);
-      toast.dismiss(loadingToast);
-      toast.success("Topics generated successfully!");
-    } catch (error) {
-      toast.error("Failed to generate topics");
-    }
-  }, [currentWorkspace?.id, personalAiVoice, generateContentIdeas]);
-
-  // Add handler for topic selection
-  const handleTopicSelect = useCallback(
-    (topic: any) => {
-      setContent(topic.idea);
-      toast.success("Topic selected!");
-    },
-    [setContent]
-  );
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-gray-200/50 bg-gradient-to-b from-white to-gray-50/50 backdrop-blur-xl">
-      {/* Decorative Elements */}
-      <div className="absolute inset-0 bg-grid-black/[0.02] -z-1" />
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.02] to-transparent -z-1" />
+    <div className="space-y-6">
+      {/* Main Content Area */}
+      <div className="rounded-2xl border-none bg-white overflow-hidden">
+        <div className="relative p-6 space-y-6">
+          {/* Decorative Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-white pointer-events-none" />
+          <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-[0.02]" />
 
-      {/* Content Container */}
-      <div className="relative space-y-4 p-6">
-        {/* Header with Title and Style Settings */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center shadow-inner ring-1 ring-primary/5">
-              <Pencil className="h-5 w-5 text-primary" />
+          {/* Header */}
+          <div className="relative flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 
+                            flex items-center justify-center shadow-inner ring-1 ring-primary/10">
+                <Pencil className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Content Topic</h3>
+                <p className="text-sm text-gray-500">Share your ideas and let AI enhance them</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-base font-semibold text-gray-900">
-                Content Topic
-              </h3>
-              <p className="text-sm text-gray-500">
-                Write your content topic
-              </p>
+
+            {/* Character Counter */}
+            <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500">
+              <div className={`h-2 w-2 rounded-full ${
+                charCount >= MIN_CHARS ? 'bg-green-400' : 'bg-gray-300'
+              }`} />
+              <span>{charCount}/{MAX_CHARS} characters</span>
             </div>
           </div>
 
-          {/* Style Settings */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Select value={postTone} onValueChange={setPostTone}>
-                <SelectTrigger className="w-[140px] h-9">
-                  <SelectValue placeholder="Select tone" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(toneConfig).map(([tone, config]) => (
-                    <SelectItem key={tone} value={tone}>
-                      <div className="flex items-center gap-2">
-                        <span className={`w-5 h-5 rounded-lg flex items-center justify-center ${config.iconBg}`}>
-                          {config.icon}
-                        </span>
-                        <span>{tone}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <AISettingsModal
-              trigger={
-                <button
-                  ref={aiSettingsButtonRef}
-                  className="group h-9 w-9 flex items-center justify-center rounded-lg
-                           bg-gray-50 hover:bg-gray-100
-                           border border-gray-200
-                           transition-all duration-200 hover:shadow-sm
-                           active:scale-[0.98]"
-                >
-                  <div className="w-5 h-5 rounded-md bg-gradient-to-br from-primary/10 to-secondary/10 
-                               flex items-center justify-center">
-                    <Settings className="h-3.5 w-3.5 text-primary" />
-                  </div>
-                </button>
-              }
-            />
-          </div>
-        </div>
-
-        {/* Text Input Area */}
-        <div className="relative min-h-[200px] rounded-xl bg-primary/5 border border-gray-200/50 backdrop-blur-sm ring-1 ring-black/5">
-          <div className="relative p-3">
+          {/* Enhanced Textarea */}
+          <div className="relative mt-4">
             <textarea
               value={contentSource === "plain-prompt" ? content : undefined}
               onChange={onTextChange}
-              className="w-full min-h-[120px] px-4 py-3 rounded-lg
-                       bg-white/50 backdrop-blur-sm
-                       border border-gray-200/50
-                       placeholder:text-gray-400 text-gray-600 text-sm
-                       transition-all duration-200
-                       resize-none outline-none
-                       focus:ring-2 focus:ring-primary/10 focus:border-primary"
+              className="w-full min-h-[120px] p-4 rounded-xl
+                       bg-gray-50/50 backdrop-blur-sm
+                       border border-gray-200 hover:border-primary/20
+                       focus:border-primary/30 focus:ring-4 focus:ring-primary/10
+                       placeholder:text-gray-400 text-gray-600
+                       text-sm leading-relaxed resize-none outline-none
+                       transition-all duration-200"
               placeholder="What would you like to write about? Be specific to get better results..."
               maxLength={MAX_CHARS}
             />
+          </div>
 
-            {/* Bottom Controls */}
-            <div className="flex items-center justify-between mt-3">
-              <div className="px-2.5 py-1 rounded-lg 
-                           bg-gray-50/80 backdrop-blur-sm
-                           text-[10px] font-medium text-gray-500">
-                {charCount}/{MAX_CHARS}
+          {/* Tone Selection */}
+          <div className="relative space-y-4 pt-4 border-t border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h4 className="text-sm font-medium text-gray-900">Content Tone</h4>
+                <Tooltip delayDuration={100}>
+                  <TooltipTrigger>
+                    <HelpCircle className="h-4 w-4 text-gray-400" />
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    <p className="text-xs">Choose a tone that matches your audience and purpose</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
+            </div>
 
-              <ShimmerButton
-                onClick={onGenerate}
-                disabled={isGeneratingContent || !isValidLength}
-                enableShimmer={false}
-                background="linear-gradient(145deg, #4f46e5, #2563eb)"
-                className="h-9 px-4 rounded-lg text-sm font-medium"
-              >
-                <div className="flex items-center justify-center gap-2">
-                  <div className="w-5 h-5 rounded-md bg-white/20 flex items-center justify-center">
-                    {isGeneratingContent ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    ) : (
-                      <Wand2 className="h-3.5 w-3.5" />
-                    )}
+            {/* Tone Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {Object.entries(toneConfig).map(([tone, config]) => (
+                <button
+                  key={tone}
+                  onClick={() => setPostTone(tone)}
+                  className={`
+                    group relative p-3 rounded-xl border
+                    transition-all duration-200 hover:scale-[1.02]
+                    ${tone === postTone 
+                      ? `${config.activeColor} shadow-lg` 
+                      : 'bg-white hover:bg-gray-50/80 border-gray-200 hover:border-gray-300'
+                    }
+                  `}
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <div className={`
+                      w-10 h-10 rounded-lg flex items-center justify-center
+                      ${tone === postTone ? config.iconBg : 'bg-gray-100'}
+                      transition-colors duration-200
+                    `}>
+                      {config.icon}
+                    </div>
+                    <div className="text-center">
+                      <div className="text-sm font-medium">{tone}</div>
+                      <div className="text-xs text-gray-500 mt-0.5">{config.description}</div>
+                    </div>
                   </div>
-                  <span>{isGeneratingContent ? "Generating..." : "Generate Content"}</span>
-                  <span className="hidden sm:inline-block bg-white/20 px-1.5 py-0.5 rounded text-[10px]">
-                    AI
-                  </span>
-                </div>
-              </ShimmerButton>
+                </button>
+              ))}
             </div>
           </div>
+
+          {/* Generate Button */}
+          <ShimmerButton
+            onClick={onGenerate}
+            disabled={isGeneratingContent || !isValidLength}
+            background="linear-gradient(145deg, #4F46E5, #4338CA)"
+            className="w-full py-4 mt-6"
+          >
+            <div className="flex items-center justify-center gap-3">
+              {isGeneratingContent ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <span>Crafting your content...</span>
+                </>
+              ) : (
+                <>
+                  <Zap className="h-5 w-5" />
+                  <span>Generate Content</span>
+                  <div className="hidden sm:flex items-center gap-1 text-xs bg-white/20 px-2 py-1 rounded-md">
+                    <span>{navigator.platform.includes("Mac") ? "⌘" : "Ctrl"}</span>
+                    <span>↵</span>
+                  </div>
+                </>
+              )}
+            </div>
+          </ShimmerButton>
         </div>
       </div>
     </div>

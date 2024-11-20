@@ -13,8 +13,9 @@ interface AIWritingPreviewProps {
 }
 
 const LoadingAnimation = () => (
-  <div className="relative space-y-4 p-6 bg-gradient-to-br from-white via-gray-50 to-gray-100/80">
-    <div className="space-y-4">
+  <div className="relative min-h-[300px] p-6 bg-gradient-to-br from-white via-gray-50/80 to-gray-100/50">
+    {/* Shimmer Lines */}
+    <div className="space-y-4 relative">
       {[...Array(4)].map((_, i) => (
         <motion.div
           key={i}
@@ -23,12 +24,13 @@ const LoadingAnimation = () => (
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: i * 0.2 }}
         >
-          <div className="h-4 bg-primary/10 rounded-lg">
+          <div className={`h-4 rounded-lg bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5
+                        ${i === 0 ? 'w-3/4' : i === 3 ? 'w-1/2' : 'w-full'}`}>
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80 to-transparent"
-              animate={{ x: ["-100%", "100%"] }}
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
+              animate={{ x: ['-100%', '100%'] }}
               transition={{
-                duration: 1.5,
+                duration: 2,
                 repeat: Infinity,
                 ease: "linear",
                 delay: i * 0.2,
@@ -39,9 +41,9 @@ const LoadingAnimation = () => (
       ))}
     </div>
 
-    {/* Floating Sparkles */}
+    {/* Enhanced Floating Sparkles */}
     <div className="absolute inset-0 overflow-hidden">
-      {[...Array(6)].map((_, i) => (
+      {[...Array(8)].map((_, i) => (
         <motion.div
           key={i}
           className="absolute"
@@ -54,61 +56,94 @@ const LoadingAnimation = () => (
           animate={{
             opacity: [0, 1, 0],
             scale: [0, 1, 0],
-            x: Math.random() * 200,
-            y: Math.random() * 200,
+            x: Math.random() * 300 - 150,
+            y: Math.random() * 300 - 150,
           }}
           transition={{
-            duration: 2,
+            duration: 3,
             repeat: Infinity,
-            delay: i * 0.4,
+            delay: i * 0.3,
             ease: "easeInOut",
           }}
         >
-          <Sparkles className="w-3 h-3 text-primary" />
+          <div className="relative">
+            <Sparkles className="w-3 h-3 text-primary/40" />
+            <motion.div
+              className="absolute inset-0 blur-sm"
+              animate={{ 
+                opacity: [0.2, 0.5, 0.2],
+                scale: [0.8, 1.2, 0.8],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <Sparkles className="w-3 h-3 text-primary/20" />
+            </motion.div>
+          </div>
         </motion.div>
       ))}
     </div>
 
-    {/* Central Loading Indicator */}
-    <div className="absolute inset-0 backdrop-blur-[1px] bg-white/30 flex items-center justify-center">
+    {/* Enhanced Central Loading Indicator */}
+    <div className="absolute inset-0 backdrop-blur-[2px] bg-white/40 flex items-center justify-center">
       <motion.div
-        className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-primary/10
-                   border border-primary/20 shadow-xl backdrop-blur-xl"
+        className="flex items-center gap-4 px-8 py-4 rounded-2xl
+                   bg-gradient-to-br from-white/80 to-white/40
+                   border border-white/60 shadow-xl backdrop-blur-xl"
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="relative w-5 h-5">
+        {/* Animated Icon */}
+        <div className="relative w-6 h-6">
           <motion.div
             className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent"
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
           />
           <motion.div
-            className="absolute inset-0 rounded-full border-2 border-primary border-b-transparent opacity-50"
+            className="absolute inset-0 rounded-full border-2 border-primary/30 border-b-transparent"
             animate={{ rotate: -180 }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
           />
-        </div>
-        <div className="flex flex-col items-start">
-          <span className="text-sm font-medium text-primary">
-            AI is writing
-          </span>
           <motion.div
-            className="flex gap-1"
-            animate={{ opacity: [1, 0.5, 1] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
+            className="absolute inset-1 rounded-full bg-primary/10"
+            animate={{ scale: [0.8, 1.1, 0.8] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </div>
+        
+        {/* Text and Dots */}
+        <div className="flex flex-col items-start">
+          <motion.span 
+            className="text-sm font-medium bg-gradient-to-r from-primary to-primary/80 
+                       bg-clip-text text-transparent"
+            animate={{ opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 2, repeat: Infinity }}
           >
+            AI is writing
+          </motion.span>
+          <div className="flex gap-1">
             {[...Array(3)].map((_, i) => (
               <motion.span
                 key={i}
-                className="w-1 h-1 rounded-full bg-primary"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: i * 0.2, duration: 0.5, repeat: Infinity }}
+                className="w-1.5 h-1.5 rounded-full bg-primary/60"
+                animate={{ 
+                  scale: [1, 1.5, 1],
+                  opacity: [0.5, 1, 0.5],
+                }}
+                transition={{ 
+                  duration: 1,
+                  repeat: Infinity,
+                  delay: i * 0.2,
+                  ease: "easeInOut"
+                }}
               />
             ))}
-          </motion.div>
+          </div>
         </div>
       </motion.div>
     </div>

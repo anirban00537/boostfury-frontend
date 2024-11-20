@@ -134,6 +134,7 @@ export const useGenerateContentIdeas = () => {
     if (result.success) {
       setIdeas(result.data);
     }
+    processApiResponse(result);
     return result;
   };
   return { generateContentIdeas, loading, ideas };
