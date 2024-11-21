@@ -24,11 +24,13 @@ const LoadingAnimation = () => (
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: i * 0.2 }}
         >
-          <div className={`h-4 rounded-lg bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5
-                        ${i === 0 ? 'w-3/4' : i === 3 ? 'w-1/2' : 'w-full'}`}>
+          <div
+            className={`h-4 rounded-lg bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5
+                        ${i === 0 ? "w-3/4" : i === 3 ? "w-1/2" : "w-full"}`}
+          >
             <motion.div
               className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
-              animate={{ x: ['-100%', '100%'] }}
+              animate={{ x: ["-100%", "100%"] }}
               transition={{
                 duration: 2,
                 repeat: Infinity,
@@ -70,7 +72,7 @@ const LoadingAnimation = () => (
             <Sparkles className="w-3 h-3 text-primary/40" />
             <motion.div
               className="absolute inset-0 blur-sm"
-              animate={{ 
+              animate={{
                 opacity: [0.2, 0.5, 0.2],
                 scale: [0.8, 1.2, 0.8],
               }}
@@ -115,10 +117,10 @@ const LoadingAnimation = () => (
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           />
         </div>
-        
+
         {/* Text and Dots */}
         <div className="flex flex-col items-start">
-          <motion.span 
+          <motion.span
             className="text-sm font-medium bg-gradient-to-r from-primary to-primary/80 
                        bg-clip-text text-transparent"
             animate={{ opacity: [0.7, 1, 0.7] }}
@@ -131,15 +133,15 @@ const LoadingAnimation = () => (
               <motion.span
                 key={i}
                 className="w-1.5 h-1.5 rounded-full bg-primary/60"
-                animate={{ 
+                animate={{
                   scale: [1, 1.5, 1],
                   opacity: [0.5, 1, 0.5],
                 }}
-                transition={{ 
+                transition={{
                   duration: 1,
                   repeat: Infinity,
                   delay: i * 0.2,
-                  ease: "easeInOut"
+                  ease: "easeInOut",
                 }}
               />
             ))}
@@ -198,9 +200,11 @@ export const AIWritingPreview = ({
       {/* Enhanced Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200/80 
+          <div
+            className="w-10 h-10 rounded-lg
                          border border-gray-300/40 shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]
-                         flex items-center justify-center">
+                         flex items-center justify-center"
+          >
             <Wand2 className="h-5 w-5 text-gray-700" />
           </div>
           <div>
@@ -278,10 +282,12 @@ export const AIWritingPreview = ({
       </div>
 
       {/* Enhanced Content Area */}
-      <div className="relative rounded-xl overflow-hidden 
+      <div
+        className="relative rounded-xl overflow-hidden 
                     border-t-gray-200/60 border-l-gray-200/60 
                     border-r-gray-300/70 border-b-gray-400/70
-                    shadow-[4px_4px_10px_rgba(0,0,0,0.08),_-2px_-2px_6px_rgba(255,255,255,0.8)]">
+                    shadow-[4px_4px_10px_rgba(0,0,0,0.08),_-2px_-2px_6px_rgba(255,255,255,0.8)]"
+      >
         {isGenerating ? (
           <LoadingAnimation />
         ) : content ? (
@@ -298,10 +304,12 @@ export const AIWritingPreview = ({
               </div>
             </div>
             <div className="absolute bottom-4 right-4">
-              <div className="flex items-center gap-1.5 text-[10px] font-medium 
+              <div
+                className="flex items-center gap-1.5 text-[10px] font-medium 
                             bg-gradient-to-br from-gray-700 to-gray-800 text-white
                             px-2 py-1 rounded-full border border-gray-600/50
-                            shadow-[0_1px_2px_rgba(0,0,0,0.1)]">
+                            shadow-[0_1px_2px_rgba(0,0,0,0.1)]"
+              >
                 <Sparkles className="h-3 w-3" />
                 AI Enhanced
               </div>
@@ -315,11 +323,13 @@ export const AIWritingPreview = ({
                      border-2 border-dashed border-gray-200/80 rounded-xl p-8 
                      bg-gradient-to-br from-white via-gray-50/50 to-gray-100/30"
           >
-            <div className="w-14 h-14 mb-4 rounded-xl 
+            <div
+              className="w-14 h-14 mb-4 rounded-xl 
                           bg-gradient-to-br from-gray-100 to-gray-200/80
                           border border-gray-300/40 
                           shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]
-                          flex items-center justify-center">
+                          flex items-center justify-center"
+            >
               <Wand2 className="h-7 w-7 text-gray-700" />
             </div>
             <h3 className="text-base font-medium text-gray-900 mb-1">

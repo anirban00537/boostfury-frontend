@@ -81,21 +81,21 @@ const Pricing = () => {
 
   return (
     <div className="flex flex-col h-full bg-gradient-to-b from-white to-blue-50/30 text-gray-800 overflow-y-auto">
-      {/* Header Section */}
-      <div className="flex-shrink-0 p-12 text-center max-w-3xl mx-auto">
-        <h2 className="text-4xl font-bold mb-4 text-gray-900 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+      {/* Header Section - Updated padding for mobile */}
+      <div className="flex-shrink-0 p-6 sm:p-12 text-center max-w-3xl mx-auto">
+        <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-gray-900 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
           Choose Your Perfect Plan
         </h2>
-        <p className="text-lg text-gray-600 mb-3 max-w-2xl mx-auto">
+        <p className="text-base sm:text-lg text-gray-600 mb-3 max-w-2xl mx-auto px-4 sm:px-0">
           Get started with the features you need today and upgrade as you grow
         </p>
-        <p className="text-sm text-gray-500 max-w-xl mx-auto">
+        <p className="text-sm text-gray-500 max-w-xl mx-auto px-4 sm:px-0">
           All plans include core features like AI writing assistance, LinkedIn integration, and premium support
         </p>
 
-        {/* Billing Toggle */}
-        <div className="flex justify-center items-center gap-4 mt-8 mb-4">
-          <span className="text-sm font-medium text-gray-600">Monthly</span>
+        {/* Billing Toggle - Updated for mobile */}
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8 mb-4">
+          <span className="text-sm font-medium text-gray-600 hidden sm:block">Monthly</span>
           <div className="bg-white p-1 rounded-lg inline-flex shadow-[0_2px_8px_-3px_rgba(0,0,0,0.1)] border border-blue-100">
             <button
               className={`px-6 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
@@ -118,7 +118,7 @@ const Pricing = () => {
               Yearly
             </button>
           </div>
-          <span className="text-sm font-medium text-gray-600">Yearly</span>
+          <span className="text-sm font-medium text-gray-600 hidden sm:block">Yearly</span>
         </div>
         {selectedPlan === "yearly" && (
           <p className="text-sm text-blue-600 font-medium mt-2">
@@ -127,10 +127,10 @@ const Pricing = () => {
         )}
       </div>
 
-      {/* Plans Grid */}
-      <div className="flex-grow flex items-start justify-center gap-6 px-4 pb-12">
+      {/* Plans Grid - Updated for responsive layout */}
+      <div className="flex-grow flex flex-col md:flex-row items-start justify-center gap-6 px-4 pb-12">
         {currentPackages.map((plan: Package) => (
-          <div key={plan.id} className="w-full max-w-sm">
+          <div key={plan.id} className="w-full md:w-auto md:max-w-sm">
             <div className={cn(
               "bg-white rounded-2xl overflow-hidden h-full border transition-all duration-200",
               "hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.12)] hover:border-blue-200/60",
@@ -138,7 +138,7 @@ const Pricing = () => {
                 ? "shadow-[0_4px_24px_-4px_rgba(0,0,0,0.08)] border-blue-200"
                 : "shadow-[0_4px_12px_-4px_rgba(0,0,0,0.05)] border-gray-200"
             )}>
-              <div className="relative p-8">
+              <div className="relative p-6 sm:p-8">
                 {plan.id === "pro" && (
                   <div className="absolute top-6 right-6">
                     <span className="inline-flex items-center gap-1 bg-gradient-to-r from-blue-500 to-indigo-600 
@@ -150,7 +150,7 @@ const Pricing = () => {
                 )}
                 
                 <div className="flex flex-col h-full">
-                  <h3 className="text-2xl font-bold mb-2 text-gray-900">
+                  <h3 className="text-xl sm:text-2xl font-bold mb-2 text-gray-900">
                     {plan.name}
                   </h3>
                   <p className="text-sm text-gray-600 mb-6">{plan.description}</p>
@@ -193,7 +193,7 @@ const Pricing = () => {
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-8">
+              <div className="bg-gray-50 p-6 sm:p-8">
                 <h4 className="font-semibold mb-4 text-gray-900 flex items-center gap-2">
                   <Check className="w-5 h-5 text-blue-500" />
                   Everything you get:

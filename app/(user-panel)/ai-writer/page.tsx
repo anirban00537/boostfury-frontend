@@ -272,7 +272,7 @@ const ContentCreationTools: React.FC = () => {
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
                 >
-                  <div className="relative overflow-hidden rounded-2xl border border-gray-200/50 bg-white shadow-md shadow-gray-100/50 hover:shadow-lg hover:shadow-gray-200/50 transition-shadow duration-200">
+                  <div className="relative overflow-hidden rounded-2xl border border-gray-200/50 bg-slate-100 shadow-md shadow-gray-100/50 hover:shadow-lg hover:shadow-gray-200/50 transition-shadow duration-200">
                     <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-transparent" />
                     <div className="relative p-8">
                       <AIWritingPreview

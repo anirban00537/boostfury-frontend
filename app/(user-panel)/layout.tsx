@@ -12,7 +12,7 @@ export default function DashboardLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen relative">
+    <div className="flex h-screen">
       <Button
         variant="ghost"
         size="icon"
@@ -29,18 +29,20 @@ export default function DashboardLayout({
         />
       )}
 
-      <div className={`
-        fixed inset-y-0 left-0 z-40
-        transform transition-transform duration-300 ease-in-out
-        lg:translate-x-0 lg:static
-        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-      `}>
+      <div
+        className={`
+          fixed top-0 left-0 h-screen z-50
+          transform transition-transform duration-300 ease-in-out
+          lg:relative lg:translate-x-0
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}
+      >
         <Sidebar onClose={() => setIsSidebarOpen(false)} />
       </div>
 
-      <div className="flex-1 ">
-        <main>
-          <div className="px-4 sm:px-6 py-8">{children}</div>
+      <div className="flex-1  w-full">
+        <main className="h-screen overflow-y-auto">
+          <div className="px-4 sm:px-6 py-8 pt-16 lg:pt-8">{children}</div>
         </main>
       </div>
     </div>

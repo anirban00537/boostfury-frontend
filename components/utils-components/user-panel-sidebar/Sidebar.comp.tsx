@@ -267,10 +267,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   return (
     <div
       className="w-[280px] sm:w-72 h-screen flex flex-col 
-                bg-gradient-to-b from-[#F1F5FF] via-[#F8FAFF] to-[#E8EFFF] 
+                bg-slate-200
                 border-r border-blue-100/60
                 shadow-[4px_0_24px_-2px_rgba(0,0,0,0.05)]
-                relative z-10"
+                relative z-10
+                flex-shrink-0"
     >
       {/* Close button for mobile */}
       <button

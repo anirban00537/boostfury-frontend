@@ -157,7 +157,7 @@ export const ContentInput = ({
   return (
     <div className="space-y-6">
       {/* Main Content Area */}
-      <div className="rounded-2xl border-none bg-white overflow-hidden">
+      <div className="rounded-2xl border-none bg-slate-200 overflow-hidden">
         <div className="relative p-6 space-y-6">
           {/* Decorative Background */}
           <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-white pointer-events-none" />
@@ -191,8 +191,7 @@ export const ContentInput = ({
               value={contentSource === "plain-prompt" ? content : undefined}
               onChange={onTextChange}
               className="w-full min-h-[120px] p-4 rounded-xl
-                       bg-gray-50/50 backdrop-blur-sm
-                       border border-gray-200 hover:border-primary/20
+                       bg-gradient-to-br from-white to-gray-50/50 backdrop-blur-sm border border-gray-200 hover:border-primary/20
                        focus:border-primary/30 focus:ring-4 focus:ring-primary/10
                        placeholder:text-gray-400 text-gray-600
                        text-sm leading-relaxed resize-none outline-none
@@ -229,7 +228,7 @@ export const ContentInput = ({
                     transition-all duration-200 hover:scale-[1.02]
                     ${tone === postTone 
                       ? `${config.activeColor} shadow-lg` 
-                      : 'bg-white hover:bg-gray-50/80 border-gray-200 hover:border-gray-300'
+                      : 'bg-slate-100 hover:bg-gray-50/80 border-gray-200 hover:border-gray-300'
                     }
                   `}
                 >
