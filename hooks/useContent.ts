@@ -124,20 +124,71 @@ export const useContentPosting = () => {
 
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (postDetails?.linkedInProfile?.id) {
-      // If post has a linked profile, find and set it
-      const linkedProfile = linkedinProfiles.find(
-        (profile) => profile.id === postDetails.linkedInProfile.id
-      );
-      if (linkedProfile) {
-        setSelectedProfile(linkedProfile);
+  // First, declare the mutation
+  const { mutateAsync: createUpdateDraftMutation, isLoading: isCreatingDraft } =
+    useMutation<DraftResponse, Error, CreateDraftPostType>({
+      mutationFn: createDraft,
+    });
+
+  // Single declaration of debouncedSaveDraft
+  const debouncedSaveDraft = useCallback(
+    debounce(async (draftData: Omit<CreateDraftPostType, "workspaceId">) => {
+      console.log('debouncedSaveDraft called with:', draftData);
+      
+      if (!currentWorkspace?.id) {
+        console.log('Aborting save: No workspace');
+        return;
       }
-    } else if (linkedinProfiles.length > 0 && !selectedProfile) {
-      // Only set first profile if no profile is selected
-      setSelectedProfile(linkedinProfiles[0]);
+      if (!draftData.linkedInProfileId) {
+        console.log('Aborting save: No LinkedIn profile');
+        return;
+      }
+      if (!draftId) {
+        console.log('Aborting save: No draft ID');
+        return;
+      }
+
+      try {
+        console.log('Starting auto-save...');
+        setIsAutoSaving(true);
+        
+        const saveData = {
+          ...draftData,
+          workspaceId: currentWorkspace.id,
+          id: draftId,
+        };
+        console.log('Saving draft with data:', saveData);
+
+        const response = await createUpdateDraftMutation(saveData);
+        console.log('Save response:', response);
+      } catch (error) {
+        console.error("Auto-save error:", error);
+      } finally {
+        setIsAutoSaving(false);
+        console.log('Auto-save complete');
+      }
+    }, 1500),
+    [currentWorkspace?.id, createUpdateDraftMutation, draftId]
+  );
+
+  // Create the profile selection handler
+  const handleProfileSelection = useCallback((profile: LinkedInProfileUI | null) => {
+    console.log('Setting profile:', profile);
+    setSelectedProfile(profile);
+
+    if (profile && draftId) {
+      console.log('Triggering save after profile selection');
+      debouncedSaveDraft({
+        content: content || "",
+        postType: "text",
+        linkedInProfileId: profile.id,
+        videoUrl: videoUrl || "",
+        documentUrl: documentUrl || "",
+        hashtags: hashtags || [],
+        mentions: mentions || [],
+      });
     }
-  }, [linkedinProfiles, postDetails]);
+  }, [draftId, content, videoUrl, documentUrl, hashtags, mentions, debouncedSaveDraft]);
 
   const { isLoading: isLoadingDraft } = useQuery(
     ["draftDetails", draftId],
@@ -147,43 +198,33 @@ export const useContentPosting = () => {
       onSuccess: (response) => {
         if (response.success) {
           const post = response.data.post;
+          console.log('Draft loaded:', post);
 
-          // Set all available fields from the draft
-          setContent(post.content);
+          // Set all draft data at once
+          setContent(post.content || "");
           setPostDetails(post);
+          setImageUrls(post.imageUrls || []);
+          setVideoUrl(post.videoUrl || "");
+          setDocumentUrl(post.documentUrl || "");
+          setHashtags(post.hashtags || []);
+          setMentions(post.mentions || []);
+          setScheduledDate(post.scheduledTime ? new Date(post.scheduledTime) : null);
 
-          // Set media fields
-          if (post.imageUrls) {
-            setImageUrls(post.imageUrls);
-          }
-          if (post.videoUrl) {
-            setVideoUrl(post.videoUrl);
-          }
-          if (post.documentUrl) {
-            setDocumentUrl(post.documentUrl);
-          }
-
-          // Set metadata fields
-          if (post.hashtags) {
-            setHashtags(post.hashtags);
-          }
-          if (post.mentions) {
-            setMentions(post.mentions);
-          }
-
-          // Set LinkedIn profile if available
+          // Handle profile selection
           if (post.linkedInProfile?.id) {
             const linkedProfile = linkedinProfiles.find(
-              (profile) => profile.id === post.linkedInProfile.id
+              (profile) => profile.id === post.linkedInProfile?.id
             );
             if (linkedProfile) {
-              setSelectedProfile(linkedProfile);
+              console.log('Setting profile from post');
+              handleProfileSelection(linkedProfile);
+            } else if (linkedinProfiles.length > 0) {
+              console.log('Setting default profile (post profile not found)');
+              handleProfileSelection(linkedinProfiles[0]);
             }
-          }
-
-          // Set scheduled date if available
-          if (post.scheduledTime) {
-            setScheduledDate(new Date(post.scheduledTime));
+          } else if (linkedinProfiles.length > 0) {
+            console.log('Setting default profile (no post profile)');
+            handleProfileSelection(linkedinProfiles[0]);
           }
         }
       },
@@ -193,11 +234,6 @@ export const useContentPosting = () => {
       },
     }
   );
-
-  const { mutateAsync: createUpdateDraftMutation, isLoading: isCreatingDraft } =
-    useMutation<DraftResponse, Error, CreateDraftPostType>({
-      mutationFn: createDraft,
-    });
 
   const { mutateAsync: postNowMutation, isLoading: isPosting } = useMutation({
     mutationFn: postNow,
@@ -239,29 +275,26 @@ export const useContentPosting = () => {
     });
 
   // Update upload mutation with correct types
-  const { mutateAsync: uploadImageMutation, isLoading: isUploading } = useMutation<
-    UploadImageResponse,
-    Error,
-    UploadImageVariables
-  >(
-    // First argument is the mutation function
-    ({ file, postId }) => uploadImage(postId, file),
-    // Second argument is the options object
-    {
-      onSuccess: (response) => {
-        if (response.success) {
-          const newImage = response.data.image;
-          setImages(prev => [...prev, newImage]);
-          setImageUrls(prev => [...prev, newImage.imageUrl]);
-          toast.success('Image uploaded successfully');
-        }
-      },
-      onError: (error) => {
-        toast.error(error.message || 'Failed to upload image');
-        console.error('Upload error:', error);
-      },
-    }
-  );
+  const { mutateAsync: uploadImageMutation, isLoading: isUploading } =
+    useMutation<UploadImageResponse, Error, UploadImageVariables>(
+      // First argument is the mutation function
+      ({ file, postId }) => uploadImage(postId, file),
+      // Second argument is the options object
+      {
+        onSuccess: (response) => {
+          if (response.success) {
+            const newImage = response.data.image;
+            setImages((prev) => [...prev, newImage]);
+            setImageUrls((prev) => [...prev, newImage.imageUrl]);
+            toast.success("Image uploaded successfully");
+          }
+        },
+        onError: (error) => {
+          toast.error(error.message || "Failed to upload image");
+          console.error("Upload error:", error);
+        },
+      }
+    );
 
   // Update delete mutation with proper typing
   const { mutateAsync: deleteImageMutation } = useMutation<
@@ -278,22 +311,24 @@ export const useContentPosting = () => {
       onSuccess: async (response, variables) => {
         if (response.success) {
           // Remove image from local state
-          setImages(prev => prev.filter(img => img.id !== variables.imageId));
-          setImageUrls(prev => 
+          setImages((prev) =>
+            prev.filter((img) => img.id !== variables.imageId)
+          );
+          setImageUrls((prev) =>
             prev.filter((_, index) => images[index].id !== variables.imageId)
           );
-          
+
           // Refetch post details to get updated image list
           if (draftId) {
             await queryClient.invalidateQueries(["draftDetails", draftId]);
           }
-          
-          toast.success('Image deleted successfully');
+
+          toast.success("Image deleted successfully");
         }
       },
       onError: (error) => {
-        toast.error(error.message || 'Failed to delete image');
-        console.error('Delete error:', error);
+        toast.error(error.message || "Failed to delete image");
+        console.error("Delete error:", error);
       },
     }
   );
@@ -315,21 +350,19 @@ export const useContentPosting = () => {
       onSuccess: (response, variables) => {
         if (response.success) {
           const { imageIds } = variables;
-          const newImages = imageIds.map(id => 
-            images.find(img => img.id === id)!
+          const newImages = imageIds.map(
+            (id) => images.find((img) => img.id === id)!
           );
           setImages(newImages);
-          setImageUrls(newImages.map(img => img.imageUrl));
+          setImageUrls(newImages.map((img) => img.imageUrl));
         }
       },
       onError: (error) => {
-        toast.error(error.message || 'Failed to reorder images');
-        console.error('Reorder error:', error);
+        toast.error(error.message || "Failed to reorder images");
+        console.error("Reorder error:", error);
       },
     }
   );
-
-
 
   // Keep the original handleCreateUpdateDraft
   const handleCreateUpdateDraft = useCallback(
@@ -384,39 +417,6 @@ export const useContentPosting = () => {
     ]
   );
 
-  // Create debounced function
-  const debouncedSaveDraft = useCallback(
-    debounce(async (draftData: Omit<CreateDraftPostType, "workspaceId">) => {
-      if (
-        !draftData.content.trim() ||
-        !currentWorkspace?.id ||
-        !draftData.linkedInProfileId ||
-        !draftId
-      )
-        return;
-
-      try {
-        setIsAutoSaving(true);
-        const response = await createUpdateDraftMutation({
-          ...draftData,
-          workspaceId: currentWorkspace.id,
-          id: draftId,
-        });
-
-        if (!draftId && response.data?.post?.id) {
-          const newUrl = new URL(window.location.href);
-          newUrl.searchParams.set("draft_id", response.data.post.id.toString());
-          window.history.replaceState({}, "", newUrl.toString());
-        }
-      } catch (error) {
-        console.error("Auto-save error:", error);
-      } finally {
-        setIsAutoSaving(false);
-      }
-    }, 1500),
-    [currentWorkspace?.id, createUpdateDraftMutation, draftId]
-  );
-
   // Add cleanup
   useEffect(() => {
     // Cleanup function to cancel any pending debounced saves
@@ -431,11 +431,11 @@ export const useContentPosting = () => {
       setContent(newContent);
 
       // Only trigger debounced save if we have a draftId
-      if (draftId && selectedProfile?.id) {
+      if (draftId) {
         debouncedSaveDraft({
           content: newContent,
           postType: "text",
-          linkedInProfileId: selectedProfile.id,
+          linkedInProfileId: selectedProfile?.id || "",
           videoUrl,
           documentUrl,
           hashtags,
@@ -567,8 +567,6 @@ export const useContentPosting = () => {
           return;
         }
 
-     
-
         // Show posting feedback
         toast.loading("Publishing post...", { id: "posting" });
 
@@ -590,56 +588,60 @@ export const useContentPosting = () => {
 
   // Effect to save draft on initial load and when dependencies change
   useEffect(() => {
-    if (selectedProfile?.id && content.trim()) {
+    if (content.trim()) {
       debouncedSaveDraft({
         content: content,
         postType: "text",
-        linkedInProfileId: selectedProfile.id,
+        linkedInProfileId: selectedProfile?.id || "",
         videoUrl: "",
         documentUrl: documentUrl || "",
         hashtags: [],
         mentions: [],
       });
     }
-  }, [
-    content,
-    selectedProfile?.id,
-    imageUrls,
-    documentUrl,
-  ]);
+  }, [content, selectedProfile?.id, imageUrls, documentUrl]);
 
-  const handleImageUpload = useCallback(async (file: File, postId: string): Promise<boolean> => {
-    try {
-      await uploadImageMutation({ file, postId });
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }, [uploadImageMutation]);
+  const handleImageUpload = useCallback(
+    async (file: File, postId: string): Promise<boolean> => {
+      try {
+        await uploadImageMutation({ file, postId });
+        return true;
+      } catch (error) {
+        return false;
+      }
+    },
+    [uploadImageMutation]
+  );
 
-  const handleImageDelete = useCallback(async (postId: string, imageId: string) => {
-    try {
-      await deleteImageMutation({ postId, imageId });
-    } catch (error) {
-      console.error('Error deleting image:', error);
-    }
-  }, [deleteImageMutation]);
+  const handleImageDelete = useCallback(
+    async (postId: string, imageId: string) => {
+      try {
+        await deleteImageMutation({ postId, imageId });
+      } catch (error) {
+        console.error("Error deleting image:", error);
+      }
+    },
+    [deleteImageMutation]
+  );
 
-  const handleImageReorder = useCallback(async (postId: string, imageIds: string[]) => {
-    try {
-      await reorderImagesMutation({ postId, imageIds });
-    } catch (error) {
-      console.error('Reorder error:', error);
-      toast.error('Failed to reorder images');
-    }
-  }, [reorderImagesMutation]);
+  const handleImageReorder = useCallback(
+    async (postId: string, imageIds: string[]) => {
+      try {
+        await reorderImagesMutation({ postId, imageIds });
+      } catch (error) {
+        console.error("Reorder error:", error);
+        toast.error("Failed to reorder images");
+      }
+    },
+    [reorderImagesMutation]
+  );
 
   // Add this effect after your other effects
   useEffect(() => {
-    // Only trigger initial save if we have content and a profile
-    if (draftId && selectedProfile?.id && content.trim()) {
+    if (!isLoadingDraft && draftId && selectedProfile?.id && content.trim()) {
+      console.log('Content/Profile changed, saving draft');
       debouncedSaveDraft({
-        content: content,
+        content: content.trim(),
         postType: "text",
         linkedInProfileId: selectedProfile.id,
         videoUrl: videoUrl || "",
@@ -648,17 +650,27 @@ export const useContentPosting = () => {
         mentions: mentions || [],
       });
     }
-  }, [
-    // Only run this effect when these dependencies change
-    draftId,
-    selectedProfile?.id,
-    content,
-    debouncedSaveDraft,
-    videoUrl,
-    documentUrl,
-    hashtags,
-    mentions,
-  ]);
+  }, [content, selectedProfile?.id, videoUrl, documentUrl, hashtags, mentions]);
+
+  // Add effect specifically for profile selection
+  useEffect(() => {
+    if (draftId && selectedProfile?.id) {
+      console.log('Profile selected, triggering save:', {
+        profileId: selectedProfile.id,
+        content,
+      });
+      
+      debouncedSaveDraft({
+        content: content || "", // Allow empty content
+        postType: "text",
+        linkedInProfileId: selectedProfile.id,
+        videoUrl: videoUrl || "",
+        documentUrl: documentUrl || "",
+        hashtags: hashtags || [],
+        mentions: mentions || [],
+      });
+    }
+  }, [selectedProfile]); // Only trigger on profile changes
 
   return {
     // State
@@ -682,7 +694,7 @@ export const useContentPosting = () => {
     handleCreateDraftFromGenerated,
     handlePostNow,
     isPosting,
-    setSelectedProfile,
+    setSelectedProfile: handleProfileSelection,
     clearSelectedProfile,
     handleCreateUpdateDraft,
     // Add new state and handlers

@@ -186,7 +186,7 @@ const ComposePage = () => {
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto min-h-0">
-        {!selectedProfile ? (
+        {!linkedinProfiles.length ? (
           // No LinkedIn Profile Error State (Centered in scrollable area)
           <div className="h-full flex items-center justify-center p-4 sm:p-6">
             <div className="rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-red-100 p-12 max-w-2xl">
