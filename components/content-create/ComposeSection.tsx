@@ -20,7 +20,6 @@ import {
   Video,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import FileUploadModal from "../editor/file_upload_modal/file-Upload-Modal.comp";
 import { X } from "lucide-react";
 
 interface ComposeSectionProps {
@@ -118,8 +117,10 @@ export const ComposeSection = ({
   };
 
   return (
-    <div className="flex flex-col bg-gray-50/95 backdrop-blur-sm rounded-2xl overflow-hidden 
-                    border border-primary/10 shadow-[0_8px_40px_rgb(var(--primary-rgb),0.08)]">
+    <div
+      className="flex flex-col bg-gray-50/95 backdrop-blur-sm rounded-2xl overflow-hidden 
+                    border border-primary/10 shadow-[0_8px_40px_rgb(var(--primary-rgb),0.08)]"
+    >
       {/* Editor Header */}
       <div className="px-6 py-4 border-b border-primary/5 bg-gray-50/95">
         <div className="flex items-center justify-between">
@@ -151,12 +152,16 @@ export const ComposeSection = ({
       </div>
 
       {/* Editor Toolbar */}
-      <div className="px-6 py-3 border-b border-primary/5 flex items-center justify-between 
-                    bg-gray-50/95">
+      <div
+        className="px-6 py-3 border-b border-primary/5 flex items-center justify-between 
+                    bg-gray-50/95"
+      >
         <div className="flex items-center gap-2">
           {/* Media Tools */}
-          <div className="flex items-center gap-1 p-1 bg-white/80 rounded-lg 
-                        border border-primary/10 shadow-sm">
+          <div
+            className="flex items-center gap-1 p-1 bg-white/80 rounded-lg 
+                        border border-primary/10 shadow-sm"
+          >
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -357,8 +362,10 @@ export const ComposeSection = ({
           >
             {isPosting ? (
               <>
-                <span className="w-4 h-4 border-2 border-current border-t-transparent 
-                              rounded-full animate-spin" />
+                <span
+                  className="w-4 h-4 border-2 border-current border-t-transparent 
+                              rounded-full animate-spin"
+                />
                 Publishing...
               </>
             ) : (
@@ -377,12 +384,6 @@ export const ComposeSection = ({
         onClose={() => setIsScheduleModalOpen(false)}
         onSchedule={onSchedule}
         isScheduling={isPosting}
-      />
-
-      <FileUploadModal
-        isOpen={isImageModalOpen}
-        onClose={() => setIsImageModalOpen(false)}
-        onImageSelect={handleImageSelect}
       />
     </div>
   );

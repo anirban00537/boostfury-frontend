@@ -35,12 +35,7 @@ import { cn } from "@/lib/utils";
 import SubscriptionInfo from "@/components/subscription/Status.comp";
 import ManageWorkspacesModal from "../../workspace/Manage-Workspaces-Modal.comp";
 import { LucideIcon } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+
 import { GradientButton } from "@/components/ui/gradient-button";
 import { motion } from "framer-motion";
 import { useContentPosting } from "@/hooks/useContent";
@@ -67,7 +62,6 @@ interface BaseNavigationItem {
   description?: string;
 }
 
-// Define specific types for each section
 type ToolItem = BaseNavigationItem & {
   shortcut: string;
 };

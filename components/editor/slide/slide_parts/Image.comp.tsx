@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import FileUploadModal from "../../file_upload_modal/file-Upload-Modal.comp";
 import { Slide } from "@/types";
 import useCarousel from "@/hooks/useCarousel";
 import { ImagePlus, X } from "lucide-react";
@@ -85,11 +84,6 @@ const Image: React.FC<ImageProps> = ({ imageUrl, index, updateSlide }) => {
           <ImagePlus size={48} color="rgba(128, 128, 128, 0.5)" />
         )}
       </div>
-      <FileUploadModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onImageSelect={handleImageSelect}
-      />
     </>
   );
 };

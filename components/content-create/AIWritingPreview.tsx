@@ -208,7 +208,7 @@ export const AIWritingPreview = ({
             <Wand2 className="h-5 w-5 text-gray-700" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
+            <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
             <div className="flex items-center gap-2 mt-0.5">
               <div className="w-1 h-1 rounded-full bg-gray-300" />
               <span className="text-xs text-gray-500">

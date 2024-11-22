@@ -20,7 +20,7 @@ export const ContentIdeas = ({
   const { currentWorkspace } = useSelector((state: RootState) => state.user);
   
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-gray-200/50 bg-white shadow-md">
+    <div className="relative overflow-hidden rounded-2xl border border-gray-200/50 bg-slate-100 shadow-md">
       {/* Enhanced Decorative Elements */}
       <div className="absolute inset-0 bg-grid-black/[0.02]" />
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-purple-50/30" />
