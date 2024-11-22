@@ -31,6 +31,7 @@ export interface Post {
   user: PostUser;
   postLogs: PostLog[];
   workspace: Workspace;
+  images: LinkedInPostImage[];
 }
 
 export interface PostGroup<T extends Post = Post> {
@@ -77,7 +78,6 @@ export interface CreateDraftParams {
   postType?: PostContentType;
   workspaceId?: string;
   linkedInProfileId?: string | null;
-  imageUrls?: string[] | null;
   videoUrl?: string | null;
   documentUrl?: string | null;
   hashtags?: string[] | null;
@@ -162,4 +162,21 @@ export interface Workspace {
 export interface SchedulePostType {
   scheduledTime: string;
   timezone: string;
+}
+
+export interface LinkedInPostImage {
+  id: string;
+  postId: string;
+  imageUrl: string;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UploadImageResponse {
+  success: boolean;
+  message: string;
+  data: {
+    image: LinkedInPostImage;
+  };
 }

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback, Dispatch, SetStateAction } from "react";
 import { Button } from "../ui/button";
 import { Send, Clock, Sparkles, HelpCircle } from "lucide-react";
 import { ScheduleModal } from "./ScheduleModal";
@@ -21,12 +21,15 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
+import { ImageUploadModal } from './ImageUploadModal';
+import { useContentPosting } from '@/hooks/useContent';
+import Image from 'next/image';
 
 interface ComposeSectionProps {
   content: string;
-  setContent: (content: string) => void;
+  setContent: (newContent: string) => void;
   isGenerating: boolean;
-  setIsGenerating: (isGenerating: boolean) => void;
+  setIsGenerating: Dispatch<SetStateAction<boolean>>;
   isScheduleModalOpen: boolean;
   setIsScheduleModalOpen: (isOpen: boolean) => void;
   scheduledDate: Date | null;
@@ -40,6 +43,12 @@ interface ComposeSectionProps {
   isAutoSaving?: boolean;
   imageUrls: string[];
   onImageUrlsChange: (urls: string[]) => void;
+  postId: string;
+  handleImageUpload: (file: File, postId: string) => Promise<boolean>;
+  handleImageDelete: (postId: string, imageId: string) => Promise<void>;
+  handleImageReorder: (postId: string, imageIds: string[]) => Promise<void>;
+  isUploading: boolean;
+  imageOrder: string[];
 }
 
 const CHAR_LIMIT = 3000;
@@ -70,6 +79,12 @@ export const ComposeSection = ({
   isAutoSaving,
   imageUrls,
   onImageUrlsChange,
+  postId,
+  handleImageUpload,
+  handleImageDelete,
+  handleImageReorder,
+  isUploading,
+  imageOrder,
 }: ComposeSectionProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -115,6 +130,12 @@ export const ComposeSection = ({
     onImageUrlsChange([...imageUrls, url]);
     setIsImageModalOpen(false);
   };
+
+  // Create a memoized handler that includes postId
+  const handleImageUploadWithPostId = useCallback(
+    (file: File) => handleImageUpload(file, postId),
+    [handleImageUpload, postId]
+  );
 
   return (
     <div
@@ -295,25 +316,43 @@ export const ComposeSection = ({
       </div>
 
       {/* Image Preview Section */}
-      {imageUrls.length > 0 && (
-        <div className="px-6 py-4 border-t border-primary/5 bg-gray-50/95">
+      {((postDetails?.images && postDetails.images.length > 0) || imageUrls.length > 0) && (
+        <div className="px-6 py-4 border-t border-primary/5">
           <div className="flex flex-wrap gap-3">
-            {imageUrls.map((url, index) => (
-              <div key={index} className="relative group">
-                <img
-                  src={url}
-                  alt={`Uploaded image ${index + 1}`}
-                  className="w-24 h-24 object-cover rounded-lg 
-                         border border-primary/10 shadow-sm"
+            {/* Show images from postDetails */}
+            {postDetails?.images?.map((image) => (
+              <div key={image.id} className="relative group">
+                <Image
+                  src={image.imageUrl}
+                  alt="Uploaded image"
+                  width={100}
+                  height={100}
+                  className="rounded-lg object-cover border border-gray-200"
                 />
                 <button
-                  onClick={() => {
-                    const newUrls = imageUrls.filter((_, i) => i !== index);
-                    onImageUrlsChange(newUrls);
-                  }}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white 
-                         rounded-full p-1.5 opacity-0 group-hover:opacity-100 
-                         transition-all shadow-lg hover:bg-red-600"
+                  onClick={() => handleImageDelete(postId, image.id)}
+                  className="absolute -top-2 -right-2 p-1.5 bg-red-500 rounded-full text-white 
+                           hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+            
+            {/* Show images from imageUrls */}
+            {imageUrls.map((url, index) => (
+              <div key={`new-${index}`} className="relative group">
+                <Image
+                  src={url}
+                  alt={`New upload ${index + 1}`}
+                  width={100}
+                  height={100}
+                  className="rounded-lg object-cover border border-gray-200"
+                />
+                <button
+                  onClick={() => handleImageDelete(postId, imageOrder[index])}
+                  className="absolute -top-2 -right-2 p-1.5 bg-red-500 rounded-full text-white 
+                           hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -384,6 +423,13 @@ export const ComposeSection = ({
         onClose={() => setIsScheduleModalOpen(false)}
         onSchedule={onSchedule}
         isScheduling={isPosting}
+      />
+      <ImageUploadModal
+        isOpen={isImageModalOpen}
+        onClose={() => setIsImageModalOpen(false)}
+        onUploadSuccess={() => setIsImageModalOpen(false)}
+        handleImageUpload={handleImageUploadWithPostId}
+        isUploading={isUploading}
       />
     </div>
   );

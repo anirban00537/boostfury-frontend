@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import {
   createDraft,
   getPosts,
@@ -6,6 +6,9 @@ import {
   postNow,
   schedulePost,
   deletePost,
+  uploadImage,
+  deleteImage,
+  reorderImages,
 } from "@/services/content-posting";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
@@ -20,6 +23,8 @@ import {
   CreateDraftPostType,
   LinkedInProfileUI,
   SchedulePostType,
+  LinkedInPostImage,
+  UploadImageResponse,
 } from "@/types/post";
 import { toast } from "react-hot-toast";
 import { useState, useCallback, useEffect } from "react";
@@ -28,6 +33,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { processApiResponse } from "@/lib/functions";
 import debounce from "lodash/debounce";
 import { generateContentIdeasForWorkspace } from "@/services/ai-content";
+import { AxiosResponse } from "axios";
 
 interface DraftResponse {
   success: boolean;
@@ -39,6 +45,57 @@ interface DraftResponse {
     };
   };
 }
+
+// Define the response types
+interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
+interface UploadImageData {
+  image: LinkedInPostImage;
+}
+
+interface DeleteImageData {
+  success: boolean;
+}
+
+// Define the variables type
+type UploadImageVariables = {
+  file: File;
+  postId: string;
+};
+
+// Define response types
+interface DeleteImageResponse {
+  success: boolean;
+  message: string;
+  data: {
+    success: boolean;
+  };
+}
+
+// Define variable types
+type DeleteImageVariables = {
+  postId: string;
+  imageId: string;
+};
+
+// Define response type for reorder
+interface ReorderImagesResponse {
+  success: boolean;
+  message: string;
+  data: {
+    success: boolean;
+  };
+}
+
+// Define variable type for reorder
+type ReorderImagesVariables = {
+  postId: string;
+  imageIds: string[];
+};
 
 export const useContentPosting = () => {
   const searchParams = useSearchParams();
@@ -62,6 +119,10 @@ export const useContentPosting = () => {
   const [documentUrl, setDocumentUrl] = useState("");
   const [hashtags, setHashtags] = useState<string[]>([]);
   const [mentions, setMentions] = useState<string[]>([]);
+  const [imageOrder, setImageOrder] = useState<string[]>([]);
+  const [images, setImages] = useState<LinkedInPostImage[]>([]);
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (postDetails?.linkedInProfile?.id) {
@@ -177,6 +238,99 @@ export const useContentPosting = () => {
       },
     });
 
+  // Update upload mutation with correct types
+  const { mutateAsync: uploadImageMutation, isLoading: isUploading } = useMutation<
+    UploadImageResponse,
+    Error,
+    UploadImageVariables
+  >(
+    // First argument is the mutation function
+    ({ file, postId }) => uploadImage(postId, file),
+    // Second argument is the options object
+    {
+      onSuccess: (response) => {
+        if (response.success) {
+          const newImage = response.data.image;
+          setImages(prev => [...prev, newImage]);
+          setImageUrls(prev => [...prev, newImage.imageUrl]);
+          toast.success('Image uploaded successfully');
+        }
+      },
+      onError: (error) => {
+        toast.error(error.message || 'Failed to upload image');
+        console.error('Upload error:', error);
+      },
+    }
+  );
+
+  // Update delete mutation with proper typing
+  const { mutateAsync: deleteImageMutation } = useMutation<
+    DeleteImageResponse,
+    Error,
+    DeleteImageVariables,
+    unknown
+  >(
+    async ({ postId, imageId }) => {
+      const response = await deleteImage(postId, imageId);
+      return response.data;
+    },
+    {
+      onSuccess: async (response, variables) => {
+        if (response.success) {
+          // Remove image from local state
+          setImages(prev => prev.filter(img => img.id !== variables.imageId));
+          setImageUrls(prev => 
+            prev.filter((_, index) => images[index].id !== variables.imageId)
+          );
+          
+          // Refetch post details to get updated image list
+          if (draftId) {
+            await queryClient.invalidateQueries(["draftDetails", draftId]);
+          }
+          
+          toast.success('Image deleted successfully');
+        }
+      },
+      onError: (error) => {
+        toast.error(error.message || 'Failed to delete image');
+        console.error('Delete error:', error);
+      },
+    }
+  );
+
+  // Update reorder mutation with proper typing
+  const { mutateAsync: reorderImagesMutation } = useMutation<
+    ReorderImagesResponse,
+    Error,
+    ReorderImagesVariables,
+    unknown
+  >(
+    // First argument is the mutation function
+    async ({ postId, imageIds }) => {
+      const response = await reorderImages(postId, imageIds);
+      return response.data; // Extract the data from Axios response
+    },
+    // Second argument is the options object
+    {
+      onSuccess: (response, variables) => {
+        if (response.success) {
+          const { imageIds } = variables;
+          const newImages = imageIds.map(id => 
+            images.find(img => img.id === id)!
+          );
+          setImages(newImages);
+          setImageUrls(newImages.map(img => img.imageUrl));
+        }
+      },
+      onError: (error) => {
+        toast.error(error.message || 'Failed to reorder images');
+        console.error('Reorder error:', error);
+      },
+    }
+  );
+
+
+
   // Keep the original handleCreateUpdateDraft
   const handleCreateUpdateDraft = useCallback(
     async (linkedinProfileId: string) => {
@@ -199,7 +353,6 @@ export const useContentPosting = () => {
           postType: "text" as const,
           workspaceId: currentWorkspace.id,
           linkedInProfileId: linkedinProfileId,
-          imageUrls: [] as string[],
           videoUrl: "",
           documentUrl: "",
           hashtags: [] as string[],
@@ -283,7 +436,6 @@ export const useContentPosting = () => {
           content: newContent,
           postType: "text",
           linkedInProfileId: selectedProfile.id,
-          imageUrls,
           videoUrl,
           documentUrl,
           hashtags,
@@ -372,7 +524,6 @@ export const useContentPosting = () => {
       postType = "text",
       workspaceId = currentWorkspace?.id,
       linkedInProfileId,
-      imageUrls = [],
       videoUrl = "",
       documentUrl = "",
       hashtags = [],
@@ -389,7 +540,6 @@ export const useContentPosting = () => {
           postType,
           workspaceId,
           linkedInProfileId: linkedInProfileId || null,
-          imageUrls,
           videoUrl,
           documentUrl,
           hashtags,
@@ -445,7 +595,6 @@ export const useContentPosting = () => {
         content: content,
         postType: "text",
         linkedInProfileId: selectedProfile.id,
-        imageUrls: imageUrls || [],
         videoUrl: "",
         documentUrl: documentUrl || "",
         hashtags: [],
@@ -457,6 +606,58 @@ export const useContentPosting = () => {
     selectedProfile?.id,
     imageUrls,
     documentUrl,
+  ]);
+
+  const handleImageUpload = useCallback(async (file: File, postId: string): Promise<boolean> => {
+    try {
+      await uploadImageMutation({ file, postId });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }, [uploadImageMutation]);
+
+  const handleImageDelete = useCallback(async (postId: string, imageId: string) => {
+    try {
+      await deleteImageMutation({ postId, imageId });
+    } catch (error) {
+      console.error('Error deleting image:', error);
+    }
+  }, [deleteImageMutation]);
+
+  const handleImageReorder = useCallback(async (postId: string, imageIds: string[]) => {
+    try {
+      await reorderImagesMutation({ postId, imageIds });
+    } catch (error) {
+      console.error('Reorder error:', error);
+      toast.error('Failed to reorder images');
+    }
+  }, [reorderImagesMutation]);
+
+  // Add this effect after your other effects
+  useEffect(() => {
+    // Only trigger initial save if we have content and a profile
+    if (draftId && selectedProfile?.id && content.trim()) {
+      debouncedSaveDraft({
+        content: content,
+        postType: "text",
+        linkedInProfileId: selectedProfile.id,
+        videoUrl: videoUrl || "",
+        documentUrl: documentUrl || "",
+        hashtags: hashtags || [],
+        mentions: mentions || [],
+      });
+    }
+  }, [
+    // Only run this effect when these dependencies change
+    draftId,
+    selectedProfile?.id,
+    content,
+    debouncedSaveDraft,
+    videoUrl,
+    documentUrl,
+    hashtags,
+    mentions,
   ]);
 
   return {
@@ -495,6 +696,12 @@ export const useContentPosting = () => {
     handleDocumentUrlChange,
     handleHashtagsChange,
     handleMentionsChange,
+    handleImageUpload,
+    handleImageDelete,
+    handleImageReorder,
+    isUploading,
+    imageOrder,
+    images,
   };
 };
 

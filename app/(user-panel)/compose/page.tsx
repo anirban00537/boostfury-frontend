@@ -39,6 +39,11 @@ const ComposePage = () => {
     imageUrls,
     handleImageUrlsChange,
     documentUrl,
+    handleImageUpload,
+    handleImageDelete,
+    handleImageReorder,
+    isUploading,
+    images,
   } = useContentPosting();
 
   const handleProfileSelect = useCallback(
@@ -293,6 +298,12 @@ const ComposePage = () => {
                     isAutoSaving={isAutoSaving}
                     imageUrls={imageUrls}
                     onImageUrlsChange={handleImageUrlsChange}
+                    postId={postDetails?.id || ''}
+                    handleImageUpload={handleImageUpload}
+                    handleImageDelete={handleImageDelete}
+                    handleImageReorder={handleImageReorder}
+                    isUploading={isUploading}
+                    imageOrder={images.map(img => img.id)}
                   />
                 )}
               </div>
