@@ -9,6 +9,7 @@ import {
   uploadImage,
   deleteImage,
   reorderImages,
+  getScheduledQueue,
 } from "@/services/content-posting";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
@@ -96,6 +97,12 @@ type ReorderImagesVariables = {
   postId: string;
   imageIds: string[];
 };
+
+interface GetScheduledQueueParams {
+  workspace_id: string;
+  page: number;
+  pageSize: number;
+}
 
 export const useContentPosting = () => {
   const searchParams = useSearchParams();
@@ -849,5 +856,57 @@ export const useContentManagement = () => {
     pagination,
     handlePageChange,
     handleDeletePost,
+  };
+};
+
+export const useScheduledQueue = () => {
+  const { currentWorkspace } = useSelector((state: RootState) => state.user);
+  const [pagination, setPagination] = useState<PaginationState>({
+    currentPage: 1,
+    pageSize: 10,
+    totalCount: 0,
+    totalPages: 1,
+  });
+
+  const {
+    data: queueData,
+    isLoading: isLoadingQueue,
+    refetch: refetchQueue,
+  } = useQuery(
+    ["scheduledQueue", currentWorkspace?.id, pagination.currentPage],
+    () => {
+      if (!currentWorkspace?.id) {
+        throw new Error("No workspace selected");
+      }
+      
+      return getScheduledQueue({
+        workspace_id: currentWorkspace.id,
+        status: POST_STATUS.SCHEDULED,
+        page: pagination.currentPage,
+        pageSize: pagination.pageSize,
+      });
+    },
+    {
+      enabled: !!currentWorkspace?.id,
+      onError: (error) => {
+        toast.error("Failed to fetch scheduled queue");
+        console.error("Error fetching scheduled queue:", error);
+      },
+    }
+  );
+
+  const handlePageChange = useCallback((newPage: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      currentPage: newPage,
+    }));
+  }, []);
+
+  return {
+    queueData,
+    isLoadingQueue,
+    refetchQueue,
+    pagination,
+    handlePageChange,
   };
 };

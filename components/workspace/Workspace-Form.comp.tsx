@@ -47,13 +47,11 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({
         id: workspace.id,
         name: data.name.trim(),
         description: data.description.trim(),
-        personalAiVoice: workspace?.personalAiVoice || "",
       });
     } else {
       await createNewWorkspace({
         name: data.name.trim(),
         description: data.description.trim(),
-        personalAiVoice:  "",
       });
     }
     reset();

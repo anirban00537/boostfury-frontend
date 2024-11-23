@@ -4,11 +4,24 @@ import { motion } from "framer-motion";
 import { RootState } from "@/state/store";
 import { useSelector } from "react-redux";
 
+interface ContentIdea {
+  idea: string;
+}
+
+interface ContentIdeasResponse {
+  ideas: ContentIdea[];
+  tokenUsage: {
+    wordCount: number;
+    remainingTokens: number;
+    totalTokens: number;
+  };
+}
+
 interface ContentIdeasProps {
   loading: boolean;
-  ideas: any[];
+  ideas: ContentIdeasResponse | ContentIdea[];
   handleGenerateTopic: (id: string) => Promise<any>;
-  handleTopicSelect: (topic: any) => void;
+  handleTopicSelect: (topic: ContentIdea) => void;
 }
 
 export const ContentIdeas = ({
@@ -19,6 +32,15 @@ export const ContentIdeas = ({
 }: ContentIdeasProps) => {
   const { currentWorkspace } = useSelector((state: RootState) => state.user);
   
+  const ideasArray = Array.isArray(ideas) ? ideas : ideas?.ideas || [];
+  
+  console.log('ContentIdeas processed:', {
+    loading,
+    originalIdeas: ideas,
+    processedIdeas: ideasArray,
+    isArray: Array.isArray(ideasArray)
+  });
+
   return (
     <div className="relative overflow-hidden rounded-2xl border border-gray-200/50 bg-slate-100 shadow-md">
       {/* Enhanced Decorative Elements */}
@@ -82,7 +104,7 @@ export const ContentIdeas = ({
         {/* Enhanced Ideas Grid */}
         <div className="relative min-h-[240px] rounded-xl bg-gradient-to-br from-gray-50 via-white to-gray-50/80 
                       border border-gray-200/50 shadow-sm">
-          {!ideas || ideas.length === 0 ? (
+          {!ideasArray || ideasArray.length === 0 ? (
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -111,7 +133,7 @@ export const ContentIdeas = ({
             </motion.div>
           ) : (
             <div className="grid grid-cols-2 gap-4 p-4">
-              {ideas.map((topic: any, index: number) => (
+              {ideasArray.map((topic: ContentIdea, index: number) => (
                 <motion.button
                   key={index}
                   initial={{ opacity: 0, y: 20 }}

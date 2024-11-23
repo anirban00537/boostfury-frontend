@@ -24,6 +24,7 @@ import {
   Sparkles,
   X,
   LogOut,
+  Clock,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -94,26 +95,19 @@ const navigationItems: NavigationItem[] = [
     badge: "AI",
     badgeColor: "bg-gradient-to-r from-indigo-500 to-blue-500 text-white",
   },
-  // {
-  //   id: "carousel-editor",
-  //   name: "Carousel Editor",
-  //   icon: Layers,
-  //   href: "/carousel-editor",
-  //   badge: "New",
-  //   badgeColor: "bg-gradient-to-r from-green-500 to-emerald-500 text-white",
-  // },
-  // Management items
-  // {
-  //   id: "carousels",
-  //   name: "My Carousels",
-  //   icon: LayoutTemplate,
-  //   href: "/carousels",
-  // },
   {
     id: "my-posts",
     name: "My Posts",
     icon: Calendar,
     href: "/my-posts",
+  },
+  {
+    id: "post-queue",
+    name: "Post Queue",
+    icon: Clock,
+    href: "/post-queue",
+    badge: "New",
+    badgeColor: "bg-gradient-to-r from-green-500 to-emerald-500 text-white",
   },
   {
     id: "accounts",
@@ -122,12 +116,6 @@ const navigationItems: NavigationItem[] = [
     href: "/accounts",
     badge: "LinkedIn",
     badgeColor: "bg-gradient-to-r from-blue-500 to-blue-700 text-white",
-  },
-  {
-    id: "media",
-    name: "Media Manager",
-    icon: ImageIcon,
-    href: "/media",
   },
 ];
 
@@ -211,7 +199,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
         postType: "text",
         workspaceId: currentWorkspace?.id,
         linkedInProfileId: null,
-        imageUrls: [],
         videoUrl: "",
         documentUrl: "",
         hashtags: [],

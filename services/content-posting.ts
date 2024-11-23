@@ -81,3 +81,12 @@ export const reorderImages = async (postId: string, imageIds: string[]) => {
   );
   return response;
 };
+
+
+export const getScheduledQueue = async (data: GetPostsType) => {
+  const response = await request.get(
+    `/content-posting/scheduled-queue?workspace_id=${data.workspace_id}&page=${data.page}&pageSize=${data.pageSize}`
+  );
+  return response.data;
+};
+

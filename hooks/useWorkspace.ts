@@ -31,7 +31,6 @@ export const useWorkspaces = () => {
     {
       name: string;
       description: string;
-      personalAiVoice: string;
     }
   >(createWorkspace, {
     onSuccess: () => {
@@ -46,7 +45,6 @@ export const useWorkspaces = () => {
       id: string;
       name: string;
       description: string;
-      personalAiVoice: string;
     }
   >(updateWorkspaceService, {
     onSuccess: () => {

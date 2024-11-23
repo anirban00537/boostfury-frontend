@@ -9,6 +9,19 @@ import { useState, useEffect } from "react";
 import { useAuth } from "./useAuth";
 import { processApiResponse } from "@/lib/functions";
 
+interface ContentIdea {
+  idea: string;
+}
+
+interface ContentIdeasResponse {
+  ideas: ContentIdea[];
+  tokenUsage: {
+    wordCount: number;
+    remainingTokens: number;
+    totalTokens: number;
+  };
+}
+
 export const useGenerateLinkedInPosts = () => {
   const queryClient = useQueryClient();
   const { refetchSubscription } = useAuth();
@@ -123,9 +136,10 @@ export const useGenerateLinkedInPosts = () => {
 };
 
 export const useGenerateContentIdeas = () => {
-  const queryClient = useQueryClient();
-  const [ideas, setIdeas] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [ideas, setIdeas] = useState<ContentIdeasResponse | null>(null);
+  const queryClient = useQueryClient();
+
   const generateContentIdeas = async (id: string) => {
     setLoading(true);
     const result = await generateContentIdeasForWorkspace(id);
@@ -137,5 +151,10 @@ export const useGenerateContentIdeas = () => {
     processApiResponse(result);
     return result;
   };
-  return { generateContentIdeas, loading, ideas };
+
+  return {
+    generateContentIdeas,
+    loading,
+    ideas: ideas?.ideas || [],
+  };
 };
