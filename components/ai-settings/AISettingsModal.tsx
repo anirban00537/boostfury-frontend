@@ -1,7 +1,7 @@
 "use client";
 import React, { useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Save, Plus, Tag, MessageSquare, Lightbulb } from "lucide-react";
+import { Save, Plus, Tag, MessageSquare, Lightbulb, Sparkles, Target, Users, PenLine } from "lucide-react";
 import toast from "react-hot-toast";
 import {
   Dialog,
@@ -20,17 +20,26 @@ import { useWorkspaceById } from "@/hooks/useWorkspace";
 import { updateWorkspace } from "@/services/workspace.service";
 import LoadingSection from "@/components/utils-components/loading/LoadingSection.comp";
 import { setPersonalAiVoice } from "@/state/slice/user.slice";
+import { motion } from "framer-motion";
 
 interface AISettingsModalProps {
   trigger: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export const AISettingsModal = ({ trigger }: AISettingsModalProps) => {
+export const AISettingsModal = ({ trigger, open, onOpenChange }: AISettingsModalProps) => {
   const [personalAiVoiceState, setPersonalAiVoiceState] = React.useState("");
-  const [open, setOpen] = React.useState(false);
+  const [internalOpen, setInternalOpen] = React.useState(false);
+  const isControlled = open !== undefined;
+  const isOpen = isControlled ? open : internalOpen;
+  const setIsOpen = isControlled ? onOpenChange : setInternalOpen;
   const { currentWorkspace } = useSelector((state: RootState) => state.user);
   const { data, isLoading } = useWorkspaceById();
   const dispatch = useDispatch();
+  const [characterCount, setCharacterCount] = React.useState(0);
+  const minRecommendedChars = 100;
+
   // Set initial values when data is loaded
   React.useEffect(() => {
     if (data?.data) {
@@ -51,71 +60,139 @@ export const AISettingsModal = ({ trigger }: AISettingsModalProps) => {
       if (response.success) {
         dispatch(setPersonalAiVoice(personalAiVoiceState));
         toast.success("AI settings saved successfully");
-        setOpen(false);
+        setIsOpen && setIsOpen(false);
       }
     } catch (error) {
       toast.error("Failed to save AI settings");
     }
   }, [currentWorkspace, personalAiVoiceState, dispatch]);
 
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setPersonalAiVoiceState(e.target.value);
+    setCharacterCount(e.target.value.length);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            Personalize Your Content Experience
-          </DialogTitle>
-          <DialogDescription className="text-base text-gray-600">
-            Help our AI understand you better to create more personalized
-            content
-          </DialogDescription>
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="space-y-3">
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center"
+          >
+            <Lightbulb className="h-6 w-6 text-primary" />
+          </motion.div>
+          <div className="space-y-1">
+            <DialogTitle className="text-xl font-semibold">
+              Your Content Focus
+            </DialogTitle>
+            <DialogDescription className="text-sm text-gray-500">
+              Tell AI what topics you're passionate about
+            </DialogDescription>
+          </div>
         </DialogHeader>
 
         {isLoading ? (
-          <div className="py-8">
+          <div className="py-6">
             <LoadingSection />
           </div>
         ) : (
           <>
-            <div className="grid gap-8 py-6">
-              {/* Professional Profile Section */}
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center">
-                      <MessageSquare className="h-4 w-4 text-primary" />
-                    </div>
-                    <h3 className="text-base font-semibold text-gray-900">
-                      Tell Us About Yourself
-                    </h3>
-                  </div>
-                  <p className="text-sm text-gray-600 leading-relaxed pl-10">
-                    Describe your professional background, role, and expertise.
-                    This helps our AI understand your perspective and create
-                    content that matches your professional voice.
-                  </p>
-                </div>
-                <textarea
-                  placeholder="Example: I am a digital marketing consultant with 5 years of experience in social media strategy and content creation. I help small businesses grow their online presence and specialize in B2B marketing..."
-                  className="w-full min-h-[150px] p-4 text-sm resize-none 
-                           border border-gray-200 rounded-xl
-                           focus:ring-2 focus:ring-primary/20 focus:border-primary
-                           placeholder:text-gray-400
-                           transition-all duration-200
-                           outline-none"
-                  value={personalAiVoiceState}
-                  onChange={(e) => setPersonalAiVoiceState(e.target.value)}
-                />
+            <div className="py-4 space-y-4">
+              {/* Topic Categories */}
+              <div className="grid grid-cols-3 gap-3">
+                <motion.div 
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.1 }}
+                  className="flex flex-col items-center p-3 rounded-xl bg-primary/5 border border-primary/10"
+                >
+                  <Target className="h-5 w-5 text-primary mb-2" />
+                  <span className="text-xs text-center text-gray-600">Topics & Expertise</span>
+                </motion.div>
+                <motion.div 
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="flex flex-col items-center p-3 rounded-xl bg-primary/5 border border-primary/10"
+                >
+                  <Users className="h-5 w-5 text-primary mb-2" />
+                  <span className="text-xs text-center text-gray-600">Target Audience</span>
+                </motion.div>
+                <motion.div 
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="flex flex-col items-center p-3 rounded-xl bg-primary/5 border border-primary/10"
+                >
+                  <PenLine className="h-5 w-5 text-primary mb-2" />
+                  <span className="text-xs text-center text-gray-600">Content Style</span>
+                </motion.div>
               </div>
+
+              {/* Textarea with character count */}
+              <div className="space-y-2">
+                <textarea
+                  placeholder="Example: I'm passionate about digital marketing, specifically social media strategy and content creation. I love discussing SEO techniques, email marketing campaigns, and marketing analytics..."
+                  className={`w-full min-h-[150px] p-4 text-sm resize-none 
+                           bg-gray-50/50 border rounded-xl
+                           focus:ring-2 focus:ring-primary/20 focus:outline-none
+                           transition-all duration-200
+                           ${characterCount < minRecommendedChars ? 'border-gray-200' : 'border-green-200'}`}
+                  value={personalAiVoiceState}
+                  onChange={handleTextChange}
+                />
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-gray-500">
+                    {characterCount < minRecommendedChars ? 
+                      `Add ${minRecommendedChars - characterCount} more characters for better results` :
+                      '✨ Great detail! This will help generate better content'}
+                  </span>
+                  <span className={`${characterCount < minRecommendedChars ? 'text-gray-400' : 'text-green-500'}`}>
+                    {characterCount} characters
+                  </span>
+                </div>
+              </div>
+              
+              {/* Tips section */}
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="space-y-2 bg-gray-50 p-4 rounded-xl border border-gray-200/50"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="h-4 w-4 text-primary" />
+                  <h4 className="text-sm font-medium text-gray-900">Tips for better results</h4>
+                </div>
+                <ul className="text-xs text-gray-600 space-y-2">
+                  <li className="flex items-start gap-2">
+                    <span className="w-1 h-1 mt-1.5 rounded-full bg-primary/60" />
+                    <span>Describe your main topics (e.g., "digital marketing, SEO, social media")</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="w-1 h-1 mt-1.5 rounded-full bg-primary/60" />
+                    <span>Mention your audience (e.g., "small business owners, startups")</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="w-1 h-1 mt-1.5 rounded-full bg-primary/60" />
+                    <span>Include your tone preference (e.g., "professional but conversational")</span>
+                  </li>
+                </ul>
+              </motion.div>
             </div>
 
-            {/* Footer */}
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-end">
               <Button
                 onClick={handleSave}
-                className="h-10 px-6 rounded-xl bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white 
-                        transition-all duration-200 shadow-sm hover:shadow-md"
+                disabled={characterCount === 0}
+                className={`h-9 px-4 rounded-lg transition-all duration-200
+                          ${characterCount === 0 ? 
+                            'bg-gray-100 text-gray-400' : 
+                            'bg-primary hover:bg-primary/90 text-white'}`}
                 variant="outline"
               >
                 <Save className="h-4 w-4 mr-2" />

@@ -16,6 +16,9 @@ import { Button } from "@/components/ui/button";
 import { useScheduledQueue } from "@/hooks/useContent";
 import { format } from "date-fns";
 import { GradientButton } from "@/components/ui/gradient-button";
+import { QueueModal } from "@/components/queue/QueueModal";
+import { useCallback } from "react";
+import toast from "react-hot-toast";
 
 // Define interfaces for type safety
 interface PostImage {
@@ -44,6 +47,32 @@ export default function PostQueuePage() {
   const { queueData, isLoadingQueue } = useScheduledQueue();
   const posts = queueData?.data?.posts || [];
   const totalPosts = posts.length;
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const [modalMode, setModalMode] = React.useState<'add' | 'edit'>('add');
+  const [selectedPost, setSelectedPost] = React.useState<Post | null>(null);
+
+  const handleOpenModal = useCallback((mode: 'add' | 'edit', post?: Post) => {
+    setModalMode(mode);
+    setSelectedPost(post || null);
+    setModalOpen(true);
+  }, []);
+
+  const handleSaveQueue = async (data: any) => {
+    try {
+      // Here you would implement your API call to save/update the post
+      if (modalMode === 'add') {
+        // Add new post
+        toast.success('Post scheduled successfully');
+      } else {
+        // Update existing post
+        toast.success('Post updated successfully');
+      }
+      // Refresh queue data
+      // You might want to implement a refetch function in your useScheduledQueue hook
+    } catch (error) {
+      toast.error('Failed to save changes');
+    }
+  };
 
   // Group posts by date
   const groupPostsByDate = (posts: Post[]): GroupedPosts => {
@@ -56,7 +85,7 @@ export default function PostQueuePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50/50">
+    <div className="min-h-screen ">
       <div className="px-4 sm:px-6 py-6">
         {/* Header */}
         <div className="mb-6">
@@ -82,6 +111,15 @@ export default function PostQueuePage() {
 
           {/* Action Buttons */}
           <div className="mt-4 flex justify-end gap-3">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="gap-2"
+              onClick={() => handleOpenModal('add')}
+            >
+              <PenSquare className="h-4 w-4" />
+              Add to Queue
+            </Button>
             <Button variant="outline" size="sm" className="gap-2">
               <RefreshCw className="h-4 w-4" />
               Re-Queue
@@ -90,14 +128,6 @@ export default function PostQueuePage() {
               <Shuffle className="h-4 w-4" />
               Shuffle
             </Button>
-            <GradientButton
-              variant="primary"
-              leftIcon={<PenSquare className="h-4 w-4" />}
-              size="sm"
-              className="gap-2"
-            >
-              Edit queue
-            </GradientButton>
           </div>
         </div>
 
@@ -134,15 +164,16 @@ export default function PostQueuePage() {
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8"
+                              onClick={() => handleOpenModal('edit', post)}
                             >
-                              <Eye className="h-4 w-4 text-gray-500" />
+                              <PenSquare className="h-4 w-4 text-gray-500" />
                             </Button>
                             <Button
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8"
                             >
-                              <ExternalLink className="h-4 w-4 text-gray-500" />
+                              <Eye className="h-4 w-4 text-gray-500" />
                             </Button>
                           </div>
                         </div>
@@ -189,6 +220,15 @@ export default function PostQueuePage() {
             ))}
           </div>
         )}
+
+        {/* Queue Modal */}
+        <QueueModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          mode={modalMode}
+          post={selectedPost}
+          onSave={handleSaveQueue}
+        />
       </div>
     </div>
   );
