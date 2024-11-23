@@ -46,7 +46,6 @@ export const AISettingsModal = ({ trigger }: AISettingsModalProps) => {
         id: currentWorkspace.id,
         name: currentWorkspace.name,
         description: currentWorkspace.description || "",
-        personalAiVoice: personalAiVoiceState || "",
       });
       console.log(response, "response");
       if (response.success) {
