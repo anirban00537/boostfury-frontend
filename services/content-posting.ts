@@ -5,6 +5,8 @@ import {
   GetPostsType,
   SchedulePostType,
   UploadImageResponse,
+  TimeSlotDto,
+  TimeSlotGroup,
 } from "@/types/post";
 
 export const createDraft = async (data: CreateDraftPostType) => {
@@ -86,6 +88,24 @@ export const reorderImages = async (postId: string, imageIds: string[]) => {
 export const getScheduledQueue = async (data: GetPostsType) => {
   const response = await request.get(
     `/content-posting/scheduled-queue?workspace_id=${data.workspace_id}&page=${data.page}&pageSize=${data.pageSize}`
+  );
+  return response.data;
+};
+
+export const getTimeSlots = async (workspaceId: string) => {
+  const response = await request.get(
+    `/content-posting/workspaces/${workspaceId}/time-slots`
+  );
+  return response.data;
+};
+
+export const updateTimeSlots = async (
+  workspaceId: string, 
+  data: { timeSlots: TimeSlotGroup[] }
+) => {
+  const response = await request.post(
+    `/content-posting/workspaces/${workspaceId}/time-slots`,
+    data
   );
   return response.data;
 };

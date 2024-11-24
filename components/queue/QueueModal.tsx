@@ -16,12 +16,41 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { ALL_TIMES, TIME_GROUPS, POPULAR_TIMES, TimeOption } from "@/lib/constants/times";
+import {
+  ALL_TIMES,
+  TIME_GROUPS,
+  POPULAR_TIMES,
+  TimeOption,
+} from "@/lib/constants/times";
 import { TimeSelect } from "@/components/ui/time-select";
+import { useWorkspaces } from "@/hooks/useWorkspace";
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import { getTimeSlots, updateTimeSlots } from "@/services/content-posting";
+import toast from "react-hot-toast";
+import { RootState } from "@/state/store";
+import { useSelector } from "react-redux";
 
 interface TimeSlot {
   id: string;
   time: string;
+}
+
+interface SlotInfo {
+  dayOfWeek: number;
+  isActive: boolean;
+}
+
+interface TimeSlotGroup {
+  time: string;
+  slots: SlotInfo[];
+}
+
+interface TimeSlotResponse {
+  success: boolean;
+  message: string;
+  data: {
+    timeSlots: TimeSlotGroup[];
+  };
 }
 
 interface QueueModalProps {
@@ -32,6 +61,10 @@ interface QueueModalProps {
   onSave: (data: any) => void;
 }
 
+export interface UpdateTimeSlotsRequest {
+  timeSlots: TimeSlotGroup[];
+}
+
 export const QueueModal = ({
   isOpen,
   onClose,
@@ -39,6 +72,8 @@ export const QueueModal = ({
   post,
   onSave,
 }: QueueModalProps) => {
+  const queryClient = useQueryClient();
+  const { currentWorkspace } = useSelector((state: RootState) => state.user);
   const [selectedSlots, setSelectedSlots] = React.useState<{
     [key: string]: boolean;
   }>({});
@@ -49,6 +84,54 @@ export const QueueModal = ({
   const [showHelp, setShowHelp] = React.useState(true);
 
   const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+  // Fetch existing time slots
+  const { data: timeSlotsData, isLoading } = useQuery<TimeSlotResponse>(
+    ["timeSlots", currentWorkspace?.id],
+    () => getTimeSlots(currentWorkspace?.id || ""),
+    {
+      enabled: !!currentWorkspace?.id,
+      onSuccess: (response) => {
+        // Ensure data exists
+        if (!response?.data?.timeSlots) {
+          return;
+        }
+
+        // Convert API data to component state format
+        const convertedSlots: { [key: string]: boolean } = {};
+        const uniqueTimes: TimeSlot[] = [];
+
+        response.data.timeSlots.forEach((group, index) => {
+          const timeSlotId = (index + 1).toString();
+          uniqueTimes.push({ id: timeSlotId, time: group.time });
+
+          group.slots.forEach(slot => {
+            const day = weekDays[slot.dayOfWeek];
+            convertedSlots[`${day}-${timeSlotId}`] = slot.isActive;
+          });
+        });
+
+        setSelectedSlots(convertedSlots);
+        setTimeSlots(uniqueTimes);
+      },
+    }
+  );
+
+  // Update time slots mutation
+  const { mutate: updateTimeSlotsMutation } = useMutation(
+    (data: UpdateTimeSlotsRequest) => 
+      updateTimeSlots(currentWorkspace?.id || '', data),
+    {
+      onSuccess: () => {
+        toast.success('Schedule updated successfully');
+        queryClient.invalidateQueries(['timeSlots', currentWorkspace?.id]);
+        onClose();
+      },
+      onError: () => {
+        toast.error('Failed to update schedule');
+      },
+    }
+  );
 
   const addNewTimeSlot = () => {
     const newId = (timeSlots.length + 1).toString();
@@ -84,20 +167,20 @@ export const QueueModal = ({
   };
 
   const handleSave = () => {
-    const schedule = Object.entries(selectedSlots)
-      .filter(([_, selected]) => selected)
-      .map(([key, _]) => {
-        const [day, slotId] = key.split("-");
-        const slot = timeSlots.find((s) => s.id === slotId);
-        return {
-          day,
-          slotId,
-          time: slot?.time,
-        };
-      });
+    if (!currentWorkspace?.id) {
+      toast.error('No workspace selected');
+      return;
+    }
 
-    onSave(schedule);
-    onClose();
+    const formattedTimeSlots: TimeSlotGroup[] = timeSlots.map(timeSlot => ({
+      time: timeSlot.time,
+      slots: weekDays.map((day, index) => ({
+        dayOfWeek: index,
+        isActive: !!selectedSlots[`${day}-${timeSlot.id}`]
+      })).filter(slot => slot.isActive)
+    })).filter(group => group.slots.length > 0);
+
+    updateTimeSlotsMutation({ timeSlots: formattedTimeSlots });
   };
 
   // Calculate total selected slots
@@ -134,9 +217,15 @@ export const QueueModal = ({
               >
                 <Info className="h-4 w-4 flex-shrink-0 mt-0.5" />
                 <div className="space-y-1">
-                  <p>Select your preferred posting time and click on days to schedule posts.</p>
-                  <p>Click "Add Time Slot" to schedule posts for different times of the day.</p>
-                  <button 
+                  <p>
+                    Select your preferred posting time and click on days to
+                    schedule posts.
+                  </p>
+                  <p>
+                    Click "Add Time Slot" to schedule posts for different times
+                    of the day.
+                  </p>
+                  <button
                     onClick={() => setShowHelp(false)}
                     className="text-blue-600 hover:underline"
                   >
@@ -234,8 +323,8 @@ export const QueueModal = ({
             {totalSelectedSlots} time slots selected
           </p>
           <div className="flex gap-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               onClick={onClose}
               className="text-xs"
@@ -252,6 +341,12 @@ export const QueueModal = ({
             </Button>
           </div>
         </div>
+
+        {isLoading && (
+          <div className="flex items-center justify-center py-6">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

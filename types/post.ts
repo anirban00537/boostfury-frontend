@@ -180,3 +180,31 @@ export interface UploadImageResponse {
     image: LinkedInPostImage;
   };
 }
+
+export interface TimeSlotDto {
+  dayOfWeek: number;
+  time: string;
+  isActive: boolean;
+}
+
+export interface SlotInfo {
+  dayOfWeek: number;
+  isActive: boolean;
+}
+
+export interface TimeSlotGroup {
+  time: string;
+  slots: SlotInfo[];
+}
+
+export interface TimeSlotResponse {
+  success: boolean;
+  message: string;
+  data: {
+    timeSlots: TimeSlotGroup[];
+  };
+}
+
+export interface UpdateTimeSlotsRequest {
+  timeSlots: TimeSlotGroup[];
+}
