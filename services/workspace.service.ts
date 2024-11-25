@@ -36,3 +36,15 @@ export const getMyWorkspaceById = async ({
   );
   return response.data;
 };
+
+export const updateWorkspacePersonalAiVoice = async (data: {
+  id: string;
+  personalAiVoice: string;
+}) => {
+  const response = await request.post(
+    "/workspace/update-workspace-personal-ai-voice",
+    data
+  );
+  return response.data;
+};
+
