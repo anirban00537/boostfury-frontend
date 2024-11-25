@@ -117,3 +117,10 @@ export const addToQueue = async (postId: string, timeZone: string) => {
   return response.data;
 };
 
+export const shuffleQueue = async (workspaceId: string) => {
+  const response = await request.post('/content-posting/shuffle-queue', {
+    workspaceId,
+  });
+  return response.data;
+};
+

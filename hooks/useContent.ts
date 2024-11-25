@@ -11,6 +11,7 @@ import {
   reorderImages,
   getScheduledQueue,
   addToQueue,
+  shuffleQueue,
 } from "@/services/content-posting";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
@@ -524,7 +525,7 @@ export const useContentPosting = () => {
 
         const scheduleData = {
           scheduledTime: date.toISOString(),
-          timezone: 'Asia/Dhaka',
+          timezone: "Asia/Dhaka",
         };
 
         await schedulePostMutation({
@@ -705,8 +706,7 @@ export const useContentPosting = () => {
   // Add new mutation for adding to queue
   const { mutateAsync: addToQueueMutation, isLoading: isAddingToQueue } =
     useMutation({
-      mutationFn: (postId: string) => 
-        addToQueue(postId, 'Asia/Dhaka'),
+      mutationFn: (postId: string) => addToQueue(postId, "Asia/Dhaka"),
       onSuccess: (response) => {
         if (response.success) {
           toast.success("Post added to queue successfully!");
@@ -748,6 +748,23 @@ export const useContentPosting = () => {
     },
     [draftId, selectedProfile?.id, addToQueueMutation]
   );
+
+  const { mutateAsync: shuffleQueueMutation, isLoading: isShuffling } =
+    useMutation({
+      mutationFn: (workspaceId: string) => shuffleQueue(workspaceId),
+      onSuccess: (response) => {
+        if (response.success) {
+          // Refetch the queue data to show updated order
+          queryClient.invalidateQueries(["scheduledQueue"]);
+        } else {
+          toast.error(response.message || "Failed to shuffle queue");
+        }
+      },
+      onError: (error: Error) => {
+        toast.error(`Error shuffling queue: ${error.message}`);
+        console.error("Shuffle error:", error);
+      },
+    });
 
   return {
     // State
@@ -793,6 +810,8 @@ export const useContentPosting = () => {
     images,
     handleAddToQueue,
     isAddingToQueue,
+    shuffleQueue: (workspaceId: string) => shuffleQueueMutation(workspaceId),
+    isShuffling,
   };
 };
 

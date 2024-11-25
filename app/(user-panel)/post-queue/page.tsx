@@ -13,12 +13,18 @@ import {
   CalendarX,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useScheduledQueue } from "@/hooks/useContent";
+import {
+  useScheduledQueue,
+  useContentPosting,
+  useContentManagement,
+} from "@/hooks/useContent";
 import { format } from "date-fns";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { QueueModal } from "@/components/queue/QueueModal";
 import { useCallback } from "react";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { RootState } from "@/state/store";
 
 // Define interfaces for type safety
 interface PostImage {
@@ -44,14 +50,17 @@ interface GroupedPosts {
 }
 
 export default function PostQueuePage() {
-  const { queueData, isLoadingQueue } = useScheduledQueue();
+  const { currentWorkspace } = useSelector((state: RootState) => state.user);
+  const { queueData, isLoadingQueue, refetchQueue } = useScheduledQueue();
+  const { shuffleQueue, isShuffling } = useContentPosting();
+  const { refetchPosts } = useContentManagement();
   const posts = queueData?.data?.posts || [];
   const totalPosts = posts.length;
   const [modalOpen, setModalOpen] = React.useState(false);
-  const [modalMode, setModalMode] = React.useState<'add' | 'edit'>('add');
+  const [modalMode, setModalMode] = React.useState<"add" | "edit">("add");
   const [selectedPost, setSelectedPost] = React.useState<Post | null>(null);
 
-  const handleOpenModal = useCallback((mode: 'add' | 'edit', post?: Post) => {
+  const handleOpenModal = useCallback((mode: "add" | "edit", post?: Post) => {
     setModalMode(mode);
     setSelectedPost(post || null);
     setModalOpen(true);
@@ -60,17 +69,17 @@ export default function PostQueuePage() {
   const handleSaveQueue = async (data: any) => {
     try {
       // Here you would implement your API call to save/update the post
-      if (modalMode === 'add') {
+      if (modalMode === "add") {
         // Add new post
-        toast.success('Post scheduled successfully');
+        toast.success("Post scheduled successfully");
       } else {
         // Update existing post
-        toast.success('Post updated successfully');
+        toast.success("Post updated successfully");
       }
       // Refresh queue data
       // You might want to implement a refetch function in your useScheduledQueue hook
     } catch (error) {
-      toast.error('Failed to save changes');
+      toast.error("Failed to save changes");
     }
   };
 
@@ -82,6 +91,22 @@ export default function PostQueuePage() {
       acc[date].push(post);
       return acc;
     }, {});
+  };
+
+  const handleShuffleQueue = async () => {
+    if (!currentWorkspace?.id) {
+      toast.error("No workspace selected");
+      return;
+    }
+
+    try {
+      await shuffleQueue(currentWorkspace.id);
+      // Refetch both queue and scheduled posts
+      await Promise.all([refetchQueue(), refetchPosts()]);
+    } catch (error) {
+      console.error("Error shuffling queue:", error);
+      toast.error("Failed to shuffle queue");
+    }
   };
 
   return (
@@ -111,22 +136,26 @@ export default function PostQueuePage() {
 
           {/* Action Buttons */}
           <div className="mt-4 flex justify-end gap-3">
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="gap-2"
-              onClick={() => handleOpenModal('add')}
+              onClick={() => handleOpenModal("add")}
             >
               <PenSquare className="h-4 w-4" />
-              Add to Queue
+              Edit Preferred Time
             </Button>
-            <Button variant="outline" size="sm" className="gap-2">
-              <RefreshCw className="h-4 w-4" />
-              Re-Queue
-            </Button>
-            <Button variant="outline" size="sm" className="gap-2">
-              <Shuffle className="h-4 w-4" />
-              Shuffle
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              onClick={handleShuffleQueue}
+              disabled={isShuffling || totalPosts < 2}
+            >
+              <Shuffle
+                className={`h-4 w-4 ${isShuffling ? "animate-spin" : ""}`}
+              />
+              {isShuffling ? "Shuffling..." : "Shuffle"}
             </Button>
           </div>
         </div>
@@ -164,7 +193,7 @@ export default function PostQueuePage() {
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8"
-                              onClick={() => handleOpenModal('edit', post)}
+                              onClick={() => handleOpenModal("edit", post)}
                             >
                               <PenSquare className="h-4 w-4 text-gray-500" />
                             </Button>
