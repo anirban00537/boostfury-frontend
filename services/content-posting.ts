@@ -110,3 +110,10 @@ export const updateTimeSlots = async (
   return response.data;
 };
 
+export const addToQueue = async (postId: string, timeZone: string) => {
+  const response = await request.post(`/content-posting/add-to-queue/${postId}`, {
+    timeZone,
+  });
+  return response.data;
+};
+

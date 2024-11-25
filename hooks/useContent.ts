@@ -10,6 +10,7 @@ import {
   deleteImage,
   reorderImages,
   getScheduledQueue,
+  addToQueue,
 } from "@/services/content-posting";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
@@ -104,6 +105,15 @@ interface GetScheduledQueueParams {
   pageSize: number;
 }
 
+// Add new interface for queue response
+interface AddToQueueResponse {
+  success: boolean;
+  message: string;
+  data: {
+    success: boolean;
+  };
+}
+
 export const useContentPosting = () => {
   const searchParams = useSearchParams();
   const draftId = searchParams.get("draft_id");
@@ -140,62 +150,73 @@ export const useContentPosting = () => {
   // Single declaration of debouncedSaveDraft
   const debouncedSaveDraft = useCallback(
     debounce(async (draftData: Omit<CreateDraftPostType, "workspaceId">) => {
-      console.log('debouncedSaveDraft called with:', draftData);
-      
+      console.log("debouncedSaveDraft called with:", draftData);
+
       if (!currentWorkspace?.id) {
-        console.log('Aborting save: No workspace');
+        console.log("Aborting save: No workspace");
         return;
       }
       if (!draftData.linkedInProfileId) {
-        console.log('Aborting save: No LinkedIn profile');
+        console.log("Aborting save: No LinkedIn profile");
         return;
       }
       if (!draftId) {
-        console.log('Aborting save: No draft ID');
+        console.log("Aborting save: No draft ID");
         return;
       }
 
       try {
-        console.log('Starting auto-save...');
+        console.log("Starting auto-save...");
         setIsAutoSaving(true);
-        
+
         const saveData = {
           ...draftData,
           workspaceId: currentWorkspace.id,
           id: draftId,
         };
-        console.log('Saving draft with data:', saveData);
+        console.log("Saving draft with data:", saveData);
 
         const response = await createUpdateDraftMutation(saveData);
-        console.log('Save response:', response);
+        console.log("Save response:", response);
       } catch (error) {
         console.error("Auto-save error:", error);
       } finally {
         setIsAutoSaving(false);
-        console.log('Auto-save complete');
+        console.log("Auto-save complete");
       }
     }, 1500),
     [currentWorkspace?.id, createUpdateDraftMutation, draftId]
   );
 
   // Create the profile selection handler
-  const handleProfileSelection = useCallback((profile: LinkedInProfileUI | null) => {
-    console.log('Setting profile:', profile);
-    setSelectedProfile(profile);
+  const handleProfileSelection = useCallback(
+    (profile: LinkedInProfileUI | null) => {
+      console.log("Setting profile:", profile);
+      setSelectedProfile(profile);
 
-    if (profile && draftId) {
-      console.log('Triggering save after profile selection');
-      debouncedSaveDraft({
-        content: content || "",
-        postType: "text",
-        linkedInProfileId: profile.id,
-        videoUrl: videoUrl || "",
-        documentUrl: documentUrl || "",
-        hashtags: hashtags || [],
-        mentions: mentions || [],
-      });
-    }
-  }, [draftId, content, videoUrl, documentUrl, hashtags, mentions, debouncedSaveDraft]);
+      if (profile && draftId) {
+        console.log("Triggering save after profile selection");
+        debouncedSaveDraft({
+          content: content || "",
+          postType: "text",
+          linkedInProfileId: profile.id,
+          videoUrl: videoUrl || "",
+          documentUrl: documentUrl || "",
+          hashtags: hashtags || [],
+          mentions: mentions || [],
+        });
+      }
+    },
+    [
+      draftId,
+      content,
+      videoUrl,
+      documentUrl,
+      hashtags,
+      mentions,
+      debouncedSaveDraft,
+    ]
+  );
 
   const { isLoading: isLoadingDraft } = useQuery(
     ["draftDetails", draftId],
@@ -205,7 +226,7 @@ export const useContentPosting = () => {
       onSuccess: (response) => {
         if (response.success) {
           const post = response.data.post;
-          console.log('Draft loaded:', post);
+          console.log("Draft loaded:", post);
 
           // Set all draft data at once
           setContent(post.content || "");
@@ -215,7 +236,9 @@ export const useContentPosting = () => {
           setDocumentUrl(post.documentUrl || "");
           setHashtags(post.hashtags || []);
           setMentions(post.mentions || []);
-          setScheduledDate(post.scheduledTime ? new Date(post.scheduledTime) : null);
+          setScheduledDate(
+            post.scheduledTime ? new Date(post.scheduledTime) : null
+          );
 
           // Handle profile selection
           if (post.linkedInProfile?.id) {
@@ -223,14 +246,14 @@ export const useContentPosting = () => {
               (profile) => profile.id === post.linkedInProfile?.id
             );
             if (linkedProfile) {
-              console.log('Setting profile from post');
+              console.log("Setting profile from post");
               handleProfileSelection(linkedProfile);
             } else if (linkedinProfiles.length > 0) {
-              console.log('Setting default profile (post profile not found)');
+              console.log("Setting default profile (post profile not found)");
               handleProfileSelection(linkedinProfiles[0]);
             }
           } else if (linkedinProfiles.length > 0) {
-            console.log('Setting default profile (no post profile)');
+            console.log("Setting default profile (no post profile)");
             handleProfileSelection(linkedinProfiles[0]);
           }
         }
@@ -501,7 +524,7 @@ export const useContentPosting = () => {
 
         const scheduleData = {
           scheduledTime: date.toISOString(),
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          timezone: 'Asia/Dhaka',
         };
 
         await schedulePostMutation({
@@ -646,7 +669,7 @@ export const useContentPosting = () => {
   // Add this effect after your other effects
   useEffect(() => {
     if (!isLoadingDraft && draftId && selectedProfile?.id && content.trim()) {
-      console.log('Content/Profile changed, saving draft');
+      console.log("Content/Profile changed, saving draft");
       debouncedSaveDraft({
         content: content.trim(),
         postType: "text",
@@ -662,11 +685,11 @@ export const useContentPosting = () => {
   // Add effect specifically for profile selection
   useEffect(() => {
     if (draftId && selectedProfile?.id) {
-      console.log('Profile selected, triggering save:', {
+      console.log("Profile selected, triggering save:", {
         profileId: selectedProfile.id,
         content,
       });
-      
+
       debouncedSaveDraft({
         content: content || "", // Allow empty content
         postType: "text",
@@ -678,6 +701,53 @@ export const useContentPosting = () => {
       });
     }
   }, [selectedProfile]); // Only trigger on profile changes
+
+  // Add new mutation for adding to queue
+  const { mutateAsync: addToQueueMutation, isLoading: isAddingToQueue } =
+    useMutation({
+      mutationFn: (postId: string) => 
+        addToQueue(postId, 'Asia/Dhaka'),
+      onSuccess: (response) => {
+        if (response.success) {
+          toast.success("Post added to queue successfully!");
+          router.push("/my-posts?tab=scheduled");
+        } else {
+          toast.error(response.message || "Failed to add post to queue");
+        }
+      },
+      onError: (error: Error) => {
+        toast.error(`Error adding post to queue: ${error.message}`);
+        console.error("Queue error:", error);
+      },
+    });
+
+  // Add new handler for adding to queue
+  const handleAddToQueue = useCallback(
+    async (linkedinProfileId: string) => {
+      try {
+        if (!draftId) {
+          toast.error("No draft found to add to queue");
+          return;
+        }
+
+        if (!selectedProfile?.id) {
+          toast.error("Please select a LinkedIn profile");
+          return;
+        }
+
+        // Show queue feedback
+        toast.loading("Adding post to queue...", { id: "queueing" });
+
+        await addToQueueMutation(draftId);
+
+        toast.dismiss("queueing");
+      } catch (error) {
+        console.error("Error in handleAddToQueue:", error);
+        toast.error("Failed to add post to queue");
+      }
+    },
+    [draftId, selectedProfile?.id, addToQueueMutation]
+  );
 
   return {
     // State
@@ -721,6 +791,8 @@ export const useContentPosting = () => {
     isUploading,
     imageOrder,
     images,
+    handleAddToQueue,
+    isAddingToQueue,
   };
 };
 
@@ -878,7 +950,7 @@ export const useScheduledQueue = () => {
       if (!currentWorkspace?.id) {
         throw new Error("No workspace selected");
       }
-      
+
       return getScheduledQueue({
         workspace_id: currentWorkspace.id,
         status: POST_STATUS.SCHEDULED,

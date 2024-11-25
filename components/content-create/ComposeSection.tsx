@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback, Dispatch, SetStateAction } from "react";
 import { Button } from "../ui/button";
-import { Send, Clock, Sparkles, HelpCircle } from "lucide-react";
+import { Send, Clock, Sparkles, HelpCircle, ListPlus } from "lucide-react";
 import { ScheduleModal } from "./ScheduleModal";
 import {
   Tooltip,
@@ -49,6 +49,8 @@ interface ComposeSectionProps {
   handleImageReorder: (postId: string, imageIds: string[]) => Promise<void>;
   isUploading: boolean;
   imageOrder: string[];
+  onAddToQueue: (linkedinProfileId: string) => void;
+  isAddingToQueue: boolean;
 }
 
 const CHAR_LIMIT = 3000;
@@ -85,6 +87,8 @@ export const ComposeSection = ({
   handleImageReorder,
   isUploading,
   imageOrder,
+  onAddToQueue,
+  isAddingToQueue,
 }: ComposeSectionProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -136,6 +140,19 @@ export const ComposeSection = ({
     (file: File) => handleImageUpload(file, postId),
     [handleImageUpload, postId]
   );
+
+  const handleAddToQueue = async () => {
+    console.log("selectedLinkedInProfile?.id", selectedLinkedInProfile?.id);
+    if (selectedLinkedInProfile?.id && onAddToQueue && content.trim()) {
+      try {
+        await onAddToQueue(selectedLinkedInProfile.id);
+        // Optionally, you could add a success notification here
+      } catch (error) {
+        console.error('Error adding to queue:', error);
+        // Optionally, you could add an error notification here
+      }
+    }
+  };
 
   return (
     <div
@@ -365,17 +382,41 @@ export const ComposeSection = ({
       {/* Editor Footer */}
       <div className="px-6 py-4 border-t border-primary/5 bg-gray-50/95 backdrop-blur-sm">
         <div className="flex items-center justify-between">
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-9 px-4 gap-2 bg-white hover:bg-primary/5 
-                     transition-all hover:text-primary border-primary/20"
-            onClick={() => setIsScheduleModalOpen(true)}
-            disabled={!selectedLinkedInProfile || !content.trim()}
-          >
-            <Clock className="w-4 h-4" />
-            Schedule
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-9 px-4 gap-2 bg-white hover:bg-primary/5 
+                       transition-all hover:text-primary border-primary/20"
+              onClick={() => setIsScheduleModalOpen(true)}
+              disabled={!selectedLinkedInProfile || !content.trim()}
+            >
+              <Clock className="w-4 h-4" />
+              Schedule
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-9 px-4 gap-2 bg-white hover:bg-primary/5 
+                       transition-all hover:text-primary border-primary/20"
+              onClick={handleAddToQueue}
+              disabled={!selectedLinkedInProfile || !content.trim() || isAddingToQueue}
+            >
+              {isAddingToQueue ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-current border-t-transparent 
+                                rounded-full animate-spin" />
+                  Adding to Queue...
+                </>
+              ) : (
+                <>
+                  <ListPlus className="w-4 h-4" />
+                  Add to Queue
+                </>
+              )}
+            </Button>
+          </div>
 
           <Button
             variant="default"

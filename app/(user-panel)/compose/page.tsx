@@ -44,6 +44,8 @@ const ComposePage = () => {
     handleImageReorder,
     isUploading,
     images,
+    handleAddToQueue,
+    isAddingToQueue,
   } = useContentPosting();
 
   const handleProfileSelect = useCallback(
@@ -303,7 +305,9 @@ const ComposePage = () => {
                     handleImageDelete={handleImageDelete}
                     handleImageReorder={handleImageReorder}
                     isUploading={isUploading}
-                    imageOrder={images.map(img => img.id)}
+                    imageOrder={images.map((img) => img.id)}
+                    onAddToQueue={handleAddToQueue}
+                    isAddingToQueue={isAddingToQueue}
                   />
                 )}
               </div>
