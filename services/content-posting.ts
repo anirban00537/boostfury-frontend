@@ -11,7 +11,7 @@ import {
 
 export const createDraft = async (data: CreateDraftPostType) => {
   const response = await request.post(
-    "/content-posting/create-or-update-draft",
+    "/content-posting/create-or-update-post",
     data
   );
   return response.data;
@@ -25,7 +25,7 @@ export const getPosts = async (data: GetPostsType) => {
 };
 export const getDraftPostDetails = async (id: string) => {
   const response = await request.get(
-    `/content-posting/get-draft-post-details/${id}`
+    `/content-posting/get-draft-scheduled-post-details/${id}`
   );
   return response.data;
 };
@@ -84,7 +84,6 @@ export const reorderImages = async (postId: string, imageIds: string[]) => {
   return response;
 };
 
-
 export const getScheduledQueue = async (data: GetPostsType) => {
   const response = await request.get(
     `/content-posting/scheduled-queue?workspace_id=${data.workspace_id}&page=${data.page}&pageSize=${data.pageSize}`
@@ -100,7 +99,7 @@ export const getTimeSlots = async (workspaceId: string) => {
 };
 
 export const updateTimeSlots = async (
-  workspaceId: string, 
+  workspaceId: string,
   data: { timeSlots: TimeSlotGroup[] }
 ) => {
   const response = await request.post(
@@ -111,16 +110,18 @@ export const updateTimeSlots = async (
 };
 
 export const addToQueue = async (postId: string, timeZone: string) => {
-  const response = await request.post(`/content-posting/add-to-queue/${postId}`, {
-    timeZone,
-  });
+  const response = await request.post(
+    `/content-posting/add-to-queue/${postId}`,
+    {
+      timeZone,
+    }
+  );
   return response.data;
 };
 
 export const shuffleQueue = async (workspaceId: string) => {
-  const response = await request.post('/content-posting/shuffle-queue', {
+  const response = await request.post("/content-posting/shuffle-queue", {
     workspaceId,
   });
   return response.data;
 };
-

@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { Button } from "../ui/button";
 import { useContentPosting } from "@/hooks/useContent";
 import { useRouter } from "next/navigation";
+import { GradientButton } from "../ui/gradient-button";
 
 interface AIWritingPreviewProps {
   isGenerating: boolean;
@@ -94,7 +95,7 @@ const LoadingAnimation = () => (
       <motion.div
         className="flex items-center gap-4 px-8 py-4 rounded-2xl
                    bg-gradient-to-br from-white/80 to-white/40
-                   border border-white/60 shadow-xl backdrop-blur-xl"
+                   border border-white/60"
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.3 }}
@@ -202,7 +203,7 @@ export const AIWritingPreview = ({
         <div className="flex items-center gap-3">
           <div
             className="w-10 h-10 rounded-lg
-                         border border-gray-300/40 shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]
+                         border border-gray-300/40 
                          flex items-center justify-center"
           >
             <Wand2 className="h-5 w-5 text-gray-700" />
@@ -226,10 +227,11 @@ export const AIWritingPreview = ({
               exit={{ opacity: 0, x: -20 }}
               className="flex items-center gap-2"
             >
-              <Button
-                variant="ghost"
+              <GradientButton
+                variant="default"
                 size="sm"
                 onClick={handleCopy}
+                leftIcon={isCopied ? <Check size={24} /> : <Copy size={24} />}
                 className={`
                   h-8 gap-2 text-xs transition-all duration-200
                   border border-gray-200/60 shadow-[0_1px_1px_rgba(0,0,0,0.05)]
@@ -239,43 +241,23 @@ export const AIWritingPreview = ({
                       : "text-gray-600 hover:text-gray-900 bg-gradient-to-b from-white to-gray-50"
                   }
                 `}
-              >
-                {isCopied ? (
-                  <>
-                    <Check className="h-3.5 w-3.5" />
-                    Copied
-                  </>
-                ) : (
-                  <>
-                    <Copy className="h-3.5 w-3.5" />
-                    Copy
-                  </>
-                )}
-              </Button>
+              ></GradientButton>
 
-              <Button
-                variant="default"
+              <GradientButton
+                variant="primary"
                 size="sm"
                 onClick={handleSaveAndEdit}
                 disabled={isCreatingDraft}
-                className="h-8 gap-2 text-xs bg-gradient-to-br from-gray-700 to-gray-800 
-                         hover:from-gray-800 hover:to-gray-900 text-white
-                         border border-gray-600/50 shadow-[0_1px_2px_rgba(0,0,0,0.1)]
-                         active:shadow-[0_0px_1px_rgba(0,0,0,0.1)]"
+                leftIcon={
+                  isCreatingDraft ? (
+                    <div className="h-3 w-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Edit size={16} />
+                  )
+                }
               >
-                {isCreatingDraft ? (
-                  <>
-                    <div className="h-3.5 w-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <Edit className="h-3.5 w-3.5" />
-                    Save & Edit
-                    <ArrowRight className="h-3.5 w-3.5 ml-1" />
-                  </>
-                )}
-              </Button>
+                {isCreatingDraft ? <>Saving...</> : <>Save & Edit</>}
+              </GradientButton>
             </motion.div>
           )}
         </AnimatePresence>
@@ -306,9 +288,9 @@ export const AIWritingPreview = ({
             <div className="absolute bottom-4 right-4">
               <div
                 className="flex items-center gap-1.5 text-[10px] font-medium 
-                            bg-gradient-to-br from-gray-700 to-gray-800 text-white
+                            bg-gradient-to-br from-primary to-primary/80 text-white
                             px-2 py-1 rounded-full border border-gray-600/50
-                            shadow-[0_1px_2px_rgba(0,0,0,0.1)]"
+                            "
               >
                 <Sparkles className="h-3 w-3" />
                 AI Enhanced
@@ -327,7 +309,6 @@ export const AIWritingPreview = ({
               className="w-14 h-14 mb-4 rounded-xl 
                           bg-gradient-to-br from-gray-100 to-gray-200/80
                           border border-gray-300/40 
-                          shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]
                           flex items-center justify-center"
             >
               <Wand2 className="h-7 w-7 text-gray-700" />

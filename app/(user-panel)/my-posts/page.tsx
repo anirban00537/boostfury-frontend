@@ -84,7 +84,7 @@ const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange }) => {
       <div className="px-6 pt-6 pb-0">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">
+            <h1 className="text-4xl font-semibold text-gray-900 tracking-tight">
               Content Manager
             </h1>
             <p className="text-sm text-gray-500 mt-1">
@@ -96,7 +96,6 @@ const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange }) => {
             <Link href="/compose">
               <GradientButton
                 variant="primary"
-                size="sm"
                 leftIcon={<Plus className="w-4 h-4" />}
               >
                 Create New
@@ -105,7 +104,6 @@ const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange }) => {
             <Link href="/ai-writer">
               <GradientButton
                 variant="default"
-                size="sm"
                 leftIcon={<Plus className="w-4 h-4" />}
               >
                 Viral Post Generator
@@ -182,7 +180,7 @@ const ContentManager = () => {
     handleTabChange,
     pagination,
     handlePageChange,
-    handleDeletePost
+    handleDeletePost,
   } = useContentManagement();
 
   // Handle URL query params for active tab
@@ -377,17 +375,22 @@ const ContentManager = () => {
                 <div className="flex flex-col items-center justify-center py-16 px-4">
                   {/* Icon Container */}
                   <div className="w-16 h-16 mb-6 flex items-center justify-center text-gray-400">
-                    {postConfigs.find((config) => config.id === activeTab)?.icon && (
-                      <div className={`
+                    {postConfigs.find((config) => config.id === activeTab)
+                      ?.icon && (
+                      <div
+                        className={`
                         w-16 h-16 rounded-full flex items-center justify-center
-                        ${activeTab === 'failed' 
-                          ? 'bg-red-50 text-red-500' 
-                          : 'bg-primary/5 text-primary'
+                        ${
+                          activeTab === "failed"
+                            ? "bg-red-50 text-red-500"
+                            : "bg-primary/5 text-primary"
                         }
-                      `}>
+                      `}
+                      >
                         {React.cloneElement(
-                          postConfigs.find((config) => config.id === activeTab)?.icon as React.ReactElement,
-                          { className: 'w-8 h-8' }
+                          postConfigs.find((config) => config.id === activeTab)
+                            ?.icon as React.ReactElement,
+                          { className: "w-8 h-8" }
                         )}
                       </div>
                     )}
@@ -397,10 +400,14 @@ const ContentManager = () => {
                   <h3 className="text-xl font-semibold text-gray-900 mb-2 text-center">
                     {activeTab === "published"
                       ? "Ready to share your story?"
-                      : postConfigs.find((config) => config.id === activeTab)?.title}
+                      : postConfigs.find((config) => config.id === activeTab)
+                          ?.title}
                   </h3>
                   <p className="text-gray-500 text-center max-w-md mb-8">
-                    {postConfigs.find((config) => config.id === activeTab)?.emptyStateMessage}
+                    {
+                      postConfigs.find((config) => config.id === activeTab)
+                        ?.emptyStateMessage
+                    }
                   </p>
 
                   {/* Button */}

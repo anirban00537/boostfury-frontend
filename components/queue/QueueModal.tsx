@@ -29,6 +29,7 @@ import { getTimeSlots, updateTimeSlots } from "@/services/content-posting";
 import toast from "react-hot-toast";
 import { RootState } from "@/state/store";
 import { useSelector } from "react-redux";
+import { DAYS_OF_WEEK } from "@/lib/core-constants";
 
 interface TimeSlot {
   id: string;
@@ -83,7 +84,9 @@ export const QueueModal = ({
   const [isDragging, setIsDragging] = React.useState(false);
   const [showHelp, setShowHelp] = React.useState(true);
 
-  const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const weekDays = Object.entries(DAYS_OF_WEEK)
+    .sort((a, b) => a[1] - b[1])
+    .map(([key]) => key.slice(0, 3));
 
   // Fetch existing time slots
   const { data: timeSlotsData, isLoading } = useQuery<TimeSlotResponse>(
