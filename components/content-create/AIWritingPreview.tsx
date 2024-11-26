@@ -14,20 +14,20 @@ interface AIWritingPreviewProps {
 }
 
 const LoadingAnimation = () => (
-  <div className="relative min-h-[300px] p-6 bg-gradient-to-br from-white via-gray-50/80 to-gray-100/50">
-    {/* Shimmer Lines */}
-    <div className="space-y-4 relative">
+  <div className="relative min-h-[300px] p-8 bg-gradient-to-br from-white via-gray-50/95 to-gray-50/90">
+    {/* Enhanced Shimmer Lines */}
+    <div className="space-y-6 relative">
       {[...Array(4)].map((_, i) => (
         <motion.div
           key={i}
           className="relative"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: i * 0.2 }}
+          transition={{ delay: i * 0.12 }}
         >
           <div
-            className={`h-4 rounded-lg bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5
-                        ${i === 0 ? "w-3/4" : i === 3 ? "w-1/2" : "w-full"}`}
+            className={`h-3.5 rounded-full bg-gradient-to-r from-primary/3 via-primary/6 to-primary/3
+                        ${i === 0 ? "w-3/5" : i === 3 ? "w-2/5" : "w-4/5"}`}
           >
             <motion.div
               className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
@@ -44,61 +44,15 @@ const LoadingAnimation = () => (
       ))}
     </div>
 
-    {/* Enhanced Floating Sparkles */}
-    <div className="absolute inset-0 overflow-hidden">
-      {[...Array(8)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute"
-          initial={{
-            opacity: 0,
-            scale: 0,
-            x: Math.random() * 100,
-            y: Math.random() * 100,
-          }}
-          animate={{
-            opacity: [0, 1, 0],
-            scale: [0, 1, 0],
-            x: Math.random() * 300 - 150,
-            y: Math.random() * 300 - 150,
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            delay: i * 0.3,
-            ease: "easeInOut",
-          }}
-        >
-          <div className="relative">
-            <Sparkles className="w-3 h-3 text-primary/40" />
-            <motion.div
-              className="absolute inset-0 blur-sm"
-              animate={{
-                opacity: [0.2, 0.5, 0.2],
-                scale: [0.8, 1.2, 0.8],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            >
-              <Sparkles className="w-3 h-3 text-primary/20" />
-            </motion.div>
-          </div>
-        </motion.div>
-      ))}
-    </div>
-
-    {/* Enhanced Central Loading Indicator */}
-    <div className="absolute inset-0 backdrop-blur-[2px] bg-white/40 flex items-center justify-center">
+    {/* Refined Loading Indicator */}
+    <div className="absolute inset-0 backdrop-blur-[2px] bg-white/70 flex items-center justify-center">
       <motion.div
-        className="flex items-center gap-4 px-8 py-4 rounded-2xl
-                   bg-gradient-to-br from-white/80 to-white/40
-                   border border-white/60"
-        initial={{ scale: 0.9, opacity: 0 }}
+        className="flex items-center gap-5 px-10 py-5 rounded-2xl
+                   bg-gradient-to-br from-white/95 to-white/80
+                   border border-primary/5"
+        initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.4 }}
       >
         {/* Animated Icon */}
         <div className="relative w-6 h-6">
@@ -197,22 +151,26 @@ export const AIWritingPreview = ({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Enhanced Header */}
+    <div className="space-y-7">
+      {/* Refined Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-5">
           <div
-            className="w-10 h-10 rounded-lg
-                         border border-gray-300/40 
-                         flex items-center justify-center"
+            className="w-12 h-12 rounded-xl
+                       bg-gradient-to-br from-gray-50/95 to-white
+                       border border-primary/5
+                       flex items-center justify-center
+                       transition-colors duration-200 group"
           >
-            <Wand2 className="h-5 w-5 text-gray-700" />
+            <Wand2 className="h-5 w-5 text-primary/70 group-hover:text-primary/90 transition-colors duration-200" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-            <div className="flex items-center gap-2 mt-0.5">
-              <div className="w-1 h-1 rounded-full bg-gray-300" />
-              <span className="text-xs text-gray-500">
+            <h3 className="text-lg font-semibold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+              {title}
+            </h3>
+            <div className="flex items-center gap-2 mt-1">
+              <div className="w-1 h-1 rounded-full bg-primary/20" />
+              <span className="text-xs text-gray-500 font-medium">
                 {content.length} characters
               </span>
             </div>
@@ -222,26 +180,26 @@ export const AIWritingPreview = ({
         <AnimatePresence>
           {content && !isGenerating && (
             <motion.div
+              className="flex items-center gap-3.5"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              className="flex items-center gap-2"
             >
               <GradientButton
                 variant="default"
                 size="sm"
                 onClick={handleCopy}
-                leftIcon={isCopied ? <Check size={24} /> : <Copy size={24} />}
+                leftIcon={isCopied ? <Check size={18} /> : <Copy size={18} />}
                 className={`
-                  h-8 gap-2 text-xs transition-all duration-200
-                  border border-gray-200/60 shadow-[0_1px_1px_rgba(0,0,0,0.05)]
+                  h-10 gap-2.5 text-xs font-medium transition-all duration-300
+                  border border-primary/5 hover:border-primary/10
                   ${
                     isCopied
-                      ? "text-green-600 bg-green-50"
-                      : "text-gray-600 hover:text-gray-900 bg-gradient-to-b from-white to-gray-50"
+                      ? "text-green-600 bg-green-50/90"
+                      : "text-primary/70 hover:text-primary/90 bg-gradient-to-b from-white to-gray-50/95"
                   }
                 `}
-              ></GradientButton>
+              />
 
               <GradientButton
                 variant="primary"
@@ -263,12 +221,12 @@ export const AIWritingPreview = ({
         </AnimatePresence>
       </div>
 
-      {/* Enhanced Content Area */}
+      {/* Refined Content Area */}
       <div
         className="relative rounded-xl overflow-hidden 
-                    border-t-gray-200/60 border-l-gray-200/60 
-                    border-r-gray-300/70 border-b-gray-400/70
-                    shadow-[4px_4px_10px_rgba(0,0,0,0.08),_-2px_-2px_6px_rgba(255,255,255,0.8)]"
+                  border border-primary/5 hover:border-primary/10
+                  bg-gradient-to-br from-white via-white to-gray-50/95
+                  transition-all duration-300"
       >
         {isGenerating ? (
           <LoadingAnimation />
@@ -278,19 +236,20 @@ export const AIWritingPreview = ({
             animate={{ opacity: 1, y: 0 }}
             className="relative"
           >
-            <div className="p-6 bg-gradient-to-br from-white via-white to-gray-50/80 rounded-xl">
+            <div className="p-8 bg-gradient-to-br from-white via-white to-gray-50/95 rounded-xl">
               <div className="prose prose-sm max-w-none">
-                <div className="whitespace-pre-wrap text-sm text-gray-700 leading-relaxed">
+                <div className="whitespace-pre-wrap text-sm text-gray-600 leading-relaxed">
                   {content}
                 </div>
               </div>
             </div>
-            <div className="absolute bottom-4 right-4">
+            {/* Refined AI Enhanced Badge */}
+            <div className="absolute bottom-5 right-5">
               <div
-                className="flex items-center gap-1.5 text-[10px] font-medium 
-                            bg-gradient-to-br from-primary to-primary/80 text-white
-                            px-2 py-1 rounded-full border border-gray-600/50
-                            "
+                className="flex items-center gap-2 text-[11px] font-medium text-white
+                          bg-gradient-to-r from-primary/90 to-primary/80
+                          px-3 py-1.5 rounded-full border border-white/10
+                          transition-all duration-200 hover:from-primary hover:to-primary/90"
               >
                 <Sparkles className="h-3 w-3" />
                 AI Enhanced
@@ -302,21 +261,22 @@ export const AIWritingPreview = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="min-h-[300px] flex flex-col items-center justify-center text-center 
-                     border-2 border-dashed border-gray-200/80 rounded-xl p-8 
-                     bg-gradient-to-br from-white via-gray-50/50 to-gray-100/30"
+                     border border-primary/5 rounded-xl p-10
+                     bg-gradient-to-br from-white via-gray-50/90 to-gray-50/80"
           >
             <div
-              className="w-14 h-14 mb-4 rounded-xl 
-                          bg-gradient-to-br from-gray-100 to-gray-200/80
-                          border border-gray-300/40 
-                          flex items-center justify-center"
+              className="w-16 h-16 mb-5 rounded-xl 
+                        bg-gradient-to-br from-gray-50/95 to-white
+                        border border-primary/5
+                        flex items-center justify-center
+                        group transition-all duration-200"
             >
-              <Wand2 className="h-7 w-7 text-gray-700" />
+              <Wand2 className="h-8 w-8 text-primary/60 group-hover:text-primary/80 transition-colors duration-200" />
             </div>
-            <h3 className="text-base font-medium text-gray-900 mb-1">
+            <h3 className="text-base font-medium text-gray-800 mb-2">
               Ready to Generate
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-gray-500/90 max-w-sm">
               Use the editor on the left to start generating AI-powered content
             </p>
           </motion.div>
