@@ -223,14 +223,12 @@ export const useContentPosting = () => {
     ["draftDetails", draftId],
     () => getDraftPostDetails(draftId || ""),
     {
-      enabled: !!draftId,
+      enabled: !!draftId && !!currentWorkspace?.id,
       onSuccess: (response) => {
-        if (response.success) {
+        if (response.success && response.data.post) {
           const post = response.data.post;
-          console.log("Draft loaded:", post);
 
-          // Set all draft data at once
-          console.log("Setting content:", post.content);
+          // Set all the state values
           setContent(post.content || "");
           setPostDetails(post);
           setImageUrls(post.imageUrls || []);
@@ -238,6 +236,7 @@ export const useContentPosting = () => {
           setDocumentUrl(post.documentUrl || "");
           setHashtags(post.hashtags || []);
           setMentions(post.mentions || []);
+          setImages(post.images || []);
           setScheduledDate(
             post.scheduledTime ? new Date(post.scheduledTime) : null
           );
@@ -247,22 +246,19 @@ export const useContentPosting = () => {
             const linkedProfile = linkedinProfiles.find(
               (profile) => profile.id === post.linkedInProfile?.id
             );
+            
             if (linkedProfile) {
-              console.log("Setting profile from post");
               handleProfileSelection(linkedProfile);
             } else if (linkedinProfiles.length > 0) {
-              console.log("Setting default profile (post profile not found)");
               handleProfileSelection(linkedinProfiles[0]);
             }
           } else if (linkedinProfiles.length > 0) {
-            console.log("Setting default profile (no post profile)");
             handleProfileSelection(linkedinProfiles[0]);
           }
         }
       },
       onError: (error) => {
         toast.error("Failed to fetch draft details");
-        console.error("Error fetching draft:", error);
       },
     }
   );

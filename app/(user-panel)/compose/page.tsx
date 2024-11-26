@@ -50,7 +50,6 @@ const ComposePage = () => {
 
   const handleProfileSelect = useCallback(
     (profile: LinkedInProfileUI) => {
-      console.log("Selecting profile:", profile);
       setSelectedProfile(profile);
     },
     [setSelectedProfile]
