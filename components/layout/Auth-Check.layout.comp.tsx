@@ -11,6 +11,7 @@ import useLinkedIn from "@/hooks/useLinkedIn";
 import { RootState } from "@/state/store";
 import toast from "react-hot-toast";
 import { ShoppingBag } from "lucide-react";
+import { useContentPosting } from "@/hooks/useContent";
 
 // Define public routes that don't require authentication
 const publicRoutes = ["/", "/login", "/signup", "/forgot-password"];
@@ -24,6 +25,8 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
+  const { handleCreateDraftFromGenerated } = useContentPosting();
+  const currentWorkspace = useSelector((state: RootState) => state.user.currentWorkspace);
 
   useBranding();
   useLinkedIn();
@@ -107,22 +110,42 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [loggedin, isActive, isLoading, pathname, router]);
 
-  // Keyboard shortcut effect
+  // Updated Keyboard shortcut effect
   useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
+    const handleKeyPress = async (event: KeyboardEvent) => {
       if (
         (event.ctrlKey || event.metaKey) &&
         event.altKey &&
         event.key.toLowerCase() === "n"
       ) {
         event.preventDefault();
-        router.push("/compose");
+        try {
+          // Create a blank draft
+          const draftId = await handleCreateDraftFromGenerated({
+            content: "", // Blank content
+            postType: "text",
+            workspaceId: currentWorkspace?.id,
+            linkedInProfileId: null,
+            videoUrl: "",
+            documentUrl: "",
+            hashtags: [],
+            mentions: [],
+          });
+
+          if (draftId) {
+            // Redirect to compose with the new draft ID
+            router.push(`/compose?draft_id=${draftId}`);
+          }
+        } catch (error) {
+          console.error("Error creating new draft:", error);
+          toast.error("Failed to create new draft");
+        }
       }
     };
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [router]);
+  }, [router, handleCreateDraftFromGenerated, currentWorkspace?.id]);
 
   // Only show loading on initial auth check
   if (isLoading) {

@@ -230,6 +230,7 @@ export const useContentPosting = () => {
           console.log("Draft loaded:", post);
 
           // Set all draft data at once
+          console.log("Setting content:", post.content);
           setContent(post.content || "");
           setPostDetails(post);
           setImageUrls(post.imageUrls || []);

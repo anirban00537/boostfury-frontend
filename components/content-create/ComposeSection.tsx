@@ -1,5 +1,12 @@
 "use client";
-import React, { useState, useEffect, useRef, useCallback, Dispatch, SetStateAction } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import { Button } from "../ui/button";
 import { Send, Clock, Sparkles, HelpCircle, ListPlus } from "lucide-react";
 import { ScheduleModal } from "./ScheduleModal";
@@ -21,9 +28,10 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
-import { ImageUploadModal } from './ImageUploadModal';
-import { useContentPosting } from '@/hooks/useContent';
-import Image from 'next/image';
+import { ImageUploadModal } from "./ImageUploadModal";
+import { useContentPosting } from "@/hooks/useContent";
+import Image from "next/image";
+import { AIAssistantModal } from "./AIAssistantModal";
 
 interface ComposeSectionProps {
   content: string;
@@ -94,6 +102,8 @@ export const ComposeSection = ({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const characterCount = content.length;
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [selectedText, setSelectedText] = useState("");
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
 
   // Auto-resize textarea
   useEffect(() => {
@@ -148,10 +158,17 @@ export const ComposeSection = ({
         await onAddToQueue(selectedLinkedInProfile.id);
         // Optionally, you could add a success notification here
       } catch (error) {
-        console.error('Error adding to queue:', error);
+        console.error("Error adding to queue:", error);
         // Optionally, you could add an error notification here
       }
     }
+  };
+
+  // Handle text selection
+  const handleTextSelection = () => {
+    const selection = window.getSelection();
+    const selectedText = selection?.toString().trim() || "";
+    setSelectedText(selectedText);
   };
 
   return (
@@ -215,46 +232,10 @@ export const ComposeSection = ({
                 Add Image
               </TooltipContent>
             </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0 hover:bg-white rounded-md transition-colors"
-                >
-                  <Video className="w-4 h-4 text-gray-600" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Add Video</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0 hover:bg-white rounded-md transition-colors"
-                >
-                  <FileText className="w-4 h-4 text-gray-600" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Add Document</TooltipContent>
-            </Tooltip>
           </div>
 
           {/* Text Tools */}
           <div className="flex items-center gap-1 p-1 bg-white/80 rounded-lg border border-blue-100/50 shadow-sm ml-2">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0 hover:bg-white rounded-md transition-colors"
-                >
-                  <Link2 className="w-4 h-4 text-gray-600" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Add Link</TooltipContent>
-            </Tooltip>
             <div className="relative">
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -295,6 +276,8 @@ export const ComposeSection = ({
           size="sm"
           className="h-8 px-4 gap-2 bg-primary text-white hover:bg-primary/90 
                    rounded-full shadow-md"
+          onClick={() => setIsAIModalOpen(true)}
+          disabled={!selectedText}
         >
           <Sparkles className="w-3.5 h-3.5" />
           <span className="text-xs font-medium">AI Assist</span>
@@ -308,6 +291,8 @@ export const ComposeSection = ({
           value={content}
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={handleKeyDown}
+          onMouseUp={handleTextSelection}
+          onKeyUp={handleTextSelection}
           placeholder="What would you like to share? Use AI to enhance your content..."
           className="w-full h-full px-6 py-5 resize-none focus:outline-none
                    text-gray-700 placeholder-gray-400/80 bg-transparent
@@ -333,7 +318,8 @@ export const ComposeSection = ({
       </div>
 
       {/* Image Preview Section */}
-      {((postDetails?.images && postDetails.images.length > 0) || imageUrls.length > 0) && (
+      {((postDetails?.images && postDetails.images.length > 0) ||
+        imageUrls.length > 0) && (
         <div className="px-6 py-4 border-t border-primary/5">
           <div className="flex flex-wrap gap-3">
             {/* Show images from postDetails */}
@@ -355,7 +341,7 @@ export const ComposeSection = ({
                 </button>
               </div>
             ))}
-            
+
             {/* Show images from imageUrls */}
             {imageUrls.map((url, index) => (
               <div key={`new-${index}`} className="relative group">
@@ -401,12 +387,16 @@ export const ComposeSection = ({
               className="h-9 px-4 gap-2 bg-white hover:bg-primary/5 
                        transition-all hover:text-primary border-primary/20"
               onClick={handleAddToQueue}
-              disabled={!selectedLinkedInProfile || !content.trim() || isAddingToQueue}
+              disabled={
+                !selectedLinkedInProfile || !content.trim() || isAddingToQueue
+              }
             >
               {isAddingToQueue ? (
                 <>
-                  <span className="w-4 h-4 border-2 border-current border-t-transparent 
-                                rounded-full animate-spin" />
+                  <span
+                    className="w-4 h-4 border-2 border-current border-t-transparent 
+                                rounded-full animate-spin"
+                  />
                   Adding to Queue...
                 </>
               ) : (
@@ -471,6 +461,24 @@ export const ComposeSection = ({
         onUploadSuccess={() => setIsImageModalOpen(false)}
         handleImageUpload={handleImageUploadWithPostId}
         isUploading={isUploading}
+      />
+      <AIAssistantModal
+        isOpen={isAIModalOpen}
+        onClose={() => {
+          setIsAIModalOpen(false);
+          setSelectedText("");
+        }}
+        selectedText={selectedText}
+        onContentUpdate={(newContent) => {
+          // Replace the selected text with the new content
+          const textarea = textareaRef.current;
+          if (textarea) {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const newValue = content.substring(0, start) + newContent + content.substring(end);
+            setContent(newValue);
+          }
+        }}
       />
     </div>
   );

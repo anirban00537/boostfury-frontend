@@ -113,175 +113,180 @@ const heroTextChildVariants = {
 };
 
 const Hero = () => {
-  const [currentPlatform, setCurrentPlatform] = React.useState(0);
-
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentPlatform((prev) => (prev + 1) % platforms.length);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <motion.section
-      className="py-10 sm:py-20 overflow-hidden"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      // Added semantic HTML attributes
-      role="banner"
-      aria-label="Main hero section"
-    >
-      <div className="flex flex-col items-center text-center px-4 sm:px-6 md:px-8">
-        <motion.div
-          className="space-y-6 sm:space-y-8 w-full"
-          variants={textContainerVariants}
-        >
-          {/* Updated announcement banner */}
-          <div className="z-10 flex items-center justify-center">
-            <div
-              className={cn(
-                "group rounded-full border border-borderColor bg-cardBackground text-sm sm:text-base !text-textColor transition-all ease-in hover:cursor-pointer hover:bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800"
-              )}
-              role="button"
-              aria-label="Feature announcement"
-            >
-              <AnimatedShinyText className="inline-flex text-textColor items-center justify-center px-3 sm:px-4 py-1 transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
-                <span className="hidden sm:inline">
-                  Spend 10 Minutes to prepare weeks of content
-                </span>
-                <ArrowRightIcon
-                  className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5"
-                  aria-hidden="true"
-                />
-              </AnimatedShinyText>
+    <section className="relative min-h-[90vh] flex items-center justify-center py-20 overflow-hidden">
+      {/* Simplified gradient effects */}
+      <div className="absolute inset-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-background to-background" />
+      <div className="absolute top-20 -left-4 w-96 h-96 bg-primary/20 rounded-full blur-[120px]" />
+      <div className="absolute bottom-8 -right-4 w-96 h-96 bg-blue-500/20 rounded-full blur-[120px]" />
+
+      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Column - Content */}
+          <div className="space-y-8">
+            {/* Premium badge */}
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-primary/10 to-blue-500/10 border border-primary/20 backdrop-blur-sm shadow-lg">
+              <span className="flex h-2 w-2 rounded-full bg-primary" />
+              <span className="text-sm font-medium bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
+                AI-Powered LinkedIn Growth
+              </span>
+            </div>
+
+            {/* Headline */}
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight">
+              Create{" "}
+              <span className="bg-gradient-to-r from-primary via-blue-500 to-primary bg-clip-text text-transparent">
+                Viral
+              </span>{" "}
+              LinkedIn Content in Minutes
+            </h1>
+
+            {/* Subheadline */}
+            <p className="text-xl text-textColor/70 max-w-xl leading-relaxed">
+              Transform your LinkedIn presence with AI-generated carousels,
+              posts, and content strategies. Save hours of work and{" "}
+              <span className="font-semibold text-primary">
+                10x your engagement
+              </span>
+              .
+            </p>
+
+            {/* Enhanced CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              {/* Primary CTA */}
+              <Link
+                href="/ai-writer"
+                className="w-full sm:w-auto group relative"
+              >
+                <div className="absolute -inset-[2px] bg-gradient-to-r from-primary to-blue-600 rounded-xl blur-sm opacity-70 group-hover:opacity-100 transition-opacity" />
+                <div className="relative h-14 px-8 flex items-center justify-center rounded-lg bg-primary font-semibold text-white text-lg">
+                  Start Free Trial
+                  <ArrowRightIcon className="w-5 h-5 ml-2" />
+                </div>
+              </Link>
+
+              {/* Watch Demo Button */}
+              <HeroVideoDialog
+                className="w-full sm:w-auto"
+                animationStyle="from-center"
+                videoSrc="https://www.youtube.com/embed/4pgUovPcVBM"
+                thumbnailSrc="/demo.png"
+                thumbnailAlt="Watch demo"
+                buttonClassName="group relative h-14"
+                buttonContent={
+                  <>
+                    <div className="absolute -inset-[2px] bg-gradient-to-r from-gray-400/20 to-gray-600/20 rounded-xl opacity-70 group-hover:opacity-100 transition-opacity" />
+                    <div className="relative h-full px-8 flex items-center justify-center gap-3 rounded-lg bg-background/80 backdrop-blur-sm border border-white/10">
+                      <div className="flex items-center justify-center size-8 rounded-full bg-white/10">
+                        <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-1" />
+                      </div>
+                      <span className="font-medium">Watch Demo (2 min)</span>
+                    </div>
+                  </>
+                }
+              />
+            </div>
+
+            {/* Social Proof */}
+            <div className="space-y-6 pt-4">
+              <div className="flex items-center gap-6 p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                <div className="flex -space-x-3">
+                  {people.slice(0, 4).map((person) => (
+                    <div
+                      key={person.id}
+                      className="ring-2 ring-background rounded-full"
+                    >
+                      <Image
+                        src={person.image}
+                        alt={person.alt}
+                        width={40}
+                        height={40}
+                        className="rounded-full border-2 border-background"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <div className="font-semibold text-gradient bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
+                    10,000+ professionals
+                  </div>
+                  <div className="text-sm text-textColor/70">
+                    trust BoostFury
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <motion.h1
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-center text-textColor"
-            variants={heroTextVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <motion.div
-              className="inline-block mb-2 sm:mb-4"
-              variants={heroTextChildVariants}
-            >
-              <span className="inline-block">
-                Grow{" "}
-                <span className="inline-block text-transparent bg-clip-text bg-[#0077B5]">
-                  LinkedIn
-                </span>{" "}
-              </span>
-            </motion.div>
-            <br />
-            <motion.div
-              className="inline-block"
-              variants={heroTextChildVariants}
-            >
-              <span className="inline-block">Audience</span>{" "}
-              <span className="inline-block">Faster With</span>{" "}
-              <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-500  to-primary">
-                AI
-              </span>
-            </motion.div>
-          </motion.h1>
+          {/* Right Column - Enhanced Feature Preview with 3D effects */}
+          <div className="relative lg:block -mr-32">
+            <div className="relative scale-110 perspective-[2000px]">
+              {/* Background glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-blue-500/20 blur-3xl -z-10" />
+              
+              {/* Main image with 3D effects */}
+              <div className="relative transform hover:scale-[1.02] transition-transform duration-300 [transform-style:preserve-3d] ml-20">
+                {/* Shadow layers for 3D effect */}
+                <div className="absolute -bottom-8 -right-8 w-full h-full bg-primary/20 rounded-xl blur-md [transform:translateZ(-100px)]" />
+                <div className="absolute -bottom-4 -right-4 w-full h-full bg-blue-500/20 rounded-xl blur-sm [transform:translateZ(-50px)]" />
+                
+                {/* Main image container */}
+                <div className="relative bg-gradient-to-br from-white/10 to-white/5 p-3 rounded-xl border border-white/20 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.12)] [transform:translateZ(0)] [transform-style:preserve-3d]">
+                  <div className="relative rounded-lg overflow-hidden">
+                    <div className="relative w-[140%]">
+                      <Image
+                        src="/demo.png"
+                        alt="BoostFury LinkedIn Content Creator"
+                        width={1200}
+                        height={900}
+                        className="rounded-lg shadow-2xl"
+                      />
+                      
+                      {/* Glass overlay for depth */}
+                      <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-white/5 to-transparent [transform:translateZ(20px)]" />
+                    </div>
+                  </div>
+                  
+                  {/* Decorative elements */}
+                  <div className="absolute -top-3 -left-3 size-6 bg-primary rounded-full shadow-lg [transform:translateZ(30px)]" />
+                  <div className="absolute -bottom-3 -right-3 size-6 bg-blue-500 rounded-full shadow-lg [transform:translateZ(30px)]" />
+                </div>
+              </div>
+              
+              {/* Feature card */}
+              <div className="absolute -left-8 top-1/4 p-6 rounded-xl bg-white shadow-2xl border border-gray-100 [transform:translateZ(50px)]">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-center size-12 rounded-full bg-gradient-to-r from-primary to-blue-500 shadow-lg shadow-primary/25">
+                    <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 text-lg">10x Faster</div>
+                    <div className="text-primary font-medium">Content Creation</div>
+                  </div>
+                </div>
+              </div>
 
-          {/* Updated subheading */}
-          <motion.p
-            className="text-xl sm:text-2xl font-medium text-textColor/70 max-w-2xl mx-auto"
-            variants={textVariants}
-          >
-            Supercharge your LinkedIn growth with AI , Spend minutes to prepare
-            weeks of content
-          </motion.p>
+              {/* Additional floating elements with 3D positioning */}
+              <div className="absolute -top-6 right-10 p-2 rounded-lg bg-white shadow-lg border border-gray-100 [transform:translateZ(40px)]">
+                <div className="flex items-center gap-2">
+                  <div className="size-2 bg-green-500 rounded-full" />
+                  <span className="text-sm font-medium text-gray-700">AI Powered</span>
+                </div>
+              </div>
 
-          {/* Updated CTA section */}
-          <div className="z-10 flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-            <Link
-              href="/ai-writer"
-              aria-label="Start creating your LinkedIn carousel"
-              className="w-full sm:w-auto"
-            >
-              <ShimmerButton
-                className="shadow-2xl w-full sm:w-auto"
-                background="linear-gradient(145deg, #4f46e5, #0747d1)"
-              >
-                <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-lg">
-                  Get Started - 7 Days Free Trial
-                </span>
-              </ShimmerButton>
-            </Link>
-            <a
-              href="https://www.linkedin.com/in/anirban00537/"
-              className="bg-background/50 backdrop-blur-sm h-[59px] w-[290px] rounded-full border-4 border-borderColor flex items-center justify-center px-4 py-2 text-textColor transition-all duration-300 hover:scale-105"
-              aria-label="Connect for LinkedIn growth strategies"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <div className="text-textColor">Contact for SaaS Development</div>
-            </a>
-          </div>
-        </motion.div>
-
-        {/* Updated social proof section */}
-        <div className="mt-8 sm:mt-12 mb-6 sm:mb-8">
-          <h2 className="text-textColor/70 mb-4 text-lg">
-            Empowering 10,000+ LinkedIn Professionals to Amplify Their Influence
-          </h2>
-          <div
-            className="flex flex-wrap justify-center gap-2 sm:gap-4"
-            role="list"
-            aria-label="Featured LinkedIn influencers"
-          >
-            <AnimatedTooltip items={people} />
+              <div className="absolute -bottom-4 right-20 p-2 rounded-lg bg-white shadow-lg border border-gray-100 [transform:translateZ(60px)]">
+                <div className="flex items-center gap-2">
+                  <div className="size-2 bg-primary rounded-full" />
+                  <span className="text-sm font-medium text-gray-700">Smart Templates</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* Updated video section */}
-        <div
-          className="relative w-full max-w-7xl mx-auto mt-8 sm:mt-12"
-          role="complementary"
-          aria-label="LinkedIn growth strategy demonstration"
-        >
-          <HeroVideoDialog
-            className="dark:hidden block"
-            animationStyle="from-center"
-            videoSrc="https://www.youtube.com/embed/4pgUovPcVBM?si=WW-DhesYVKX3b8J6"
-            thumbnailSrc="/demo.png"
-            thumbnailAlt="Watch how to boost your LinkedIn presence with AI-powered carousels"
-          />
-          <HeroVideoDialog
-            className="hidden dark:block"
-            animationStyle="from-center"
-            videoSrc="https://www.youtube.com/embed/4pgUovPcVBM?si=WW-DhesYVKX3b8J6"
-            thumbnailSrc="/demo.png"
-            thumbnailAlt="Discover LinkedIn growth strategies with AI carousels - Dark Mode"
-          />
-        </div>
-
-        {/* Updated structured data */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
-            name: "BoostFury LinkedIn Growth Tool",
-            applicationCategory: "BusinessApplication, SocialMedia",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "USD",
-            },
-            aggregateRating: {
-              "@type": "AggregateRating",
-              ratingValue: "4.9",
-              ratingCount: "10000",
-            },
-          })}
-        </script>
       </div>
-    </motion.section>
+    </section>
   );
 };
 
