@@ -38,6 +38,8 @@ import {
 import { contentRewrite } from "@/services/ai-content";
 import { toast } from "react-hot-toast";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { Loader2 } from "lucide-react";
 
 interface AIAssistantModalProps {
   isOpen: boolean;
@@ -45,6 +47,36 @@ interface AIAssistantModalProps {
   selectedText: string;
   onContentUpdate: (newContent: string) => void;
 }
+
+const AILoader = () => (
+  <motion.div 
+    className="absolute inset-0 flex items-center justify-center bg-blue-50/80 backdrop-blur-sm z-30"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+  >
+    <motion.div 
+      className="flex flex-col items-center gap-4"
+      initial={{ y: 10 }}
+      animate={{ y: 0 }}
+    >
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+      >
+        <Loader2 className="w-8 h-8 text-blue-600" />
+      </motion.div>
+      <motion.p 
+        className="text-sm text-blue-600 font-medium"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+      >
+        Enhancing your content...
+      </motion.p>
+    </motion.div>
+  </motion.div>
+);
 
 export const AIAssistantModal = ({
   isOpen,
@@ -57,9 +89,7 @@ export const AIAssistantModal = ({
   const [rewrittenContent, setRewrittenContent] = useState<string>("");
   const [history, setHistory] = useState<string[]>([]);
   const [currentVersion, setCurrentVersion] = useState(0);
-  const [activeTab, setActiveTab] = useState<
-    "linkedin" | "strategy" | "audience" | "enhance"
-  >("linkedin");
+  const [activeTab, setActiveTab] = useState<"writing">("writing");
   const [wordCount, setWordCount] = useState({ words: 0, characters: 0 });
 
   useEffect(() => {
@@ -87,6 +117,15 @@ export const AIAssistantModal = ({
         "\n- Using more compelling language" +
         "\n- Fixing grammar and style issues" +
         "\n- Maintaining the original message and tone",
+
+      "Fix Grammar":
+        "Review and correct the text for grammar, punctuation, and style. Focus on:" +
+        "\n- Fixing grammatical errors" +
+        "\n- Correcting punctuation mistakes" +
+        "\n- Ensuring proper sentence structure" +
+        "\n- Maintaining consistent tense" +
+        "\n- Improving word choice and clarity" +
+        "\n- Keeping the original meaning intact",
 
       "Make Shorter":
         "Condense this text while maintaining its impact. Focus on:" +
@@ -153,185 +192,51 @@ export const AIAssistantModal = ({
   };
 
   const linkedInActions = {
-    "Hook Optimizer": {
-      icon: <Zap className="w-4 h-4" />,
+    "Improve Writing": {
+      icon: <Pencil className="w-4 h-4" />,
       prompt:
-        "Transform the opening of this post to maximize LinkedIn engagement. Focus on:" +
-        "\n- Creating a compelling first line that stops the scroll" +
-        "\n- Using power words and emotional triggers" +
-        "\n- Adding curiosity gaps" +
-        "\n- Incorporating relevant statistics or surprising facts" +
-        "\n- Making the value proposition clear immediately",
+        "Rewrite this text to be more professional, engaging, and impactful. Focus on:" +
+        "\n- Improving clarity and readability" +
+        "\n- Enhancing the flow and structure" +
+        "\n- Using more compelling language" +
+        "\n- Fixing grammar and style issues" +
+        "\n- Maintaining the original message and tone",
     },
-    "Storytelling Format": {
-      icon: <BookOpen className="w-4 h-4" />,
+    "Fix Grammar": {
+      icon: <CheckCircle2 className="w-4 h-4" />,
       prompt:
-        "Restructure this content as an engaging LinkedIn story. Include:" +
-        "\n- A personal or professional challenge" +
-        "\n- The journey or solution process" +
-        "\n- Key learnings and insights" +
-        "\n- Actionable takeaways for readers" +
-        "\n- A compelling call-to-action",
+        "Review and correct the text for grammar, punctuation, and style. Focus on:" +
+        "\n- Fixing grammatical errors" +
+        "\n- Correcting punctuation mistakes" +
+        "\n- Ensuring proper sentence structure" +
+        "\n- Maintaining consistent tense" +
+        "\n- Improving word choice and clarity" +
+        "\n- Keeping the original meaning intact",
     },
-    "Viral Framework": {
-      icon: <TrendingUp className="w-4 h-4" />,
-      prompt:
-        "Optimize this post for maximum LinkedIn virality using proven frameworks:" +
-        "\n- AIDA (Attention, Interest, Desire, Action)" +
-        "\n- PAS (Problem, Agitation, Solution)" +
-        "\n- Before/After/Bridge" +
-        "\n- Include elements that encourage sharing and saving",
-    },
-  };
-
-  const strategyActions = {
-    "Authority Builder": {
-      icon: <Briefcase className="w-4 h-4" />,
-      prompt:
-        "Position this content to establish professional authority:" +
-        "\n- Incorporate industry expertise and insights" +
-        "\n- Add relevant credentials or experience" +
-        "\n- Include data-backed statements" +
-        "\n- Share unique professional perspectives" +
-        "\n- Reference relevant industry trends",
-    },
-    "Engagement Magnet": {
-      icon: <MessageSquare className="w-4 h-4" />,
-      prompt:
-        "Transform this post to maximize engagement:" +
-        "\n- Add thought-provoking questions" +
-        "\n- Include poll-style elements" +
-        "\n- Encourage sharing of experiences" +
-        "\n- Create discussion points" +
-        "\n- End with a strong call-to-action",
-    },
-    "Content Calendar": {
-      icon: <Calendar className="w-4 h-4" />,
-      prompt:
-        "Optimize this content for strategic posting:" +
-        "\n- Align with content themes (Monday Motivation, etc.)" +
-        "\n- Include trending industry topics" +
-        "\n- Reference current events or seasons" +
-        "\n- Maintain consistent branding" +
-        "\n- Plan for series potential",
-    },
-  };
-
-  const audienceActions = {
-    "Niche Targeting": {
-      icon: <Target className="w-4 h-4" />,
-      prompt:
-        "Tailor this content for specific professional audiences:" +
-        "\n- Use industry-specific terminology" +
-        "\n- Address common pain points" +
-        "\n- Reference relevant tools or platforms" +
-        "\n- Include role-specific insights" +
-        "\n- Maintain professional credibility",
-    },
-    "Network Growth": {
-      icon: <Users className="w-4 h-4" />,
-      prompt:
-        "Optimize for building meaningful connections:" +
-        "\n- Encourage meaningful interactions" +
-        "\n- Create opportunities for collaboration" +
-        "\n- Include industry-specific hashtags" +
-        "\n- Tag relevant thought leaders" +
-        "\n- Foster community engagement",
-    },
-    "Lead Generation": {
-      icon: <LineChart className="w-4 h-4" />,
-      prompt:
-        "Structure content to generate quality leads:" +
-        "\n- Demonstrate clear value proposition" +
-        "\n- Include social proof elements" +
-        "\n- Add clear next steps or CTAs" +
-        "\n- Incorporate lead magnets" +
-        "\n- Maintain professional tone",
-    },
-  };
-
-  const enhanceActions = {
-    "Format Optimizer": {
+    "Make Shorter": {
       icon: <SplitSquareHorizontal className="w-4 h-4" />,
       prompt:
-        "Enhance the visual structure for LinkedIn:" +
-        "\n- Add line breaks for readability" +
-        "\n- Create scannable sections" +
-        "\n- Use emojis strategically" +
-        "\n- Include bullet points or numbers" +
-        "\n- Optimize paragraph length",
+        "Condense this text while maintaining its impact. Focus on:" +
+        "\n- Keeping all key points and main message" +
+        "\n- Removing redundant or unnecessary information" +
+        "\n- Using more concise language" +
+        "\n- Preserving the original tone" +
+        "\n- Making it 40-50% shorter",
     },
-    "SEO & Hashtags": {
-      icon: <Hash className="w-4 h-4" />,
-      prompt:
-        "Optimize for LinkedIn's algorithm:" +
-        "\n- Add relevant industry hashtags (3-5)" +
-        "\n- Include trending keywords" +
-        "\n- Optimize first 2-3 lines" +
-        "\n- Add relevant mentions" +
-        "\n- Use strategic formatting",
-    },
-    "CTA Enhancer": {
-      icon: <Zap className="w-4 h-4" />,
-      prompt:
-        "Strengthen the call-to-action:" +
-        "\n- Create urgency or exclusivity" +
-        "\n- Make next steps clear" +
-        "\n- Add value proposition" +
-        "\n- Include social proof" +
-        "\n- Use action-oriented language",
-    },
-  };
-
-  const formatActions = {
-    "Structure Content": {
-      icon: <SplitSquareHorizontal className="w-4 h-4" />,
-      prompt:
-        "Organize the content with proper headings, subheadings, and sections.",
-    },
-    "Create Summary": {
+    "Make Longer": {
       icon: <FileText className="w-4 h-4" />,
       prompt:
-        "Generate a concise summary of the main points and key takeaways.",
-    },
-    "Format Lists": {
-      icon: <ListChecks className="w-4 h-4" />,
-      prompt:
-        "Convert appropriate content into well-structured bullet points or numbered lists.",
-    },
-  };
-
-  const analyzeActions = {
-    "Readability Score": {
-      icon: <BookOpen className="w-4 h-4" />,
-      prompt:
-        "Analyze the text's readability and suggest improvements for better comprehension.",
-    },
-    "Style Analysis": {
-      icon: <Type className="w-4 h-4" />,
-      prompt:
-        "Analyze writing style and provide suggestions for consistency and improvement.",
-    },
-    "Sentiment Check": {
-      icon: <MessageSquare className="w-4 h-4" />,
-      prompt:
-        "Analyze the tone and sentiment of the text and suggest adjustments if needed.",
+        "Expand this text thoughtfully and meaningfully. Focus on:" +
+        "\n- Adding relevant examples and details" +
+        "\n- Including supporting evidence or context" +
+        "\n- Elaborating on key points" +
+        "\n- Maintaining consistent tone and style" +
+        "\n- Making it approximately twice as long",
     },
   };
 
   const getActiveActions = () => {
-    switch (activeTab) {
-      case "linkedin":
-        return linkedInActions;
-      case "strategy":
-        return strategyActions;
-      case "audience":
-        return audienceActions;
-      case "enhance":
-        return enhanceActions;
-      default:
-        return linkedInActions;
-    }
+    return linkedInActions;
   };
 
   useEffect(() => {
@@ -359,28 +264,14 @@ export const AIAssistantModal = ({
 
           <div className="flex items-center gap-4">
             <div className="flex bg-gray-50 p-1 rounded-full">
-              {(["linkedin", "strategy", "audience", "enhance"] as const).map(
-                (tab) => (
-                  <Button
-                    key={tab}
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setActiveTab(tab)}
-                    className={cn(
-                      "rounded-full px-4 gap-2",
-                      activeTab === tab
-                        ? "bg-white shadow"
-                        : "hover:bg-white/50"
-                    )}
-                  >
-                    {tab === "linkedin" && <Briefcase className="w-4 h-4" />}
-                    {tab === "strategy" && <Target className="w-4 h-4" />}
-                    {tab === "audience" && <Users className="w-4 h-4" />}
-                    {tab === "enhance" && <Zap className="w-4 h-4" />}
-                    {tab}
-                  </Button>
-                )
-              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="rounded-full px-4 gap-2 bg-white shadow"
+              >
+                <Pencil className="w-4 h-4" />
+                writing
+              </Button>
             </div>
 
             <div className="flex items-center gap-2 text-gray-500">
@@ -492,6 +383,7 @@ export const AIAssistantModal = ({
                     )}
                   </div>
                 </div>
+                {isProcessing && <AILoader />}
                 {rewrittenContent && (
                   <Button
                     onClick={handleInsert}
