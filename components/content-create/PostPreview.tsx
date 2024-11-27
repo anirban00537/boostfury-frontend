@@ -1,11 +1,6 @@
 import Link from "next/link";
 import { Avatar } from "@/components/ui/avatar";
-import {
-  MoreHorizontal,
-  Calendar,
-  FileText,
-  XCircle,
-} from "lucide-react";
+import { MoreHorizontal, Calendar, FileText, XCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import {
@@ -84,10 +79,6 @@ export const PostPreview = ({
 
   return (
     <div className="space-y-4 w-full">
-      <div className="flex items-center justify-between px-2 md:px-0">
-        <h2 className="text-lg font-semibold text-gray-900">Preview</h2>
-      </div>
-
       <div className="flex justify-center w-full">
         <div className="w-full max-w-[780px]">
           <motion.div
@@ -97,12 +88,7 @@ export const PostPreview = ({
           >
             {selectedProfile ? (
               <>
-                <div
-                  className={cn(
-                    "p-4",
-                    "border-b border-gray-100"
-                  )}
-                >
+                <div className={cn("p-4", "border-b border-gray-100")}>
                   <div className="flex items-start justify-between">
                     <div className="flex gap-3">
                       <Avatar className="h-12 w-12 rounded-full ring-2 ring-white shadow-sm">
@@ -196,20 +182,31 @@ export const PostPreview = ({
                     {content}
                   </div>
 
-                  {(imageUrls.length > 0 || (postDetails?.images && postDetails.images.length > 0)) && (
+                  {(imageUrls.length > 0 ||
+                    (postDetails?.images && postDetails.images.length > 0)) && (
                     <div className="px-4 pb-4">
-                      <div className={cn(
-                        "grid gap-1",
-                        (imageUrls.length + (postDetails?.images?.length || 0)) === 1 && "grid-cols-1",
-                        (imageUrls.length + (postDetails?.images?.length || 0)) === 2 && "grid-cols-2",
-                        (imageUrls.length + (postDetails?.images?.length || 0)) >= 3 && "grid-cols-2"
-                      )}>
+                      <div
+                        className={cn(
+                          "grid gap-1",
+                          imageUrls.length +
+                            (postDetails?.images?.length || 0) ===
+                            1 && "grid-cols-1",
+                          imageUrls.length +
+                            (postDetails?.images?.length || 0) ===
+                            2 && "grid-cols-2",
+                          imageUrls.length +
+                            (postDetails?.images?.length || 0) >=
+                            3 && "grid-cols-2"
+                        )}
+                      >
                         {postDetails?.images?.map((image, index) => (
                           <div
                             key={image.id}
                             className={cn(
                               "relative rounded-lg overflow-hidden shadow-sm",
-                              (imageUrls.length + (postDetails?.images?.length || 0)) === 3 &&
+                              imageUrls.length +
+                                (postDetails?.images?.length || 0) ===
+                                3 &&
                                 index === 0 &&
                                 "row-span-2"
                             )}
@@ -221,7 +218,12 @@ export const PostPreview = ({
                               width={400}
                               height={400}
                               style={{
-                                aspectRatio: (imageUrls.length + (postDetails?.images?.length || 0)) === 1 ? "16/9" : "1/1",
+                                aspectRatio:
+                                  imageUrls.length +
+                                    (postDetails?.images?.length || 0) ===
+                                  1
+                                    ? "16/9"
+                                    : "1/1",
                               }}
                             />
                           </div>
@@ -232,8 +234,11 @@ export const PostPreview = ({
                             key={`new-${index}`}
                             className={cn(
                               "relative rounded-lg overflow-hidden shadow-sm",
-                              (imageUrls.length + (postDetails?.images?.length || 0)) === 3 &&
-                                index + (postDetails?.images?.length || 0) === 0 &&
+                              imageUrls.length +
+                                (postDetails?.images?.length || 0) ===
+                                3 &&
+                                index + (postDetails?.images?.length || 0) ===
+                                  0 &&
                                 "row-span-2"
                             )}
                           >
@@ -244,7 +249,12 @@ export const PostPreview = ({
                               width={400}
                               height={400}
                               style={{
-                                aspectRatio: (imageUrls.length + (postDetails?.images?.length || 0)) === 1 ? "16/9" : "1/1",
+                                aspectRatio:
+                                  imageUrls.length +
+                                    (postDetails?.images?.length || 0) ===
+                                  1
+                                    ? "16/9"
+                                    : "1/1",
                               }}
                             />
                           </div>

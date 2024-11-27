@@ -52,7 +52,7 @@ export const generateContentIdeasForWorkspace = async (workspaceId: string) => {
 
 export const contentRewrite = async (dto: {
   content: string;
-  mode?: string;
+  instructions: string;
 }) => {
   const response = await request.post("/ai-content/rewrite-content", dto);
   return response.data;

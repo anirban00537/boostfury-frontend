@@ -181,8 +181,3 @@ export const DAYS_OF_WEEK = {
   FRIDAY: 5,
   SATURDAY: 6,
 } as const;
-export const REWRITE_MODE = {
-  IMPROVE: "improve",
-  SHORTER: "shorter",
-  LONGER: "longer",
-}

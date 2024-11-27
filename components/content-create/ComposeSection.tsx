@@ -16,6 +16,7 @@ import {
   ListPlus,
   Loader2,
   Calendar,
+  Settings,
 } from "lucide-react";
 import { ScheduleModal } from "./ScheduleModal";
 import {
@@ -41,6 +42,8 @@ import { useContentPosting } from "@/hooks/useContent";
 import Image from "next/image";
 import { AIAssistantModal } from "./AIAssistantModal";
 import { GradientButton } from "../ui/gradient-button";
+import { formatDistanceToNow } from "date-fns";
+import { POST_STATUS } from "@/lib/core-constants";
 
 interface ComposeSectionProps {
   content: string;
@@ -79,6 +82,43 @@ const Picker = dynamic(() => import("@emoji-mart/react"), {
     <div className="h-[400px] w-[320px] bg-white animate-pulse rounded-lg" />
   ),
 });
+
+// Add this helper function at the top of the file, outside the component
+const getStatusDetails = (status: number) => {
+  switch (status) {
+    case POST_STATUS.DRAFT:
+      return {
+        label: "Draft",
+        bgColor: "bg-yellow-50",
+        textColor: "text-yellow-700",
+      };
+    case POST_STATUS.SCHEDULED:
+      return {
+        label: "Scheduled",
+        bgColor: "bg-green-50",
+        textColor: "text-green-700",
+      };
+    case POST_STATUS.PUBLISHED:
+      return {
+        label: "Published",
+        bgColor: "bg-blue-50",
+        textColor: "text-blue-700",
+      };
+    case POST_STATUS.FAILED:
+      return {
+        label: "Failed",
+        bgColor: "bg-red-50",
+        textColor: "text-red-700",
+      };
+
+    default:
+      return {
+        label: "Unknown",
+        bgColor: "bg-gray-50",
+        textColor: "text-gray-700",
+      };
+  }
+};
 
 export const ComposeSection = ({
   content,
@@ -346,6 +386,33 @@ export const ComposeSection = ({
         </div>
       )}
 
+      {/* Post Details */}
+      {postDetails && (
+        <div className="border-t border-gray-100 p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {(() => {
+                const { label, bgColor, textColor } = getStatusDetails(
+                  postDetails.status
+                );
+                return (
+                  <span
+                    className={cn(
+                      "px-2.5 py-1 rounded-full text-xs font-medium flex items-center gap-1.5",
+                      bgColor,
+                      textColor
+                    )}
+                  >
+                    <div className="w-1.5 h-1.5 rounded-full bg-current" />
+                    {label}
+                  </span>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Footer */}
       <div className="border-t border-gray-100 p-4">
         <div className="flex items-center justify-end gap-3">
@@ -365,7 +432,10 @@ export const ComposeSection = ({
             size="sm"
             leftIcon={<Clock className="w-4 h-4" />}
             className="border-primary/20 hover:border-primary/40 transition-colors"
-            onClick={() => selectedLinkedInProfile?.id && onAddToQueue(selectedLinkedInProfile.id)}
+            onClick={() =>
+              selectedLinkedInProfile?.id &&
+              onAddToQueue(selectedLinkedInProfile.id)
+            }
             disabled={isAddingToQueue}
           >
             Queue
@@ -376,9 +446,23 @@ export const ComposeSection = ({
           <GradientButton
             variant="primary"
             size="sm"
-            leftIcon={isPosting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-            disabled={!selectedLinkedInProfile || characterCount > CHAR_LIMIT || !content.trim() || isPosting}
-            onClick={() => selectedLinkedInProfile?.id && onPostNow(selectedLinkedInProfile.id)}
+            leftIcon={
+              isPosting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )
+            }
+            disabled={
+              !selectedLinkedInProfile ||
+              characterCount > CHAR_LIMIT ||
+              !content.trim() ||
+              isPosting
+            }
+            onClick={() =>
+              selectedLinkedInProfile?.id &&
+              onPostNow(selectedLinkedInProfile.id)
+            }
           >
             {isPosting ? "Publishing..." : "Publish Now"}
           </GradientButton>

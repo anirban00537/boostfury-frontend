@@ -71,38 +71,7 @@ const ComposePage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Top Navigation Bar */}
-      <header className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-30">
-        <div className="h-16 px-4 flex items-center justify-between max-w-[1920px] mx-auto">
-          {/* Left Section */}
-          <div className="flex items-center gap-4">
-            <Link
-              href="/my-posts"
-              className="text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Link>
-            <div className="flex items-center gap-3">
-              <h1 className="text-lg font-semibold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-                {isEditing ? "Edit Post" : "AI Content Studio"}
-              </h1>
-              <div className="h-4 w-px bg-gradient-to-b from-primary/20 to-purple-500/20" />
-              <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-gradient-to-r from-primary/5 to-purple-500/5 border border-primary/10">
-                <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-primary to-purple-500" />
-                <span className="text-xs font-medium text-primary">Draft</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Section */}
-          <div className="flex items-center gap-3">
-            {/* You can add other header actions here if needed */}
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content Area */}
+    <div className="min-h-screen ">
       <main className="px-4 py-6 max-w-[1920px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr,400px] gap-6">
           {/* Left Column */}
@@ -240,18 +209,14 @@ const ComposePage = () => {
 
           {/* Right Column - Preview */}
           <div className="space-y-6">
-            <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-gray-200/50 overflow-hidden sticky top-24 shadow-sm hover:shadow-md transition-shadow">
-              <div className="p-4">
-                <PostPreview
-                  title=""
-                  content={content}
-                  isGenerating={isGenerating}
-                  selectedProfile={selectedProfile}
-                  imageUrls={imageUrls}
-                  postDetails={postDetails}
-                />
-              </div>
-            </div>
+            <PostPreview
+              title=""
+              content={content}
+              isGenerating={isGenerating}
+              selectedProfile={selectedProfile}
+              imageUrls={imageUrls}
+              postDetails={postDetails}
+            />
           </div>
         </div>
       </main>
