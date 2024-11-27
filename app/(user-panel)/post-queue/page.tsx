@@ -26,6 +26,7 @@ import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
 import Link from "next/link";
+import { EmptyState } from "@/components/ui/empty-state";
 
 // Define interfaces for type safety
 interface PostImage {
@@ -167,8 +168,8 @@ export default function PostQueuePage() {
             </p>
           </div>
         )}
-        {/* Posts List - Enhanced with better visual structure */}
-        {totalPosts > 0 && (
+        {/* Posts List or Empty State */}
+        {totalPosts > 0 ? (
           <div className="space-y-14">
             {Object.entries(groupPostsByDate(posts)).map(
               ([date, datePosts]) => (
@@ -253,6 +254,12 @@ export default function PostQueuePage() {
               )
             )}
           </div>
+        ) : (
+          <EmptyState
+            icon={Calendar}
+            title="Your Queue is Empty"
+            description="Start scheduling your posts to maintain a consistent presence on your social media platforms."
+          />
         )}
         <QueueModal
           isOpen={modalOpen}

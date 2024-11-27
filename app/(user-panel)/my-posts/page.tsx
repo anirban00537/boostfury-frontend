@@ -37,6 +37,7 @@ import { GradientButton } from "@/components/ui/gradient-button";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface PostConfig {
   id: PostTabId;
@@ -425,54 +426,14 @@ const ContentManager = () => {
 
               {/* Empty State */}
               {(!postsData[activeTab] || postsData[activeTab].length === 0) && (
-                <div className="flex flex-col items-center justify-center py-16 px-4">
-                  {/* Icon Container */}
-                  <div className="w-16 h-16 mb-6 flex items-center justify-center text-gray-400">
-                    {postConfigs.find((config) => config.id === activeTab)
-                      ?.icon && (
-                      <div
-                        className={`
-                        w-16 h-16 rounded-full flex items-center justify-center
-                        ${
-                          activeTab === "failed"
-                            ? "bg-red-50 text-red-500"
-                            : "bg-primary/5 text-primary"
-                        }
-                      `}
-                      >
-                        {React.cloneElement(
-                          postConfigs.find((config) => config.id === activeTab)
-                            ?.icon as React.ReactElement,
-                          { className: "w-8 h-8" }
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Text Content */}
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2 text-center">
-                    {activeTab === "published"
-                      ? "Ready to share your story?"
-                      : postConfigs.find((config) => config.id === activeTab)
-                          ?.title}
-                  </h3>
-                  <p className="text-gray-500 text-center max-w-md mb-8">
-                    {
-                      postConfigs.find((config) => config.id === activeTab)
-                        ?.emptyStateMessage
-                    }
-                  </p>
-
-                  {/* Button */}
-                  <Button
-                    onClick={handleCreateNew}
-                    className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg
-                              flex items-center gap-2 shadow-sm hover:shadow transition-all duration-200"
-                  >
-                    <Calendar className="w-4 h-4" />
-                    Create New Post
-                  </Button>
-                </div>
+                <EmptyState
+                  icon={postConfigs.find((config) => config.id === activeTab)?.icon 
+                    ? (postConfigs.find((config) => config.id === activeTab)?.icon as any).type 
+                    : FileText}
+                  title={activeTab === "published" ? "Ready to share your story?" : postConfigs.find((config) => config.id === activeTab)?.title || ""}
+                  description={postConfigs.find((config) => config.id === activeTab)?.emptyStateMessage || ""}
+                 
+                />
               )}
 
               {pagination.totalPages > 1 && (

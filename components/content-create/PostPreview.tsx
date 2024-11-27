@@ -20,6 +20,8 @@ import {
 import { LinkedInProfileUI } from "@/types/post";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { Post } from "@/types/post";
 
 export interface DropdownItem {
   label: string;
@@ -38,6 +40,7 @@ interface PostPreviewProps {
   dropdownItems?: DropdownItem[];
   selectedProfile: LinkedInProfileUI | null;
   imageUrls?: string[];
+  postDetails?: Post | null;
 }
 
 type ViewMode = "mobile" | "tablet" | "desktop";
@@ -53,6 +56,7 @@ export const PostPreview = ({
   dropdownItems,
   selectedProfile,
   imageUrls = [],
+  postDetails,
 }: PostPreviewProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("desktop");
@@ -276,33 +280,57 @@ export const PostPreview = ({
                   </div>
 
                   {/* Image Grid */}
-                  {imageUrls.length > 0 && (
+                  {(imageUrls.length > 0 || (postDetails?.images && postDetails.images.length > 0)) && (
                     <div className="px-4 pb-4">
-                      <div
-                        className={cn(
-                          "grid gap-1",
-                          imageUrls.length === 1 && "grid-cols-1",
-                          imageUrls.length === 2 && "grid-cols-2",
-                          imageUrls.length >= 3 && "grid-cols-2"
-                        )}
-                      >
-                        {imageUrls.map((url, index) => (
+                      <div className={cn(
+                        "grid gap-1",
+                        (imageUrls.length + (postDetails?.images?.length || 0)) === 1 && "grid-cols-1",
+                        (imageUrls.length + (postDetails?.images?.length || 0)) === 2 && "grid-cols-2",
+                        (imageUrls.length + (postDetails?.images?.length || 0)) >= 3 && "grid-cols-2"
+                      )}>
+                        {/* Show images from postDetails first */}
+                        {postDetails?.images?.map((image, index) => (
                           <div
-                            key={index}
+                            key={image.id}
                             className={cn(
                               "relative rounded-lg overflow-hidden shadow-sm",
-                              imageUrls.length === 3 &&
+                              (imageUrls.length + (postDetails?.images?.length || 0)) === 3 &&
                                 index === 0 &&
                                 "row-span-2"
                             )}
                           >
-                            <img
+                            <Image
+                              src={image.imageUrl}
+                              alt={`Preview ${index + 1}`}
+                              className="w-full h-full object-cover"
+                              width={400}
+                              height={400}
+                              style={{
+                                aspectRatio: (imageUrls.length + (postDetails?.images?.length || 0)) === 1 ? "16/9" : "1/1",
+                              }}
+                            />
+                          </div>
+                        ))}
+
+                        {/* Show images from imageUrls */}
+                        {imageUrls.map((url, index) => (
+                          <div
+                            key={`new-${index}`}
+                            className={cn(
+                              "relative rounded-lg overflow-hidden shadow-sm",
+                              (imageUrls.length + (postDetails?.images?.length || 0)) === 3 &&
+                                index + (postDetails?.images?.length || 0) === 0 &&
+                                "row-span-2"
+                            )}
+                          >
+                            <Image
                               src={url}
                               alt={`Preview ${index + 1}`}
                               className="w-full h-full object-cover"
+                              width={400}
+                              height={400}
                               style={{
-                                aspectRatio:
-                                  imageUrls.length === 1 ? "16/9" : "1/1",
+                                aspectRatio: (imageUrls.length + (postDetails?.images?.length || 0)) === 1 ? "16/9" : "1/1",
                               }}
                             />
                           </div>
