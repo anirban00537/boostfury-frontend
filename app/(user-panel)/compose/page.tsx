@@ -56,12 +56,12 @@ const ComposePage = () => {
   );
 
   return (
-    <div className="h-[calc(100vh-64px)] flex flex-col bg-gray-50/50">
-      {/* Fixed Header */}
-      <div className="flex-none border-b border-gray-200 bg-white">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-4 sm:py-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
-            <div className="space-y-2">
+    <div className="min-h-[calc(100vh-64px)] flex flex-col bg-gray-50/50">
+      {/* Header - Removed fixed positioning */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
+            <div className="space-y-2 max-w-2xl">
               <div className="flex items-center gap-3">
                 <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
                   {isEditing ? "Edit Content" : "Create Content"}
@@ -72,16 +72,16 @@ const ComposePage = () => {
                   </span>
                 </div>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed max-w-2xl">
+              <p className="text-sm text-gray-600 leading-relaxed">
                 {isEditing
                   ? "Refine your draft and prepare it for your LinkedIn audience."
                   : "Create engaging LinkedIn content with AI-powered assistance."}
               </p>
             </div>
 
-            {/* Enhanced Profile Selector */}
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              <span className="text-sm font-medium text-gray-500">Profile</span>
+            {/* Profile Selector - Adjusted for better alignment */}
+            <div className="flex items-center gap-3 sm:ml-auto">
+              <span className="text-sm font-medium text-gray-500 whitespace-nowrap">Profile</span>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -185,8 +185,8 @@ const ComposePage = () => {
         </div>
       </div>
 
-      {/* Scrollable Content Area */}
-      <div className="flex-1 overflow-y-auto min-h-0">
+      {/* Main Content - Updated for better scrolling */}
+      <div className="flex-1">
         {!linkedinProfiles.length ? (
           // No LinkedIn Profile Error State (Centered in scrollable area)
           <div className="h-full flex items-center justify-center p-4 sm:p-6">
@@ -256,14 +256,10 @@ const ComposePage = () => {
             </div>
           </div>
         ) : (
-          // Split View with Fixed Headers and Scrollable Content
-          <div className="h-full grid grid-cols-1 lg:grid-cols-2">
-            {/* Left Column - Compose Section */}
-            <div className="flex flex-col border-b lg:border-b-0 lg:border-r border-gray-200">
-              <div className="flex-none px-4 sm:px-6 py-3 sm:py-4 bg-white border-b border-gray-200">
-                <h2 className="text-lg font-medium text-gray-900">Write Post</h2>
-              </div>
-              <div className="flex-1 overflow-y-auto min-h-0 px-4 sm:px-6 py-4 sm:py-6">
+          <div className="h-full grid grid-cols-1 lg:grid-cols-2 2xl:max-w-[2000px] 2xl:mx-auto">
+            {/* Left Column - Updated scroll handling */}
+            <div className="flex flex-col h-full lg:border-r border-gray-100">
+              <div className="px-4 sm:px-6 lg:px-8 py-6">
                 {isLoadingDraft ? (
                   <div className="h-full flex items-center justify-center">
                     <div className="flex flex-col items-center gap-4">
@@ -312,18 +308,9 @@ const ComposePage = () => {
               </div>
             </div>
 
-            {/* Right Column - Preview Section */}
-            <div className="flex flex-col h-[500px] lg:h-full">
-              <div className="flex-none px-4 sm:px-6 py-3 sm:py-4 bg-white border-b border-gray-200">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-medium text-gray-900">Post Preview</h2>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-500 hidden sm:inline">Devices:</span>
-                    {/* Add your device selector buttons here */}
-                  </div>
-                </div>
-              </div>
-              <div className="flex-1 overflow-y-auto min-h-0 px-4 sm:px-6 py-4 sm:py-6">
+            {/* Right Column - Updated scroll handling */}
+            <div className="flex flex-col h-full bg-gray-50/80">
+              <div className="px-4 sm:px-6 lg:px-8 py-6">
                 <PostPreview
                   title="Content Preview"
                   content={content}
@@ -331,7 +318,7 @@ const ComposePage = () => {
                   hideViewModeSelector={false}
                   selectedProfile={selectedProfile}
                   imageUrls={imageUrls}
-                  documentUrl={documentUrl}
+                  // documentUrl={documentUrl}
                 />
               </div>
             </div>

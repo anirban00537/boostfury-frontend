@@ -18,15 +18,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LinkedInProfileUI } from "@/types/post";
-import { Viewer, SpecialZoomLevel, Worker } from "@react-pdf-viewer/core";
-import { pageNavigationPlugin } from "@react-pdf-viewer/page-navigation";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-// Import the styles
-import "@react-pdf-viewer/core/lib/styles/index.css";
-import "@react-pdf-viewer/page-navigation/lib/styles/index.css";
 
 export interface DropdownItem {
   label: string;
@@ -34,7 +27,6 @@ export interface DropdownItem {
   href?: string;
   onClick?: () => void;
   className?: string;
-  documentUrl?: string;
 }
 
 interface PostPreviewProps {
@@ -46,7 +38,6 @@ interface PostPreviewProps {
   dropdownItems?: DropdownItem[];
   selectedProfile: LinkedInProfileUI | null;
   imageUrls?: string[];
-  documentUrl?: string;
 }
 
 type ViewMode = "mobile" | "tablet" | "desktop";
@@ -62,15 +53,11 @@ export const PostPreview = ({
   dropdownItems,
   selectedProfile,
   imageUrls = [],
-  documentUrl,
 }: PostPreviewProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("desktop");
   const [hasMoreContent, setHasMoreContent] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [numPages, setNumPages] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
 
   const getStatusConfig = (status: string | undefined) => {
     switch (status) {
@@ -99,45 +86,23 @@ export const PostPreview = ({
 
   const statusConfig = getStatusConfig(status);
 
-  useEffect(() => {
-    // Reset states when documentUrl changes
-    setNumPages(0);
-    setCurrentPage(0);
-    setIsLoading(true);
-  }, [documentUrl]);
-
-  const pageNavigationPluginInstance = pageNavigationPlugin({});
-  const { jumpToPage } = pageNavigationPluginInstance;
-
-  const handlePrevPage = () => {
-    if (currentPage > 0) {
-      jumpToPage(currentPage - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < numPages - 1) {
-      jumpToPage(currentPage + 1);
-    }
-  };
-
-  // Add viewMode-specific styles
+  // Update the getViewportStyles to ensure proper scaling
   const getViewportStyles = (mode: ViewMode) => {
     switch (mode) {
       case "mobile":
         return {
-          containerClass: "max-w-[375px]",
-          previewClass: "scale-[0.85] origin-top",
+          containerClass: "max-w-[470px]",
+          previewClass: "rounded-none md:rounded-xl",
         };
       case "tablet":
         return {
-          containerClass: "max-w-[768px]",
-          previewClass: "scale-[0.9] origin-top",
+          containerClass: "max-w-[680px]",
+          previewClass: "rounded-xl",
         };
       case "desktop":
         return {
-          containerClass: "max-w-3xl",
-          previewClass: "scale-100",
+          containerClass: "max-w-[780px]",
+          previewClass: "rounded-xl",
         };
     }
   };
@@ -201,7 +166,7 @@ export const PostPreview = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className={cn(
-              "rounded-xl border border-gray-200/80 bg-white/80 backdrop-blur-sm shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
+              "border border-gray-200/80 bg-white shadow-sm",
               "transition-all duration-300",
               getViewportStyles(viewMode).previewClass
             )}
@@ -211,8 +176,8 @@ export const PostPreview = ({
                 {/* Profile Header */}
                 <div
                   className={cn(
-                    "p-6 border-b border-gray-100",
-                    viewMode === "mobile" && "p-4"
+                    "p-4",
+                    "border-b border-gray-100"
                   )}
                 >
                   <div className="flex items-start justify-between">
@@ -295,7 +260,7 @@ export const PostPreview = ({
                 </div>
 
                 {/* Content Area */}
-                <div className={cn("p-6", viewMode === "mobile" && "p-4")}>
+                <div className="p-4">
                   <div
                     ref={contentRef}
                     className={`whitespace-pre-wrap break-words relative ${
@@ -310,61 +275,15 @@ export const PostPreview = ({
                     {content}
                   </div>
 
-                  {/* Add PDF Viewer */}
-                  {documentUrl && (
-                    <div className="mt-4 border rounded-lg overflow-hidden">
-                      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-                        <div style={{ height: '500px' }}>
-                          <Viewer
-                            fileUrl={documentUrl}
-                            plugins={[pageNavigationPluginInstance]}
-                            defaultScale={SpecialZoomLevel.PageFit}
-                            onDocumentLoad={(e) => {
-                              setNumPages(e.doc.numPages);
-                              setIsLoading(false);
-                            }}
-                            onPageChange={(e) => setCurrentPage(e.currentPage)}
-                          />
-                        </div>
-                      </Worker>
-                      {numPages > 0 && (
-                        <div className="flex items-center justify-between p-2 border-t bg-gray-50">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={handlePrevPage}
-                            disabled={currentPage === 0}
-                          >
-                            <FiChevronLeft className="h-4 w-4" />
-                          </Button>
-                          <span className="text-sm text-gray-600">
-                            Page {currentPage + 1} of {numPages}
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={handleNextPage}
-                            disabled={currentPage === numPages - 1}
-                          >
-                            <FiChevronRight className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
                   {/* Image Grid */}
                   {imageUrls.length > 0 && (
-                    <div
-                      className={cn("mt-4", viewMode === "mobile" && "mt-3")}
-                    >
+                    <div className="px-4 pb-4">
                       <div
                         className={cn(
-                          "grid gap-2",
+                          "grid gap-1",
                           imageUrls.length === 1 && "grid-cols-1",
                           imageUrls.length === 2 && "grid-cols-2",
-                          imageUrls.length >= 3 && "grid-cols-2",
-                          viewMode === "mobile" && "gap-1"
+                          imageUrls.length >= 3 && "grid-cols-2"
                         )}
                       >
                         {imageUrls.map((url, index) => (

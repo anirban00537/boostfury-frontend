@@ -22,7 +22,7 @@ import {
 } from "@/components/content-create/PostPreview";
 import { Button } from "@/components/ui/button";
 import { PostType, PostSectionConfig, PostTabId, Post } from "@/types/post";
-import { useContentManagement } from "@/hooks/useContent";
+import { useContentManagement, useContentPosting } from "@/hooks/useContent";
 import { POST_STATUS } from "@/lib/core-constants";
 import { Pagination } from "@/components/ui/pagination";
 import { PostPreviewNotRedux } from "@/components/content-create/PostPreviewNotRedux";
@@ -34,6 +34,9 @@ import {
 } from "@/components/ui/tooltip";
 import Link from "next/link";
 import { GradientButton } from "@/components/ui/gradient-button";
+import { toast } from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { RootState } from "@/state/store";
 
 interface PostConfig {
   id: PostTabId;
@@ -76,9 +79,35 @@ const postConfigs: PostConfig[] = [
 interface TabHeaderProps {
   activeTab: PostTabId;
   onTabChange: (tabId: PostTabId) => void;
+  handleCreateDraftFromGenerated: any;
+  currentWorkspace: any;
 }
 
-const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange }) => {
+const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange, handleCreateDraftFromGenerated, currentWorkspace }) => {
+  const router = useRouter();
+
+  const handleCreateNew = async () => {
+    try {
+      const draftId = await handleCreateDraftFromGenerated({
+        content: "",
+        postType: "text",
+        workspaceId: currentWorkspace?.id,
+        linkedInProfileId: null,
+        videoUrl: "",
+        documentUrl: "",
+        hashtags: [],
+        mentions: [],
+      });
+
+      if (draftId) {
+        router.push(`/compose?draft_id=${draftId}`);
+      }
+    } catch (error) {
+      console.error("Error creating new draft:", error);
+      toast.error("Failed to create new draft");
+    }
+  };
+
   return (
     <div className="border-b border-gray-200 bg-white sticky top-0 z-10">
       <div className="px-6 pt-6 pb-0">
@@ -93,14 +122,13 @@ const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange }) => {
           </div>
 
           <div className="flex items-center gap-3">
-            <Link href="/compose">
-              <GradientButton
-                variant="primary"
-                leftIcon={<Plus className="w-4 h-4" />}
-              >
-                Create New
-              </GradientButton>
-            </Link>
+            <GradientButton
+              variant="primary"
+              leftIcon={<Plus className="w-4 h-4" />}
+              onClick={handleCreateNew}
+            >
+              Create New
+            </GradientButton>
             <Link href="/ai-writer">
               <GradientButton
                 variant="default"
@@ -182,6 +210,8 @@ const ContentManager = () => {
     handlePageChange,
     handleDeletePost,
   } = useContentManagement();
+  const { handleCreateDraftFromGenerated } = useContentPosting();
+  const { currentWorkspace } = useSelector((state: RootState) => state.user);
 
   // Handle URL query params for active tab
   useEffect(() => {
@@ -207,8 +237,26 @@ const ContentManager = () => {
     updateQueryParams(tabId);
   };
 
-  const handleCreatePost = () => {
-    router.push("/compose");
+  const handleCreateNew = async () => {
+    try {
+      const draftId = await handleCreateDraftFromGenerated({
+        content: "",
+        postType: "text",
+        workspaceId: currentWorkspace?.id,
+        linkedInProfileId: null,
+        videoUrl: "",
+        documentUrl: "",
+        hashtags: [],
+        mentions: [],
+      });
+
+      if (draftId) {
+        router.push(`/compose?draft_id=${draftId}`);
+      }
+    } catch (error) {
+      console.error("Error creating new draft:", error);
+      toast.error("Failed to create new draft");
+    }
   };
 
   const handleDelete = async (postId: string) => {
@@ -286,8 +334,13 @@ const ContentManager = () => {
 
   return (
     <div className="min-h-screen">
-      <TabHeader activeTab={activeTab} onTabChange={handleTabClick} />
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-8">
+      <TabHeader 
+        activeTab={activeTab} 
+        onTabChange={handleTabClick}
+        handleCreateDraftFromGenerated={handleCreateDraftFromGenerated}
+        currentWorkspace={currentWorkspace}
+      />
+      <div className=" px-4 sm:px-6 py-8">
         <div className="p-6">
           {isLoadingPosts ? (
             <div className="flex justify-center items-center h-40">
@@ -412,7 +465,7 @@ const ContentManager = () => {
 
                   {/* Button */}
                   <Button
-                    onClick={handleCreatePost}
+                    onClick={handleCreateNew}
                     className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg
                               flex items-center gap-2 shadow-sm hover:shadow transition-all duration-200"
                   >

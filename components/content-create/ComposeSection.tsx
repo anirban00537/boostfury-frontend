@@ -8,7 +8,14 @@ import React, {
   SetStateAction,
 } from "react";
 import { Button } from "../ui/button";
-import { Send, Clock, Sparkles, HelpCircle, ListPlus } from "lucide-react";
+import {
+  Send,
+  Clock,
+  Sparkles,
+  HelpCircle,
+  ListPlus,
+  Loader2,
+} from "lucide-react";
 import { ScheduleModal } from "./ScheduleModal";
 import {
   Tooltip,
@@ -32,6 +39,7 @@ import { ImageUploadModal } from "./ImageUploadModal";
 import { useContentPosting } from "@/hooks/useContent";
 import Image from "next/image";
 import { AIAssistantModal } from "./AIAssistantModal";
+import { GradientButton } from "../ui/gradient-button";
 
 interface ComposeSectionProps {
   content: string;
@@ -172,26 +180,24 @@ export const ComposeSection = ({
   };
 
   return (
-    <div
-      className="flex flex-col bg-gray-50/95 backdrop-blur-sm rounded-2xl overflow-hidden 
-                    border border-primary/10 shadow-[0_8px_40px_rgb(var(--primary-rgb),0.08)]"
-    >
-      {/* Editor Header */}
-      <div className="px-6 py-4 border-b border-primary/5 bg-gray-50/95">
+    <div className="flex flex-col bg-gradient-to-b from-white to-gray-50/95 backdrop-blur-sm rounded-2xl overflow-hidden 
+                    border border-primary/10 shadow-[0_8px_40px_rgb(var(--primary-rgb),0.08)] min-h-screen">
+      {/* Editor Header - Updated Design */}
+      <div className="flex-none px-6 py-4 border-b border-primary/10 bg-gradient-to-r from-primary/5 to-transparent">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-primary" />
-              <h2 className="text-base font-semibold text-primary">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2.5 bg-white/80 px-3 py-1.5 rounded-full shadow-sm border border-primary/10">
+              <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+              <h2 className="text-sm font-semibold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
                 AI-Powered Editor
               </h2>
             </div>
             <div
               className={cn(
-                "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all border",
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border",
                 isAutoSaving
-                  ? "bg-primary/5 text-primary border-primary/20"
-                  : "bg-green-50/50 text-green-600 border-green-100"
+                  ? "bg-primary/5 text-primary border-primary/20 animate-pulse"
+                  : "bg-gradient-to-r from-green-50 to-emerald-50 text-green-600 border-green-100"
               )}
             >
               <span
@@ -206,49 +212,49 @@ export const ComposeSection = ({
         </div>
       </div>
 
-      {/* Editor Toolbar */}
-      <div
-        className="px-6 py-3 border-b border-primary/5 flex items-center justify-between 
-                    bg-gray-50/95"
-      >
-        <div className="flex items-center gap-2">
+      {/* Editor Toolbar - Updated Design */}
+      <div className="flex-none px-6 py-3 border-b border-primary/10 flex items-center justify-between 
+                    bg-gradient-to-b from-white/80 to-gray-50/80">
+        <div className="flex items-center gap-3">
           {/* Media Tools */}
           <div
-            className="flex items-center gap-1 p-1 bg-white/80 rounded-lg 
-                        border border-primary/10 shadow-sm"
+            className="flex items-center gap-1 p-1.5 bg-white rounded-xl 
+                        border border-primary/10 shadow-sm hover:shadow-md transition-all"
           >
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 w-8 p-0 hover:bg-primary/5 rounded-md transition-all"
+                  className="h-8 w-8 p-0 hover:bg-primary/5 rounded-lg transition-all"
                   onClick={() => setIsImageModalOpen(true)}
                 >
                   <ImageIcon className="w-4 h-4 text-primary/80" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent className="bg-gray-900 text-white">
+              <TooltipContent className="bg-gray-900/95 text-white backdrop-blur-sm">
                 Add Image
               </TooltipContent>
             </Tooltip>
           </div>
 
           {/* Text Tools */}
-          <div className="flex items-center gap-1 p-1 bg-white/80 rounded-lg border border-blue-100/50 shadow-sm ml-2">
+          <div className="flex items-center gap-1 p-1.5 bg-white rounded-xl border border-primary/10 shadow-sm hover:shadow-md transition-all">
             <div className="relative">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-8 w-8 p-0 hover:bg-white rounded-md transition-colors"
+                    className="h-8 w-8 p-0 hover:bg-primary/5 rounded-lg transition-all"
                     onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                   >
-                    <Smile className="w-4 h-4 text-gray-600" />
+                    <Smile className="w-4 h-4 text-primary/80" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Add Emoji</TooltipContent>
+                <TooltipContent className="bg-gray-900/95 text-white backdrop-blur-sm">
+                  Add Emoji
+                </TooltipContent>
               </Tooltip>
               {showEmojiPicker && (
                 <div className="absolute top-full mt-1 left-0 z-50">
@@ -270,12 +276,13 @@ export const ComposeSection = ({
           </div>
         </div>
 
-        {/* AI Assist Button */}
+        {/* AI Assist Button - Updated Design */}
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 px-4 gap-2 bg-primary text-white hover:bg-primary/90 
-                   rounded-full shadow-md"
+          className="h-9 px-4 gap-2 bg-gradient-to-r from-primary to-primary/90 text-white 
+                     hover:from-primary/95 hover:to-primary/85 rounded-xl shadow-md transition-all
+                     disabled:from-gray-400 disabled:to-gray-400"
           onClick={() => setIsAIModalOpen(true)}
           disabled={!selectedText}
         >
@@ -284,7 +291,7 @@ export const ComposeSection = ({
         </Button>
       </div>
 
-      {/* Editor Content */}
+      {/* Editor Content - Updated for flexible height */}
       <div className="flex-grow relative bg-gray-50/95">
         <textarea
           ref={textareaRef}
@@ -294,14 +301,15 @@ export const ComposeSection = ({
           onMouseUp={handleTextSelection}
           onKeyUp={handleTextSelection}
           placeholder="What would you like to share? Use AI to enhance your content..."
-          className="w-full h-full px-6 py-5 resize-none focus:outline-none
+          className="w-full h-full px-8 py-6 resize-none focus:outline-none
                    text-gray-700 placeholder-gray-400/80 bg-transparent
-                   text-base leading-relaxed"
-          style={{ minHeight: "240px" }}
+                   text-lg leading-relaxed font-normal overflow-y-auto
+                   min-h-[calc(100vh-400px)] max-h-[80vh] pb-20"
+          style={{ height: "auto" }}
         />
 
-        {/* Character Counter */}
-        <div className="absolute bottom-4 right-6">
+        {/* Character Counter - Adjusted position */}
+        <div className="absolute bottom-6 right-8 z-10">
           <div
             className={cn(
               "px-3 py-1.5 rounded-full text-xs font-medium transition-all border shadow-sm",
@@ -320,7 +328,7 @@ export const ComposeSection = ({
       {/* Image Preview Section */}
       {((postDetails?.images && postDetails.images.length > 0) ||
         imageUrls.length > 0) && (
-        <div className="px-6 py-4 border-t border-primary/5">
+        <div className="flex-none px-6 py-4 border-t border-primary/5">
           <div className="flex flex-wrap gap-3">
             {/* Show images from postDetails */}
             {postDetails?.images?.map((image) => (
@@ -365,30 +373,33 @@ export const ComposeSection = ({
         </div>
       )}
 
-      {/* Editor Footer */}
-      <div className="px-6 py-4 border-t border-primary/5 bg-gray-50/95 backdrop-blur-sm">
+      {/* Editor Footer - Fixed to bottom */}
+      <div className="flex-none px-6 py-4 border-t border-primary/5 bg-gray-50/95 backdrop-blur-sm">
         <div className="flex items-center justify-between">
           <div className="flex gap-2">
-            <Button
+            <GradientButton
               variant="outline"
               size="sm"
-              className="h-9 px-4 gap-2 bg-white hover:bg-primary/5 
-                       transition-all hover:text-primary border-primary/20"
               onClick={() => setIsScheduleModalOpen(true)}
               disabled={!selectedLinkedInProfile || !content.trim()}
+              leftIcon={<Clock className="w-4 h-4" />}
             >
-              <Clock className="w-4 h-4" />
               Schedule
-            </Button>
+            </GradientButton>
 
-            <Button
+            <GradientButton
               variant="outline"
               size="sm"
-              className="h-9 px-4 gap-2 bg-white hover:bg-primary/5 
-                       transition-all hover:text-primary border-primary/20"
               onClick={handleAddToQueue}
               disabled={
                 !selectedLinkedInProfile || !content.trim() || isAddingToQueue
+              }
+              leftIcon={
+                isAddingToQueue ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <ListPlus className="w-4 h-4" />
+                )
               }
             >
               {isAddingToQueue ? (
@@ -400,25 +411,21 @@ export const ComposeSection = ({
                   Adding to Queue...
                 </>
               ) : (
-                <>
-                  <ListPlus className="w-4 h-4" />
-                  Add to Queue
-                </>
+                <>Add to Queue</>
               )}
-            </Button>
+            </GradientButton>
           </div>
 
-          <Button
-            variant="default"
+          <GradientButton
+            variant="primary"
             size="sm"
-            className={cn(
-              "h-9 px-4 gap-2 bg-gradient-to-br from-primary to-primary text-white hover:bg-primary/90 shadow-md",
-              (!selectedLinkedInProfile ||
-                characterCount > CHAR_LIMIT ||
-                !content.trim() ||
-                isPosting) &&
-                "opacity-50"
-            )}
+            leftIcon={
+              isPosting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )
+            }
             disabled={
               !selectedLinkedInProfile ||
               characterCount > CHAR_LIMIT ||
@@ -439,12 +446,9 @@ export const ComposeSection = ({
                 Publishing...
               </>
             ) : (
-              <>
-                <Send className="w-4 h-4" />
-                Publish Now
-              </>
+              <>Publish Now</>
             )}
-          </Button>
+          </GradientButton>
         </div>
       </div>
 
@@ -475,7 +479,8 @@ export const ComposeSection = ({
           if (textarea) {
             const start = textarea.selectionStart;
             const end = textarea.selectionEnd;
-            const newValue = content.substring(0, start) + newContent + content.substring(end);
+            const newValue =
+              content.substring(0, start) + newContent + content.substring(end);
             setContent(newValue);
           }
         }}
