@@ -15,6 +15,7 @@ import {
   HelpCircle,
   ListPlus,
   Loader2,
+  Calendar,
 } from "lucide-react";
 import { ScheduleModal } from "./ScheduleModal";
 import {
@@ -348,26 +349,36 @@ export const ComposeSection = ({
       {/* Footer */}
       <div className="border-t border-gray-100 p-4">
         <div className="flex items-center justify-end gap-3">
+          {/* Add Queue and Schedule buttons */}
+          <GradientButton
+            variant="outline"
+            size="sm"
+            leftIcon={<Calendar className="w-4 h-4" />}
+            className="border-primary/20 hover:border-primary/40 transition-colors"
+            onClick={() => setIsScheduleModalOpen(true)}
+          >
+            Schedule
+          </GradientButton>
+          <div className="w-px h-4 bg-gradient-to-b from-primary/20 to-purple-500/20" />
+          <GradientButton
+            variant="outline"
+            size="sm"
+            leftIcon={<Clock className="w-4 h-4" />}
+            className="border-primary/20 hover:border-primary/40 transition-colors"
+            onClick={() => selectedLinkedInProfile?.id && onAddToQueue(selectedLinkedInProfile.id)}
+            disabled={isAddingToQueue}
+          >
+            Queue
+            {isAddingToQueue && (
+              <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin ml-2" />
+            )}
+          </GradientButton>
           <GradientButton
             variant="primary"
             size="sm"
-            leftIcon={
-              isPosting ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Send className="w-4 h-4" />
-              )
-            }
-            disabled={
-              !selectedLinkedInProfile ||
-              characterCount > CHAR_LIMIT ||
-              !content.trim() ||
-              isPosting
-            }
-            onClick={() =>
-              selectedLinkedInProfile?.id &&
-              onPostNow(selectedLinkedInProfile.id)
-            }
+            leftIcon={isPosting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            disabled={!selectedLinkedInProfile || characterCount > CHAR_LIMIT || !content.trim() || isPosting}
+            onClick={() => selectedLinkedInProfile?.id && onPostNow(selectedLinkedInProfile.id)}
           >
             {isPosting ? "Publishing..." : "Publish Now"}
           </GradientButton>

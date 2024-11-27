@@ -5,9 +5,6 @@ import {
   Calendar,
   FileText,
   XCircle,
-  Tablet,
-  Smartphone,
-  Monitor,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
@@ -35,7 +32,6 @@ interface PostPreviewProps {
   title: string;
   content: string;
   isGenerating: boolean;
-  hideViewModeSelector?: boolean;
   status?: "scheduled" | "draft" | "published" | "failed";
   dropdownItems?: DropdownItem[];
   selectedProfile: LinkedInProfileUI | null;
@@ -43,15 +39,12 @@ interface PostPreviewProps {
   postDetails?: Post | null;
 }
 
-type ViewMode = "mobile" | "tablet" | "desktop";
-
 const MIN_CHARS = 10;
 
 export const PostPreview = ({
   title,
   content,
   isGenerating,
-  hideViewModeSelector = false,
   status,
   dropdownItems,
   selectedProfile,
@@ -59,7 +52,6 @@ export const PostPreview = ({
   postDetails,
 }: PostPreviewProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [viewMode, setViewMode] = useState<ViewMode>("desktop");
   const [hasMoreContent, setHasMoreContent] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -90,94 +82,21 @@ export const PostPreview = ({
 
   const statusConfig = getStatusConfig(status);
 
-  // Update the getViewportStyles to ensure proper scaling
-  const getViewportStyles = (mode: ViewMode) => {
-    switch (mode) {
-      case "mobile":
-        return {
-          containerClass: "max-w-[470px]",
-          previewClass: "rounded-none md:rounded-xl",
-        };
-      case "tablet":
-        return {
-          containerClass: "max-w-[680px]",
-          previewClass: "rounded-xl",
-        };
-      case "desktop":
-        return {
-          containerClass: "max-w-[780px]",
-          previewClass: "rounded-xl",
-        };
-    }
-  };
-
   return (
     <div className="space-y-4 w-full">
-      {/* View Mode Selector */}
-      {!hideViewModeSelector && (
-        <div className="flex items-center justify-between px-2 md:px-0">
-          <h2 className="text-lg font-semibold text-gray-900">Preview</h2>
-          <div className="bg-white/80 p-1 rounded-lg flex gap-1 shadow-sm border border-gray-200/80">
-            <button
-              onClick={() => setViewMode("mobile")}
-              className={cn(
-                "p-1.5 rounded-md transition-all duration-200",
-                viewMode === "mobile"
-                  ? "bg-blue-50 text-blue-600 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-              )}
-              title="Mobile view"
-            >
-              <Smartphone className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => setViewMode("tablet")}
-              className={cn(
-                "p-1.5 rounded-md transition-all duration-200",
-                viewMode === "tablet"
-                  ? "bg-blue-50 text-blue-600 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-              )}
-              title="Tablet view"
-            >
-              <Tablet className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => setViewMode("desktop")}
-              className={cn(
-                "p-1.5 rounded-md transition-all duration-200",
-                viewMode === "desktop"
-                  ? "bg-blue-50 text-blue-600 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-              )}
-              title="Desktop view"
-            >
-              <Monitor className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      )}
+      <div className="flex items-center justify-between px-2 md:px-0">
+        <h2 className="text-lg font-semibold text-gray-900">Preview</h2>
+      </div>
 
-      {/* Main Preview Container */}
       <div className="flex justify-center w-full">
-        <div
-          className={cn(
-            "w-full transition-all duration-300",
-            getViewportStyles(viewMode).containerClass
-          )}
-        >
+        <div className="w-full max-w-[780px]">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className={cn(
-              "border border-gray-200/80 bg-white shadow-sm",
-              "transition-all duration-300",
-              getViewportStyles(viewMode).previewClass
-            )}
+            className="border border-gray-200/80 bg-white shadow-sm rounded-xl"
           >
             {selectedProfile ? (
               <>
-                {/* Profile Header */}
                 <div
                   className={cn(
                     "p-4",
@@ -214,7 +133,6 @@ export const PostPreview = ({
                       </div>
                     </div>
 
-                    {/* Status Badge and Actions */}
                     <div className="flex items-center gap-2">
                       {status && statusConfig && (
                         <div
@@ -263,7 +181,6 @@ export const PostPreview = ({
                   </div>
                 </div>
 
-                {/* Content Area */}
                 <div className="p-4">
                   <div
                     ref={contentRef}
@@ -279,7 +196,6 @@ export const PostPreview = ({
                     {content}
                   </div>
 
-                  {/* Image Grid */}
                   {(imageUrls.length > 0 || (postDetails?.images && postDetails.images.length > 0)) && (
                     <div className="px-4 pb-4">
                       <div className={cn(
@@ -288,7 +204,6 @@ export const PostPreview = ({
                         (imageUrls.length + (postDetails?.images?.length || 0)) === 2 && "grid-cols-2",
                         (imageUrls.length + (postDetails?.images?.length || 0)) >= 3 && "grid-cols-2"
                       )}>
-                        {/* Show images from postDetails first */}
                         {postDetails?.images?.map((image, index) => (
                           <div
                             key={image.id}
@@ -312,7 +227,6 @@ export const PostPreview = ({
                           </div>
                         ))}
 
-                        {/* Show images from imageUrls */}
                         {imageUrls.map((url, index) => (
                           <div
                             key={`new-${index}`}
@@ -341,11 +255,10 @@ export const PostPreview = ({
                 </div>
               </>
             ) : (
-              // No LinkedIn Account State
               <div
                 className={cn(
                   "min-h-[400px] flex flex-col items-center justify-center",
-                  viewMode === "mobile" ? "p-4" : "p-8"
+                  "p-8"
                 )}
               >
                 <div className="w-full max-w-[280px] flex flex-col items-center text-center">

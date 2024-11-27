@@ -95,35 +95,9 @@ const ComposePage = () => {
             </div>
           </div>
 
-          {/* Right Section - Updated with gradient buttons */}
+          {/* Right Section */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <GradientButton
-                variant="outline"
-                size="sm"
-                leftIcon={<Calendar className="w-4 h-4" />}
-                className="border-primary/20 hover:border-primary/40 transition-colors"
-                onClick={() => setIsScheduleModalOpen(true)}
-              >
-                Schedule
-              </GradientButton>
-              <div className="w-px h-4 bg-gradient-to-b from-primary/20 to-purple-500/20" />
-              <GradientButton
-                variant="outline"
-                size="sm"
-                leftIcon={<Clock className="w-4 h-4" />}
-                className="border-primary/20 hover:border-primary/40 transition-colors"
-                onClick={() =>
-                  selectedProfile?.id && handleAddToQueue(selectedProfile.id)
-                }
-                disabled={isAddingToQueue}
-              >
-                Queue
-                {isAddingToQueue && (
-                  <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin ml-2" />
-                )}
-              </GradientButton>
-            </div>
+            {/* You can add other header actions here if needed */}
           </div>
         </div>
       </header>
@@ -267,11 +241,6 @@ const ComposePage = () => {
           {/* Right Column - Preview */}
           <div className="space-y-6">
             <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-gray-200/50 overflow-hidden sticky top-24 shadow-sm hover:shadow-md transition-shadow">
-              <div className="p-4 border-b border-gray-100">
-                <h3 className="text-sm font-medium text-gray-900">
-                  Post Preview
-                </h3>
-              </div>
               <div className="p-4">
                 <PostPreview
                   title=""
