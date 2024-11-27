@@ -71,46 +71,48 @@ const ComposePage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Top Navigation Bar */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
+      <header className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-30">
         <div className="h-16 px-4 flex items-center justify-between max-w-[1920px] mx-auto">
           {/* Left Section */}
           <div className="flex items-center gap-4">
             <Link
               href="/my-posts"
-              className="text-gray-500 hover:text-gray-700"
+              className="text-gray-500 hover:text-gray-700 transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div className="flex items-center gap-3">
-              <h1 className="text-lg font-semibold text-gray-900">
-                {isEditing ? "Edit Post" : "New Post"}
+              <h1 className="text-lg font-semibold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                {isEditing ? "Edit Post" : "AI Content Studio"}
               </h1>
-              <div className="h-4 w-px bg-gray-200" />
-              <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/5 border border-primary/10">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+              <div className="h-4 w-px bg-gradient-to-b from-primary/20 to-purple-500/20" />
+              <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-gradient-to-r from-primary/5 to-purple-500/5 border border-primary/10">
+                <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-primary to-purple-500" />
                 <span className="text-xs font-medium text-primary">Draft</span>
               </div>
             </div>
           </div>
 
-          {/* Right Section */}
+          {/* Right Section - Updated with gradient buttons */}
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <GradientButton
                 variant="outline"
                 size="sm"
                 leftIcon={<Calendar className="w-4 h-4" />}
+                className="border-primary/20 hover:border-primary/40 transition-colors"
                 onClick={() => setIsScheduleModalOpen(true)}
               >
                 Schedule
               </GradientButton>
-              <div className="w-px h-4 bg-gray-200" />
+              <div className="w-px h-4 bg-gradient-to-b from-primary/20 to-purple-500/20" />
               <GradientButton
                 variant="outline"
                 size="sm"
                 leftIcon={<Clock className="w-4 h-4" />}
+                className="border-primary/20 hover:border-primary/40 transition-colors"
                 onClick={() =>
                   selectedProfile?.id && handleAddToQueue(selectedProfile.id)
                 }
@@ -118,24 +120,10 @@ const ComposePage = () => {
               >
                 Queue
                 {isAddingToQueue && (
-                  <div className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                  <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin ml-2" />
                 )}
               </GradientButton>
             </div>
-            <GradientButton
-              variant="primary"
-              size="sm"
-              leftIcon={<Send className="w-4 h-4" />}
-              onClick={() =>
-                selectedProfile?.id && handlePostNow(selectedProfile.id)
-              }
-              disabled={!selectedProfile || !content.trim() || isPosting}
-            >
-              {isPosting ? "Publishing..." : "Publish Now"}
-              {isPosting && (
-                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              )}
-            </GradientButton>
           </div>
         </div>
       </header>
@@ -143,10 +131,10 @@ const ComposePage = () => {
       {/* Main Content Area */}
       <main className="px-4 py-6 max-w-[1920px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr,400px] gap-6">
-          {/* Left Column - Compose Section */}
+          {/* Left Column */}
           <div className="space-y-6">
-            {/* Profile Selector Card */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
+            {/* Profile Selector Card - Updated with modern design */}
+            <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-gray-200/50 p-4 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center">
@@ -246,7 +234,7 @@ const ComposePage = () => {
               </div>
             </div>
 
-            {/* Compose Section */}
+            {/* Add ComposeSection here */}
             <ComposeSection
               content={content}
               setContent={setContent}
@@ -276,10 +264,9 @@ const ComposePage = () => {
             />
           </div>
 
-          {/* Right Column - Preview & Schedule */}
+          {/* Right Column - Preview */}
           <div className="space-y-6">
-            {/* Preview Card */}
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden sticky top-24">
+            <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-gray-200/50 overflow-hidden sticky top-24 shadow-sm hover:shadow-md transition-shadow">
               <div className="p-4 border-b border-gray-100">
                 <h3 className="text-sm font-medium text-gray-900">
                   Post Preview

@@ -180,66 +180,70 @@ export const ComposeSection = ({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-gray-200/50 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       {/* Toolbar */}
-      <div className="border-b border-gray-100 p-2">
+      <div className="border-b border-gray-100/50 p-2 bg-gradient-to-r from-gray-50/50 to-white/50">
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 p-1 bg-gray-50 rounded-lg">
+          <div className="flex items-center gap-1 p-1 bg-white/80 rounded-lg shadow-sm">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 w-8 p-0"
                   onClick={() => setIsImageModalOpen(true)}
+                  className="h-8 w-8 p-0 hover:bg-primary/5 transition-colors"
                 >
-                  <ImageIcon className="w-4 h-4" />
+                  <ImageIcon className="w-4 h-4 text-primary" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Add Image</TooltipContent>
             </Tooltip>
-            {/* ... other toolbar buttons ... */}
           </div>
 
-          <div className="h-6 w-px bg-gray-200" />
+          <div className="h-6 w-px bg-gradient-to-b from-primary/20 to-purple-500/20" />
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
+              <GradientButton
+                variant="outline"
                 size="sm"
+                leftIcon={<Sparkles className="w-3.5 h-3.5" />}
                 className={cn(
-                  "h-8 px-3 gap-2",
-                  selectedText 
-                    ? "bg-primary/5 text-primary hover:bg-primary/10" 
+                  "h-8 px-3 gap-2 transition-colors",
+                  selectedText
+                    ? "bg-gradient-to-r from-primary/5 to-purple-500/5 text-primary hover:bg-gradient-to-r hover:from-primary/10 hover:to-purple-500/10"
                     : "bg-gray-50 text-gray-400 cursor-not-allowed"
                 )}
                 onClick={() => selectedText && setIsAIModalOpen(true)}
                 disabled={!selectedText}
               >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span className="text-sm">AI Assist</span>
-              </Button>
+                AI Assist
+              </GradientButton>
             </TooltipTrigger>
             <TooltipContent>
-              {selectedText 
-                ? "Enhance selected text with AI" 
+              {selectedText
+                ? "Enhance selected text with AI"
                 : "Select text to use AI assistance"}
             </TooltipContent>
           </Tooltip>
 
-          <div className="ml-auto flex items-center gap-2">
-            <div className={cn(
-              "px-2 py-1 rounded-full text-xs",
-              isAutoSaving 
-                ? "bg-blue-50 text-blue-600"
-                : "bg-green-50 text-green-600"
-            )}>
+          {/* Auto-save indicator */}
+          <div className="ml-auto">
+            <div
+              className={cn(
+                "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
+                isAutoSaving
+                  ? "bg-gradient-to-r from-blue-50 to-blue-100/50 text-blue-600"
+                  : "bg-gradient-to-r from-green-50 to-green-100/50 text-green-600"
+              )}
+            >
               <span className="flex items-center gap-1.5">
-                <span className={cn(
-                  "w-1.5 h-1.5 rounded-full",
-                  isAutoSaving ? "bg-blue-500 animate-pulse" : "bg-green-500"
-                )} />
+                <span
+                  className={cn(
+                    "w-1.5 h-1.5 rounded-full",
+                    isAutoSaving ? "bg-blue-500 animate-pulse" : "bg-green-500"
+                  )}
+                />
                 {isAutoSaving ? "Saving..." : "Saved"}
               </span>
             </div>
@@ -257,27 +261,30 @@ export const ComposeSection = ({
           onMouseUp={handleTextSelection}
           onKeyUp={handleTextSelection}
           onSelect={handleTextSelection}
-          placeholder="What would you like to share?"
+          placeholder="What would you like to share? Use AI to enhance your content..."
           className="w-full min-h-[400px] p-6 resize-none focus:outline-none
-                   text-gray-700 placeholder-gray-400 bg-white
-                   text-base leading-relaxed"
+                   text-gray-700 placeholder-gray-400 bg-transparent
+                   text-base leading-relaxed transition-colors"
         />
-        
+
         {/* Character Counter */}
         <div className="absolute bottom-4 right-6">
-          <div className={cn(
-            "px-2 py-1 rounded-full text-xs font-medium",
-            characterCount > CHAR_LIMIT
-              ? "bg-red-50 text-red-600"
-              : "bg-gray-50 text-gray-600"
-          )}>
+          <div
+            className={cn(
+              "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
+              characterCount > CHAR_LIMIT
+                ? "bg-gradient-to-r from-red-50 to-red-100/50 text-red-600"
+                : "bg-gradient-to-r from-gray-50 to-gray-100/50 text-gray-600"
+            )}
+          >
             {characterCount}/{CHAR_LIMIT}
           </div>
         </div>
       </div>
 
       {/* Image Preview */}
-      {(imageUrls.length > 0 || (postDetails?.images && postDetails.images.length > 0)) && (
+      {(imageUrls.length > 0 ||
+        (postDetails?.images && postDetails.images.length > 0)) && (
         <div className="border-t border-gray-100 p-4 bg-gray-50">
           <div className="flex flex-wrap gap-3">
             {/* Show images from postDetails */}
@@ -341,26 +348,45 @@ export const ComposeSection = ({
       {/* Footer */}
       <div className="border-t border-gray-100 p-4">
         <div className="flex items-center justify-end gap-3">
-          <Button
-            variant="default"
-            size="lg"
-            className="gap-2 bg-primary hover:bg-primary/90"
-            disabled={!selectedLinkedInProfile || characterCount > CHAR_LIMIT || !content.trim() || isPosting}
-            onClick={() => selectedLinkedInProfile?.id && onPostNow(selectedLinkedInProfile.id)}
+          <GradientButton
+            variant="primary"
+            size="sm"
+            leftIcon={
+              isPosting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )
+            }
+            disabled={
+              !selectedLinkedInProfile ||
+              characterCount > CHAR_LIMIT ||
+              !content.trim() ||
+              isPosting
+            }
+            onClick={() =>
+              selectedLinkedInProfile?.id &&
+              onPostNow(selectedLinkedInProfile.id)
+            }
           >
-            {isPosting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Send className="w-4 h-4" />
-            )}
             {isPosting ? "Publishing..." : "Publish Now"}
-          </Button>
+          </GradientButton>
         </div>
       </div>
 
       {/* Modals */}
-      <ScheduleModal isOpen={isScheduleModalOpen} onClose={() => setIsScheduleModalOpen(false)} onSchedule={onSchedule} />
-      <ImageUploadModal isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onUploadSuccess={() => {}} handleImageUpload={handleImageUploadWithPostId} isUploading={isUploading} />
+      <ScheduleModal
+        isOpen={isScheduleModalOpen}
+        onClose={() => setIsScheduleModalOpen(false)}
+        onSchedule={onSchedule}
+      />
+      <ImageUploadModal
+        isOpen={isImageModalOpen}
+        onClose={() => setIsImageModalOpen(false)}
+        onUploadSuccess={() => {}}
+        handleImageUpload={handleImageUploadWithPostId}
+        isUploading={isUploading}
+      />
       <AIAssistantModal
         isOpen={isAIModalOpen}
         onClose={() => {
@@ -373,7 +399,8 @@ export const ComposeSection = ({
           if (textarea) {
             const start = textarea.selectionStart;
             const end = textarea.selectionEnd;
-            const newValue = content.substring(0, start) + newContent + content.substring(end);
+            const newValue =
+              content.substring(0, start) + newContent + content.substring(end);
             setContent(newValue);
           }
           setIsAIModalOpen(false);

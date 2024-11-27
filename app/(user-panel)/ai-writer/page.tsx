@@ -22,7 +22,8 @@ const tabItems = [
     bgGlow: "bg-indigo-500/10",
     dotColor: "bg-indigo-600",
     borderColor: "group-hover:border-indigo-200",
-    shimmer: "group-hover:before:bg-gradient-to-r group-hover:before:from-transparent group-hover:before:via-indigo-600/10 group-hover:before:to-transparent"
+    shimmer:
+      "group-hover:before:bg-gradient-to-r group-hover:before:from-transparent group-hover:before:via-indigo-600/10 group-hover:before:to-transparent",
   },
   {
     value: "ideas",
@@ -35,8 +36,9 @@ const tabItems = [
     bgGlow: "bg-amber-500/10",
     dotColor: "bg-amber-600",
     borderColor: "group-hover:border-amber-200",
-    shimmer: "group-hover:before:bg-gradient-to-r group-hover:before:from-transparent group-hover:before:via-amber-600/10 group-hover:before:to-transparent"
-  }
+    shimmer:
+      "group-hover:before:bg-gradient-to-r group-hover:before:from-transparent group-hover:before:via-amber-600/10 group-hover:before:to-transparent",
+  },
 ];
 
 const ContentCreationTools: React.FC = () => {
@@ -79,21 +81,7 @@ const ContentCreationTools: React.FC = () => {
     <div className="min-h-screen">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6">
         {/* Centered Header */}
-        <div className="text-center mb-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 text-primary text-sm mb-4">
-            <Zap className="h-4 w-4" />
-            AI-Powered Writing
-          </div>
-
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">
-            What <span className="text-primary">Viral Post</span> Would You Like
-            to Create?
-          </h1>
-          {/* <p className="text-lg text-gray-500">
-            Transform your ideas into engaging content with{" "}
-            <span className="text-primary">AI-powered</span> assistance
-          </p> */}
-        </div>
+        <Header />
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <div className="flex flex-col gap-4 mb-4">
@@ -125,19 +113,23 @@ const ContentCreationTools: React.FC = () => {
                     {/* Fancy Background Effects */}
                     {item.value === activeTab && (
                       <>
-                        <div className={`
+                        <div
+                          className={`
                           absolute inset-0 rounded-xl bg-gradient-to-br ${item.activeGradient}
                           opacity-100 transition-opacity duration-300
-                        `} />
+                        `}
+                        />
                         <div className="absolute inset-0 rounded-xl bg-white/95" />
-                        
+
                         {/* Animated Gradient Border */}
-                        <div className={`
+                        <div
+                          className={`
                           absolute inset-0 rounded-xl border-2 border-transparent
                           bg-gradient-to-br ${item.iconGradient} opacity-10
                           [mask:linear-gradient(#fff_0_0)_padding-box,linear-gradient(#fff_0_0)]
                           animate-border-rotate
-                        `} />
+                        `}
+                        />
 
                         {/* Animated Corner Dots */}
                         <motion.div
@@ -156,7 +148,8 @@ const ContentCreationTools: React.FC = () => {
 
                     <div className="relative flex items-center gap-3 w-full">
                       {/* Icon Container */}
-                      <div className={`
+                      <div
+                        className={`
                         w-10 h-10 rounded-xl flex-shrink-0 
                         flex items-center justify-center
                         transition-all duration-500
@@ -166,7 +159,8 @@ const ContentCreationTools: React.FC = () => {
                                shadow-lg ring-2 ring-white`
                             : "bg-gray-50 text-gray-500 group-hover:bg-white group-hover:shadow-md"
                         }
-                      `}>
+                      `}
+                      >
                         <motion.div
                           animate={
                             item.value === activeTab
@@ -183,14 +177,16 @@ const ContentCreationTools: React.FC = () => {
                       </div>
 
                       <div className="text-left min-w-0 flex-1">
-                        <div className={`
+                        <div
+                          className={`
                           text-sm font-semibold transition-colors duration-200
                           ${
                             item.value === activeTab
                               ? item.activeColor
                               : "text-gray-600 group-hover:text-gray-900"
                           }
-                        `}>
+                        `}
+                        >
                           {item.label}
                           {item.value === activeTab && (
                             <motion.span
@@ -200,14 +196,16 @@ const ContentCreationTools: React.FC = () => {
                             />
                           )}
                         </div>
-                        <div className={`
+                        <div
+                          className={`
                           text-xs transition-colors duration-200
                           ${
                             item.value === activeTab
                               ? "text-gray-600"
                               : "text-gray-400 group-hover:text-gray-500"
                           }
-                        `}>
+                        `}
+                        >
                           {item.description}
                         </div>
                       </div>

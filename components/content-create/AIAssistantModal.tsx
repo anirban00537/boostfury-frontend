@@ -59,12 +59,16 @@ export const AIAssistantModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] bg-gradient-to-b from-white to-blue-50/50">
         <DialogHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-primary" />
-              <DialogTitle>AI Assistant</DialogTitle>
+              <div className="p-2 rounded-full bg-primary/10">
+                <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+              </div>
+              <DialogTitle className="text-xl font-semibold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+                AI Assistant
+              </DialogTitle>
             </div>
             <DialogClose asChild>
               <Button
@@ -77,45 +81,51 @@ export const AIAssistantModal = ({
           </div>
         </DialogHeader>
         
-        <div className="space-y-4 py-4">
+        <div className="space-y-6 py-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Original Text</label>
-            <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+            <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary/60" />
+              Original Text
+            </label>
+            <div className="p-4 bg-gray-50/80 backdrop-blur-sm rounded-xl border border-gray-200/80 text-sm">
               {selectedText || "No text selected"}
             </div>
           </div>
           
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">AI Actions</label>
+            <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary/60" />
+              AI Actions
+            </label>
             <div className="flex flex-wrap gap-2">
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="gap-2"
+                className="gap-2 hover:bg-primary/10 hover:border-primary/30 transition-all duration-300"
                 onClick={() => handleRewrite(REWRITE_MODE.IMPROVE)}
                 disabled={!selectedText || isProcessing}
               >
-                <Sparkles className="w-3.5 h-3.5" />
+                <Sparkles className="w-3.5 h-3.5 animate-pulse" />
                 {isProcessing ? "Improving..." : "Improve Writing"}
               </Button>
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="gap-2"
+                className="gap-2 hover:bg-primary/10 hover:border-primary/30 transition-all duration-300"
                 onClick={() => handleRewrite(REWRITE_MODE.SHORTER)}
                 disabled={!selectedText || isProcessing}
               >
-                <Sparkles className="w-3.5 h-3.5" />
+                <Sparkles className="w-3.5 h-3.5 animate-pulse" />
                 {isProcessing ? "Shortening..." : "Make Shorter"}
               </Button>
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="gap-2"
+                className="gap-2 hover:bg-primary/10 hover:border-primary/30 transition-all duration-300"
                 onClick={() => handleRewrite(REWRITE_MODE.LONGER)}
                 disabled={!selectedText || isProcessing}
               >
-                <Sparkles className="w-3.5 h-3.5" />
+                <Sparkles className="w-3.5 h-3.5 animate-pulse" />
                 {isProcessing ? "Expanding..." : "Make Longer"}
               </Button>
             </div>
@@ -123,15 +133,19 @@ export const AIAssistantModal = ({
 
           {rewrittenContent && (
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Rewritten Content</label>
-              <div className="p-3 bg-white rounded-lg border border-primary/20 text-sm">
-                {rewrittenContent}
+              <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-primary/60" />
+                Rewritten Content
+              </label>
+              <div className="p-4 bg-white/50 backdrop-blur-sm rounded-xl border border-primary/20 text-sm relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent" />
+                <div className="relative">{rewrittenContent}</div>
               </div>
               <div className="flex justify-end mt-2">
                 <Button
                   variant="default"
                   size="sm"
-                  className="gap-2"
+                  className="gap-2 bg-gradient-to-r from-primary to-blue-600 hover:opacity-90 transition-opacity"
                   onClick={handleInsert}
                 >
                   <Sparkles className="w-3.5 h-3.5" />
