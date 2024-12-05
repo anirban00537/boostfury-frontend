@@ -3,6 +3,7 @@ import "./globals.css";
 import DefaultLayout from "@/components/layout/Default.layout.comp";
 import Script from "next/script";
 import AuthCheckLayout from "@/components/layout/Auth-Check.layout.comp";
+import { Suspense } from 'react';
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700"], // Added more weight variants for better typography
@@ -125,34 +126,36 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        {/* Analytics Script */}
-        <Script
-          defer
-          src="https://umami.boostfury.com/script.js"
-          data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
-          data-host-url="https://umami.boostfury.com"
-          strategy="afterInteractive"
-        />
-        {/* Preconnect to key domains */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        {/* Favicon */}
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        {/* manifest.json provides metadata used when your web app is installed on a user's mobile device or desktop */}
-        <link rel="manifest" href="/manifest.json" />
-      </head>
-      <body className={`${poppins.className} antialiased`}>
-        <DefaultLayout>
-          <AuthCheckLayout>{children}</AuthCheckLayout>
-        </DefaultLayout>
-      </body>
-    </html>
+    <Suspense fallback={<div>Loading...</div>}>
+      <html lang="en">
+        <head>
+          {/* Analytics Script */}
+          <Script
+            defer
+            src="https://umami.boostfury.com/script.js"
+            data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+            data-host-url="https://umami.boostfury.com"
+            strategy="afterInteractive"
+          />
+          {/* Preconnect to key domains */}
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossOrigin="anonymous"
+          />
+          {/* Favicon */}
+          <link rel="icon" href="/favicon.ico" sizes="any" />
+          <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+          {/* manifest.json provides metadata used when your web app is installed on a user's mobile device or desktop */}
+          <link rel="manifest" href="/manifest.json" />
+        </head>
+        <body className={`${poppins.className} antialiased`}>
+          <DefaultLayout>
+            <AuthCheckLayout>{children}</AuthCheckLayout>
+          </DefaultLayout>
+        </body>
+      </html>
+    </Suspense>
   );
 }
