@@ -14,30 +14,14 @@ const tabItems = [
   {
     value: "write",
     icon: <Pencil className="h-4 w-4" />,
-    label: "Write Content",
+    label: "Viral Post Generator",
     description: "Create your content with AI assistance",
-    activeGradient: "from-indigo-600/20 via-blue-600/20 to-sky-500/20",
-    iconGradient: "from-indigo-600 to-blue-600",
-    activeColor: "text-indigo-700",
-    bgGlow: "bg-indigo-500/10",
-    dotColor: "bg-indigo-600",
-    borderColor: "group-hover:border-indigo-200",
-    shimmer:
-      "group-hover:before:bg-gradient-to-r group-hover:before:from-transparent group-hover:before:via-indigo-600/10 group-hover:before:to-transparent",
   },
   {
     value: "ideas",
     icon: <Lightbulb className="h-4 w-4" />,
-    label: "Get Ideas",
+    label: "Idea Generator",
     description: "Generate creative content ideas",
-    activeGradient: "from-amber-600/20 via-orange-500/20 to-yellow-500/20",
-    iconGradient: "from-amber-600 to-orange-500",
-    activeColor: "text-amber-700",
-    bgGlow: "bg-amber-500/10",
-    dotColor: "bg-amber-600",
-    borderColor: "group-hover:border-amber-200",
-    shimmer:
-      "group-hover:before:bg-gradient-to-r group-hover:before:from-transparent group-hover:before:via-amber-600/10 group-hover:before:to-transparent",
   },
 ];
 
@@ -87,143 +71,45 @@ const ContentCreationTools: React.FC = () => {
           <div className="flex flex-col gap-4 mb-4">
             <div className="relative mx-auto px-3 py-2 w-full max-w-[800px]">
               <TabsList
-                className="relative w-full mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 
-                h-auto sm:h-[90px] bg-white/50 backdrop-blur-sm rounded-2xl p-2"
+                className="relative w-full mx-auto grid grid-cols-1 sm:grid-cols-2 gap-0.5 
+                  h-auto bg-gray-100 rounded-lg p-1"
               >
                 {tabItems.map((item) => (
                   <TabsTrigger
                     key={item.value}
                     value={item.value}
                     className={`
-                      relative group px-4 sm:px-6 py-4 rounded-xl flex items-center gap-3
-                      min-w-0 sm:min-w-[280px] transition-all duration-500
-                      border border-gray-200/50 
-                      before:absolute before:inset-0 before:w-[200%] before:h-full 
-                      before:-translate-x-full hover:before:translate-x-0 before:transition-transform
-                      before:duration-700 before:opacity-70 overflow-hidden
-                      ${item.shimmer}
-                      ${item.borderColor}
+                      relative group px-3 py-2 rounded-md flex items-center gap-2
+                      transition-all duration-200 outline-none
                       ${
                         item.value === activeTab
-                          ? "shadow-lg scale-[1.02]"
-                          : "hover:scale-[1.01] hover:shadow-md bg-white"
+                          ? "bg-white text-gray-900 shadow-sm"
+                          : "hover:bg-gray-50 text-gray-600 hover:text-gray-900"
                       }
                     `}
                   >
-                    {/* Fancy Background Effects */}
-                    {item.value === activeTab && (
-                      <>
-                        <div
-                          className={`
-                          absolute inset-0 rounded-xl bg-gradient-to-br ${item.activeGradient}
-                          opacity-100 transition-opacity duration-300
-                        `}
-                        />
-                        <div className="absolute inset-0 rounded-xl bg-white/95" />
-
-                        {/* Animated Gradient Border */}
-                        <div
-                          className={`
-                          absolute inset-0 rounded-xl border-2 border-transparent
-                          bg-gradient-to-br ${item.iconGradient} opacity-10
-                          [mask:linear-gradient(#fff_0_0)_padding-box,linear-gradient(#fff_0_0)]
-                          animate-border-rotate
-                        `}
-                        />
-
-                        {/* Animated Corner Dots */}
-                        <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          className={`absolute top-2 right-2 w-1 h-1 rounded-full ${item.dotColor}`}
-                        />
-                        <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ delay: 0.1 }}
-                          className={`absolute bottom-2 left-2 w-1 h-1 rounded-full ${item.dotColor}`}
-                        />
-                      </>
-                    )}
-
-                    <div className="relative flex items-center gap-3 w-full">
-                      {/* Icon Container */}
+                    <div className="relative flex items-center gap-2 w-full">
                       <div
                         className={`
-                        w-10 h-10 rounded-xl flex-shrink-0 
-                        flex items-center justify-center
-                        transition-all duration-500
-                        ${
-                          item.value === activeTab
-                            ? `bg-gradient-to-br ${item.iconGradient} text-white 
-                               shadow-lg ring-2 ring-white`
-                            : "bg-gray-50 text-gray-500 group-hover:bg-white group-hover:shadow-md"
-                        }
-                      `}
-                      >
-                        <motion.div
-                          animate={
+                          flex items-center justify-center
+                          transition-colors duration-200
+                          ${
                             item.value === activeTab
-                              ? {
-                                  scale: [1, 1.2, 1],
-                                  rotate: [0, 5, -5, 0],
-                                }
-                              : {}
+                              ? "text-green-600"
+                              : "text-gray-400 group-hover:text-gray-600"
                           }
-                          transition={{ duration: 2, repeat: Infinity }}
-                        >
-                          {item.icon}
-                        </motion.div>
+                        `}
+                      >
+                        {item.icon}
                       </div>
 
                       <div className="text-left min-w-0 flex-1">
-                        <div
-                          className={`
-                          text-sm font-semibold transition-colors duration-200
-                          ${
-                            item.value === activeTab
-                              ? item.activeColor
-                              : "text-gray-600 group-hover:text-gray-900"
-                          }
-                        `}
-                        >
-                          {item.label}
-                          {item.value === activeTab && (
-                            <motion.span
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              className={`ml-2 inline-block w-1.5 h-1.5 rounded-full ${item.dotColor}`}
-                            />
-                          )}
-                        </div>
-                        <div
-                          className={`
-                          text-xs transition-colors duration-200
-                          ${
-                            item.value === activeTab
-                              ? "text-gray-600"
-                              : "text-gray-400 group-hover:text-gray-500"
-                          }
-                        `}
-                        >
+                        <div className="text-sm font-medium">{item.label}</div>
+                        <div className="text-xs text-gray-400">
                           {item.description}
                         </div>
                       </div>
                     </div>
-
-                    {/* Enhanced Active State Background */}
-                    {item.value === activeTab && (
-                      <motion.div
-                        layoutId="activeTabIndicator"
-                        className="absolute inset-0 rounded-xl bg-white shadow-lg"
-                        transition={{
-                          type: "spring",
-                          bounce: 0.2,
-                          duration: 0.6,
-                        }}
-                        style={{ zIndex: -1 }}
-                      />
-                    )}
                   </TabsTrigger>
                 ))}
               </TabsList>

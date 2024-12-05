@@ -272,7 +272,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
         <div className="px-6 py-4 border-b border-blue-100/60 flex items-center justify-between">
           <Link href="/" className="block transition-opacity hover:opacity-80">
             <Image
-              src="/single-logo.svg"
+              src="/logo.svg"
               height={28}
               width={120}
               alt="boostfury.com"

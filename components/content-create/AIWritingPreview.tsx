@@ -191,7 +191,7 @@ export const AIWritingPreview = ({
                 onClick={handleCopy}
                 leftIcon={isCopied ? <Check size={18} /> : <Copy size={18} />}
                 className={`
-                  h-10 gap-2.5 text-xs font-medium transition-all duration-300
+                   gap-2.5 text-xs font-medium transition-all duration-300
                   border border-primary/5 hover:border-primary/10
                   ${
                     isCopied
@@ -206,6 +206,7 @@ export const AIWritingPreview = ({
                 size="sm"
                 onClick={handleSaveAndEdit}
                 disabled={isCreatingDraft}
+                className="text-xs font-medium w-32"
                 leftIcon={
                   isCreatingDraft ? (
                     <div className="h-3 w-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
