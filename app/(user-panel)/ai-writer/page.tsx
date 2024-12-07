@@ -116,9 +116,9 @@ const ContentCreationTools: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative px-3">
-            {/* Left Column */}
-            <div className="w-full">
+          <div className={`grid ${activeTab === 'write' ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'} gap-8 relative px-3`}>
+            {/* Left Column - Conditionally set width */}
+            <div className={`${activeTab === 'ideas' ? 'col-span-full' : ''}`}>
               <TabsContent value="write" className="mt-0 border-none">
                 <div className="relative overflow-hidden rounded-2xl border border-gray-200/50 bg-white shadow-md shadow-gray-100/50 hover:shadow-lg hover:shadow-gray-200/50 transition-shadow duration-200">
                   <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-transparent" />
@@ -157,29 +157,31 @@ const ContentCreationTools: React.FC = () => {
               </TabsContent>
             </div>
 
-            {/* Right Column - Preview */}
-            <div className="w-full">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeTab}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
-                >
-                  <div className="relative overflow-hidden rounded-2xl border border-gray-200/50 bg-slate-100 shadow-md shadow-gray-100/50 hover:shadow-lg hover:shadow-gray-200/50 transition-shadow duration-200">
-                    <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-transparent" />
-                    <div className="relative p-8">
-                      <AIWritingPreview
-                        isGenerating={isGeneratingLinkedinPosts}
-                        generatedPost={generatedPost}
-                        title="AI Generated LinkedIn Post"
-                      />
+            {/* Right Column - Preview (only shown when write tab is active) */}
+            {activeTab === 'write' && (
+              <div className="w-full">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTab}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                  >
+                    <div className="relative overflow-hidden rounded-2xl border border-gray-200/50 bg-slate-100 shadow-md shadow-gray-100/50 hover:shadow-lg hover:shadow-gray-200/50 transition-shadow duration-200">
+                      <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-transparent" />
+                      <div className="relative p-8">
+                        <AIWritingPreview
+                          isGenerating={isGeneratingLinkedinPosts}
+                          generatedPost={generatedPost}
+                          title="AI Generated LinkedIn Post"
+                        />
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            )}
           </div>
         </Tabs>
       </div>

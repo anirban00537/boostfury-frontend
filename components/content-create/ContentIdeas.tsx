@@ -1,4 +1,4 @@
-import { Lightbulb, Loader2, Wand2, Sparkles } from "lucide-react";
+import { Lightbulb, Loader2, Wand2, Sparkles, Settings2 } from "lucide-react";
 import ShimmerButton from "@/components/magicui/Shimmer-Button.comp";
 import { motion } from "framer-motion";
 import { RootState } from "@/state/store";
@@ -93,29 +93,41 @@ export const ContentIdeas = ({
               </div>
             </div>
 
-            {/* Enhanced Generate Button */}
-            <ShimmerButton
-              onClick={handleGenerateClick}
-              disabled={loading}
-              enableShimmer={!loading}
-              background="linear-gradient(145deg, #4f46e5, #4338ca)"
-              className="h-10 px-4 rounded-xl text-sm font-medium shadow-lg"
-            >
-              <div className="flex items-center justify-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-white/20 flex items-center justify-center">
-                  {loading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Wand2 className="h-4 w-4" />
-                  )}
+            {/* Add settings button next to generate button */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowAISettings(true)}
+                className="h-10 w-10 rounded-xl bg-gray-100 hover:bg-gray-200 
+                         flex items-center justify-center transition-colors duration-200
+                         border border-gray-200/50 shadow-sm"
+                title="AI Settings"
+              >
+                <Settings2 className="h-5 w-5 text-gray-600" />
+              </button>
+
+              <ShimmerButton
+                onClick={handleGenerateClick}
+                disabled={loading}
+                enableShimmer={!loading}
+                background="linear-gradient(145deg, #4f46e5, #4338ca)"
+                className="h-10 px-4 rounded-xl text-sm font-medium shadow-lg"
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-6 h-6 rounded-lg bg-white/20 flex items-center justify-center">
+                    {loading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Wand2 className="h-4 w-4" />
+                    )}
+                  </div>
+                  <span>{loading ? "Generating..." : "Generate Ideas"}</span>
+                  <span className="hidden sm:flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-lg text-[10px]">
+                    <Sparkles className="h-3 w-3" />
+                    AI
+                  </span>
                 </div>
-                <span>{loading ? "Generating..." : "Generate Ideas"}</span>
-                <span className="hidden sm:flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-lg text-[10px]">
-                  <Sparkles className="h-3 w-3" />
-                  AI
-                </span>
-              </div>
-            </ShimmerButton>
+              </ShimmerButton>
+            </div>
           </div>
 
           {/* Enhanced Ideas Grid */}
