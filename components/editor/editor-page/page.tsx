@@ -31,9 +31,7 @@ function Dashboard() {
   return (
     <div className="flex h-screen overflow-hidden ">
       <div className="flex flex-col flex-1 h-full overflow-hidden">
-        <Suspense fallback={<div>Loading...</div>}>
-          <EditorNavbar />
-        </Suspense>
+        <EditorNavbar />
         <div
           className={`fixed top-[63px] left-0 h-[calc(100vh-63px)] z-30 transition-all duration-300 ease-in-out ${
             isCollapsed ? "-translate-x-full" : "translate-x-0"
