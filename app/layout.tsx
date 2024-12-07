@@ -3,9 +3,10 @@ import "./globals.css";
 import DefaultLayout from "@/components/layout/Default.layout.comp";
 import Script from "next/script";
 import AuthCheckLayout from "@/components/layout/Auth-Check.layout.comp";
+import ClientLayout from "./client-layout";
 
 const poppins = Poppins({
-  weight: ["400", "500", "600", "700"], // Added more weight variants for better typography
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
   variable: "--font-poppins",
   display: "swap",
@@ -119,6 +120,7 @@ export const metadata = {
   },
 };
 
+// Server component for metadata and initial HTML
 export default function RootLayout({
   children,
 }: {
@@ -149,9 +151,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className={`${poppins.className} antialiased`}>
-        <DefaultLayout>
-          <AuthCheckLayout>{children}</AuthCheckLayout>
-        </DefaultLayout>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
