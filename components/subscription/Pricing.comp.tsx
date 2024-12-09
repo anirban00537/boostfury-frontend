@@ -31,7 +31,7 @@ interface Package {
 }
 
 const Pricing = () => {
-  const [loading, setLoading] = useState(false);
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null); // Track loading for each plan
   const [selectedPlan, setSelectedPlan] = useState("monthly");
   const { loggedin } = useSelector((state: RootState) => state.user);
 
@@ -50,7 +50,7 @@ const Pricing = () => {
   };
 
   const buyProduct = async (plan: Package) => {
-    setLoading(true);
+    setLoadingPlan(plan.id); // Set the loading state for the clicked plan
     if (loggedin) {
       try {
         const response = await createCheckout({
@@ -69,11 +69,11 @@ const Pricing = () => {
           "An error occurred while purchasing the product. Please try again."
         );
       } finally {
-        setLoading(false);
+        setLoadingPlan(null); // Reset the loading state once the request is completed
       }
     } else {
       toast.error("Please login to continue");
-      setLoading(false);
+      setLoadingPlan(null); // Reset the loading state in case the user is not logged in
     }
   };
 
@@ -81,7 +81,7 @@ const Pricing = () => {
 
   return (
     <div className="flex flex-col h-full bg-gradient-to-b from-white to-blue-50/30 text-gray-800 overflow-y-auto">
-      {/* Header Section - Updated padding for mobile */}
+      {/* Header Section */}
       <div className="flex-shrink-0 p-6 sm:p-12 text-center max-w-3xl mx-auto">
         <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-gray-900 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
           Choose Your Perfect Plan
@@ -89,99 +89,58 @@ const Pricing = () => {
         <p className="text-base sm:text-lg text-gray-600 mb-3 max-w-2xl mx-auto px-4 sm:px-0">
           Get started with the features you need today and upgrade as you grow
         </p>
-        <p className="text-sm text-gray-500 max-w-xl mx-auto px-4 sm:px-0">
-          All plans include core features like AI writing assistance, LinkedIn integration, and premium support
-        </p>
-
-        {/* Billing Toggle - Updated for mobile */}
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8 mb-4">
-          <span className="text-sm font-medium text-gray-600 hidden sm:block">Monthly</span>
-          <div className="bg-white p-1 rounded-lg inline-flex shadow-[0_2px_8px_-3px_rgba(0,0,0,0.1)] border border-blue-100">
-            <button
-              className={`px-6 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
-                selectedPlan === "monthly"
-                  ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-blue-50"
-              }`}
-              onClick={() => setSelectedPlan("monthly")}
-            >
-              Monthly
-            </button>
-            <button
-              className={`px-6 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
-                selectedPlan === "yearly"
-                  ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-blue-50"
-              }`}
-              onClick={() => setSelectedPlan("yearly")}
-            >
-              Yearly
-            </button>
-          </div>
-          <span className="text-sm font-medium text-gray-600 hidden sm:block">Yearly</span>
-        </div>
-        {selectedPlan === "yearly" && (
-          <p className="text-sm text-blue-600 font-medium mt-2">
-            Save up to 20% with yearly billing
-          </p>
-        )}
       </div>
 
-      {/* Plans Grid - Updated for responsive layout */}
-      <div className="flex-grow flex flex-col md:flex-row items-start justify-center gap-6 px-4 pb-12">
+      {/* Plans Grid */}
+      <div className="flex-grow flex flex-col md:flex-row items-center justify-center gap-6 px-4 pb-12">
         {currentPackages.map((plan: Package) => (
-          <div key={plan.id} className="w-full md:w-auto md:max-w-sm">
-            <div className={cn(
-              "bg-white rounded-2xl overflow-hidden h-full border transition-all duration-200",
-              "hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.12)] hover:border-blue-200/60",
-              plan.id === "pro" 
-                ? "shadow-[0_4px_24px_-4px_rgba(0,0,0,0.08)] border-blue-200"
-                : "shadow-[0_4px_12px_-4px_rgba(0,0,0,0.05)] border-gray-200"
-            )}>
+          <div key={plan.id} className="w-full md:w-96 p-4">
+            <div
+              className={cn(
+                "bg-white rounded-2xl overflow-hidden h-full border transition-all duration-300 shadow-md hover:shadow-lg",
+                plan.id === "pro" ? "border-blue-200" : "border-gray-200"
+              )}
+            >
               <div className="relative p-6 sm:p-8">
                 {plan.id === "pro" && (
                   <div className="absolute top-6 right-6">
-                    <span className="inline-flex items-center gap-1 bg-gradient-to-r from-blue-500 to-indigo-600 
-                                   text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                    <span className="inline-flex items-center gap-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
                       <Sparkles className="w-3 h-3" />
                       Most Popular
                     </span>
                   </div>
                 )}
-                
+
                 <div className="flex flex-col h-full">
                   <h3 className="text-xl sm:text-2xl font-bold mb-2 text-gray-900">
                     {plan.name}
                   </h3>
-                  <p className="text-sm text-gray-600 mb-6">{plan.description}</p>
+                  <p className="text-sm text-gray-600 mb-6">
+                    {plan.description}
+                  </p>
 
                   <div className="mb-6">
                     <div className="flex items-baseline gap-1 justify-center">
-                      <span className="text-5xl font-bold text-gray-900">
+                      <span className="text-4xl font-bold text-gray-900">
                         ${getPrice(plan)}
                       </span>
                       <span className="text-gray-500">
                         /{plan.billing.interval}
                       </span>
                     </div>
-                    {selectedPlan === "yearly" && (
-                      <p className="text-xs text-green-600 text-center mt-2">
-                        Save ${getPrice(plan) * 2.4} yearly
-                      </p>
-                    )}
                   </div>
 
                   <button
                     className={cn(
-                      "w-full py-3 px-4 rounded-xl font-medium transition-all duration-200",
+                      "w-full py-3 px-4 rounded-xl font-medium transition-all duration-300",
                       plan.id === "pro"
-                        ? "bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30"
+                        ? "bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg"
                         : "bg-gray-100 hover:bg-gray-200 text-gray-900"
                     )}
                     onClick={() => buyProduct(plan)}
-                    disabled={loading}
+                    disabled={loadingPlan === plan.id} // Disable button only if it's loading
                   >
-                    {loading ? (
+                    {loadingPlan === plan.id ? (
                       <span className="flex items-center justify-center gap-2">
                         <Loader2 className="w-4 h-4 animate-spin" />
                         Processing...
@@ -211,7 +170,7 @@ const Pricing = () => {
                     <Check className="w-4 h-4 mt-0.5 text-blue-500 flex-shrink-0" />
                     <span>{plan.features.linkedin.posts.description}</span>
                   </li>
-              
+
                   {plan.features.core.map((feature, idx) => (
                     <li
                       key={idx}
