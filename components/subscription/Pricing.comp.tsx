@@ -211,10 +211,7 @@ const Pricing = () => {
                     <Check className="w-4 h-4 mt-0.5 text-blue-500 flex-shrink-0" />
                     <span>{plan.features.linkedin.posts.description}</span>
                   </li>
-                  <li className="flex items-start gap-3 text-sm text-gray-700">
-                    <Check className="w-4 h-4 mt-0.5 text-blue-500 flex-shrink-0" />
-                    <span>{plan.features.carousels.description}</span>
-                  </li>
+              
                   {plan.features.core.map((feature, idx) => (
                     <li
                       key={idx}

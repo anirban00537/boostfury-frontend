@@ -19,6 +19,10 @@ export const createCheckout = async ({
   return response.data;
 };
 
+export const cancelSubscription = async () => {
+  const response = await request.post("/subscription/cancel-subscription");
+  return response.data;
+};
 export const getPackages = async () => {
   const response = await request.get("/subscription/get-packages");
   return response.data;
