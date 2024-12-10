@@ -9,19 +9,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ContentIdeas } from "@/components/content-create/ContentIdeas";
 import { Lightbulb, Pencil, Zap } from "lucide-react";
 import { useGenerateContentIdeas } from "@/hooks/useGenerateLinkedInPosts";
-
 const tabItems = [
   {
     value: "write",
     icon: <Pencil className="h-4 w-4" />,
-    label: "AI Writer",
-    description: "Generate engaging content",
+    label: "Viral Post Generator",
+    description: "Create your content with AI assistance",
   },
   {
     value: "ideas",
     icon: <Lightbulb className="h-4 w-4" />,
-    label: "Idea Lab",
-    description: "Explore content possibilities",
+    label: "Idea Generator",
+    description: "Generate creative content ideas",
   },
 ];
 
@@ -63,14 +62,14 @@ const ContentCreationTools: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="max-w-[1600px] mx-auto px-6 sm:px-8 ">
+      <div className="max-w-[1600px] mx-auto ">
         <Header />
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <div className="flex flex-col gap-6 mb-8">
-            <div className="relative mx-auto w-full max-w-[900px]">
+           <div className="relative mx-auto w-full max-w-[900px]">
               <div className="absolute inset-0 bg-gradient-to-r from-violet-500/5 via-indigo-500/5 to-emerald-500/5 blur-3xl" />
-              <TabsList className="relative w-full mx-auto grid grid-cols-1 sm:grid-cols-2 gap-1.5 h-auto rounded-2xl p-1.5 bg-white/5 backdrop-blur-xl border border-black/5 shadow-xl shadow-black/10">
+              <TabsList className="relative w-full mx-auto grid grid-cols-1 sm:grid-cols-2 gap-1.5 h-auto rounded-2xl p-1.5 bg-white/5 backdrop-blur-xl border border-black/5 shadow-md shadow-black/10">
                 {tabItems.map((item) => (
                   <TabsTrigger
                     key={item.value}
@@ -81,13 +80,13 @@ const ContentCreationTools: React.FC = () => {
                       overflow-hidden isolate
                       ${
                         item.value === activeTab
-                          ? "bg-white/90 text-zinc-900 shadow-lg shadow-black/5"
+                          ? "bg-white/90 text-zinc-900 shadow-lg shadow-black/20"
                           : "hover:bg-white/20 text-zinc-600 hover:text-zinc-900"
                       }
                     `}
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 via-indigo-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
+                    
                     <div className="relative flex items-center gap-3 w-full">
                       <div
                         className={`
@@ -137,7 +136,7 @@ const ContentCreationTools: React.FC = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="relative overflow-hidden rounded-xl border border-black/5 shadow-xl shadow-black/30 ring-1 ring-black/5"
+                  className="relative overflow-hidden rounded-xl border border-black/5  shadow-md shadow-black/20 ring-1 ring-black/5"
                 >
                   <div className="absolute inset-0" />
                   <div className="relative">
@@ -164,7 +163,7 @@ const ContentCreationTools: React.FC = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="relative overflow-hidden rounded-xl border border-black/5 shadow-xl shadow-black/30 ring-1 ring-black/5"
+                  className="relative overflow-hidden rounded-xl border border-black/5 bg-white shadow-md shadow-black/20 ring-1 ring-black/5"
                 >
                   <div className="absolute inset-0 bg-gradient-to-b from-gray-50/30 to-transparent" />
                   <div className="relative">
@@ -189,7 +188,7 @@ const ContentCreationTools: React.FC = () => {
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <div className="relative overflow-hidden rounded-xl border border-black/5 bg-zinc-50/50 shadow-xl shadow-black/5 ring-1 ring-black/5">
+                    <div className="relative overflow-hidden rounded-xl border border-black/5 bg-zinc-50/50 shadow-md shadow-black/20 ring-1 ring-black/5">
                       <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent" />
                       <div className="relative p-6">
                         <AIWritingPreview

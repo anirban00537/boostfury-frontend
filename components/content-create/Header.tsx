@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { Wand2, Sparkles } from "lucide-react";
-import ParticlesContainer from "../ui/particles-container";
 
 export const Header = () => {
   return (
@@ -9,7 +8,6 @@ export const Header = () => {
       animate={{ opacity: 1 }}
       className="relative py-12 overflow-hidden"
     >
-      <ParticlesContainer />
       
       <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
         {/* Glowing badge */}

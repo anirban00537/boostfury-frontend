@@ -164,15 +164,16 @@ export const ContentInput = ({
   const isValidLength = charCount >= MIN_CHARS;
 
   return (
-    <div className="space-y-6 shadow-xl">
-      <div className="relative rounded-2xl border-none  bg-gradient-to-br from-gray-50 to-white overflow-hidden">
-        {/* Animated floating elements */}
+    <div className="space-y-6">
+      <div className="relative rounded-3xl border border-gray-100/20 bg-gradient-to-br from-gray-50/50 to-white/30 backdrop-blur-xl overflow-hidden shadow-2xl">
+        {/* Enhanced floating elements */}
         <div className="absolute inset-0 overflow-hidden">
           <motion.div
-            className="absolute w-40 h-40 rounded-full"
+            className="absolute -left-32 -top-32 w-64 h-64 rounded-full bg-blue-400/10 blur-3xl"
             animate={{
               x: [0, 100, 0],
               y: [0, -50, 0],
+              scale: [1, 1.1, 1],
             }}
             transition={{
               duration: 20,
@@ -181,10 +182,11 @@ export const ContentInput = ({
             }}
           />
           <motion.div
-            className="absolute right-0 bottom-0 w-60 h-60 rounded-full bg-purple-500/5 blur-3xl"
+            className="absolute right-0 bottom-0 w-96 h-96 rounded-full bg-purple-500/10 blur-3xl"
             animate={{
               x: [0, -70, 0],
               y: [0, 50, 0],
+              scale: [1, 1.2, 1],
             }}
             transition={{
               duration: 15,
@@ -194,150 +196,122 @@ export const ContentInput = ({
           />
         </div>
 
-        <div className="relative space-y-8">
-          {/* Main Content Area */}
-          <div className="rounded-2xl border-none overflow-hidden">
-            <div className="relative px-6 py-4 space-y-6">
-              {/* Decorative Background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-white pointer-events-none" />
-
-              {/* Header */}
-              <div className="relative flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div
-                    className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 
-                                flex items-center justify-center shadow-inner ring-1 ring-primary/10"
-                  >
-                    <Pencil className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Content Topic
-                    </h3>
-                    <p className="text-sm text-gray-500">
-                      Share your ideas and let AI enhance them
-                    </p>
-                  </div>
-                </div>
-
-                {/* Character Counter */}
-                <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500">
-                  <div
-                    className={`h-2 w-2 rounded-full ${
-                      charCount >= MIN_CHARS ? "bg-green-400" : "bg-gray-300"
-                    }`}
-                  />
-                  <span>
-                    {charCount}/{MAX_CHARS} characters
-                  </span>
-                </div>
+        <div className="relative space-y-8 p-8">
+          {/* Header with improved styling */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 
+                            backdrop-blur-md flex items-center justify-center shadow-xl ring-1 ring-primary/20">
+                <Pencil className="h-7 w-7 text-primary" />
               </div>
-
-              {/* Enhanced Textarea */}
-              <div className="relative mt-4">
-                <textarea
-                  value={contentSource === "plain-prompt" ? content : undefined}
-                  onChange={onTextChange}
-                  className="w-full min-h-[120px] p-4 rounded-xl
-                           bg-gradient-to-br from-white to-gray-50/50 backdrop-blur-sm border border-gray-200 hover:border-primary/20
-                           focus:border-primary/30 focus:ring-4 focus:ring-primary/10
-                           placeholder:text-gray-400 text-gray-600
-                           text-sm leading-relaxed resize-none outline-none
-                           transition-all duration-200"
-                  placeholder="What would you like to write about? Be specific to get better results..."
-                  maxLength={MAX_CHARS}
-                />
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900">Content Editor</h3>
+                <p className="text-sm text-gray-500">Powered by AI assistance</p>
               </div>
+            </div>
 
-              {/* Tone Selection */}
-              <div className="relative space-y-3 sm:space-y-4 pt-3 sm:pt-4 border-t border-gray-100">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 sm:gap-2">
-                    <h4 className="text-xs sm:text-sm font-medium text-gray-900">
-                      Content Tone
-                    </h4>
-                    <Tooltip delayDuration={100}>
-                      <TooltipTrigger>
-                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
-                      </TooltipTrigger>
-                      <TooltipContent side="right" className="max-w-xs">
-                        <p className="text-xs">
-                          Choose a tone that matches your audience and purpose
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
-                </div>
-
-                {/* Tone Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3">
-                  {Object.entries(toneConfig).map(([tone, config]) => (
-                    <button
-                      key={tone}
-                      onClick={() => setPostTone(tone)}
-                      className={`
-                        group relative p-2 sm:p-3 rounded-lg sm:rounded-xl border
-                        transition-all duration-200 hover:scale-[1.02]
-                        ${
-                          tone === postTone
-                            ? `${config.activeColor} shadow-lg`
-                            : "bg-slate-100 hover:bg-gray-50/80 border-gray-200 hover:border-gray-300"
-                        }
-                      `}
-                    >
-                      <div className="flex flex-col items-center gap-1.5 sm:gap-2">
-                        <div
-                          className={`
-                          w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center
-                          ${tone === postTone ? config.iconBg : "bg-gray-100"}
-                          transition-colors duration-200
-                        `}
-                        >
-                          {config.icon}
-                        </div>
-                        <div className="text-center">
-                          <div className="text-xs sm:text-sm font-medium">
-                            {tone}
-                          </div>
-                          <div className="text-[10px] sm:text-xs text-gray-500 mt-0.5 line-clamp-1">
-                            {config.description}
-                          </div>
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Generate Button */}
-              <ShimmerButton
-                onClick={onGenerate}
-                disabled={isGeneratingContent || !isValidLength}
-                background="linear-gradient(145deg, #4F46E5, #4338CA)"
-                className="w-full py-4 mt-6"
-              >
-                <div className="flex items-center justify-center gap-3">
-                  {isGeneratingContent ? (
-                    <>
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      <span>Crafting your content...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Zap className="h-5 w-5" />
-                      <span>Generate Content</span>
-                      <div className="hidden sm:flex items-center gap-1 text-xs bg-white/20 px-2 py-1 rounded-md">
-                        <span>
-                          {navigator.platform.includes("Mac") ? "⌘" : "Ctrl"}
-                        </span>
-                        <span>↵</span>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </ShimmerButton>
+            {/* Enhanced character counter */}
+            <div className="hidden sm:flex items-center gap-3 px-4 py-2 rounded-full bg-gray-50/50 backdrop-blur-sm 
+                          border border-gray-200/50 shadow-inner">
+              <div className={`h-2.5 w-2.5 rounded-full transition-colors duration-300
+                ${charCount >= MIN_CHARS ? "bg-green-400" : "bg-gray-300"}`} />
+              <span className="text-sm font-medium text-gray-600">
+                {charCount}/{MAX_CHARS}
+              </span>
             </div>
           </div>
+
+          {/* Modern textarea design */}
+          <div className="relative mt-6">
+            <textarea
+              value={contentSource === "plain-prompt" ? content : undefined}
+              onChange={onTextChange}
+              className="w-full min-h-[180px] p-6 rounded-2xl
+                       bg-white/40 backdrop-blur-lg border border-gray-200/50
+                       shadow-inner hover:border-primary/30
+                       focus:border-primary/40 focus:ring-4 focus:ring-primary/10
+                       placeholder:text-gray-400 text-gray-600
+                       text-base leading-relaxed resize-none outline-none
+                       transition-all duration-300"
+              placeholder="What would you like to write about? Be specific to get better results..."
+              maxLength={MAX_CHARS}
+            />
+          </div>
+
+          {/* Modern tone selector */}
+          <div className="space-y-4 pt-6 border-t border-gray-100/50">
+            <div className="flex items-center gap-2">
+              <h4 className="text-sm font-medium text-gray-900">Content Tone</h4>
+              <Tooltip delayDuration={100}>
+                <TooltipTrigger>
+                  <HelpCircle className="h-4 w-4 text-gray-400" />
+                </TooltipTrigger>
+                <TooltipContent side="right" className="max-w-xs">
+                  <p className="text-xs">Choose a tone that matches your audience and purpose</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+
+            {/* Enhanced tone grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {Object.entries(toneConfig).map(([tone, config]) => (
+                <button
+                  key={tone}
+                  onClick={() => setPostTone(tone)}
+                  className={`
+                    group relative p-3 rounded-xl border
+                    transition-all duration-300 hover:scale-[1.02]
+                    ${tone === postTone
+                      ? `${config.activeColor} shadow-lg scale-[1.02]`
+                      : "bg-white/50 hover:bg-white/80 border-gray-200/50 hover:border-gray-300/50"
+                    }
+                  `}
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <div className={`
+                      w-10 h-10 rounded-xl flex items-center justify-center
+                      ${tone === postTone ? config.iconBg : "bg-gray-50"}
+                      transition-colors duration-300
+                    `}>
+                      {config.icon}
+                    </div>
+                    <div className="text-center">
+                      <div className="text-sm font-medium">{tone}</div>
+                      <div className="text-xs text-gray-500 mt-0.5 line-clamp-1">
+                        {config.description}
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Enhanced generate button */}
+          <ShimmerButton
+            onClick={onGenerate}
+            disabled={isGeneratingContent || !isValidLength}
+            background="linear-gradient(145deg, #4F46E5, #4338CA)"
+            className="w-full py-4 rounded-xl shadow-xl hover:scale-[1.01] transition-transform duration-300"
+          >
+            <div className="flex items-center justify-center gap-3">
+              {isGeneratingContent ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <span>Crafting your content...</span>
+                </>
+              ) : (
+                <>
+                  <Zap className="h-5 w-5" />
+                  <span>Generate Content</span>
+                  <div className="hidden sm:flex items-center gap-1.5 text-xs bg-white/20 px-2.5 py-1 rounded-lg">
+                    <span>{navigator.platform.includes("Mac") ? "⌘" : "Ctrl"}</span>
+                    <span>↵</span>
+                  </div>
+                </>
+              )}
+            </div>
+          </ShimmerButton>
         </div>
       </div>
     </div>
