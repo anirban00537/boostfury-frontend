@@ -3,61 +3,27 @@ import { Wand2, Sparkles } from "lucide-react";
 
 export const Header = () => {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="relative py-8"
-    >
-      <div className="relative z-10 max-w-3xl mx-auto space-y-4">
-        {/* Enhanced badge */}
-        <div className="flex justify-center">
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg
-                     border border-primary/10"
-          >
-            <div className="relative w-6 h-6 rounded-md flex items-center justify-center">
-              <Wand2 className="w-3.5 h-3.5 text-primary relative z-10" />
-            </div>
-            <span className="text-sm font-medium text-gray-800">
-              AI-Powered Creation
-            </span>
-          </motion.div>
+    <div className="flex items-center gap-3 mb-4">
+      <div className="relative flex-shrink-0">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 
+                    flex items-center justify-center shadow-inner">
+          <Wand2 className="h-4.5 w-4.5 text-primary" />
         </div>
-
-        {/* Main heading with enhanced design */}
-        <div className="text-center space-y-3">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="relative"
-          >
-            {/* Main Title */}
-            <div className="relative">
-              <h1 className="relative text-3xl md:text-4xl font-bold tracking-tight">
-                Create{" "}
-                <span className="relative inline-block">
-                  <span className="relative z-10 bg-gradient-to-r from-primary via-purple-500 to-blue-500 
-                                bg-clip-text text-transparent">
-                    Viral Content
-                  </span>
-                </span>{" "}
-                with AI
-              </h1>
-            </div>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="mt-3 text-sm text-gray-600 max-w-xl mx-auto"
-            >
-              Transform your ideas into engaging content with our AI-powered platform
-            </motion.p>
-          </motion.div>
+        <div className="absolute -top-1 -right-1">
+          <Sparkles className="h-3.5 w-3.5 text-primary/40" />
         </div>
       </div>
-    </motion.div>
+
+      <div className="flex items-center gap-3">
+        <h1 className="text-2xl font-semibold">
+          <span className="text-gray-900">AI Viral</span>{" "}
+          <span className="text-primary">Post Writer</span>
+        </h1>
+        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary/5 border border-primary/10">
+          <div className="size-1.5 rounded-full bg-primary/40" />
+          <span className="text-xs font-medium text-primary/80">AI Powered</span>
+        </div>
+      </div>
+    </div>
   );
 };

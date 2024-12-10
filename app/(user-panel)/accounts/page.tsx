@@ -21,8 +21,9 @@ const AccountsPage = () => {
         <div className="px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-semibold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-                Social Accounts
+              <h1 className="text-2xl font-semibold">
+                <span className="text-gray-900">Social</span>{" "}
+                <span className="text-primary">Accounts</span>
               </h1>
               <p className="mt-1 text-sm text-gray-500">
                 Connect and manage your LinkedIn accounts to post content
@@ -31,7 +32,7 @@ const AccountsPage = () => {
             <Button
               onClick={connectLinkedIn}
               disabled={isConnecting}
-              className="h-10 px-4 rounded-xl bg-primary hover:bg-[#004182] text-white shadow-sm"
+              className="h-10 px-4 rounded-xl bg-primary hover:bg-primary/90 text-white shadow-sm"
             >
               {isConnecting ? (
                 <div className="flex items-center">

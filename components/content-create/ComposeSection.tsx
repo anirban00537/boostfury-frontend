@@ -221,27 +221,27 @@ export const ComposeSection = ({
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-gray-200/50 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-white/95 backdrop-blur-xl rounded-2xl border-2 border-gray-100 overflow-hidden hover:border-primary/10 transition-all">
       {/* Toolbar */}
-      <div className="border-b border-gray-100/50 p-2 bg-gradient-to-r from-gray-50/50 to-white/50">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 p-1 bg-white/80 rounded-lg shadow-sm">
+      <div className="border-b-2 border-gray-100/80 p-3 bg-gradient-to-r from-gray-50/80 to-white/80">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 p-1.5 bg-white/90 rounded-xl border border-gray-200/80 backdrop-blur-sm">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsImageModalOpen(true)}
-                  className="h-8 w-8 p-0 hover:bg-primary/5 transition-colors"
+                  className="h-8 w-8 p-0 hover:bg-primary/5 hover:border-primary/20 transition-colors rounded-lg border border-transparent"
                 >
-                  <ImageIcon className="w-4 h-4 text-primary" />
+                  <ImageIcon className="w-4 h-4 text-primary/80" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Add Image</TooltipContent>
             </Tooltip>
           </div>
 
-          <div className="h-6 w-px bg-gradient-to-b from-primary/20 to-purple-500/20" />
+          <div className="h-7 w-px bg-gradient-to-b from-primary/10 via-purple-500/10 to-transparent rounded-full" />
 
           <Tooltip>
             <TooltipTrigger asChild>
@@ -250,10 +250,10 @@ export const ComposeSection = ({
                 size="sm"
                 leftIcon={<Sparkles className="w-3.5 h-3.5" />}
                 className={cn(
-                  "h-8 px-3 gap-2 transition-colors",
+                  "h-8 px-3.5 gap-2 transition-all rounded-lg border-2",
                   selectedText
-                    ? "bg-gradient-to-r from-primary/5 to-purple-500/5 text-primary hover:bg-gradient-to-r hover:from-primary/10 hover:to-purple-500/10"
-                    : "bg-gray-50 text-gray-400 cursor-not-allowed"
+                    ? "bg-gradient-to-r from-primary/5 to-purple-500/5 text-primary hover:bg-gradient-to-r hover:from-primary/10 hover:to-purple-500/10 border-primary/20 hover:border-primary/40"
+                    : "bg-gray-50/80 text-gray-400 cursor-not-allowed border-gray-200/50"
                 )}
                 onClick={() => selectedText && setIsAIModalOpen(true)}
                 disabled={!selectedText}
@@ -272,10 +272,10 @@ export const ComposeSection = ({
           <div className="ml-auto">
             <div
               className={cn(
-                "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
+                "px-3.5 py-1.5 rounded-full text-xs font-medium transition-all border",
                 isAutoSaving
-                  ? "bg-gradient-to-r from-blue-50 to-blue-100/50 text-blue-600"
-                  : "bg-gradient-to-r from-green-50 to-green-100/50 text-green-600"
+                  ? "bg-gradient-to-r from-blue-50/80 to-blue-100/50 text-blue-600 border-blue-200/50"
+                  : "bg-gradient-to-r from-green-50/80 to-green-100/50 text-green-600 border-green-200/50"
               )}
             >
               <span className="flex items-center gap-1.5">
@@ -293,7 +293,7 @@ export const ComposeSection = ({
       </div>
 
       {/* Editor */}
-      <div className="relative">
+      <div className="relative bg-gradient-to-br from-white to-gray-50/50">
         <textarea
           ref={textareaRef}
           value={content}
@@ -303,19 +303,19 @@ export const ComposeSection = ({
           onKeyUp={handleTextSelection}
           onSelect={handleTextSelection}
           placeholder="What would you like to share? Use AI to enhance your content..."
-          className="w-full min-h-[400px] p-6 resize-none focus:outline-none
-                   text-gray-700 placeholder-gray-400 bg-transparent
+          className="w-full min-h-[400px] p-7 resize-none focus:outline-none
+                   text-gray-700 placeholder-gray-400/80 bg-transparent
                    text-base leading-relaxed transition-colors"
         />
 
         {/* Character Counter */}
-        <div className="absolute bottom-4 right-6">
+        <div className="absolute bottom-5 right-7">
           <div
             className={cn(
-              "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
+              "px-3.5 py-1.5 rounded-full text-xs font-medium transition-all border",
               characterCount > CHAR_LIMIT
-                ? "bg-gradient-to-r from-red-50 to-red-100/50 text-red-600"
-                : "bg-gradient-to-r from-gray-50 to-gray-100/50 text-gray-600"
+                ? "bg-gradient-to-r from-red-50/90 to-red-100/50 text-red-600 border-red-200/50"
+                : "bg-gradient-to-r from-gray-50/90 to-gray-100/50 text-gray-600 border-gray-200/50"
             )}
           >
             {characterCount}/{CHAR_LIMIT}
@@ -326,12 +326,11 @@ export const ComposeSection = ({
       {/* Image Preview */}
       {(imageUrls.length > 0 ||
         (postDetails?.images && postDetails.images.length > 0)) && (
-        <div className="border-t border-gray-100 p-4 bg-gray-50">
+        <div className="border-t-2 border-gray-100/80 p-5 bg-gradient-to-br from-gray-50/50 to-white/50">
           <div className="flex flex-wrap gap-3">
-            {/* Show images from postDetails */}
             {postDetails?.images?.map((image) => (
               <div key={image.id} className="relative group">
-                <div className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-200 bg-white">
+                <div className="relative w-24 h-24 rounded-xl overflow-hidden border-2 border-gray-200/50 bg-white/90 group-hover:border-primary/20 transition-all">
                   <Image
                     src={image.imageUrl}
                     alt="Uploaded image"
@@ -343,7 +342,7 @@ export const ComposeSection = ({
                 <button
                   onClick={() => handleImageDelete(postId, image.id)}
                   className="absolute -top-2 -right-2 p-1.5 bg-red-500 text-white rounded-full 
-                           opacity-0 group-hover:opacity-100 transition-opacity shadow-sm
+                           opacity-0 group-hover:opacity-100 transition-all border border-red-400
                            hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                 >
                   <X className="w-3 h-3" />
@@ -351,10 +350,9 @@ export const ComposeSection = ({
               </div>
             ))}
 
-            {/* Show images from imageUrls */}
             {imageUrls.map((url, index) => (
               <div key={`new-${index}`} className="relative group">
-                <div className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-200 bg-white">
+                <div className="relative w-24 h-24 rounded-xl overflow-hidden border-2 border-gray-200/50 bg-white/90 group-hover:border-primary/20 transition-all">
                   <Image
                     src={url}
                     alt={`New upload ${index + 1}`}
@@ -366,7 +364,7 @@ export const ComposeSection = ({
                 <button
                   onClick={() => handleImageDelete(postId, imageOrder[index])}
                   className="absolute -top-2 -right-2 p-1.5 bg-red-500 text-white rounded-full 
-                           opacity-0 group-hover:opacity-100 transition-opacity shadow-sm
+                           opacity-0 group-hover:opacity-100 transition-all border border-red-400
                            hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                 >
                   <X className="w-3 h-3" />
@@ -374,9 +372,8 @@ export const ComposeSection = ({
               </div>
             ))}
 
-            {/* Upload Progress Indicator */}
             {isUploading && (
-              <div className="relative w-24 h-24 rounded-lg border border-gray-200 bg-white">
+              <div className="relative w-24 h-24 rounded-xl border-2 border-gray-200/50 bg-white/90">
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                 </div>
@@ -388,7 +385,7 @@ export const ComposeSection = ({
 
       {/* Post Details */}
       {postDetails && (
-        <div className="border-t border-gray-100 p-4 space-y-3">
+        <div className="border-t-2 border-gray-100/80 p-5 bg-gradient-to-br from-gray-50/50 to-white/50 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {(() => {
@@ -398,7 +395,8 @@ export const ComposeSection = ({
                 return (
                   <span
                     className={cn(
-                      "px-2.5 py-1 rounded-full text-xs font-medium flex items-center gap-1.5",
+                      "px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 border",
+                      bgColor.replace("bg-", "border-").replace("50", "200/50"),
                       bgColor,
                       textColor
                     )}
@@ -414,24 +412,23 @@ export const ComposeSection = ({
       )}
 
       {/* Footer */}
-      <div className="border-t border-gray-100 p-4">
+      <div className="border-t-2 border-gray-100/80 p-5 bg-gradient-to-br from-gray-50/50 to-white/50">
         <div className="flex items-center justify-end gap-3">
-          {/* Add Queue and Schedule buttons */}
           <GradientButton
             variant="outline"
             size="sm"
             leftIcon={<Calendar className="w-4 h-4" />}
-            className="border-primary/20 hover:border-primary/40 transition-colors"
+            className="border-2 border-primary/20 hover:border-primary/40 transition-all rounded-lg"
             onClick={() => setIsScheduleModalOpen(true)}
           >
             Schedule
           </GradientButton>
-          <div className="w-px h-4 bg-gradient-to-b from-primary/20 to-purple-500/20" />
+          <div className="h-6 w-px bg-gradient-to-b from-primary/10 via-purple-500/10 to-transparent rounded-full" />
           <GradientButton
             variant="outline"
             size="sm"
             leftIcon={<Clock className="w-4 h-4" />}
-            className="border-primary/20 hover:border-primary/40 transition-colors"
+            className="border-2 border-primary/20 hover:border-primary/40 transition-all rounded-lg"
             onClick={() =>
               selectedLinkedInProfile?.id &&
               onAddToQueue(selectedLinkedInProfile.id)
@@ -453,6 +450,7 @@ export const ComposeSection = ({
                 <Send className="w-4 h-4" />
               )
             }
+            className="border-2 border-transparent hover:border-primary/20 transition-all"
             disabled={
               !selectedLinkedInProfile ||
               characterCount > CHAR_LIMIT ||
@@ -486,7 +484,7 @@ export const ComposeSection = ({
         isOpen={isAIModalOpen}
         onClose={() => {
           setIsAIModalOpen(false);
-          setSelectedText(""); // Clear selected text when closing modal
+          setSelectedText("");
         }}
         selectedText={selectedText}
         onContentUpdate={(newContent) => {
@@ -499,7 +497,7 @@ export const ComposeSection = ({
             setContent(newValue);
           }
           setIsAIModalOpen(false);
-          setSelectedText(""); // Clear selected text after updating
+          setSelectedText("");
         }}
       />
     </div>

@@ -57,13 +57,19 @@ const SubscriptionDetails = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Header Section - Updated with cancel button */}
+      {/* Header Section */}
       <div className="border-b border-gray-200 bg-white sticky top-0 z-10">
-        <div className="px-6 pt-6 pb-4">
-          <div className="flex items-center justify-between mb-2">
-            <h1 className="text-4xl font-semibold text-gray-900 tracking-tight">
-              Billing & Subscription
-            </h1>
+        <div className="px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold">
+                <span className="text-gray-900">Billing</span>{" "}
+                <span className="text-primary">& Subscription</span>
+              </h1>
+              <p className="text-sm text-gray-500 mt-1">
+                Manage your subscription and billing details
+              </p>
+            </div>
             {data?.data?.isActive && (
               <GradientButton
                 variant="danger"
@@ -77,124 +83,136 @@ const SubscriptionDetails = () => {
               </GradientButton>
             )}
           </div>
-          <p className="text-sm text-gray-500">
-            Manage your subscription and billing details
-          </p>
         </div>
       </div>
 
-      <div className="p-6">
-        {/* Status Card - Updated with row design */}
-        <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-3">
-                <div className="bg-primary/5 p-2 rounded-lg">
-                  <CreditCard className="w-5 h-5 text-primary" />
+      <div className="p-8 space-y-6">
+        {/* Current Plan Overview */}
+        <div className="bg-white rounded-xl border border-gray-200">
+          <div className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-8">
+                {/* Plan Info */}
+                <div className="flex items-center gap-4">
+                  <div className="bg-primary/5 p-3 rounded-lg">
+                    <CreditCard className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-gray-500">Current Plan</div>
+                    <div className="text-lg font-semibold text-gray-900 capitalize mt-0.5">
+                      {data?.data?.subscription.package.name}
+                    </div>
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium text-gray-500">Current Plan</span>
-                  <span className="text-base font-semibold text-gray-900 capitalize">
-                    {data?.data?.subscription.package.name}
-                  </span>
+
+                {/* Divider */}
+                <div className="h-10 w-px bg-gray-200"></div>
+
+                {/* Plan Type */}
+                <div>
+                  <div className="text-sm font-medium text-gray-500">Plan Type</div>
+                  <div className="text-lg font-semibold text-gray-900 capitalize mt-0.5">
+                    {data?.data?.subscription.package.type}
+                  </div>
+                </div>
+
+                {/* Divider */}
+                <div className="h-10 w-px bg-gray-200"></div>
+
+                {/* Status */}
+                <div>
+                  <div className="text-sm font-medium text-gray-500">Status</div>
+                  <div className={`text-lg font-semibold mt-0.5 ${
+                    data?.data?.isActive ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {data?.data?.isActive ? "Active" : "Inactive"}
+                  </div>
                 </div>
               </div>
-              <div className="h-8 w-px bg-gray-200"></div>
-              <div className="flex flex-col">
-                <span className="text-sm font-medium text-gray-500">Plan Type</span>
-                <span className="text-base font-semibold text-gray-900 capitalize">
-                  {data?.data?.subscription.package.type}
-                </span>
-              </div>
-              <div className="h-8 w-px bg-gray-200"></div>
-              <div className="flex flex-col">
-                <span className="text-sm font-medium text-gray-500">Status</span>
-                <span className={`text-base font-semibold ${
-                  data?.data?.isActive ? 'text-green-600' : 'text-red-600'
-                }`}>
-                  {data?.data?.isActive ? "Active" : "Inactive"}
-                </span>
+
+              {/* Status Badge */}
+              <div className={`px-4 py-2 rounded-full text-sm font-medium ${
+                data?.data?.isActive 
+                  ? 'bg-green-50 text-green-700 border border-green-100'
+                  : 'bg-red-50 text-red-700 border border-red-100'
+              }`}>
+                <div className="flex items-center gap-2">
+                  <span className={`w-2 h-2 rounded-full ${
+                    data?.data?.isActive ? 'bg-green-500' : 'bg-red-500'
+                  }`}></span>
+                  {data?.data?.isActive ? "Active Plan" : "Inactive Plan"}
+                </div>
               </div>
             </div>
-            <span className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5 ${
-              data?.data?.isActive 
-                ? 'bg-green-50 text-green-700 border border-green-200'
-                : 'bg-red-50 text-red-700 border border-red-200'
-            }`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${
-                data?.data?.isActive ? 'bg-green-500' : 'bg-red-500'
-              }`}></span>
-              {data?.data?.isActive ? "Active Plan" : "Inactive Plan"}
-            </span>
           </div>
         </div>
 
-        {/* Updated Subscription Details - Row Based */}
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        {/* Subscription Details */}
+        <div className="bg-white rounded-xl border border-gray-200">
+          <div className="px-6 py-4 border-b border-gray-100">
+            <h2 className="text-base font-semibold text-gray-900">Subscription Details</h2>
+          </div>
+          
           <div className="divide-y divide-gray-100">
             {/* Duration Row */}
-            <div className="flex items-center p-4 hover:bg-gray-50 transition-colors duration-200">
-              <div className="flex-shrink-0 w-12 flex justify-center">
-                <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center">
-                  <Clock className="w-4 h-4 text-indigo-500" />
+            <div className="px-6 py-4 flex items-center hover:bg-gray-50/50 transition-colors">
+              <div className="flex items-center gap-4 flex-1">
+                <div className="bg-primary/5 p-2.5 rounded-lg">
+                  <Clock className="w-4 h-4 text-primary" />
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-gray-900">Subscription Period</div>
+                  <div className="mt-1 flex items-center gap-2 text-sm text-gray-500">
+                    <span>
+                      {new Date(data?.data?.subscription.startDate).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </span>
+                    <span>→</span>
+                    <span>
+                      {new Date(data?.data?.subscription.endDate).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div className="flex-grow">
-                <div className="text-sm font-medium text-gray-500">Subscription Period</div>
-                <div className="mt-1 flex items-center gap-2 text-gray-900">
-                  <span className="font-semibold">
-                    {new Date(data?.data?.subscription.startDate).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </span>
-                  <span className="text-gray-400">→</span>
-                  <span className="font-semibold">
-                    {new Date(data?.data?.subscription.endDate).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </span>
-                </div>
-              </div>
-              <div className="flex-shrink-0 px-4">
-                <div className="text-xs text-gray-500">
-                  {Math.ceil((new Date(data?.data?.subscription.endDate).getTime() - new Date(data?.data?.subscription.startDate).getTime()) / (1000 * 60 * 60 * 24))} days total
-                </div>
+              <div className="text-sm text-gray-500">
+                {Math.ceil((new Date(data?.data?.subscription.endDate).getTime() - new Date(data?.data?.subscription.startDate).getTime()) / (1000 * 60 * 60 * 24))} days total
               </div>
             </div>
 
             {/* Trial Status Row */}
-            <div className="flex items-center p-4 hover:bg-gray-50 transition-colors duration-200">
-              <div className="flex-shrink-0 w-12 flex justify-center">
-                <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center">
-                  <AlertCircle className="w-4 h-4 text-amber-500" />
+            <div className="px-6 py-4 flex items-center hover:bg-gray-50/50 transition-colors">
+              <div className="flex items-center gap-4 flex-1">
+                <div className="bg-primary/5 p-2.5 rounded-lg">
+                  <AlertCircle className="w-4 h-4 text-primary" />
                 </div>
-              </div>
-              <div className="flex-grow">
-                <div className="text-sm font-medium text-gray-500">Subscription Type</div>
-                <div className="mt-1 flex items-center gap-2">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    data?.data?.subscription.isTrial
-                      ? 'bg-amber-50 text-amber-700'
-                      : 'bg-blue-50 text-blue-700'
-                  }`}>
-                    {data?.data?.subscription.isTrial ? "Trial Period" : "Full Access"}
-                  </span>
-                  {data?.data?.subscription.isTrial && (
-                    <span className="text-xs text-gray-500">
-                      Trial ends in {Math.ceil((new Date(data?.data?.subscription.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days
+                <div>
+                  <div className="text-sm font-medium text-gray-900">Subscription Type</div>
+                  <div className="mt-1 flex items-center gap-3">
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                      data?.data?.subscription.isTrial
+                        ? 'bg-primary/5 text-primary'
+                        : 'bg-blue-50 text-blue-600'
+                    }`}>
+                      {data?.data?.subscription.isTrial ? "Trial Period" : "Full Access"}
                     </span>
-                  )}
+                    {data?.data?.subscription.isTrial && (
+                      <span className="text-sm text-gray-500">
+                        Trial ends in {Math.ceil((new Date(data?.data?.subscription.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Remove the cancel button section from here */}
       </div>
     </div>
   );

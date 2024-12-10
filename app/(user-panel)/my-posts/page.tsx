@@ -114,8 +114,9 @@ const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange, handleCre
       <div className="px-6 pt-6 pb-0">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-4xl font-semibold text-gray-900 tracking-tight">
-              Content Manager
+            <h1 className="text-2xl font-semibold">
+              <span className="text-gray-900">Content</span>{" "}
+              <span className="text-primary">Manager</span>
             </h1>
             <p className="text-sm text-gray-500 mt-1">
               Manage your drafts and scheduled posts

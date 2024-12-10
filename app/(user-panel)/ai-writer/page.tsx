@@ -10,19 +10,24 @@ import { ContentIdeas } from "@/components/content-create/ContentIdeas";
 import { Lightbulb, Pencil, Sparkles } from "lucide-react";
 import { useGenerateContentIdeas } from "@/hooks/useGenerateLinkedInPosts";
 import { cn } from "@/lib/utils";
+import { LucideIcon } from "lucide-react";
 
-const tabItems = [
+interface TabItem {
+  value: string;
+  icon: LucideIcon;
+  label: string;
+}
+
+const tabItems: TabItem[] = [
   {
     value: "write",
-    icon: <Pencil className="h-4 w-4" />,
+    icon: Pencil,
     label: "Viral Post Generator",
-    description: "Create your content with AI assistance",
   },
   {
     value: "ideas",
-    icon: <Lightbulb className="h-4 w-4" />,
+    icon: Lightbulb,
     label: "Idea Generator",
-    description: "Generate creative content ideas",
   },
 ];
 
@@ -99,65 +104,33 @@ const ContentCreationTools: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-[1600px] mx-auto ">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Header />
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           {/* Tab List */}
-          <div className="flex flex-col gap-6 mb-16">
-            <div className="relative mx-auto w-full max-w-3xl">
-              <TabsList className="w-full grid grid-cols-2 gap-4 p-0 bg-transparent border-0">
+          <div className="flex flex-col gap-6 mb-8">
+            <div className="relative w-full">
+              <TabsList className="w-[400px] grid grid-cols-2 p-0.5 bg-gray-100/80 rounded-2xl">
                 {tabItems.map((item) => (
                   <TabsTrigger
                     key={item.value}
                     value={item.value}
                     className={cn(
-                      "group relative flex items-center gap-3 px-6 py-4 rounded-2xl transition-all duration-300",
-                      "bg-white border border-gray-100",
-                      "data-[state=active]:border-primary/20 data-[state=active]:bg-gradient-to-br data-[state=active]:from-white data-[state=active]:to-primary/5",
-                      "outline-none ring-0 hover:border-primary/10",
-                      "hover:shadow-lg hover:-translate-y-0.5",
+                      "relative flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-200",
+                      "outline-none ring-0",
                       item.value === activeTab
-                        ? "shadow-md"
-                        : "hover:border-gray-200"
+                        ? "bg-white text-gray-900 shadow-[inset_0_1px_0_0_rgba(255,255,255,1),0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)] border border-gray-200/80"
+                        : "text-gray-500 hover:text-gray-700 hover:bg-white/40"
                     )}
                   >
-                    <div
-                      className={cn(
-                        "size-10 rounded-xl flex items-center justify-center transition-all duration-300",
-                        "bg-gradient-to-br",
-                        item.value === activeTab
-                          ? "from-primary/20 to-primary/5 text-primary shadow-inner"
-                          : "from-gray-50/80 to-white text-gray-400 group-hover:from-primary/10 group-hover:to-primary/5 group-hover:text-primary"
-                      )}
-                    >
-                      {item.icon}
+                    <div className="size-4 flex items-center justify-center">
+                      <item.icon className="size-3.5" />
                     </div>
 
-                    <div className="flex flex-col items-start text-left">
-                      <span
-                        className={cn(
-                          "text-sm font-medium transition-colors duration-300",
-                          item.value === activeTab
-                            ? "text-gray-900"
-                            : "text-gray-600 group-hover:text-gray-900"
-                        )}
-                      >
-                        {item.label}
-                      </span>
-                      <span className="text-xs text-gray-400 group-hover:text-gray-500 transition-colors duration-300">
-                        {item.description}
-                      </span>
-                    </div>
-
-                    {/* Active indicator */}
-                    <div
-                      className={cn(
-                        "absolute inset-0 rounded-2xl border-2 border-primary/20 opacity-0 scale-105",
-                        "transition-all duration-300",
-                        item.value === activeTab && "opacity-100 scale-100"
-                      )}
-                    />
+                    <span className="text-[13px] font-medium">
+                      {item.label}
+                    </span>
                   </TabsTrigger>
                 ))}
               </TabsList>

@@ -71,112 +71,127 @@ const ComposePage = () => {
   );
 
   return (
-    <div className="min-h-screen ">
-      <main className="px-4 py-6 max-w-[1920px] mx-auto">
+    <div className="min-h-screen">
+      {/* Header Section */}
+      <div className="border-b border-gray-200 bg-white sticky top-0 z-10">
+        <div className="px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold">
+                <span className="text-gray-900">Compose</span>{" "}
+                <span className="text-primary">Post</span>
+              </h1>
+              <p className="text-sm text-gray-500 mt-1">
+                Create and schedule your LinkedIn content
+              </p>
+            </div>
+
+            {/* Profile Selector in Header */}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="bg-primary/5 p-2 rounded-lg">
+                  <Linkedin className="w-4 h-4 text-primary" />
+                </div>
+                <div className="hidden sm:block">
+                  <div className="text-sm font-medium text-gray-900">Publishing To</div>
+                </div>
+              </div>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="gap-2 h-8 px-3 border-gray-200 hover:bg-gray-50/50"
+                  >
+                    {selectedProfile ? (
+                      <>
+                        <Image
+                          src={selectedProfile.avatarUrl}
+                          alt={selectedProfile.name}
+                          width={18}
+                          height={18}
+                          className="rounded-full"
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                          {selectedProfile.name}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <Linkedin className="w-3.5 h-3.5" />
+                        <span className="text-sm">Select Profile</span>
+                      </>
+                    )}
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[280px] p-2">
+                  <div className="px-3 py-2 mb-1 border-b border-gray-100">
+                    <h4 className="text-sm font-medium text-gray-900">
+                      LinkedIn Profiles
+                    </h4>
+                  </div>
+                  {linkedinProfiles.length > 0 ? (
+                    linkedinProfiles.map((profile) => (
+                      <DropdownMenuItem
+                        key={profile.id}
+                        onClick={() => handleProfileSelect(profile)}
+                        className={`
+                          flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer
+                          ${
+                            selectedProfile?.id === profile.id
+                              ? "bg-primary/5 text-primary"
+                              : "hover:bg-gray-50"
+                          }
+                        `}
+                      >
+                        <div className="relative">
+                          <Image
+                            src={profile.avatarUrl}
+                            alt={profile.name}
+                            width={28}
+                            height={28}
+                            className="rounded-full ring-2 ring-white"
+                          />
+                          <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full ring-2 ring-white" />
+                        </div>
+                        <span className="text-sm font-medium">
+                          {profile.name}
+                        </span>
+                      </DropdownMenuItem>
+                    ))
+                  ) : (
+                    <div className="p-6 text-center">
+                      <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center mx-auto mb-3">
+                        <Linkedin className="h-5 w-5 text-primary" />
+                      </div>
+                      <h3 className="text-sm font-medium text-gray-900 mb-2">
+                        No Profiles Connected
+                      </h3>
+                      <Link href="/accounts">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 px-3 text-sm border-primary/20 text-primary hover:bg-primary/5"
+                        >
+                          Connect LinkedIn
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-8 py-6 max-w-[1920px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr,400px] gap-6">
           {/* Left Column */}
           <div className="space-y-6">
-            {/* Profile Selector Card - Updated with modern design */}
-            <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-gray-200/50 p-4 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center">
-                    <Linkedin className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-900">
-                      Publishing To
-                    </h3>
-                    <p className="text-xs text-gray-500">
-                      Select where to publish your content
-                    </p>
-                  </div>
-                </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-2">
-                      {selectedProfile ? (
-                        <>
-                          <Image
-                            src={selectedProfile.avatarUrl}
-                            alt={selectedProfile.name}
-                            width={20}
-                            height={20}
-                            className="rounded-full"
-                          />
-                          <span className="text-sm">
-                            {selectedProfile.name}
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <Linkedin className="w-4 h-4" />
-                          <span className="text-sm">Select Profile</span>
-                        </>
-                      )}
-                      <ChevronDown className="w-4 h-4 opacity-50" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-[280px] p-2">
-                    <div className="px-3 py-2 mb-1 border-b border-gray-100">
-                      <h4 className="text-sm font-medium text-gray-900">
-                        LinkedIn Profiles
-                      </h4>
-                    </div>
-                    {linkedinProfiles.length > 0 ? (
-                      linkedinProfiles.map((profile) => (
-                        <DropdownMenuItem
-                          key={profile.id}
-                          onClick={() => handleProfileSelect(profile)}
-                          className={`
-                            flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer
-                            ${
-                              selectedProfile?.id === profile.id
-                                ? "bg-primary/5 text-primary"
-                                : "hover:bg-gray-50"
-                            }
-                          `}
-                        >
-                          <div className="relative">
-                            <Image
-                              src={profile.avatarUrl}
-                              alt={profile.name}
-                              width={32}
-                              height={32}
-                              className="rounded-full ring-2 ring-white"
-                            />
-                            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white" />
-                          </div>
-                          <span className="text-sm font-medium">
-                            {profile.name}
-                          </span>
-                        </DropdownMenuItem>
-                      ))
-                    ) : (
-                      <div className="p-6 text-center">
-                        <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mx-auto mb-3">
-                          <Linkedin className="h-6 w-6 text-primary" />
-                        </div>
-                        <h3 className="text-sm font-medium text-gray-900 mb-2">
-                          No Profiles Connected
-                        </h3>
-                        <Link href="/accounts">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-9 px-4 text-sm border-primary/20 text-primary hover:bg-primary/5"
-                          >
-                            Connect LinkedIn
-                          </Button>
-                        </Link>
-                      </div>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
-
-            {/* Add ComposeSection here */}
+            {/* Remove old Profile Selector Card */}
             <ComposeSection
               content={content}
               setContent={setContent}
@@ -218,7 +233,7 @@ const ComposePage = () => {
             />
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };

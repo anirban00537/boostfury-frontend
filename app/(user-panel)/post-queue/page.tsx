@@ -117,10 +117,11 @@ export default function PostQueuePage() {
         {/* Header Section - Enhanced with better visual hierarchy */}
         <div className="flex justify-between items-start mb-10">
           <div>
-            <h1 className="text-4xl font-semibold text-gray-900 tracking-tight">
-              My Queue
+            <h1 className="text-2xl font-semibold">
+              <span className="text-gray-900">My</span>{" "}
+              <span className="text-primary">Queue</span>
             </h1>
-            <p className="text-base text-gray-500 mt-2 tracking-wide">
+            <p className="text-base text-gray-500 mt-2">
               Schedule and manage your upcoming content
             </p>
           </div>
