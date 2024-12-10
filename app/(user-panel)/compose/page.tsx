@@ -160,16 +160,15 @@ const ComposePage = () => {
                         <h3 className="text-sm font-medium text-gray-900 mb-2">
                           No Profiles Connected
                         </h3>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-9 px-4 text-sm border-primary/20 text-primary hover:bg-primary/5"
-                          onClick={() => {
-                            /* Add your LinkedIn connect logic */
-                          }}
-                        >
-                          Connect LinkedIn
-                        </Button>
+                        <Link href="/accounts">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-9 px-4 text-sm border-primary/20 text-primary hover:bg-primary/5"
+                          >
+                            Connect LinkedIn
+                          </Button>
+                        </Link>
                       </div>
                     )}
                   </DropdownMenuContent>

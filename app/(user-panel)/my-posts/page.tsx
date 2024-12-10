@@ -216,10 +216,10 @@ const ContentManager = () => {
 
   // Handle URL query params for active tab
   useEffect(() => {
-    const tab = searchParams.get("tab") as PostTabId;
+    const tab = searchParams?.get("tab") as PostTabId;
     if (tab && postConfigs.some((config) => config.id === tab)) {
       handleTabChange(tab);
-    } else if (!searchParams.get("tab")) {
+    } else if (searchParams && !searchParams.get("tab")) {
       // Set default tab to 'draft' if none exists
       updateQueryParams("draft");
     }

@@ -473,10 +473,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
 
             <DropdownMenuItem
               className="px-3 py-2.5 cursor-pointer"
-              onClick={() => router.push("/settings/profile")}
+              onClick={() => router.push("/billing")}
             >
               <User className="mr-2 h-4 w-4" />
-              <span>Profile Settings</span>
+              <span>Billing management</span>
             </DropdownMenuItem>
 
             <DropdownMenuItem

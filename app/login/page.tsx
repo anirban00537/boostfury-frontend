@@ -23,7 +23,7 @@ const LoginPage = () => {
     (credentialResponse: CredentialResponse) => {
       handleGoogleLogin(credentialResponse)
         .then(() => {
-          router.push("/");
+          router.push("/ai-writer");
         })
         .catch((error) => {
           console.error("Login failed:", error);

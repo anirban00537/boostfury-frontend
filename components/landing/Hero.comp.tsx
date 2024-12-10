@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 import { motion } from "framer-motion";
 import { AnimatedTooltip } from "../ui/animated-tooltip";
-import { ArrowRightIcon } from "lucide-react";
+import { ArrowRightIcon, Sparkles, Star } from "lucide-react";
 import AnimatedShinyText from "../magicui/Animated-Shiny-Text.comp";
 import { cn } from "@/lib/utils";
 import ShimmerButton from "../magicui/Shimmer-Button.comp";
@@ -114,174 +114,112 @@ const heroTextChildVariants = {
 
 const Hero = () => {
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center py-20 overflow-hidden">
+    <section className="relative min-h-screen flex flex-col items-center justify-center py-20 overflow-hidden text-center">
       {/* Simplified gradient effects */}
       <div className="absolute inset-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-background to-background" />
       <div className="absolute top-20 -left-4 w-96 h-96 bg-primary/20 rounded-full blur-[120px]" />
       <div className="absolute bottom-8 -right-4 w-96 h-96 bg-blue-500/20 rounded-full blur-[120px]" />
 
-      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Column - Content */}
-          <div className="space-y-8">
-            {/* Premium badge */}
-            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-primary/10 to-blue-500/10 border border-primary/20 backdrop-blur-sm shadow-lg">
-              <span className="flex h-2 w-2 rounded-full bg-primary" />
-              <span className="text-sm font-medium bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
-                AI-Powered LinkedIn Growth
-              </span>
+      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+        {/* Premium badge */}
+        <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-primary/10 to-blue-500/10 border border-primary/20 backdrop-blur-sm shadow-lg mb-8">
+          <span className="flex h-2 w-2 rounded-full bg-primary" />
+          <span className="text-sm font-medium bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
+            AI-Powered LinkedIn Growth
+          </span>
+        </div>
+
+        {/* Headline */}
+        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+          Create{" "}
+          <span className="bg-gradient-to-r from-primary via-blue-500 to-primary bg-clip-text text-transparent">
+            Viral
+          </span>{" "}
+          LinkedIn Content in Minutes
+        </h1>
+
+        {/* Subheadline */}
+        <p className="text-xl text-textColor/70 max-w-xl leading-relaxed mb-8">
+          Transform your LinkedIn presence with AI-generated carousels, posts, and content strategies. Save hours of work and{" "}
+          <span className="font-semibold text-primary">
+            10x your engagement
+          </span>
+          .
+        </p>
+
+        {/* Enhanced CTA Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-12">
+          {/* Primary CTA */}
+          <Link href="/ai-writer" className="w-full sm:w-auto group relative">
+            <div className="absolute -inset-[2px] bg-gradient-to-r from-primary to-blue-600 rounded-xl blur-sm opacity-70 group-hover:opacity-100 transition-opacity" />
+            <div className="relative h-14 px-8 flex items-center justify-center rounded-lg bg-primary font-semibold text-white text-lg">
+              Start Free Trial
+              <ArrowRightIcon className="w-5 h-5 ml-2" />
             </div>
+          </Link>
 
-            {/* Headline */}
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight">
-              Create{" "}
-              <span className="bg-gradient-to-r from-primary via-blue-500 to-primary bg-clip-text text-transparent">
-                Viral
-              </span>{" "}
-              LinkedIn Content in Minutes
-            </h1>
-
-            {/* Subheadline */}
-            <p className="text-xl text-textColor/70 max-w-xl leading-relaxed">
-              Transform your LinkedIn presence with AI-generated carousels,
-              posts, and content strategies. Save hours of work and{" "}
-              <span className="font-semibold text-primary">
-                10x your engagement
-              </span>
-              .
-            </p>
-
-            {/* Enhanced CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              {/* Primary CTA */}
-              <Link
-                href="/ai-writer"
-                className="w-full sm:w-auto group relative"
-              >
-                <div className="absolute -inset-[2px] bg-gradient-to-r from-primary to-blue-600 rounded-xl blur-sm opacity-70 group-hover:opacity-100 transition-opacity" />
-                <div className="relative h-14 px-8 flex items-center justify-center rounded-lg bg-primary font-semibold text-white text-lg">
-                  Start Free Trial
-                  <ArrowRightIcon className="w-5 h-5 ml-2" />
+          {/* Watch Demo Button */}
+          <HeroVideoDialog
+            className="w-full sm:w-auto"
+            animationStyle="from-center"
+            videoSrc="https://www.youtube.com/embed/4pgUovPcVBM"
+            thumbnailSrc="/demo.png"
+            thumbnailAlt="Watch demo"
+            buttonClassName="group relative h-14"
+            buttonContent={
+              <>
+                <div className="absolute -inset-[2px] bg-gradient-to-r from-gray-400/20 to-gray-600/20 rounded-xl opacity-70 group-hover:opacity-100 transition-opacity" />
+                <div className="relative h-full px-8 flex items-center justify-center gap-3 rounded-lg bg-background/80 backdrop-blur-sm border border-white/10">
+                  <div className="flex items-center justify-center size-8 rounded-full bg-white/10">
+                    <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-1" />
+                  </div>
+                  <span className="font-medium">Watch Demo (2 min)</span>
                 </div>
-              </Link>
+              </>
+            }
+          />
+        </div>
 
-              {/* Watch Demo Button */}
-              <HeroVideoDialog
-                className="w-full sm:w-auto"
-                animationStyle="from-center"
-                videoSrc="https://www.youtube.com/embed/4pgUovPcVBM"
-                thumbnailSrc="/demo.png"
-                thumbnailAlt="Watch demo"
-                buttonClassName="group relative h-14"
-                buttonContent={
-                  <>
-                    <div className="absolute -inset-[2px] bg-gradient-to-r from-gray-400/20 to-gray-600/20 rounded-xl opacity-70 group-hover:opacity-100 transition-opacity" />
-                    <div className="relative h-full px-8 flex items-center justify-center gap-3 rounded-lg bg-background/80 backdrop-blur-sm border border-white/10">
-                      <div className="flex items-center justify-center size-8 rounded-full bg-white/10">
-                        <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-1" />
-                      </div>
-                      <span className="font-medium">Watch Demo (2 min)</span>
-                    </div>
-                  </>
-                }
-              />
+        {/* Social Proof */}
+        <div className="space-y-6 mb-12">
+          <div className="flex items-center gap-6 p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+            <div className="flex -space-x-3">
+              {people.slice(0, 4).map((person) => (
+                <div key={person.id} className="ring-2 ring-background rounded-full">
+                  <Image
+                    src={person.image}
+                    alt={person.alt}
+                    width={40}
+                    height={40}
+                    className="rounded-full border-2 border-background"
+                  />
+                </div>
+              ))}
             </div>
-
-            {/* Social Proof */}
-            <div className="space-y-6 pt-4">
-              <div className="flex items-center gap-6 p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-                <div className="flex -space-x-3">
-                  {people.slice(0, 4).map((person) => (
-                    <div
-                      key={person.id}
-                      className="ring-2 ring-background rounded-full"
-                    >
-                      <Image
-                        src={person.image}
-                        alt={person.alt}
-                        width={40}
-                        height={40}
-                        className="rounded-full border-2 border-background"
-                      />
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  <div className="font-semibold text-gradient bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
-                    10,000+ professionals
-                  </div>
-                  <div className="text-sm text-textColor/70">
-                    trust BoostFury
-                  </div>
-                </div>
+            <div>
+              <div className="font-semibold text-gradient bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
+                10,000+ professionals
+              </div>
+              <div className="text-sm text-textColor/70">
+                trust BoostFury
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Right Column - Enhanced Feature Preview with 3D effects */}
-          <div className="relative lg:block -mr-32">
-            <div className="relative scale-110 perspective-[2000px]">
-              {/* Background glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-blue-500/20 blur-3xl -z-10" />
-              
-              {/* Main image with 3D effects */}
-              <div className="relative transform hover:scale-[1.02] transition-transform duration-300 [transform-style:preserve-3d] ml-20">
-                {/* Shadow layers for 3D effect */}
-                <div className="absolute -bottom-8 -right-8 w-full h-full bg-primary/20 rounded-xl blur-md [transform:translateZ(-100px)]" />
-                <div className="absolute -bottom-4 -right-4 w-full h-full bg-blue-500/20 rounded-xl blur-sm [transform:translateZ(-50px)]" />
-                
-                {/* Main image container */}
-                <div className="relative bg-gradient-to-br from-white/10 to-white/5 p-3 rounded-xl border border-white/20 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.12)] [transform:translateZ(0)] [transform-style:preserve-3d]">
-                  <div className="relative rounded-lg overflow-hidden">
-                    <div className="relative w-[140%]">
-                      <Image
-                        src="/demo.png"
-                        alt="BoostFury LinkedIn Content Creator"
-                        width={1200}
-                        height={900}
-                        className="rounded-lg shadow-2xl"
-                      />
-                      
-                      {/* Glass overlay for depth */}
-                      <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-white/5 to-transparent [transform:translateZ(20px)]" />
-                    </div>
-                  </div>
-                  
-                  {/* Decorative elements */}
-                  <div className="absolute -top-3 -left-3 size-6 bg-primary rounded-full shadow-lg [transform:translateZ(30px)]" />
-                  <div className="absolute -bottom-3 -right-3 size-6 bg-blue-500 rounded-full shadow-lg [transform:translateZ(30px)]" />
-                </div>
-              </div>
-              
-              {/* Feature card */}
-              <div className="absolute -left-8 top-1/4 p-6 rounded-xl bg-white shadow-2xl border border-gray-100 [transform:translateZ(50px)]">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center size-12 rounded-full bg-gradient-to-r from-primary to-blue-500 shadow-lg shadow-primary/25">
-                    <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900 text-lg">10x Faster</div>
-                    <div className="text-primary font-medium">Content Creation</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Additional floating elements with 3D positioning */}
-              <div className="absolute -top-6 right-10 p-2 rounded-lg bg-white shadow-lg border border-gray-100 [transform:translateZ(40px)]">
-                <div className="flex items-center gap-2">
-                  <div className="size-2 bg-green-500 rounded-full" />
-                  <span className="text-sm font-medium text-gray-700">AI Powered</span>
-                </div>
-              </div>
-
-              <div className="absolute -bottom-4 right-20 p-2 rounded-lg bg-white shadow-lg border border-gray-100 [transform:translateZ(60px)]">
-                <div className="flex items-center gap-2">
-                  <div className="size-2 bg-primary rounded-full" />
-                  <span className="text-sm font-medium text-gray-700">Smart Templates</span>
-                </div>
-              </div>
+        {/* Image at the bottom */}
+        <div className="relative w-full max-w-4xl">
+          <div className="relative bg-gradient-to-br from-white/10 to-white/5 p-3 rounded-xl border border-white/20 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
+            <div className="relative rounded-lg overflow-hidden">
+              <Image
+                src="/demo.png"
+                alt="BoostFury LinkedIn Content Creator"
+                width={1200}
+                height={900}
+                className="rounded-lg shadow-2xl"
+              />
+              {/* Glass overlay for depth */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-white/5 to-transparent" />
             </div>
           </div>
         </div>
