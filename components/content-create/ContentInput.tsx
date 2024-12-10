@@ -164,12 +164,12 @@ export const ContentInput = ({
   const isValidLength = charCount >= MIN_CHARS;
 
   return (
-    <div className="space-y-6">
-      <div className="relative rounded-2xl border-none bg-gradient-to-br from-gray-50 to-white overflow-hidden">
+    <div className="space-y-6 shadow-xl">
+      <div className="relative rounded-2xl border-none  bg-gradient-to-br from-gray-50 to-white overflow-hidden">
         {/* Animated floating elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <motion.div 
-            className="absolute w-40 h-40 rounded-full bg-primary/5 blur-3xl"
+          <motion.div
+            className="absolute w-40 h-40 rounded-full"
             animate={{
               x: [0, 100, 0],
               y: [0, -50, 0],
@@ -177,10 +177,10 @@ export const ContentInput = ({
             transition={{
               duration: 20,
               repeat: Infinity,
-              ease: "linear"
+              ease: "linear",
             }}
           />
-          <motion.div 
+          <motion.div
             className="absolute right-0 bottom-0 w-60 h-60 rounded-full bg-purple-500/5 blur-3xl"
             animate={{
               x: [0, -70, 0],
@@ -189,14 +189,14 @@ export const ContentInput = ({
             transition={{
               duration: 15,
               repeat: Infinity,
-              ease: "linear"
+              ease: "linear",
             }}
           />
         </div>
 
-        <div className="relative px-8 py-6 space-y-8">
+        <div className="relative space-y-8">
           {/* Main Content Area */}
-          <div className="rounded-2xl border-none bg-slate-200 overflow-hidden">
+          <div className="rounded-2xl border-none overflow-hidden">
             <div className="relative px-6 py-4 space-y-6">
               {/* Decorative Background */}
               <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-white pointer-events-none" />

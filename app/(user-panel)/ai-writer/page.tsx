@@ -14,14 +14,14 @@ const tabItems = [
   {
     value: "write",
     icon: <Pencil className="h-4 w-4" />,
-    label: "Viral Post Generator",
-    description: "Create your content with AI assistance",
+    label: "AI Writer",
+    description: "Generate engaging content",
   },
   {
     value: "ideas",
     icon: <Lightbulb className="h-4 w-4" />,
-    label: "Idea Generator",
-    description: "Generate creative content ideas",
+    label: "Idea Lab",
+    description: "Explore content possibilities",
   },
 ];
 
@@ -63,52 +63,61 @@ const ContentCreationTools: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6">
-        {/* Centered Header */}
+      <div className="max-w-[1600px] mx-auto px-6 sm:px-8 ">
         <Header />
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <div className="flex flex-col gap-4 mb-4">
-            <div className="relative mx-auto px-3 py-2 w-full max-w-[800px]">
-              <TabsList
-                className="relative w-full mx-auto grid grid-cols-1 sm:grid-cols-2 gap-0.5 
-                  h-auto bg-gray-100 rounded-lg p-1"
-              >
+          <div className="flex flex-col gap-6 mb-8">
+            <div className="relative mx-auto w-full max-w-[900px]">
+              <div className="absolute inset-0 bg-gradient-to-r from-violet-500/5 via-indigo-500/5 to-emerald-500/5 blur-3xl" />
+              <TabsList className="relative w-full mx-auto grid grid-cols-1 sm:grid-cols-2 gap-1.5 h-auto rounded-2xl p-1.5 bg-white/5 backdrop-blur-xl border border-black/5 shadow-xl shadow-black/10">
                 {tabItems.map((item) => (
                   <TabsTrigger
                     key={item.value}
                     value={item.value}
                     className={`
-                      relative group px-3 py-2 rounded-md flex items-center gap-2
-                      transition-all duration-200 outline-none
+                      relative group px-4 py-3 rounded-xl flex items-center gap-3
+                      transition-all duration-500 outline-none
+                      overflow-hidden isolate
                       ${
                         item.value === activeTab
-                          ? "bg-white text-gray-900 shadow-sm"
-                          : "hover:bg-gray-50 text-gray-600 hover:text-gray-900"
+                          ? "bg-white/90 text-zinc-900 shadow-lg shadow-black/5"
+                          : "hover:bg-white/20 text-zinc-600 hover:text-zinc-900"
                       }
                     `}
                   >
-                    <div className="relative flex items-center gap-2 w-full">
+                    <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 via-indigo-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    <div className="relative flex items-center gap-3 w-full">
                       <div
                         className={`
-                          flex items-center justify-center
-                          transition-colors duration-200
+                          flex items-center justify-center p-2 rounded-lg
+                          transition-all duration-500 ease-out
                           ${
                             item.value === activeTab
-                              ? "text-green-600"
-                              : "text-gray-400 group-hover:text-gray-600"
+                              ? "bg-gradient-to-br from-indigo-500 to-violet-500 text-white shadow-lg shadow-indigo-500/20"
+                              : "bg-white/5 text-zinc-400 group-hover:text-zinc-100 group-hover:bg-gradient-to-br group-hover:from-indigo-500/50 group-hover:to-violet-500/50"
                           }
                         `}
                       >
                         {item.icon}
                       </div>
 
-                      <div className="text-left min-w-0 flex-1">
-                        <div className="text-sm font-medium">{item.label}</div>
-                        <div className="text-xs text-gray-400">
+                      <div className="text-left flex flex-col">
+                        <div className="text-sm font-semibold tracking-tight">
+                          {item.label}
+                        </div>
+                        <div className="text-[11px] text-zinc-500 font-medium">
                           {item.description}
                         </div>
                       </div>
+
+                      {item.value === activeTab && (
+                        <motion.div
+                          layoutId="active-tab-indicator"
+                          className="absolute right-3 h-5 w-5 rounded-full bg-gradient-to-r from-emerald-500 to-indigo-500 opacity-20"
+                        />
+                      )}
                     </div>
                   </TabsTrigger>
                 ))}
@@ -116,13 +125,16 @@ const ContentCreationTools: React.FC = () => {
             </div>
           </div>
 
-          <div className={`grid ${activeTab === 'write' ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'} gap-8 relative px-3`}>
-            {/* Left Column - Conditionally set width */}
+          <div className={`grid ${activeTab === 'write' ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'} gap-6 relative px-4`}>
             <div className={`${activeTab === 'ideas' ? 'col-span-full' : ''}`}>
               <TabsContent value="write" className="mt-0 border-none">
-                <div className="relative overflow-hidden rounded-2xl border border-gray-200/50 bg-white shadow-md shadow-gray-100/50 hover:shadow-lg hover:shadow-gray-200/50 transition-shadow duration-200">
-                  <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-transparent" />
-                  <div className="relative ">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="relative overflow-hidden rounded-xl border border-black/5  shadow-xl shadow-black/5 ring-1 ring-black/5"
+                >
+                  <div className="absolute inset-0" />
+                  <div className="relative">
                     <ContentInput
                       {...{
                         contentSource,
@@ -139,12 +151,16 @@ const ContentCreationTools: React.FC = () => {
                       }}
                     />
                   </div>
-                </div>
+                </motion.div>
               </TabsContent>
 
               <TabsContent value="ideas" className="mt-0">
-                <div className="relative overflow-hidden rounded-2xl border border-gray-200/50 bg-white shadow-md shadow-gray-100/50 hover:shadow-lg hover:shadow-gray-200/50 transition-shadow duration-200">
-                  <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-transparent" />
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="relative overflow-hidden rounded-xl border border-black/5 bg-white shadow-xl shadow-black/5 ring-1 ring-black/5"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-b from-gray-50/30 to-transparent" />
                   <div className="relative">
                     <ContentIdeas
                       loading={loading}
@@ -153,11 +169,10 @@ const ContentCreationTools: React.FC = () => {
                       handleTopicSelect={handleTopicSelect}
                     />
                   </div>
-                </div>
+                </motion.div>
               </TabsContent>
             </div>
 
-            {/* Right Column - Preview (only shown when write tab is active) */}
             {activeTab === 'write' && (
               <div className="w-full">
                 <AnimatePresence mode="wait">
@@ -166,11 +181,11 @@ const ContentCreationTools: React.FC = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    transition={{ duration: 0.3 }}
                   >
-                    <div className="relative overflow-hidden rounded-2xl border border-gray-200/50 bg-slate-100 shadow-md shadow-gray-100/50 hover:shadow-lg hover:shadow-gray-200/50 transition-shadow duration-200">
-                      <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-transparent" />
-                      <div className="relative p-8">
+                    <div className="relative overflow-hidden rounded-xl border border-black/5 bg-zinc-50/50 shadow-xl shadow-black/5 ring-1 ring-black/5">
+                      <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent" />
+                      <div className="relative p-6">
                         <AIWritingPreview
                           isGenerating={isGeneratingLinkedinPosts}
                           generatedPost={generatedPost}
