@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "../../../components/content-create/Header";
 import { ContentInput } from "../../../components/content-create/ContentInput";
@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ContentIdeas } from "@/components/content-create/ContentIdeas";
 import { Lightbulb, Pencil, Zap } from "lucide-react";
 import { useGenerateContentIdeas } from "@/hooks/useGenerateLinkedInPosts";
+
 const tabItems = [
   {
     value: "write",
@@ -42,6 +43,9 @@ const ContentCreationTools: React.FC = () => {
 
   const { generateContentIdeas, loading, ideas } = useGenerateContentIdeas();
 
+  // Reference to the bottom of the page
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
   const handleLocalTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCharacterCount(e.target.value.length);
     handleLinkedInTextChange(e);
@@ -60,6 +64,29 @@ const ContentCreationTools: React.FC = () => {
     }
   };
 
+  // Slow scroll to the bottom after content is loaded or updated
+  useEffect(() => {
+    const scrollSlowly = () => {
+      const target = bottomRef.current;
+      if (target) {
+        const scrollHeight = target.offsetTop;
+        let currentPosition = window.pageYOffset;
+
+        const interval = setInterval(() => {
+          if (currentPosition < scrollHeight) {
+            currentPosition += 5; // adjust this value for slower/faster scroll
+            window.scrollTo(0, currentPosition);
+          } else {
+            clearInterval(interval);
+          }
+        }, 10); // adjust interval for more gradual scrolling
+      }
+    };
+
+    // Trigger slow scroll when content changes
+    scrollSlowly();
+  }, [content, ideas, generatedPost, isGeneratingLinkedinPosts]);
+
   return (
     <div className="min-h-screen">
       <div className="max-w-[1600px] mx-auto ">
@@ -67,37 +94,27 @@ const ContentCreationTools: React.FC = () => {
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <div className="flex flex-col gap-6 mb-8">
-           <div className="relative mx-auto w-full max-w-[900px]">
+            <div className="relative mx-auto w-full max-w-[900px]">
               <div className="absolute inset-0 bg-gradient-to-r from-violet-500/5 via-indigo-500/5 to-emerald-500/5 blur-3xl" />
               <TabsList className="relative w-full mx-auto grid grid-cols-1 sm:grid-cols-2 gap-1.5 h-auto rounded-2xl p-1.5 bg-white/5 backdrop-blur-xl border border-black/5 shadow-md shadow-black/10">
                 {tabItems.map((item) => (
                   <TabsTrigger
                     key={item.value}
                     value={item.value}
-                    className={`
-                      relative group px-4 py-3 rounded-xl flex items-center gap-3
-                      transition-all duration-500 outline-none
-                      overflow-hidden isolate
-                      ${
-                        item.value === activeTab
-                          ? "bg-white/90 text-zinc-900 shadow-lg shadow-black/20"
-                          : "hover:bg-white/20 text-zinc-600 hover:text-zinc-900"
-                      }
-                    `}
+                    className={`relative group px-4 py-3 rounded-xl flex items-center gap-3 transition-all duration-500 outline-none overflow-hidden isolate ${
+                      item.value === activeTab
+                        ? "bg-white/90 text-zinc-900 shadow-lg shadow-black/20"
+                        : "hover:bg-white/20 text-zinc-600 hover:text-zinc-900"
+                    }`}
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 via-indigo-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    
                     <div className="relative flex items-center gap-3 w-full">
                       <div
-                        className={`
-                          flex items-center justify-center p-2 rounded-lg
-                          transition-all duration-500 ease-out
-                          ${
-                            item.value === activeTab
-                              ? "bg-gradient-to-br from-indigo-500 to-violet-500 text-white shadow-lg shadow-indigo-500/20"
-                              : "bg-white/5 text-zinc-400 group-hover:text-zinc-100 group-hover:bg-gradient-to-br group-hover:from-indigo-500/50 group-hover:to-violet-500/50"
-                          }
-                        `}
+                        className={`flex items-center justify-center p-2 rounded-lg transition-all duration-500 ease-out ${
+                          item.value === activeTab
+                            ? "bg-gradient-to-br from-indigo-500 to-violet-500 text-white shadow-lg shadow-indigo-500/20"
+                            : "bg-white/5 text-zinc-400 group-hover:text-zinc-100 group-hover:bg-gradient-to-br group-hover:from-indigo-500/50 group-hover:to-violet-500/50"
+                        }`}
                       >
                         {item.icon}
                       </div>
@@ -136,7 +153,7 @@ const ContentCreationTools: React.FC = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="relative overflow-hidden rounded-xl border border-black/5  shadow-md shadow-black/20 ring-1 ring-black/5"
+                  className="relative overflow-hidden rounded-xl border border-black/5 shadow-md shadow-black/20 ring-1 ring-black/5"
                 >
                   <div className="absolute inset-0" />
                   <div className="relative">
@@ -205,6 +222,9 @@ const ContentCreationTools: React.FC = () => {
           </div>
         </Tabs>
       </div>
+
+      {/* Ref for scrolling */}
+      <div ref={bottomRef}></div>
     </div>
   );
 };

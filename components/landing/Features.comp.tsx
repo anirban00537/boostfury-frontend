@@ -71,99 +71,133 @@ const features = [
   },
 ];
 
+const fadeInUpVariant = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
+};
+
 const FeaturesSection = () => {
   return (
     <motion.section
       id="features"
-      className="py-32 relative overflow-hidden bg-gradient-to-b from-background to-background/50"
+      className="relative py-32 overflow-hidden bg-white"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
       role="region"
       aria-label="Product features"
     >
-      {/* Updated background design */}
-      <div className="absolute inset-0 z-0" aria-hidden="true">
-        <div className="absolute w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/20 via-background to-background"></div>
-        <div className="absolute w-full h-full bg-[url('/grid.svg')] opacity-[0.02]"></div>
-      </div>
-
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center max-w-3xl mx-auto">
-          <motion.h2
-            className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-textColor to-textColor/80 mb-6"
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
+          {/* Top Badge */}
+          <motion.div
+            variants={fadeInUpVariant}
+            initial="hidden"
+            animate="visible"
+            className="flex justify-center mb-12"
           >
-            AI-Powered LinkedIn Growth Tools
-          </motion.h2>
-          <motion.p
-            className="text-xl text-textColor/70 leading-relaxed"
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          >
-            Grow your LinkedIn profile with AI-powered tools. Create
-            professional LinkedIn posts, carousels, and more with our
-            easy-to-use tools.
-          </motion.p>
-        </div>
-
-        <div
-          className="mt-24 grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-          role="list"
-          aria-label="Product features list"
-        >
-          {features.map((feature, index) => (
-            <motion.div
-              key={feature.name}
-              className={cn(
-                "group relative bg-cardBackground/30 backdrop-blur-xl rounded-2xl",
-                "hover:bg-cardBackground/50 transition-all duration-500",
-                "border border-borderColor/30 hover:border-primary/30",
-                "hover:shadow-[0_0_30px_-5px] hover:shadow-primary/20"
-              )}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * index, duration: 0.5 }}
-              role="listitem"
-              aria-label={feature.ariaLabel}
-            >
-              <div className="p-8">
-                <div
-                  className="w-14 h-14 bg-primary/10 group-hover:bg-primary/20 rounded-xl flex items-center justify-center mb-6 transition-all duration-300"
-                  aria-hidden="true"
-                >
-                  {React.cloneElement(feature.icon, {
-                    className:
-                      "w-7 h-7 text-primary group-hover:scale-110 transition-transform duration-300",
-                  })}
-                </div>
-                <h3 className="text-2xl font-semibold text-textColor mb-4 group-hover:text-primary transition-colors duration-300">
-                  {feature.name}
-                </h3>
-                <p className="text-textColor/70 mb-6 leading-relaxed">
-                  {feature.description}
-                </p>
-                <ul className="space-y-3">
-                  {feature.benefits.map((benefit, idx) => (
-                    <li
-                      key={idx}
-                      className="text-sm text-textColor/60 flex items-center group-hover:text-textColor/70 transition-colors duration-300"
-                    >
-                      <span className="w-1.5 h-1.5 bg-primary/60 rounded-full mr-3 group-hover:scale-125 transition-transform duration-300" />
-                      {benefit}
-                    </li>
-                  ))}
-                </ul>
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-gray-50 to-white border border-gray-100 shadow-[0_2px_10px_-2px_rgba(0,0,0,0.05)]">
+              <div className="size-6 rounded-full bg-gradient-to-br from-primary/10 to-blue-500/10 flex items-center justify-center">
+                <Cpu className="w-3.5 h-3.5 text-primary" />
               </div>
-            </motion.div>
-          ))}
-        </div>
+              <span className="text-sm font-medium bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                Powered by Advanced AI
+              </span>
+            </div>
+          </motion.div>
 
-        {/* Structured data script remains the same */}
+          {/* Main Content */}
+          <div className="text-center mb-20">
+            <motion.h2
+              variants={fadeInUpVariant}
+              initial="hidden"
+              animate="visible"
+              className="text-4xl sm:text-5xl font-bold mb-6"
+            >
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900">
+                AI-Powered LinkedIn Growth Tools
+              </span>
+            </motion.h2>
+            <motion.p
+              variants={fadeInUpVariant}
+              initial="hidden"
+              animate="visible"
+              className="max-w-2xl mx-auto text-lg text-gray-600"
+            >
+              Grow your LinkedIn profile with AI-powered tools. Create
+              professional LinkedIn posts, carousels, and more with our
+              easy-to-use tools.
+            </motion.p>
+          </div>
+
+          {/* Features Grid */}
+          <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature, index) => (
+              <motion.div
+                key={feature.name}
+                variants={fadeInUpVariant}
+                initial="hidden"
+                animate="visible"
+                transition={{ delay: index * 0.1 }}
+                className={cn(
+                  "group relative rounded-2xl overflow-hidden backdrop-blur-sm",
+                  "bg-white hover:bg-gradient-to-b hover:from-gray-50 hover:to-white",
+                  "border border-gray-100",
+                  "transition-all duration-500",
+                  "hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
+                  "hover:border-gray-200"
+                )}
+                role="listitem"
+                aria-label={feature.ariaLabel}
+              >
+                <div className="p-8">
+                  {/* Icon Container */}
+                  <div className="relative mb-8">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-blue-500/10 rounded-xl blur-xl group-hover:blur-2xl transition-all duration-500" />
+                    <div
+                      className="relative w-14 h-14 rounded-xl bg-white flex items-center justify-center
+                        shadow-[0_2px_10px_-2px_rgba(0,0,0,0.05)] group-hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)]
+                        border border-gray-100 group-hover:border-gray-200
+                        transition-all duration-500"
+                      aria-hidden="true"
+                    >
+                      {React.cloneElement(feature.icon, {
+                        className:
+                          "w-6 h-6 text-gray-800 group-hover:scale-110 transition-all duration-500",
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-primary transition-colors duration-300">
+                    {feature.name}
+                  </h3>
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    {feature.description}
+                  </p>
+                  <ul className="space-y-3">
+                    {feature.benefits.map((benefit, idx) => (
+                      <li
+                        key={idx}
+                        className="text-sm text-gray-500 flex items-center group-hover:text-gray-600"
+                      >
+                        <div className="relative mr-3">
+                          <div className="w-1.5 h-1.5 bg-primary/40 rounded-full absolute blur-[2px]" />
+                          <div className="w-1 h-1 bg-primary/60 rounded-full relative" />
+                        </div>
+                        {benefit}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </div>
     </motion.section>
   );

@@ -16,6 +16,7 @@ const LandingNavbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50">
       <div className="absolute inset-0 bg-background/50 backdrop-blur-xl border-b border-white/10" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.1),rgba(255,255,255,0))]" />
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
