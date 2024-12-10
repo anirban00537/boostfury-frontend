@@ -5,6 +5,7 @@ import { RootState } from "@/state/store";
 import { useSelector } from "react-redux";
 import { AISettingsModal } from "@/components/ai-settings/AISettingsModal";
 import React from "react";
+import { cn } from "@/lib/utils";
 
 interface ContentIdea {
   idea: string;
@@ -46,30 +47,45 @@ export const ContentIdeas = ({
 
   const ideasArray = Array.isArray(ideas) ? ideas : ideas?.ideas || [];
 
-  console.log("ContentIdeas processed:", {
-    loading,
-    originalIdeas: ideas,
-    processedIdeas: ideasArray,
-    isArray: Array.isArray(ideasArray),
-  });
-
   return (
     <>
-      <div className="relative overflow-hidden rounded-2xl border border-gray-200/50 bg-slate-100 shadow-md">
-        {/* Enhanced Decorative Elements */}
-        <div className="absolute inset-0 bg-grid-black/[0.02]" />
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-purple-50/30" />
+      <div className="relative rounded-3xl border border-gray-100/20 bg-gradient-to-br from-gray-50/50 to-white/30 backdrop-blur-xl overflow-hidden shadow-md">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute -left-32 -top-32 w-64 h-64 rounded-full bg-purple-400/10 blur-3xl"
+            animate={{
+              x: [0, 100, 0],
+              y: [0, -50, 0],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+          <motion.div
+            className="absolute right-0 bottom-0 w-96 h-96 rounded-full bg-blue-500/10 blur-3xl"
+            animate={{
+              x: [0, -70, 0],
+              y: [0, 50, 0],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+        </div>
 
-        {/* Content Container */}
-        <div className="relative space-y-6 p-6">
-          {/* Enhanced Header */}
+        <div className="relative space-y-8 p-8">
+          {/* Header Section */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div
-                className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-primary/10 
-                          flex items-center justify-center shadow-inner ring-1 ring-primary/10
-                          backdrop-blur-xl"
-              >
+            <div className="flex items-center gap-5">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 
+                            backdrop-blur-md flex items-center justify-center shadow-xl ring-1 ring-primary/20">
                 <motion.div
                   animate={{
                     scale: [1, 1.1, 1],
@@ -77,29 +93,29 @@ export const ContentIdeas = ({
                   }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
-                  <Lightbulb className="h-6 w-6 text-primary" />
+                  <Lightbulb className="h-7 w-7 text-primary" />
                 </motion.div>
               </div>
               <div>
-                <h3
-                  className="text-base font-semibold bg-gradient-to-r from-gray-900 to-gray-700 
-                           bg-clip-text text-transparent"
-                >
-                  Content Ideas
-                </h3>
-                <p className="text-sm text-gray-500">
-                  AI-powered topic suggestions
-                </p>
+                <h3 className="text-xl font-semibold text-gray-900">Content Ideas</h3>
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="w-1 h-1 rounded-full bg-primary/20" />
+                  <span className="text-sm text-gray-500">
+                    AI-powered topic suggestions
+                  </span>
+                </div>
               </div>
             </div>
 
-            {/* Add settings button next to generate button */}
-            <div className="flex items-center gap-2">
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => setShowAISettings(true)}
-                className="h-10 w-10 rounded-xl bg-gray-100 hover:bg-gray-200 
-                         flex items-center justify-center transition-colors duration-200
-                         border border-gray-200/50 shadow-sm"
+                className={cn(
+                  "h-11 w-11 rounded-xl flex items-center justify-center transition-all duration-200",
+                  "bg-white/40 backdrop-blur-lg border border-gray-200/50 shadow-inner",
+                  "hover:border-primary/20 hover:shadow-md hover:-translate-y-0.5"
+                )}
                 title="AI Settings"
               >
                 <Settings2 className="h-5 w-5 text-gray-600" />
@@ -108,64 +124,53 @@ export const ContentIdeas = ({
               <ShimmerButton
                 onClick={handleGenerateClick}
                 disabled={loading}
-                enableShimmer={!loading}
-                background="linear-gradient(145deg, #4f46e5, #4338ca)"
-                className="h-10 px-4 rounded-xl text-sm font-medium shadow-lg"
+                className={cn(
+                  "h-11 px-5 rounded-xl text-sm font-medium",
+                  "bg-gradient-to-br from-primary to-primary/90",
+                  "hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+                )}
               >
-                <div className="flex items-center justify-center gap-2">
-                  <div className="w-6 h-6 rounded-lg bg-white/20 flex items-center justify-center">
-                    {loading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Wand2 className="h-4 w-4" />
-                    )}
-                  </div>
+                <div className="flex items-center gap-3">
+                  {loading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Wand2 className="h-4 w-4" />
+                  )}
                   <span>{loading ? "Generating..." : "Generate Ideas"}</span>
-                  <span className="hidden sm:flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-lg text-[10px]">
-                    <Sparkles className="h-3 w-3" />
-                    AI
-                  </span>
                 </div>
               </ShimmerButton>
             </div>
           </div>
 
-          {/* Enhanced Ideas Grid */}
-          <div
-            className="relative min-h-[240px] rounded-xl bg-gradient-to-br from-gray-50 via-white to-gray-50/80 
-                        border border-gray-200/50 shadow-sm"
-          >
+          {/* Ideas Content */}
+          <div className="relative rounded-2xl bg-white/40 backdrop-blur-lg border border-gray-200/50 shadow-inner overflow-hidden">
             {!ideasArray || ideasArray.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="h-full flex flex-col items-center justify-center p-8 text-center"
+                className="min-h-[300px] flex flex-col items-center justify-center p-8 text-center"
               >
-                <div
-                  className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/5 via-white to-primary/10 
-                             flex items-center justify-center mb-4 ring-1 ring-primary/10
-                             shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]"
-                >
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gray-50 to-white
+                              flex items-center justify-center mb-4 shadow-inner">
                   <motion.div
                     animate={{
-                      scale: [1, 1.1, 1],
-                      rotate: [0, 5, -5, 0],
+                      rotate: [0, 10, -10, 0],
+                      scale: [1, 1.1, 0.9, 1],
                     }}
                     transition={{ duration: 4, repeat: Infinity }}
                   >
-                    <Lightbulb className="h-10 w-10 text-primary/40" />
+                    <Lightbulb className="h-7 w-7 text-primary/40" />
                   </motion.div>
                 </div>
-                <h4 className="text-base font-medium text-gray-900 mb-2">
-                  No ideas generated yet
+                <h4 className="text-lg font-medium text-gray-900 mb-2">
+                  Ready to Generate Ideas
                 </h4>
-                <p className="text-sm text-gray-500 max-w-[280px] leading-relaxed">
+                <p className="text-sm text-gray-500 max-w-md">
                   Click the generate button above to get AI-powered content ideas
-                  based on your preferences
                 </p>
               </motion.div>
             ) : (
-              <div className="grid grid-cols-2 gap-4 p-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
                 {ideasArray.map((topic: ContentIdea, index: number) => (
                   <motion.button
                     key={index}
@@ -173,33 +178,27 @@ export const ContentIdeas = ({
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                     onClick={() => handleTopicSelect(topic)}
-                    className="group relative px-4 py-3 rounded-xl 
-                             bg-gradient-to-br from-white to-gray-50/90
-                             border border-gray-200/50 hover:border-primary/20
-                             ring-1 ring-black/[0.02] hover:ring-primary/10
-                             shadow-sm hover:shadow-md
-                             transition-all duration-200 text-left
-                             hover:scale-[1.02] active:scale-[0.98]"
+                    className={cn(
+                      "group relative p-4 rounded-xl text-left",
+                      "bg-white/60 backdrop-blur-sm border border-gray-200/50",
+                      "hover:border-primary/20 hover:shadow-lg hover:-translate-y-0.5",
+                      "transition-all duration-200"
+                    )}
                   >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/10 via-white to-primary/5 
-                                  flex items-center justify-center flex-shrink-0 ring-1 ring-primary/10
-                                  group-hover:shadow-inner transition-all duration-200"
-                      >
-                        <Lightbulb className="h-5 w-5 text-primary group-hover:scale-110 transition-transform duration-200" />
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 
+                                    flex items-center justify-center shadow-inner">
+                        <Lightbulb className="h-6 w-6 text-primary group-hover:scale-110 transition-transform duration-200" />
                       </div>
                       <p className="text-sm text-gray-600 group-hover:text-gray-900 transition-colors duration-200">
                         {topic.idea}
                       </p>
                     </div>
 
-                    {/* Enhanced hover effect */}
-                    <div className="absolute inset-0 rounded-xl bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                    <div
-                      className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-primary via-primary/80 to-primary/50 
-                                scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
-                    />
+                    {/* Hover Effects */}
+                    <div className="absolute inset-0 rounded-xl bg-primary/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                    <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary/40 via-primary/60 to-primary/40 
+                                  transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
                   </motion.button>
                 ))}
               </div>

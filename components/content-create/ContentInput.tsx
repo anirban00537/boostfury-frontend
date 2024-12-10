@@ -165,7 +165,7 @@ export const ContentInput = ({
 
   return (
     <div className="space-y-6">
-      <div className="relative rounded-3xl border border-gray-100/20 bg-gradient-to-br from-gray-50/50 to-white/30 backdrop-blur-xl overflow-hidden shadow-2xl">
+      <div className="relative rounded-3xl border border-gray-100/20 bg-gradient-to-br from-gray-50/50 to-white/30 backdrop-blur-xl overflow-hidden shadow-md">
         {/* Enhanced floating elements */}
         <div className="absolute inset-0 overflow-hidden">
           <motion.div
@@ -199,14 +199,17 @@ export const ContentInput = ({
         <div className="relative space-y-8 p-8">
           {/* Header with improved styling */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-5">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 
                             backdrop-blur-md flex items-center justify-center shadow-xl ring-1 ring-primary/20">
                 <Pencil className="h-7 w-7 text-primary" />
               </div>
               <div>
                 <h3 className="text-xl font-semibold text-gray-900">Content Editor</h3>
-                <p className="text-sm text-gray-500">Powered by AI assistance</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="w-1 h-1 rounded-full bg-primary/20" />
+                  <span className="text-sm text-gray-500">Powered by AI assistance</span>
+                </div>
               </div>
             </div>
 
@@ -239,12 +242,12 @@ export const ContentInput = ({
           </div>
 
           {/* Modern tone selector */}
-          <div className="space-y-4 pt-6 border-t border-gray-100/50">
+          <div className="space-y-3 pt-4 border-t border-gray-100/50">
             <div className="flex items-center gap-2">
-              <h4 className="text-sm font-medium text-gray-900">Content Tone</h4>
+              <h4 className="text-xs font-medium text-gray-700">Content Tone</h4>
               <Tooltip delayDuration={100}>
                 <TooltipTrigger>
-                  <HelpCircle className="h-4 w-4 text-gray-400" />
+                  <HelpCircle className="h-3.5 w-3.5 text-gray-400" />
                 </TooltipTrigger>
                 <TooltipContent side="right" className="max-w-xs">
                   <p className="text-xs">Choose a tone that matches your audience and purpose</p>
@@ -252,66 +255,51 @@ export const ContentInput = ({
               </Tooltip>
             </div>
 
-            {/* Enhanced tone grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {Object.entries(toneConfig).map(([tone, config]) => (
                 <button
                   key={tone}
                   onClick={() => setPostTone(tone)}
                   className={`
-                    group relative p-3 rounded-xl border
-                    transition-all duration-300 hover:scale-[1.02]
-                    ${tone === postTone
-                      ? `${config.activeColor} shadow-lg scale-[1.02]`
-                      : "bg-white/50 hover:bg-white/80 border-gray-200/50 hover:border-gray-300/50"
-                    }
+                    flex items-center gap-2 px-3 py-2 rounded-lg
+                    border border-gray-200/50 backdrop-blur-sm
+                    transition-all duration-200 group
+                    ${postTone === tone ? config.activeColor : config.hoverColor}
                   `}
                 >
-                  <div className="flex flex-col items-center gap-2">
-                    <div className={`
-                      w-10 h-10 rounded-xl flex items-center justify-center
-                      ${tone === postTone ? config.iconBg : "bg-gray-50"}
-                      transition-colors duration-300
-                    `}>
-                      {config.icon}
-                    </div>
-                    <div className="text-center">
-                      <div className="text-sm font-medium">{tone}</div>
-                      <div className="text-xs text-gray-500 mt-0.5 line-clamp-1">
-                        {config.description}
-                      </div>
-                    </div>
+                  <div className={`w-7 h-7 rounded-lg ${config.iconBg} flex items-center justify-center`}>
+                    {config.icon}
+                  </div>
+                  <div className="text-left">
+                    <span className="block text-xs font-medium">{tone}</span>
+                    <span className="text-[10px] opacity-70">{config.description}</span>
                   </div>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Enhanced generate button */}
-          <ShimmerButton
-            onClick={onGenerate}
-            disabled={isGeneratingContent || !isValidLength}
-            background="linear-gradient(145deg, #4F46E5, #4338CA)"
-            className="w-full py-4 rounded-xl shadow-xl hover:scale-[1.01] transition-transform duration-300"
-          >
-            <div className="flex items-center justify-center gap-3">
+          {/* Generate button */}
+          <div className="flex justify-end pt-6">
+            <ShimmerButton
+              onClick={onGenerate}
+              disabled={!isValidLength || isGeneratingContent}
+              className="w-full sm:w-auto"
+            >
               {isGeneratingContent ? (
-                <>
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  <span>Crafting your content...</span>
-                </>
+                <div className="flex items-center gap-3">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Generating...</span>
+                </div>
               ) : (
-                <>
-                  <Zap className="h-5 w-5" />
+                <div className="flex items-center gap-3">
+                  <Sparkles className="h-4 w-4" />
                   <span>Generate Content</span>
-                  <div className="hidden sm:flex items-center gap-1.5 text-xs bg-white/20 px-2.5 py-1 rounded-lg">
-                    <span>{navigator.platform.includes("Mac") ? "⌘" : "Ctrl"}</span>
-                    <span>↵</span>
-                  </div>
-                </>
+                  <ArrowRight className="h-4 w-4" />
+                </div>
               )}
-            </div>
-          </ShimmerButton>
+            </ShimmerButton>
+          </div>
         </div>
       </div>
     </div>

@@ -128,25 +128,43 @@ const NavigationItem: React.FC<{
     <Link
       href={item.href}
       className={cn(
-        "flex items-center gap-x-3 px-3 py-2 rounded-lg cursor-pointer",
+        "flex items-center gap-x-3 px-4 py-2.5 rounded-xl cursor-pointer",
+        "transition-all duration-200 border",
         isActive
-          ? "bg-blue-100/80 text-gray-800"
-          : "text-gray-600 hover:bg-blue-50/80 hover:text-gray-800",
-        "group transition-all duration-200"
+          ? "bg-white/60 border-primary/10 shadow-sm"
+          : "border-transparent hover:bg-white/40 hover:border-primary/5",
+        "group"
       )}
     >
-      <item.icon
+      <div
         className={cn(
-          "h-4 w-4",
-          isActive ? "text-gray-700" : "text-gray-500 group-hover:text-gray-600"
+          "size-8 rounded-lg flex items-center justify-center",
+          "transition-all duration-200",
+          isActive
+            ? "bg-gradient-to-br from-primary/10 to-primary/5 text-primary shadow-inner"
+            : "text-gray-500 group-hover:text-primary/80"
         )}
-      />
-      <span className="text-sm font-medium flex-1">{item.name}</span>
+      >
+        <item.icon className="h-4 w-4" />
+      </div>
+      <div className="flex flex-col gap-0.5 flex-1">
+        <span className={cn(
+          "text-sm font-medium",
+          isActive ? "text-gray-900" : "text-gray-600 group-hover:text-gray-800"
+        )}>
+          {item.name}
+        </span>
+        {item.description && (
+          <span className="text-xs text-gray-400 group-hover:text-gray-500">
+            {item.description}
+          </span>
+        )}
+      </div>
       {item.badge && (
         <span
           className={cn(
             "px-2 py-0.5 text-xs font-medium rounded-full",
-            item.badgeColor || "bg-blue-100 text-gray-700"
+            item.badgeColor || "bg-primary/10 text-primary"
           )}
         >
           {item.badge}
@@ -246,190 +264,131 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   }, [router]);
 
   return (
-    <div
-      className="w-[280px] sm:w-72 h-screen flex flex-col 
-                bg-slate-200
-                border-r border-blue-100/60
-                shadow-[4px_0_24px_-2px_rgba(0,0,0,0.05)]
-                relative z-10
-                flex-shrink-0"
-    >
+    <div className="w-[280px] sm:w-72 h-screen flex flex-col bg-white border-r border-gray-100 shadow-md relative z-10 flex-shrink-0">
       {/* Close button for mobile */}
       <button
         onClick={onClose}
-        className="lg:hidden absolute top-4 right-4 p-2 rounded-lg hover:bg-gray-100"
+        className="lg:hidden absolute top-4 right-4 p-2 rounded-lg hover:bg-gray-50"
       >
         <X className="h-5 w-5 text-gray-500" />
       </button>
 
       {/* Header Section */}
-      <div
-        className="shrink-0 border-b border-blue-100/60 
-                      bg-white/80 backdrop-blur-sm 
-                      shadow-[0_1px_3px_-1px_rgba(0,0,0,0.02)]"
-      >
+      <div className="shrink-0 border-b border-gray-100 p-6 space-y-4">
         {/* Logo */}
-        <div className="px-6 py-4 border-b border-blue-100/60 flex items-center justify-between">
-          <Link href="/" className="block transition-opacity hover:opacity-80">
-            <Image
-              src="/logo.svg"
-              height={28}
-              width={120}
-              alt="boostfury.com"
-              className="w-auto"
-            />
-          </Link>
-        </div>
+        <Link href="/" className="block transition-opacity hover:opacity-80">
+          <Image
+            src="/logo.svg"
+            height={28}
+            width={120}
+            alt="boostfury.com"
+            className="w-auto"
+          />
+        </Link>
 
         {/* Workspace Selector */}
-        <div className="p-3">
-          <Button
-            variant="outline"
-            onClick={() => setIsManageModalOpen(true)}
-            className="w-full h-9 justify-between text-gray-700 
-                     bg-gradient-to-b from-white to-blue-50/80
-                     border border-blue-200/60
-                     shadow-[0_1px_2px_rgba(59,130,246,0.05)]
-                     hover:bg-gradient-to-b hover:from-blue-50 hover:to-blue-100/50
-                     hover:border-blue-300/60
-                     transition-all duration-200"
-          >
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-gray-500" />
-              <span className="text-sm font-medium">
-                {currentWorkspace?.name || "Select workspace..."}
-              </span>
-            </div>
-            <ChevronDown className="h-4 w-4 text-gray-500" />
-          </Button>
-        </div>
+        <Button
+          variant="outline"
+          onClick={() => setIsManageModalOpen(true)}
+          className={cn(
+            "w-full justify-between text-gray-700",
+            "bg-white border-gray-200 hover:bg-gray-50",
+            "transition-all duration-200"
+          )}
+        >
+          <div className="flex items-center gap-2">
+            <Users className="h-4 w-4 text-gray-500" />
+            <span className="text-sm font-medium">
+              {currentWorkspace?.name || "Select workspace..."}
+            </span>
+          </div>
+          <ChevronDown className="h-4 w-4 text-gray-500" />
+        </Button>
 
         {/* Create Button */}
-        <div className="px-3 pb-3">
-          <GradientButton
-            variant="primary"
-            onClick={handleCreateNew}
-            fullWidth
-            leftIcon={<Plus className="h-4 w-4" />}
-            kbd="Ctrl + N"
-            className="shadow-lg shadow-blue-500/10 hover:shadow-xl hover:shadow-blue-500/20"
-          >
-            Create New
-          </GradientButton>
-        </div>
+        <GradientButton
+          variant="primary"
+          onClick={handleCreateNew}
+          fullWidth
+          leftIcon={<Plus className="h-4 w-4" />}
+          kbd="Ctrl + N"
+          className="shadow-sm hover:shadow-md transition-shadow"
+        >
+          Create New
+        </GradientButton>
       </div>
 
       {/* Navigation Section */}
-      <div
-        className="flex-1 overflow-y-auto px-3 py-2 
-                      bg-gradient-to-br from-white/50 via-blue-50/30 to-white/50
-                      scrollbar-thin scrollbar-track-blue-50 scrollbar-thumb-blue-200/50"
-      >
+      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-1">
         <Navigation />
       </div>
 
       {/* Footer Section */}
-      <div
-        className="shrink-0 border-t border-blue-100/60 
-                      bg-white/80 backdrop-blur-sm
-                      shadow-[0_-1px_3px_-1px_rgba(0,0,0,0.02)]"
-      >
+      <div className="shrink-0 border-t border-gray-100">
         {/* AI Usage Section */}
         {subscription.isActive && (
-          <div className="px-4 py-3 border-b border-blue-100/60">
-            <div className="flex items-center justify-between mb-2.5">
+          <div className="px-6 py-4 border-b border-gray-100">
+            <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <div
-                  className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-50 to-blue-100/80 
-                              border border-blue-200/40 shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]
-                              flex items-center justify-center"
-                >
-                  <Wand2 className="h-3.5 w-3.5 text-gray-600" />
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 
+                              flex items-center justify-center shadow-inner">
+                  <Wand2 className="h-4 w-4 text-primary" />
                 </div>
-                <span className="text-sm font-medium text-gray-800">
+                <span className="text-sm font-medium text-gray-900">
                   AI Credits
                 </span>
               </div>
-              <span className="text-xs font-medium text-gray-600 bg-blue-50 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-medium text-gray-600 bg-gray-50 px-2 py-0.5 rounded-full">
                 {formatTokens(wordUsage.used)} / {formatTokens(wordUsage.limit)}
               </span>
             </div>
-            <div
-              className="w-full h-2 bg-gradient-to-r from-blue-50 to-blue-100/50 rounded-full overflow-hidden 
-                           border border-blue-200/20 shadow-[inset_0_1px_2px_rgba(59,130,246,0.1)]"
-            >
+            <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
               <div
                 className={cn(
-                  "h-full transition-all duration-300 ease-in-out bg-gradient-to-r",
+                  "h-full transition-all duration-300 ease-in-out",
                   wordUsage.percentage > 80
-                    ? "from-red-500 to-red-600"
-                    : "from-blue-400 to-blue-500"
+                    ? "bg-red-500"
+                    : "bg-gradient-to-r from-primary to-primary/80"
                 )}
                 style={{ width: `${wordUsage.percentage}%` }}
               />
             </div>
           </div>
         )}
-        {/* Upgrade Button - Restored and improved */}
+
+        {/* Upgrade Button */}
         {!subscription.isActive && (
-          <div className="px-4 py-3 border-b border-blue-100/60">
-            <Button
-              variant="default"
+          <div className="px-6 py-4 border-b border-gray-100">
+            <GradientButton
+              variant="primary"
               onClick={() => router.push("/pricing")}
-              className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white 
-                       h-9 font-medium
-                       shadow-[0_4px_12px_-2px_rgba(59,130,246,0.3)] 
-                       hover:shadow-[0_6px_16px_-2px_rgba(59,130,246,0.4)]
-                       transition-all duration-200"
+              fullWidth
+              leftIcon={<Sparkles className="h-4 w-4" />}
+              className="shadow-sm hover:shadow-md transition-shadow"
             >
-              <div className="flex items-center justify-center gap-2">
-                <Sparkles className="h-4 w-4" />
-                <span>Upgrade Now</span>
-                <motion.span
-                  className="ml-1"
-                  animate={{
-                    x: [0, 3, 0],
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                  }}
-                >
-                  →
-                </motion.span>
-              </div>
-            </Button>
+              Upgrade Now
+            </GradientButton>
           </div>
         )}
+
         {/* Subscription Info */}
         {subscription.isActive && (
-          <div className="border-b border-blue-100/60 hover:bg-blue-50/30 transition-colors">
+          <div className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
             <SubscriptionInfo />
           </div>
         )}
-        {/* Update User Profile Section */}
+
+        {/* User Profile Section */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div
-              className="px-4 py-3 flex items-center justify-between 
-                group hover:bg-gradient-to-r hover:from-blue-50/80 hover:to-blue-100/60 
-                transition-all duration-200 cursor-pointer
-                rounded-b-lg"
-            >
+            <div className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer">
               <div className="flex items-center gap-3">
-                <div
-                  className="w-9 h-9 rounded-full 
-                    bg-gradient-to-br from-blue-50 to-blue-100
-                    border border-blue-200/40 
-                    shadow-[0_2px_4px_-1px_rgba(0,0,0,0.03)]
-                    flex items-center justify-center text-gray-700 
-                    group-hover:shadow-[0_3px_6px_-2px_rgba(0,0,0,0.05)]
-                    transition-all duration-200"
-                >
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 
+                              flex items-center justify-center text-gray-900 shadow-inner">
                   {userinfo?.first_name?.charAt(0) || "U"}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium text-gray-800">
+                  <span className="text-sm font-medium text-gray-900">
                     {userinfo?.first_name || "User"}
                   </span>
                   <span className="text-xs text-gray-500">
@@ -437,10 +396,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
                   </span>
                 </div>
               </div>
-              <ChevronDown
-                className="h-4 w-4 text-gray-400 group-hover:text-gray-600 
-                  transition-colors duration-200"
-              />
+              <ChevronDown className="h-4 w-4 text-gray-400" />
             </div>
           </DropdownMenuTrigger>
 
@@ -451,16 +407,12 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
             sideOffset={5}
           >
             <div className="flex items-center gap-3 px-3 py-2 mb-1">
-              <div
-                className="w-9 h-9 rounded-full 
-                  bg-gradient-to-br from-blue-50 to-blue-100
-                  border border-blue-200/40 
-                  flex items-center justify-center text-gray-700"
-              >
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 
+                            flex items-center justify-center text-gray-900 shadow-inner">
                 {userinfo?.first_name?.charAt(0) || "U"}
               </div>
               <div className="flex flex-col">
-                <span className="text-sm font-medium text-gray-800">
+                <span className="text-sm font-medium text-gray-900">
                   {userinfo?.first_name || "User"}
                 </span>
                 <span className="text-xs text-gray-500">

@@ -7,8 +7,9 @@ import { AIWritingPreview } from "@/components/content-create/AIWritingPreview";
 import { useGenerateLinkedInPosts } from "@/hooks/useGenerateLinkedInPosts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ContentIdeas } from "@/components/content-create/ContentIdeas";
-import { Lightbulb, Pencil, Zap } from "lucide-react";
+import { Lightbulb, Pencil, Sparkles } from "lucide-react";
 import { useGenerateContentIdeas } from "@/hooks/useGenerateLinkedInPosts";
+import { cn } from "@/lib/utils";
 
 const tabItems = [
   {
@@ -24,6 +25,15 @@ const tabItems = [
     description: "Generate creative content ideas",
   },
 ];
+
+const fadeInUpVariant = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
+};
 
 const ContentCreationTools: React.FC = () => {
   const [characterCount, setCharacterCount] = useState(0);
@@ -88,109 +98,118 @@ const ContentCreationTools: React.FC = () => {
   }, [content, ideas, generatedPost, isGeneratingLinkedinPosts]);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white">
       <div className="max-w-[1600px] mx-auto ">
         <Header />
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <div className="flex flex-col gap-6 mb-8">
-            <div className="relative mx-auto w-full max-w-[900px]">
-              <div className="absolute inset-0 bg-gradient-to-r from-violet-500/5 via-indigo-500/5 to-emerald-500/5 blur-3xl" />
-              <TabsList className="relative w-full mx-auto grid grid-cols-1 sm:grid-cols-2 gap-1.5 h-auto rounded-2xl p-1.5 bg-white/5 backdrop-blur-xl border border-black/5 shadow-md shadow-black/10">
+          {/* Tab List */}
+          <div className="flex flex-col gap-6 mb-16">
+            <div className="relative mx-auto w-full max-w-3xl">
+              <TabsList className="w-full grid grid-cols-2 gap-4 p-0 bg-transparent border-0">
                 {tabItems.map((item) => (
                   <TabsTrigger
                     key={item.value}
                     value={item.value}
-                    className={`relative group px-4 py-3 rounded-xl flex items-center gap-3 transition-all duration-500 outline-none overflow-hidden isolate ${
+                    className={cn(
+                      "group relative flex items-center gap-3 px-6 py-4 rounded-2xl transition-all duration-300",
+                      "bg-white border border-gray-100",
+                      "data-[state=active]:border-primary/20 data-[state=active]:bg-gradient-to-br data-[state=active]:from-white data-[state=active]:to-primary/5",
+                      "outline-none ring-0 hover:border-primary/10",
+                      "hover:shadow-lg hover:-translate-y-0.5",
                       item.value === activeTab
-                        ? "bg-white/90 text-zinc-900 shadow-lg shadow-black/20"
-                        : "hover:bg-white/20 text-zinc-600 hover:text-zinc-900"
-                    }`}
+                        ? "shadow-md"
+                        : "hover:border-gray-200"
+                    )}
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 via-indigo-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="relative flex items-center gap-3 w-full">
-                      <div
-                        className={`flex items-center justify-center p-2 rounded-lg transition-all duration-500 ease-out ${
-                          item.value === activeTab
-                            ? "bg-gradient-to-br from-indigo-500 to-violet-500 text-white shadow-lg shadow-indigo-500/20"
-                            : "bg-white/5 text-zinc-400 group-hover:text-zinc-100 group-hover:bg-gradient-to-br group-hover:from-indigo-500/50 group-hover:to-violet-500/50"
-                        }`}
-                      >
-                        {item.icon}
-                      </div>
-
-                      <div className="text-left flex flex-col">
-                        <div className="text-sm font-semibold tracking-tight">
-                          {item.label}
-                        </div>
-                        <div className="text-[11px] text-zinc-500 font-medium">
-                          {item.description}
-                        </div>
-                      </div>
-
-                      {item.value === activeTab && (
-                        <motion.div
-                          layoutId="active-tab-indicator"
-                          className="absolute right-3 h-5 w-5 rounded-full bg-gradient-to-r from-emerald-500 to-indigo-500 opacity-20"
-                        />
+                    <div
+                      className={cn(
+                        "size-10 rounded-xl flex items-center justify-center transition-all duration-300",
+                        "bg-gradient-to-br",
+                        item.value === activeTab
+                          ? "from-primary/20 to-primary/5 text-primary shadow-inner"
+                          : "from-gray-50/80 to-white text-gray-400 group-hover:from-primary/10 group-hover:to-primary/5 group-hover:text-primary"
                       )}
+                    >
+                      {item.icon}
                     </div>
+
+                    <div className="flex flex-col items-start text-left">
+                      <span
+                        className={cn(
+                          "text-sm font-medium transition-colors duration-300",
+                          item.value === activeTab
+                            ? "text-gray-900"
+                            : "text-gray-600 group-hover:text-gray-900"
+                        )}
+                      >
+                        {item.label}
+                      </span>
+                      <span className="text-xs text-gray-400 group-hover:text-gray-500 transition-colors duration-300">
+                        {item.description}
+                      </span>
+                    </div>
+
+                    {/* Active indicator */}
+                    <div
+                      className={cn(
+                        "absolute inset-0 rounded-2xl border-2 border-primary/20 opacity-0 scale-105",
+                        "transition-all duration-300",
+                        item.value === activeTab && "opacity-100 scale-100"
+                      )}
+                    />
                   </TabsTrigger>
                 ))}
               </TabsList>
             </div>
           </div>
 
+          {/* Content Area */}
           <div
-            className={`grid ${
+            className={cn(
+              "grid gap-8",
               activeTab === "write"
                 ? "grid-cols-1 lg:grid-cols-2"
                 : "grid-cols-1"
-            } gap-6 relative px-4`}
+            )}
           >
-            <div className={`${activeTab === "ideas" ? "col-span-full" : ""}`}>
-              <TabsContent value="write" className="mt-0 border-none">
+            <div className={activeTab === "ideas" ? "col-span-full" : ""}>
+              <TabsContent value="write" className="mt-0">
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="relative overflow-hidden rounded-xl border border-black/5 shadow-md shadow-black/20 ring-1 ring-black/5"
+                  variants={fadeInUpVariant}
+                  initial="hidden"
+                  animate="visible"
                 >
-                  <div className="absolute inset-0" />
-                  <div className="relative">
-                    <ContentInput
-                      {...{
-                        contentSource,
-                        isGenerating: isGeneratingLinkedinPosts,
-                        handleGenerate: handleGenerateLinkedIn,
-                        handleTextChange: handleLocalTextChange,
-                        setContent,
-                        isGeneratingLinkedinPosts,
-                        handleGenerateLinkedIn,
-                        handleLinkedInTextChange,
-                        content,
-                        postTone,
-                        setPostTone,
-                      }}
-                    />
-                  </div>
+                  <ContentInput
+                    {...{
+                      contentSource,
+                      isGenerating: isGeneratingLinkedinPosts,
+                      handleGenerate: handleGenerateLinkedIn,
+                      handleTextChange: handleLocalTextChange,
+                      setContent,
+                      isGeneratingLinkedinPosts,
+                      handleGenerateLinkedIn,
+                      handleLinkedInTextChange,
+                      content,
+                      postTone,
+                      setPostTone,
+                    }}
+                  />
                 </motion.div>
               </TabsContent>
 
               <TabsContent value="ideas" className="mt-0">
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="relative overflow-hidden rounded-xl border border-black/5 bg-white shadow-md shadow-black/20 ring-1 ring-black/5"
+                  variants={fadeInUpVariant}
+                  initial="hidden"
+                  animate="visible"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-b from-gray-50/30 to-transparent" />
-                  <div className="relative">
-                    <ContentIdeas
-                      loading={loading}
-                      ideas={ideas}
-                      handleGenerateTopic={handleGenerateIdeas}
-                      handleTopicSelect={handleTopicSelect}
-                    />
-                  </div>
+                  <ContentIdeas
+                    loading={loading}
+                    ideas={ideas}
+                    handleGenerateTopic={handleGenerateIdeas}
+                    handleTopicSelect={handleTopicSelect}
+                  />
                 </motion.div>
               </TabsContent>
             </div>
@@ -200,21 +219,15 @@ const ContentCreationTools: React.FC = () => {
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeTab}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
+                    variants={fadeInUpVariant}
+                    initial="hidden"
+                    animate="visible"
                   >
-                    <div className="relative overflow-hidden rounded-xl border border-black/5 bg-zinc-50/50 shadow-md shadow-black/20 ring-1 ring-black/5">
-                      <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent" />
-                      <div className="relative p-6">
-                        <AIWritingPreview
-                          isGenerating={isGeneratingLinkedinPosts}
-                          generatedPost={generatedPost}
-                          title="AI Generated LinkedIn Post"
-                        />
-                      </div>
-                    </div>
+                    <AIWritingPreview
+                      isGenerating={isGeneratingLinkedinPosts}
+                      generatedPost={generatedPost}
+                      title="AI Generated LinkedIn Post"
+                    />
                   </motion.div>
                 </AnimatePresence>
               </div>

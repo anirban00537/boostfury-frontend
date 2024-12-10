@@ -6,74 +6,57 @@ export const Header = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="relative py-12 overflow-hidden"
+      className="relative py-8"
     >
-      
-      <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
-        {/* Glowing badge */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full 
-                   bg-gradient-to-r from-purple-500/10 via-primary/10 to-blue-500/10
-                   border border-white/10 backdrop-blur-sm"
-        >
-          <div className="relative">
-            <Wand2 className="w-4 h-4 text-primary" />
-            <motion.div 
-              animate={{ 
-                scale: [1, 1.2, 1],
-                opacity: [0.5, 1, 0.5] 
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              className="absolute inset-0 rounded-full bg-primary/20 blur-sm"
-            />
-          </div>
-          <span className="text-sm font-medium bg-gradient-to-r from-purple-500 via-primary to-blue-500 
-                         bg-clip-text text-transparent">
-            AI-Powered Creation
-          </span>
-        </motion.div>
-
-        {/* Main heading with animated gradient */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative"
-        >
-          <div className="absolute -inset-x-20 -inset-y-10">
-            <div className="w-full h-full absolute inset-0">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-purple-500/5 to-blue-500/5 
-                            animate-gradient-slow rounded-full blur-3xl opacity-50" />
-            </div>
-          </div>
-
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-            Create 
-            <span className="bg-gradient-to-r from-purple-500 via-primary to-blue-500 
-                           bg-clip-text text-transparent px-3">
-              Viral Content
-            </span>
-            with AI
-          </h1>
-          
+      <div className="relative z-10 max-w-3xl mx-auto space-y-4">
+        {/* Enhanced badge */}
+        <div className="flex justify-center">
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="mt-4 text-gray-600"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg
+                     border border-primary/10"
           >
-            Transform your ideas into engaging content with our AI-powered platform
+            <div className="relative w-6 h-6 rounded-md flex items-center justify-center">
+              <Wand2 className="w-3.5 h-3.5 text-primary relative z-10" />
+            </div>
+            <span className="text-sm font-medium text-gray-800">
+              AI-Powered Creation
+            </span>
           </motion.div>
+        </div>
 
-          <div className="absolute -top-2 -right-2 text-primary/20">
-            <Sparkles className="w-8 h-8" />
-          </div>
-        </motion.div>
+        {/* Main heading with enhanced design */}
+        <div className="text-center space-y-3">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="relative"
+          >
+            {/* Main Title */}
+            <div className="relative">
+              <h1 className="relative text-3xl md:text-4xl font-bold tracking-tight">
+                Create{" "}
+                <span className="relative inline-block">
+                  <span className="relative z-10 bg-gradient-to-r from-primary via-purple-500 to-blue-500 
+                                bg-clip-text text-transparent">
+                    Viral Content
+                  </span>
+                </span>{" "}
+                with AI
+              </h1>
+            </div>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="mt-3 text-sm text-gray-600 max-w-xl mx-auto"
+            >
+              Transform your ideas into engaging content with our AI-powered platform
+            </motion.p>
+          </motion.div>
+        </div>
       </div>
     </motion.div>
   );
