@@ -25,6 +25,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { motion } from "framer-motion";
 
 interface ContentInputProps {
   contentSource: string;
@@ -164,147 +165,179 @@ export const ContentInput = ({
 
   return (
     <div className="space-y-6">
-      {/* Main Content Area */}
-      <div className="rounded-2xl border-none bg-slate-200 overflow-hidden">
-        <div className="relative px-6 py-4 space-y-6">
-          {/* Decorative Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-white pointer-events-none" />
+      <div className="relative rounded-2xl border-none bg-gradient-to-br from-gray-50 to-white overflow-hidden">
+        {/* Animated floating elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div 
+            className="absolute w-40 h-40 rounded-full bg-primary/5 blur-3xl"
+            animate={{
+              x: [0, 100, 0],
+              y: [0, -50, 0],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          />
+          <motion.div 
+            className="absolute right-0 bottom-0 w-60 h-60 rounded-full bg-purple-500/5 blur-3xl"
+            animate={{
+              x: [0, -70, 0],
+              y: [0, 50, 0],
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          />
+        </div>
 
-          {/* Header */}
-          <div className="relative flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div
-                className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 
-                            flex items-center justify-center shadow-inner ring-1 ring-primary/10"
-              >
-                <Pencil className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Content Topic
-                </h3>
-                <p className="text-sm text-gray-500">
-                  Share your ideas and let AI enhance them
-                </p>
-              </div>
-            </div>
+        <div className="relative px-8 py-6 space-y-8">
+          {/* Main Content Area */}
+          <div className="rounded-2xl border-none bg-slate-200 overflow-hidden">
+            <div className="relative px-6 py-4 space-y-6">
+              {/* Decorative Background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-white pointer-events-none" />
 
-            {/* Character Counter */}
-            <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500">
-              <div
-                className={`h-2 w-2 rounded-full ${
-                  charCount >= MIN_CHARS ? "bg-green-400" : "bg-gray-300"
-                }`}
-              />
-              <span>
-                {charCount}/{MAX_CHARS} characters
-              </span>
-            </div>
-          </div>
-
-          {/* Enhanced Textarea */}
-          <div className="relative mt-4">
-            <textarea
-              value={contentSource === "plain-prompt" ? content : undefined}
-              onChange={onTextChange}
-              className="w-full min-h-[120px] p-4 rounded-xl
-                       bg-gradient-to-br from-white to-gray-50/50 backdrop-blur-sm border border-gray-200 hover:border-primary/20
-                       focus:border-primary/30 focus:ring-4 focus:ring-primary/10
-                       placeholder:text-gray-400 text-gray-600
-                       text-sm leading-relaxed resize-none outline-none
-                       transition-all duration-200"
-              placeholder="What would you like to write about? Be specific to get better results..."
-              maxLength={MAX_CHARS}
-            />
-          </div>
-
-          {/* Tone Selection */}
-          <div className="relative space-y-3 sm:space-y-4 pt-3 sm:pt-4 border-t border-gray-100">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <h4 className="text-xs sm:text-sm font-medium text-gray-900">
-                  Content Tone
-                </h4>
-                <Tooltip delayDuration={100}>
-                  <TooltipTrigger>
-                    <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
-                  </TooltipTrigger>
-                  <TooltipContent side="right" className="max-w-xs">
-                    <p className="text-xs">
-                      Choose a tone that matches your audience and purpose
+              {/* Header */}
+              <div className="relative flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 
+                                flex items-center justify-center shadow-inner ring-1 ring-primary/10"
+                  >
+                    <Pencil className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Content Topic
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Share your ideas and let AI enhance them
                     </p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-            </div>
-
-            {/* Tone Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3">
-              {Object.entries(toneConfig).map(([tone, config]) => (
-                <button
-                  key={tone}
-                  onClick={() => setPostTone(tone)}
-                  className={`
-                    group relative p-2 sm:p-3 rounded-lg sm:rounded-xl border
-                    transition-all duration-200 hover:scale-[1.02]
-                    ${
-                      tone === postTone
-                        ? `${config.activeColor} shadow-lg`
-                        : "bg-slate-100 hover:bg-gray-50/80 border-gray-200 hover:border-gray-300"
-                    }
-                  `}
-                >
-                  <div className="flex flex-col items-center gap-1.5 sm:gap-2">
-                    <div
-                      className={`
-                      w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center
-                      ${tone === postTone ? config.iconBg : "bg-gray-100"}
-                      transition-colors duration-200
-                    `}
-                    >
-                      {config.icon}
-                    </div>
-                    <div className="text-center">
-                      <div className="text-xs sm:text-sm font-medium">
-                        {tone}
-                      </div>
-                      <div className="text-[10px] sm:text-xs text-gray-500 mt-0.5 line-clamp-1">
-                        {config.description}
-                      </div>
-                    </div>
                   </div>
-                </button>
-              ))}
+                </div>
+
+                {/* Character Counter */}
+                <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500">
+                  <div
+                    className={`h-2 w-2 rounded-full ${
+                      charCount >= MIN_CHARS ? "bg-green-400" : "bg-gray-300"
+                    }`}
+                  />
+                  <span>
+                    {charCount}/{MAX_CHARS} characters
+                  </span>
+                </div>
+              </div>
+
+              {/* Enhanced Textarea */}
+              <div className="relative mt-4">
+                <textarea
+                  value={contentSource === "plain-prompt" ? content : undefined}
+                  onChange={onTextChange}
+                  className="w-full min-h-[120px] p-4 rounded-xl
+                           bg-gradient-to-br from-white to-gray-50/50 backdrop-blur-sm border border-gray-200 hover:border-primary/20
+                           focus:border-primary/30 focus:ring-4 focus:ring-primary/10
+                           placeholder:text-gray-400 text-gray-600
+                           text-sm leading-relaxed resize-none outline-none
+                           transition-all duration-200"
+                  placeholder="What would you like to write about? Be specific to get better results..."
+                  maxLength={MAX_CHARS}
+                />
+              </div>
+
+              {/* Tone Selection */}
+              <div className="relative space-y-3 sm:space-y-4 pt-3 sm:pt-4 border-t border-gray-100">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <h4 className="text-xs sm:text-sm font-medium text-gray-900">
+                      Content Tone
+                    </h4>
+                    <Tooltip delayDuration={100}>
+                      <TooltipTrigger>
+                        <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
+                      </TooltipTrigger>
+                      <TooltipContent side="right" className="max-w-xs">
+                        <p className="text-xs">
+                          Choose a tone that matches your audience and purpose
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                </div>
+
+                {/* Tone Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3">
+                  {Object.entries(toneConfig).map(([tone, config]) => (
+                    <button
+                      key={tone}
+                      onClick={() => setPostTone(tone)}
+                      className={`
+                        group relative p-2 sm:p-3 rounded-lg sm:rounded-xl border
+                        transition-all duration-200 hover:scale-[1.02]
+                        ${
+                          tone === postTone
+                            ? `${config.activeColor} shadow-lg`
+                            : "bg-slate-100 hover:bg-gray-50/80 border-gray-200 hover:border-gray-300"
+                        }
+                      `}
+                    >
+                      <div className="flex flex-col items-center gap-1.5 sm:gap-2">
+                        <div
+                          className={`
+                          w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center
+                          ${tone === postTone ? config.iconBg : "bg-gray-100"}
+                          transition-colors duration-200
+                        `}
+                        >
+                          {config.icon}
+                        </div>
+                        <div className="text-center">
+                          <div className="text-xs sm:text-sm font-medium">
+                            {tone}
+                          </div>
+                          <div className="text-[10px] sm:text-xs text-gray-500 mt-0.5 line-clamp-1">
+                            {config.description}
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Generate Button */}
+              <ShimmerButton
+                onClick={onGenerate}
+                disabled={isGeneratingContent || !isValidLength}
+                background="linear-gradient(145deg, #4F46E5, #4338CA)"
+                className="w-full py-4 mt-6"
+              >
+                <div className="flex items-center justify-center gap-3">
+                  {isGeneratingContent ? (
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      <span>Crafting your content...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="h-5 w-5" />
+                      <span>Generate Content</span>
+                      <div className="hidden sm:flex items-center gap-1 text-xs bg-white/20 px-2 py-1 rounded-md">
+                        <span>
+                          {navigator.platform.includes("Mac") ? "⌘" : "Ctrl"}
+                        </span>
+                        <span>↵</span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </ShimmerButton>
             </div>
           </div>
-
-          {/* Generate Button */}
-          <ShimmerButton
-            onClick={onGenerate}
-            disabled={isGeneratingContent || !isValidLength}
-            background="linear-gradient(145deg, #4F46E5, #4338CA)"
-            className="w-full py-4 mt-6"
-          >
-            <div className="flex items-center justify-center gap-3">
-              {isGeneratingContent ? (
-                <>
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  <span>Crafting your content...</span>
-                </>
-              ) : (
-                <>
-                  <Zap className="h-5 w-5" />
-                  <span>Generate Content</span>
-                  <div className="hidden sm:flex items-center gap-1 text-xs bg-white/20 px-2 py-1 rounded-md">
-                    <span>
-                      {navigator.platform.includes("Mac") ? "⌘" : "Ctrl"}
-                    </span>
-                    <span>↵</span>
-                  </div>
-                </>
-              )}
-            </div>
-          </ShimmerButton>
         </div>
       </div>
     </div>

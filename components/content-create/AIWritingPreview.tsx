@@ -14,38 +14,36 @@ interface AIWritingPreviewProps {
 }
 
 const LoadingAnimation = () => (
-  <div className="relative min-h-[300px] p-8 bg-gradient-to-br from-white via-gray-50/95 to-gray-50/90">
-    {/* Enhanced Shimmer Lines */}
-    <div className="space-y-6 relative">
+  <div className="relative min-h-[300px] p-8">
+    <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-50/90 backdrop-blur-sm" />
+    
+    {/* Enhanced loading animation */}
+    <div className="relative space-y-6">
       {[...Array(4)].map((_, i) => (
         <motion.div
           key={i}
-          className="relative"
+          className="relative overflow-hidden"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: i * 0.12 }}
         >
-          <div
-            className={`h-3.5 rounded-full bg-gradient-to-r from-primary/3 via-primary/6 to-primary/3
-                        ${i === 0 ? "w-3/5" : i === 3 ? "w-2/5" : "w-4/5"}`}
-          >
+          <div className={`h-4 rounded-lg bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5
+                          ${i === 0 ? 'w-3/5' : i === 3 ? 'w-2/5' : 'w-4/5'}`}>
             <motion.div
               className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
-              animate={{ x: ["-100%", "100%"] }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "linear",
-                delay: i * 0.2,
-              }}
+              animate={{ x: ['-100%', '100%'] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
             />
           </div>
         </motion.div>
       ))}
     </div>
 
-    {/* Refined Loading Indicator */}
-    <div className="absolute inset-0 backdrop-blur-[2px] bg-white/70 flex items-center justify-center">
+    {/* AI Writing indicator */}
+    <motion.div
+      className="absolute inset-0 backdrop-blur-[2px] bg-white/70 
+                 flex items-center justify-center"
+    >
       <motion.div
         className="flex items-center gap-5 px-10 py-5 rounded-2xl
                    bg-gradient-to-br from-white/95 to-white/80
@@ -103,7 +101,7 @@ const LoadingAnimation = () => (
           </div>
         </div>
       </motion.div>
-    </div>
+    </motion.div>
   </div>
 );
 

@@ -1,80 +1,81 @@
 import { motion } from "framer-motion";
 import { Wand2, Sparkles } from "lucide-react";
+import ParticlesContainer from "../ui/particles-container";
 
 export const Header = () => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="text-center pb-4 relative"
+      className="relative py-12 overflow-hidden"
     >
-      <div className="relative space-y-4">
-        {/* Icon Badge */}
+      <ParticlesContainer />
+      
+      <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
+        {/* Glowing badge */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full 
-                     bg-gradient-to-r from-primary/5 to-primary/10
-                     border border-primary/20 shadow-sm"
+                   bg-gradient-to-r from-purple-500/10 via-primary/10 to-blue-500/10
+                   border border-white/10 backdrop-blur-sm"
         >
           <div className="relative">
-            <Wand2 className="w-4 h-4 text-primary relative z-10" />
-            <div className="absolute inset-0 animate-pulse rounded-full bg-primary/10" />
+            <Wand2 className="w-4 h-4 text-primary" />
+            <motion.div 
+              animate={{ 
+                scale: [1, 1.2, 1],
+                opacity: [0.5, 1, 0.5] 
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="absolute inset-0 rounded-full bg-primary/20 blur-sm"
+            />
           </div>
-          <span
-            className="text-sm font-medium bg-gradient-to-r from-primary to-primary/80 
-                         bg-clip-text text-transparent"
-          >
-            AI-Powered Writing
+          <span className="text-sm font-medium bg-gradient-to-r from-purple-500 via-primary to-blue-500 
+                         bg-clip-text text-transparent">
+            AI-Powered Creation
           </span>
         </motion.div>
 
-        {/* Main Heading */}
+        {/* Main heading with animated gradient */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
           className="relative"
         >
-          {/* Decorative elements */}
-          <div
-            className="absolute -inset-x-4 -inset-y-2 bg-gradient-to-r 
-                       from-primary/5 via-transparent to-primary/5 
-                       blur-3xl opacity-30"
-          />
+          <div className="absolute -inset-x-20 -inset-y-10">
+            <div className="w-full h-full absolute inset-0">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-purple-500/5 to-blue-500/5 
+                            animate-gradient-slow rounded-full blur-3xl opacity-50" />
+            </div>
+          </div>
 
-          <h1
-            className="text-4xl font-bold tracking-tight lg:text-5xl 
-                       bg-gradient-to-br from-gray-900 to-gray-700
-                       inline-block text-transparent bg-clip-text
-                       [text-shadow:_0_1px_3px_rgb(0_0_0_/_10%)]
-                       relative z-10"
-          >
-            What{" "}
-            <span
-              className="bg-gradient-to-br from-primary to-secondary
-                           inline-block text-transparent bg-clip-text"
-            >
-              Viral Post
-            </span>{" "}
-            Would You Like to Create?
-            <span className="absolute -top-1 -right-1 text-primary/20">
-              <Sparkles className="w-6 h-6" />
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+            Create 
+            <span className="bg-gradient-to-r from-purple-500 via-primary to-blue-500 
+                           bg-clip-text text-transparent px-3">
+              Viral Content
             </span>
+            with AI
           </h1>
-        </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="mt-4 text-gray-600"
+          >
+            Transform your ideas into engaging content with our AI-powered platform
+          </motion.div>
 
-        {/* Decorative background elements */}
-        <div className="absolute inset-0 -z-10">
-          <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                       w-[100%] h-[100%] rounded-full bg-gradient-to-br 
-                       from-primary/5 via-transparent to-primary/5 
-                       blur-3xl opacity-20"
-          />
-        </div>
+          <div className="absolute -top-2 -right-2 text-primary/20">
+            <Sparkles className="w-8 h-8" />
+          </div>
+        </motion.div>
       </div>
     </motion.div>
   );
