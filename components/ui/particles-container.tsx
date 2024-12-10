@@ -1,4 +1,3 @@
-
 "use client";
 import { useCallback } from "react";
 import Particles from "react-tsparticles";
@@ -34,26 +33,33 @@ const ParticlesContainer = () => {
               enable: true,
               mode: "grab",
             },
+            onClick: {
+              enable: true,
+              mode: "push",
+            },
             resize: true,
           },
           modes: {
             grab: {
-              distance: 140,
+              distance: 200,
               links: {
-                opacity: 0.2,
+                opacity: 0.5,
               },
+            },
+            push: {
+              quantity: 4,
             },
           },
         },
         particles: {
           color: {
-            value: "#6366f1", // Indigo-500 (primary color)
+            value: "#D3D3D3", // Set all particles to lighter gray
           },
           links: {
-            color: "#6366f1",
-            distance: 150,
+            color: "#D3D3D3", // Set link color to lighter gray
+            distance: 120,
             enable: true,
-            opacity: 0.1,
+            opacity: 0.4,
             width: 1,
           },
           collisions: {
@@ -63,27 +69,40 @@ const ParticlesContainer = () => {
             direction: "none",
             enable: true,
             outModes: {
-              default: "bounce",
+              default: "out",
             },
-            random: true,
-            speed: 0.5,
+            random: false,
+            speed: 1.5, // Increased speed for more dynamic movement
             straight: false,
+            path: {
+              enable: true,
+              delay: {
+                value: 0
+              },
+            },
+          },
+          depth: {
+            enable: true,
+            value: 100, // Adjust to control the 3D effect intensity
           },
           number: {
             density: {
               enable: true,
               area: 800,
             },
-            value: 80,
+            value: 100, // Increased particle count
           },
           opacity: {
-            value: 0.15,
+            value: 0.2,
           },
           shape: {
-            type: "circle",
+            type: ["circle", "polygon"],
+            polygon: {
+              sides: 6, // Add hexagons for a tech feel
+            },
           },
           size: {
-            value: { min: 1, max: 3 },
+            value: { min: 1, max: 4 }, // Slightly larger particles
           },
         },
         detectRetina: true,

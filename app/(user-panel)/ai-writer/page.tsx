@@ -87,7 +87,7 @@ const ContentCreationTools: React.FC = () => {
                     `}
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 via-indigo-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    
+
                     <div className="relative flex items-center gap-3 w-full">
                       <div
                         className={`
@@ -125,13 +125,19 @@ const ContentCreationTools: React.FC = () => {
             </div>
           </div>
 
-          <div className={`grid ${activeTab === 'write' ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'} gap-6 relative px-4`}>
-            <div className={`${activeTab === 'ideas' ? 'col-span-full' : ''}`}>
+          <div
+            className={`grid ${
+              activeTab === "write"
+                ? "grid-cols-1 lg:grid-cols-2"
+                : "grid-cols-1"
+            } gap-6 relative px-4`}
+          >
+            <div className={`${activeTab === "ideas" ? "col-span-full" : ""}`}>
               <TabsContent value="write" className="mt-0 border-none">
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="relative overflow-hidden rounded-xl border border-black/5  shadow-xl shadow-black/5 ring-1 ring-black/5"
+                  className="relative overflow-hidden rounded-xl border border-black/5 shadow-xl shadow-black/30 ring-1 ring-black/5"
                 >
                   <div className="absolute inset-0" />
                   <div className="relative">
@@ -158,7 +164,7 @@ const ContentCreationTools: React.FC = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="relative overflow-hidden rounded-xl border border-black/5 bg-white shadow-xl shadow-black/5 ring-1 ring-black/5"
+                  className="relative overflow-hidden rounded-xl border border-black/5 shadow-xl shadow-black/30 ring-1 ring-black/5"
                 >
                   <div className="absolute inset-0 bg-gradient-to-b from-gray-50/30 to-transparent" />
                   <div className="relative">
@@ -173,7 +179,7 @@ const ContentCreationTools: React.FC = () => {
               </TabsContent>
             </div>
 
-            {activeTab === 'write' && (
+            {activeTab === "write" && (
               <div className="w-full">
                 <AnimatePresence mode="wait">
                   <motion.div
