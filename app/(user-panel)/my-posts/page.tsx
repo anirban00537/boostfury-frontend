@@ -15,6 +15,7 @@ import {
   Moon,
   Clock,
   CalendarDays,
+  Wand2,
 } from "lucide-react";
 import {
   PostPreview,
@@ -38,6 +39,7 @@ import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
 import { EmptyState } from "@/components/ui/empty-state";
+import { cn } from "@/lib/utils";
 
 interface PostConfig {
   id: PostTabId;
@@ -110,33 +112,48 @@ const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange, handleCre
   };
 
   return (
-    <div className="border-b border-gray-200 bg-white sticky top-0 z-10">
-      <div className="px-6 pt-6 pb-0">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-2xl font-semibold">
-              <span className="text-gray-900">Content</span>{" "}
-              <span className="text-primary">Manager</span>
-            </h1>
-            <p className="text-sm text-gray-500 mt-1">
-              Manage your drafts and scheduled posts
-            </p>
+    <div className="relative border-b border-neutral-200/60 bg-white/50 backdrop-blur-sm sticky top-0 z-10">
+      <div className="px-8 pt-8 pb-0">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
+              <div className="absolute -inset-[1px] blur-sm bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl"></div>
+              <div className="relative w-12 h-12 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center border border-neutral-200/40 shadow-sm">
+                <FileText className="w-5 h-5 text-neutral-900" />
+              </div>
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold bg-gradient-to-b from-black to-neutral-800 bg-clip-text text-transparent">
+                Content Manager
+              </h1>
+              <p className="text-sm text-neutral-600 mt-1">
+                Manage your drafts and scheduled posts
+              </p>
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
             <GradientButton
               variant="primary"
-              leftIcon={<Plus className="w-4 h-4" />}
               onClick={handleCreateNew}
+              className="shadow-sm hover:shadow-md transition-shadow"
             >
-              Create New
+              <div className="flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                <span>Create New</span>
+              </div>
             </GradientButton>
+
             <Link href="/ai-writer">
               <GradientButton
                 variant="default"
-                leftIcon={<Plus className="w-4 h-4" />}
+                className="shadow-sm hover:shadow-md transition-shadow"
               >
-                Viral Post Generator
+                <div className="flex items-center gap-2">
+                  <Wand2 className="h-4 w-4" />
+                  <span>AI Writer</span>
+                </div>
               </GradientButton>
             </Link>
           </div>
@@ -147,51 +164,36 @@ const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange, handleCre
             <button
               key={config.id}
               onClick={() => onTabChange(config.id)}
-              className={`
-                group relative px-4 py-3 first:ml-0
-                font-medium text-sm
-                transition-all duration-200
-                focus:outline-none
-                ${
-                  activeTab === config.id
-                    ? config.id === "failed"
-                      ? "text-red-600"
-                      : "text-primary"
-                    : "text-gray-600 hover:text-gray-900"
-                }
-              `}
+              className={cn(
+                "group relative px-4 py-3",
+                "transition-all duration-200 focus:outline-none"
+              )}
             >
-              <div className="flex items-center gap-2">
-                <span
-                  className={`
-                    ${
-                      activeTab === config.id
-                        ? config.id === "failed"
-                          ? "text-red-600"
-                          : "text-primary"
-                        : "text-gray-400 group-hover:text-gray-500"
-                    }
-                  `}
-                >
+              <div className="relative flex items-center gap-2">
+                <div className={cn(
+                  "size-8 rounded-lg flex items-center justify-center transition-colors",
+                  activeTab === config.id
+                    ? "bg-gradient-to-br from-primary/10 to-primary/5 text-primary shadow-inner"
+                    : "text-neutral-500 group-hover:text-primary/80"
+                )}>
                   {config.icon}
+                </div>
+                <span className={cn(
+                  "text-sm font-medium",
+                  activeTab === config.id
+                    ? "text-neutral-900"
+                    : "text-neutral-600 group-hover:text-neutral-800"
+                )}>
+                  {config.title}
                 </span>
-                {config.title}
               </div>
 
-              {/* Active Tab Indicator */}
-              <div
-                className={`
-                absolute bottom-0 left-0 right-0 h-0.5
-                transition-all duration-200
-                ${
-                  activeTab === config.id
-                    ? config.id === "failed"
-                      ? "bg-red-600"
-                      : "bg-primary"
-                    : "bg-transparent group-hover:bg-gray-200"
-                }
-              `}
-              />
+              <div className={cn(
+                "absolute bottom-0 left-0 right-0 h-0.5 transition-all duration-200",
+                activeTab === config.id
+                  ? "bg-primary"
+                  : "bg-transparent group-hover:bg-neutral-200"
+              )} />
             </button>
           ))}
         </div>

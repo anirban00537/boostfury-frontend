@@ -27,6 +27,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface ContentInputProps {
   contentSource: string;
@@ -139,6 +140,15 @@ const toneConfig: ToneConfigType = {
 const MIN_CHARS = 10;
 const MAX_CHARS = 500;
 
+const toneOptions = [
+  { tone: "Professional", icon: Briefcase },
+  { tone: "Casual", icon: Smile },
+  { tone: "Friendly", icon: MessageCircle },
+  { tone: "Confident", icon: Target },
+  { tone: "Informative", icon: BookOpen },
+  { tone: "Creative", icon: Lightbulb },
+];
+
 export const ContentInput = ({
   contentSource,
   isGenerating,
@@ -165,110 +175,134 @@ export const ContentInput = ({
   const isValidLength = charCount >= MIN_CHARS;
 
   return (
-    <div className="relative rounded-xl bg-white overflow-hidden
-      border border-gray-200/90
-      shadow-[0_2px_0_0_rgba(0,0,0,0.08),inset_0_-1px_0_0_rgba(0,0,0,0.06),inset_0_0_0_1px_rgba(255,255,255,0.5)]">
-      <div className="p-6 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gray-50 border border-gray-100 
-                          flex items-center justify-center">
-              <Pencil className="h-5 w-5 text-gray-600" />
+    <div className="group relative">
+      {/* Enhanced Glowing Effects */}
+      <div className="absolute -inset-[1px] bg-gradient-to-t from-neutral-200/0 via-neutral-200/10 to-neutral-200/0 rounded-2xl group-hover:via-neutral-200/20 transition-all duration-500" />
+      <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
+
+      {/* Main Content */}
+      <div className="relative rounded-2xl bg-white/50 backdrop-blur-sm border border-neutral-200/60 overflow-hidden">
+        <div className="p-8 space-y-6">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              {/* Icon Container */}
+              <div className="relative">
+                <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
+                <div className="absolute -inset-[1px] blur-sm bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl"></div>
+                <div className="relative w-12 h-12 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center border border-neutral-200/40 shadow-sm">
+                  <Pencil className="w-5 h-5 text-neutral-900" />
+                </div>
+              </div>
+              <div>
+                <h3 className="text-base font-semibold bg-gradient-to-b from-black to-neutral-800 bg-clip-text text-transparent">
+                  Content Editor
+                </h3>
+                <span className="text-sm text-neutral-600">Write or edit your content</span>
+              </div>
             </div>
-            <div>
-              <h3 className="text-base font-medium text-gray-900">Content Editor</h3>
-              <span className="text-sm text-gray-500">Write or edit your content</span>
+
+            {/* Character counter */}
+            <div className="relative group">
+              <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+              <div className="relative flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/50 backdrop-blur-sm border border-neutral-200/60">
+                <div className={`h-2 w-2 rounded-full transition-colors duration-200
+                  ${charCount >= MIN_CHARS ? "bg-neutral-900" : "bg-neutral-300"}`} />
+                <span className="text-sm text-neutral-600">
+                  {charCount}/{MAX_CHARS}
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Character counter */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-100">
-            <div className={`h-2 w-2 rounded-full transition-colors duration-200
-              ${charCount >= MIN_CHARS ? "bg-green-400" : "bg-gray-300"}`} />
-            <span className="text-sm text-gray-600">
-              {charCount}/{MAX_CHARS}
-            </span>
-          </div>
-        </div>
-
-        {/* Textarea */}
-        <div className="relative">
-          <textarea
-            value={content}
-            onChange={handleLinkedInTextChange}
-            placeholder="What would you like to write about?"
-            className="w-full min-h-[200px] p-4 rounded-xl bg-white text-gray-700 text-sm resize-none outline-none
-              border border-gray-200/90
-              shadow-[inset_0_1px_1px_rgba(0,0,0,0.075),inset_0_2px_2px_rgba(0,0,0,0.025)]
-              focus:border-blue-200 focus:ring-2 focus:ring-blue-100/50
-              transition-all duration-200"
-          />
-        </div>
-
-        {/* Tone selector */}
-        <div className="space-y-3 pt-4 border-t border-gray-100">
-          <div className="flex items-center gap-2">
-            <h4 className="text-xs font-medium text-gray-700">Content Tone</h4>
-            <Tooltip delayDuration={100}>
-              <TooltipTrigger>
-                <HelpCircle className="h-3.5 w-3.5 text-gray-400" />
-              </TooltipTrigger>
-              <TooltipContent side="right" className="max-w-xs">
-                <p className="text-xs">Choose a tone that matches your audience and purpose</p>
-              </TooltipContent>
-            </Tooltip>
+          {/* Textarea */}
+          <div className="relative">
+            <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl"></div>
+            <textarea
+              value={content}
+              onChange={handleLinkedInTextChange}
+              placeholder="What would you like to write about?"
+              className="relative w-full min-h-[200px] p-4 rounded-xl bg-white/80 backdrop-blur-sm 
+                text-neutral-700 text-sm resize-none outline-none
+                border border-neutral-200/60
+                focus:border-neutral-300 focus:ring-2 focus:ring-neutral-200/50
+                transition-all duration-200"
+            />
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {Object.entries(toneConfig).map(([tone, config]) => (
-              <button
-                key={tone}
-                onClick={() => setPostTone(tone)}
-                className={`
-                  flex items-center gap-2 px-3 py-2 rounded-lg
-                  border transition-all duration-200 group
-                  ${
+          {/* Content Tone Section - Updated Design */}
+          <div className="space-y-3">
+            <label className="text-sm font-medium text-neutral-900">
+              Content Tone
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {toneOptions.map(({ tone, icon: Icon }) => (
+                <button
+                  key={tone}
+                  onClick={() => setPostTone(tone)}
+                  className={cn(
+                    "group relative",
+                    "transition-all duration-200"
+                  )}
+                >
+                  {/* Hover/Active Glowing Effects */}
+                  <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+                  
+                  <div className={cn(
+                    "relative flex items-center gap-2 p-3 rounded-xl border transition-all duration-200",
+                    "hover:bg-white/80",
                     postTone === tone
-                      ? "bg-primary/5 border-primary/20 shadow-sm"
-                      : "bg-gray-50 border-gray-200 hover:border-primary/20 hover:bg-primary/5"
-                  }
-                `}
-              >
-                <div className={`w-7 h-7 rounded-md flex items-center justify-center
-                  ${postTone === tone ? "bg-primary/10" : "bg-white border border-gray-200"}`}>
-                  {config.icon}
-                </div>
-                <div className="text-left">
-                  <span className="block text-xs font-medium">{tone}</span>
-                  <span className="text-[10px] text-gray-500">{config.description}</span>
-                </div>
-              </button>
-            ))}
+                      ? "bg-white border-neutral-300/80 shadow-sm"
+                      : "bg-white/50 border-neutral-200/60"
+                  )}>
+                    <div className={cn(
+                      "size-8 rounded-lg flex items-center justify-center transition-colors",
+                      postTone === tone
+                        ? "bg-gradient-to-br from-primary/10 to-primary/5 text-primary shadow-inner"
+                        : "bg-white/80 text-neutral-500 group-hover:text-primary/80"
+                    )}>
+                      <Icon className="size-4" />
+                    </div>
+                    <span className={cn(
+                      "text-sm font-medium",
+                      postTone === tone
+                        ? "text-neutral-900"
+                        : "text-neutral-600 group-hover:text-neutral-800"
+                    )}>
+                      {tone}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Generate button */}
-        <div className="flex justify-end pt-4 border-t border-gray-100">
-          <ShimmerButton
-            onClick={onGenerate}
-            disabled={!isValidLength || isGeneratingContent}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium
-                     bg-primary text-white shadow-sm
-                     hover:shadow-md transition-all duration-200"
-          >
-            {isGeneratingContent ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Generating...</span>
-              </>
-            ) : (
-              <>
-                <Wand2 className="h-4 w-4" />
-                <span>Generate Content</span>
-              </>
-            )}
-          </ShimmerButton>
+          {/* Generate button */}
+          <div className="flex justify-end pt-4 border-t border-neutral-200/60">
+            <button
+              onClick={onGenerate}
+              disabled={!isValidLength || isGeneratingContent}
+              className="group relative"
+            >
+              <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+              <div className="relative flex items-center gap-2 px-6 py-2.5 rounded-xl 
+                bg-neutral-900 text-white text-sm font-medium
+                hover:bg-neutral-800 disabled:bg-neutral-300
+                transition-all duration-200">
+                {isGeneratingContent ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Generating...</span>
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="h-4 w-4" />
+                    <span>Generate Content</span>
+                  </>
+                )}
+              </div>
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -128,52 +128,60 @@ const NavigationItem: React.FC<{
     <Link
       href={item.href}
       className={cn(
-        "flex items-center gap-x-2.5 px-2 py-1 rounded-xl cursor-pointer",
-        "transition-all duration-200 border",
-        isActive
-          ? "bg-white/60 border-primary/10 shadow-sm"
-          : "border-transparent hover:bg-white/40 hover:border-primary/5",
-        "group"
+        "group relative flex items-center gap-x-2.5 px-2 py-1 rounded-xl",
+        "transition-all duration-200",
+        isActive ? "z-10" : ""
       )}
     >
-      <div
-        className={cn(
-          "size-7 rounded-lg flex items-center justify-center",
-          "transition-all duration-200",
-          isActive
-            ? "bg-gradient-to-br from-primary/10 to-primary/5 text-primary shadow-inner"
-            : "text-gray-500 group-hover:text-primary/80"
-        )}
-      >
-        <item.icon className="h-3.5 w-3.5" />
-      </div>
-      <div className="flex flex-col gap-0.5 flex-1">
-        <span
-          className={cn(
+      {/* Hover/Active Glowing Effects */}
+      <div className="absolute -inset-[1px] bg-gradient-to-t from-neutral-200/0 via-neutral-200/10 to-neutral-200/0 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
+      <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
+      
+      {/* Content */}
+      <div className={cn(
+        "relative flex items-center gap-x-2.5 w-full",
+        "border border-neutral-200/60 rounded-xl p-2",
+        isActive 
+          ? "bg-white/80 backdrop-blur-sm border-neutral-300/80 shadow-sm" 
+          : "bg-white/50 hover:bg-white/80"
+      )}>
+        {/* Icon Container */}
+        <div className="relative">
+          <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-lg opacity-0 group-hover:opacity-100"></div>
+          <div className="relative w-8 h-8 rounded-lg bg-white/80 backdrop-blur-sm 
+            flex items-center justify-center border border-neutral-200/40">
+            <item.icon className={cn(
+              "w-4 h-4 transition-colors duration-200",
+              isActive ? "text-neutral-900" : "text-neutral-500 group-hover:text-neutral-700"
+            )} />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-0.5 flex-1">
+          <span className={cn(
             "text-sm font-medium leading-none",
-            isActive
-              ? "text-gray-900"
-              : "text-gray-600 group-hover:text-gray-800"
+            isActive 
+              ? "text-neutral-900" 
+              : "text-neutral-600 group-hover:text-neutral-800"
+          )}>
+            {item.name}
+          </span>
+          {item.description && (
+            <span className="text-xs text-neutral-500 group-hover:text-neutral-600 leading-tight">
+              {item.description}
+            </span>
           )}
-        >
-          {item.name}
-        </span>
-        {item.description && (
-          <span className="text-xs text-gray-400 group-hover:text-gray-500 leading-tight">
-            {item.description}
+        </div>
+
+        {item.badge && (
+          <span className={cn(
+            "px-1.5 py-0.5 text-[10px] font-medium rounded-full",
+            "bg-neutral-900 text-white"
+          )}>
+            {item.badge}
           </span>
         )}
       </div>
-      {item.badge && (
-        <span
-          className={cn(
-            "px-1.5 py-0.5 text-[10px] font-medium rounded-full",
-            item.badgeColor || "bg-primary/10 text-primary"
-          )}
-        >
-          {item.badge}
-        </span>
-      )}
     </Link>
   );
 };
@@ -183,7 +191,7 @@ const Navigation = () => {
   const pathname = usePathname();
   return (
     <nav>
-      <div className="space-y-0.5">
+      <div className="space-y-1">
         {navigationItems.map((item) => (
           <NavigationItem
             key={item.id}
@@ -268,17 +276,17 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   }, [router]);
 
   return (
-    <div className="w-[280px] sm:w-72 h-screen flex flex-col bg-white border-r border-gray-100 shadow-md relative z-10 flex-shrink-0">
+    <div className="relative w-[280px] sm:w-72 h-screen flex flex-col bg-white/50 backdrop-blur-sm border-r border-neutral-200/60 shadow-sm">
       {/* Close button for mobile */}
       <button
         onClick={onClose}
-        className="lg:hidden absolute top-4 right-4 p-2 rounded-lg hover:bg-gray-50"
+        className="lg:hidden absolute top-4 right-4 p-2 rounded-lg hover:bg-white/80 transition-colors"
       >
-        <X className="h-5 w-5 text-gray-500" />
+        <X className="h-5 w-5 text-neutral-500" />
       </button>
 
       {/* Header Section */}
-      <div className="shrink-0 border-b border-gray-100 p-6 space-y-4">
+      <div className="shrink-0 border-b border-neutral-200/60 p-6 space-y-4">
         {/* Logo */}
         <Link href="/" className="block transition-opacity hover:opacity-80">
           <Image
@@ -291,34 +299,38 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
         </Link>
 
         {/* Workspace Selector */}
-        <Button
-          variant="outline"
+        <button
           onClick={() => setIsManageModalOpen(true)}
-          className={cn(
-            "w-full justify-between text-gray-700",
-            "bg-white border-gray-200 hover:bg-gray-50",
-            "transition-all duration-200"
-          )}
+          className="group relative w-full"
         >
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-gray-500" />
-            <span className="text-sm font-medium">
-              {currentWorkspace?.name || "Select workspace..."}
-            </span>
+          <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+          <div className="relative flex items-center justify-between gap-2 px-3 py-2 rounded-xl
+            bg-white/50 backdrop-blur-sm border border-neutral-200/60
+            group-hover:bg-white/80 transition-all duration-200">
+            <div className="flex items-center gap-2">
+              <Users className="h-4 w-4 text-neutral-500" />
+              <span className="text-sm font-medium text-neutral-700">
+                {currentWorkspace?.name || "Select workspace..."}
+              </span>
+            </div>
+            <ChevronDown className="h-4 w-4 text-neutral-500" />
           </div>
-          <ChevronDown className="h-4 w-4 text-gray-500" />
-        </Button>
+        </button>
 
-        {/* Create Button */}
+        {/* Create Button - Updated to use GradientButton */}
         <GradientButton
-          variant="primary"
           onClick={handleCreateNew}
+          variant="primary"
           fullWidth
-          leftIcon={<Plus className="h-4 w-4" />}
-          kbd="Ctrl + N"
           className="shadow-sm hover:shadow-md transition-shadow"
         >
-          Create New
+          <div className="flex items-center justify-center gap-2">
+            <Plus className="h-4 w-4" />
+            <span>Create New</span>
+            <kbd className="ml-auto text-xs bg-black/20 px-1.5 py-0.5 rounded">
+              Ctrl + N
+            </kbd>
+          </div>
         </GradientButton>
       </div>
 
@@ -328,33 +340,35 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
       </div>
 
       {/* Footer Section */}
-      <div className="shrink-0 border-t border-gray-100">
+      <div className="shrink-0 border-t border-neutral-200/60">
         {/* AI Usage Section */}
         {subscription.isActive && (
-          <div className="px-6 py-4 border-b border-gray-100">
+          <div className="px-6 py-4 border-b border-neutral-200/60">
             <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <div
-                  className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 
-                              flex items-center justify-center shadow-inner"
-                >
-                  <Wand2 className="h-4 w-4 text-primary" />
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
+                  <div className="relative w-10 h-10 bg-white/80 backdrop-blur-sm rounded-xl 
+                    flex items-center justify-center border border-neutral-200/40">
+                    <Wand2 className="w-5 h-5 text-neutral-900" />
+                  </div>
                 </div>
-                <span className="text-sm font-medium text-gray-900">
+                <span className="text-sm font-medium text-neutral-900">
                   AI Credits
                 </span>
               </div>
-              <span className="text-xs font-medium text-gray-600 bg-gray-50 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full
+                bg-white/50 backdrop-blur-sm border border-neutral-200/60 text-neutral-600">
                 {formatTokens(wordUsage.used)} / {formatTokens(wordUsage.limit)}
               </span>
             </div>
-            <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-neutral-100 rounded-full overflow-hidden">
               <div
                 className={cn(
                   "h-full transition-all duration-300 ease-in-out",
                   wordUsage.percentage > 80
                     ? "bg-red-500"
-                    : "bg-gradient-to-r from-primary to-primary/80"
+                    : "bg-neutral-900"
                 )}
                 style={{ width: `${wordUsage.percentage}%` }}
               />
@@ -362,50 +376,29 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
           </div>
         )}
 
-        {/* Upgrade Button */}
-        {!subscription.isActive && (
-          <div className="px-6 py-4 border-b border-gray-100">
-            <GradientButton
-              variant="primary"
-              onClick={() => router.push("/pricing")}
-              fullWidth
-              leftIcon={<Sparkles className="h-4 w-4" />}
-              className="shadow-sm hover:shadow-md transition-shadow"
-            >
-              Upgrade Now
-            </GradientButton>
-          </div>
-        )}
-
-        {/* Subscription Info */}
-        {subscription.isActive && (
-          <div className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-            <SubscriptionInfo />
-          </div>
-        )}
-
         {/* User Profile Section */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer">
+            <button className="w-full px-6 py-4 flex items-center justify-between hover:bg-neutral-50 transition-colors">
               <div className="flex items-center gap-3">
-                <div
-                  className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 
-                              flex items-center justify-center text-gray-900 shadow-inner"
-                >
-                  {userinfo?.first_name?.charAt(0) || "U"}
+                <div className="relative">
+                  <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
+                  <div className="relative w-10 h-10 bg-white/80 backdrop-blur-sm rounded-xl 
+                    flex items-center justify-center border border-neutral-200/40 text-neutral-900">
+                    {userinfo?.first_name?.charAt(0) || "U"}
+                  </div>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-medium text-neutral-900">
                     {userinfo?.first_name || "User"}
                   </span>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-neutral-500">
                     {userinfo?.email || "user@email.com"}
                   </span>
                 </div>
               </div>
-              <ChevronDown className="h-4 w-4 text-gray-400" />
-            </div>
+              <ChevronDown className="h-4 w-4 text-neutral-400" />
+            </button>
           </DropdownMenuTrigger>
 
           <DropdownMenuContent

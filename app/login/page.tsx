@@ -6,7 +6,7 @@ import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Sparkles, CheckCircle2 } from "lucide-react";
+import { Sparkles, CheckCircle2, ArrowLeft } from "lucide-react";
 
 const LoginPage = () => {
   const { handleGoogleLogin, isLoading } = useAuth();
@@ -35,10 +35,9 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen w-full flex">
       {/* Left Side - Design/Branding Section */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-[#1E1B4B] via-[#312E81] to-[#4338CA]">
+      <div className="hidden lg:flex lg:w-1/2 relative bg-white">
         <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-5"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-950/50 to-indigo-950/50"></div>
-        <div className="relative w-full flex flex-col items-center justify-center p-12 text-white">
+        <div className="relative w-full flex flex-col items-center justify-center p-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -46,83 +45,90 @@ const LoginPage = () => {
             className="max-w-md text-center"
           >
             <div 
-              className="relative mb-8 mx-auto w-20 h-20 cursor-pointer"
+              className="relative mb-8 mx-auto w-20 h-20 cursor-pointer group"
               onClick={() => router.push('/')}
             >
-              <div className="absolute inset-0 rounded-full bg-white/5 animate-pulse"></div>
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-500/20 to-indigo-500/20 blur-xl"></div>
-              <Image
-                src="/single-logo.svg"
-                height={80}
-                width={80}
-                alt="BoostFury.com"
-                className="relative transition-transform duration-200 hover:scale-105"
-              />
+              <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/20 to-primary/0 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative size-20 rounded-xl bg-primary/5 flex items-center justify-center">
+                <Image
+                  src="/single-logo.svg"
+                  height={48}
+                  width={48}
+                  alt="BoostFury.com"
+                  className="transition-transform duration-200 group-hover:scale-105"
+                />
+              </div>
             </div>
 
-            <h1 className="text-4xl font-bold mb-6 leading-tight bg-gradient-to-r from-white to-white/90 bg-clip-text">
+            <h1 className="text-4xl font-bold mb-6 leading-tight text-gray-900">
               Create Professional LinkedIn Content
             </h1>
-            <p className="text-lg text-white/80 mb-12">
-              Transform your LinkedIn presence with AI-powered content creation
-              tools
+            <p className="text-lg text-gray-600 mb-12">
+              Transform your LinkedIn presence with AI-powered content creation tools
             </p>
 
-            <div className="space-y-4 text-left">
+            <div className="space-y-3">
               {features.map((feature, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.2 * (index + 1), duration: 0.5 }}
-                  className="flex items-center gap-4 bg-white/[0.08] hover:bg-white/[0.12] 
-                           rounded-xl p-4 backdrop-blur-sm border border-white/[0.05]
-                           transition-colors duration-200"
+                  className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 
+                           bg-white hover:bg-gray-50/80 transition-colors duration-200"
                 >
-                  <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-white/[0.15] 
-                               flex items-center justify-center
-                               shadow-inner shadow-white/[0.05]">
-                    <feature.icon className="w-4 h-4 text-indigo-200" />
+                  <div className="relative">
+                    <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/20 to-primary/0 rounded-lg blur-sm" />
+                    <div className="relative size-8 rounded-lg bg-primary/5 flex items-center justify-center">
+                      <feature.icon className="size-4 text-primary" />
+                    </div>
                   </div>
-                  <span className="text-white/90 font-medium">{feature.text}</span>
+                  <span className="text-gray-700 font-medium">{feature.text}</span>
                 </motion.div>
               ))}
             </div>
-
-            <div className="absolute bottom-12 left-12 w-24 h-24 
-                         bg-gradient-to-br from-purple-500/10 to-indigo-500/10 
-                         rounded-full blur-2xl"></div>
           </motion.div>
         </div>
       </div>
 
       {/* Right Side - Login Section */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gradient-to-br from-white to-gray-50">
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50/50">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="w-full max-w-md space-y-8 p-8 sm:p-10"
         >
+          {/* Back to Home Link */}
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors group mb-8"
+          >
+            <div className="relative">
+              <div className="absolute -inset-0.5 bg-gradient-to-br from-gray-200/20 to-gray-200/0 rounded-lg blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative size-8 rounded-lg bg-white flex items-center justify-center border border-gray-200">
+                <ArrowLeft className="size-4" />
+              </div>
+            </div>
+            Back to Home
+          </Link>
+
           <div className="text-center">
             <div className="lg:hidden mb-8">
-              <div 
-                className="flex justify-center cursor-pointer"
-                onClick={() => router.push('/')}
-              >
-                <div className="relative w-16 h-16">
-                  <div className="absolute inset-0 rounded-full bg-primary/5 animate-pulse"></div>
+              <div className="relative w-16 h-16 mx-auto cursor-pointer group">
+                <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/20 to-primary/0 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative size-16 rounded-xl bg-primary/5 flex items-center justify-center">
                   <Image
                     src="/logo.svg"
-                    height={64}
-                    width={64}
+                    height={40}
+                    width={40}
                     alt="BoostFury.com"
-                    className="relative transition-transform duration-200 hover:scale-105"
+                    className="transition-transform duration-200 group-hover:scale-105"
                   />
                 </div>
               </div>
             </div>
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-3">
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">
               Welcome Back
             </h2>
             <p className="text-gray-600">
@@ -130,7 +136,7 @@ const LoginPage = () => {
             </p>
           </div>
 
-          {/* Enhanced Login Form Section */}
+          {/* Login Form Section */}
           <div className="mt-12 space-y-6">
             <motion.div
               initial={{ y: 20, opacity: 0 }}
@@ -143,14 +149,14 @@ const LoginPage = () => {
                   <div className="w-full border-t border-gray-200"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-4 bg-gradient-to-br from-white to-gray-50 text-gray-500">
+                  <span className="px-4 bg-gray-50/50 text-gray-500">
                     Continue with
                   </span>
                 </div>
               </div>
 
               <div className="mt-6 flex justify-center">
-                <div className="transform hover:scale-105 transition-transform duration-200">
+                <div className="transform hover:scale-[1.02] transition-transform duration-200">
                   <GoogleLogin
                     onSuccess={onLoginSuccess}
                     onError={() => {
@@ -167,26 +173,20 @@ const LoginPage = () => {
             </motion.div>
           </div>
 
-          {/* Enhanced Footer Links */}
+          {/* Footer Links */}
           <div className="text-center space-y-4 mt-12">
-            <Link
-              href="/"
-              className="text-sm text-gray-600 hover:text-primary transition-colors"
-            >
-              Back to Home
-            </Link>
             <p className="text-xs text-gray-500 max-w-sm mx-auto">
               By signing in, you agree to our{" "}
               <Link
                 href="/terms"
-                className="text-primary hover:text-primary/80 underline decoration-primary/20 hover:decoration-primary/40"
+                className="text-primary hover:text-primary/80 transition-colors"
               >
                 Terms of Service
               </Link>{" "}
               and{" "}
               <Link
                 href="/privacy"
-                className="text-primary hover:text-primary/80 underline decoration-primary/20 hover:decoration-primary/40"
+                className="text-primary hover:text-primary/80 transition-colors"
               >
                 Privacy Policy
               </Link>

@@ -1,139 +1,93 @@
-import React, { useState } from "react";
-import { Button } from "../ui/button";
+'use client'
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 const LandingNavbar = () => {
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const offset = 80;
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+    }
+  };
+
   const navigation = [
-    { title: "Features", path: "#features" },
-    { title: "How It Works", path: "#how-it-works" },
-    { title: "Plans", path: "#plans" },
-    { title: "Testimonials", path: "#testimonials" },
+    { title: "Features", href: "features" },
+    { title: "How It Works", href: "how-it-works" },
+    { title: "Plans", href: "plans" },
+    { title: "FAQ", href: "faq" },
   ];
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50">
-      <div className="absolute inset-0 bg-background/50 backdrop-blur-xl border-b border-white/10" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.1),rgba(255,255,255,0))]" />
-      
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link href="/" className="flex-shrink-0 relative group">
-            <div className="absolute -inset-2 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-xl" />
-            <Image
-              src="/logo.svg"
-              height={200}
-              width={200}
-              alt="boostfury.com"
-              className="relative"
-            />
-          </Link>
+    <div className="fixed w-full z-50 flex justify-center top-4">
+      <div className="relative">
+        {/* Outer glows */}
+        <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-slate-200/40 to-transparent rounded-full"></div>
+        <div className="absolute -inset-[1px] bg-gradient-to-b from-transparent via-slate-200/40 to-transparent rounded-full"></div>
+        <div className="absolute -inset-[1px] blur-sm bg-gradient-to-r from-transparent via-slate-200/20 to-transparent rounded-full"></div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex flex-grow items-center justify-center">
-            <div className="flex items-center space-x-1">
-              {navigation.map((item, idx) => (
-                <a
-                  key={idx}
-                  href={item.path}
-                  className="relative px-4 py-2 text-sm font-medium text-textColor/80 hover:text-primary transition-colors duration-200 rounded-lg hover:bg-primary/5 group"
+        <nav className="relative bg-white/70 backdrop-blur-xl px-8 py-3 rounded-full border border-slate-200/50">
+          <div className="flex items-center justify-between gap-8">
+            {/* Logo */}
+            <div className="flex items-center space-x-2">
+              <div className="relative">
+                <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-slate-200/50 to-transparent rounded-lg"></div>
+                <div className="absolute -inset-[1px] blur-sm bg-gradient-to-r from-transparent via-slate-200/30 to-transparent rounded-lg"></div>
+                <div className="relative w-7 h-7 bg-slate-50/80 backdrop-blur-sm rounded-lg flex items-center justify-center border border-slate-200/50">
+                  <Image
+                    src="/single-logo.svg"
+                    height={20}
+                    width={20}
+                    alt="Logo"
+                    className="relative"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            {/* Navigation Items */}
+            <div className="flex items-center space-x-6">
+              {navigation.map((item, index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollToSection(item.href)}
+                  className="text-slate-600 hover:text-slate-900 transition-colors text-sm font-medium cursor-pointer"
                 >
                   {item.title}
-                  <span className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-primary/0 via-primary/70 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </a>
+                </button>
               ))}
+              
+              {/* Login Button */}
+              <div className="relative group">
+                <div className="absolute -inset-[1px] bg-gradient-to-r from-primary/20 via-primary/30 to-primary/20 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+                <div className="absolute -inset-[1px] blur-sm bg-gradient-to-r from-primary/10 via-primary/20 to-primary/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+                <Link 
+                  href="/login"
+                  className="relative px-5 py-2 rounded-lg bg-primary text-white text-sm font-medium 
+                           hover:bg-primary/90 transition-all duration-200 shadow-sm hover:shadow
+                           border border-primary/10"
+                >
+                  Login
+                </Link>
+              </div>
             </div>
           </div>
-
-          {/* Desktop CTA */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link href="/login">
-              <Button variant="ghost" className="font-medium">
-                Sign in
-              </Button>
-            </Link>
-            <Link href="/carousel-editor">
-              <Button className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-blue-600 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-200" />
-                <span className="relative">Get Started Free</span>
-              </Button>
-            </Link>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <button
-              className="relative inline-flex items-center justify-center p-2 rounded-xl text-textColor hover:text-primary hover:bg-primary/5 transition-colors duration-200"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? (
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              )}
-            </button>
-          </div>
-        </div>
+        </nav>
       </div>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="relative md:hidden">
-          <div className="px-4 pt-3 pb-6 space-y-2 bg-background/50 backdrop-blur-xl border-b border-white/10">
-            {navigation.map((item, idx) => (
-              <a
-                key={idx}
-                href={item.path}
-                className="block px-4 py-3 text-base font-medium text-textColor/80 hover:text-primary rounded-lg hover:bg-primary/5 transition-colors duration-200"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.title}
-              </a>
-            ))}
-            <div className="grid gap-2 pt-4">
-              <Link href="/login">
-                <Button variant="ghost" className="w-full justify-center font-medium">
-                  Sign in
-                </Button>
-              </Link>
-              <Link href="/carousel-editor">
-                <Button className="w-full justify-center relative group">
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-blue-600 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-200" />
-                  <span className="relative">Get Started Free</span>
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
-    </nav>
+      {/* Mobile menu would go here */}
+    </div>
   );
 };
 

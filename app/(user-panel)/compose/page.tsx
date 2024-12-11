@@ -21,13 +21,13 @@ import {
   Calendar,
   Send,
   Sun,
+  PenSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { PostPreview } from "@/components/content-create/PostPreview";
 import Link from "next/link";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GradientButton } from "@/components/ui/gradient-button";
+import { cn } from "@/lib/utils";
 
 const ComposePage = () => {
   const {
@@ -73,62 +73,70 @@ const ComposePage = () => {
   return (
     <div className="min-h-screen">
       {/* Header Section */}
-      <div className="border-b border-gray-200 bg-white sticky top-0 z-10">
-        <div className="px-8 py-6">
+      <div className="relative border-b border-neutral-200/60 bg-white/50 backdrop-blur-sm sticky top-0 z-10">
+        <div className="px-8 pt-8 pb-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold">
-                <span className="text-gray-900">Compose</span>{" "}
-                <span className="text-primary">Post</span>
-              </h1>
-              <p className="text-sm text-gray-500 mt-1">
-                Create and schedule your LinkedIn content
-              </p>
+            <div className="flex items-center gap-4">
+              {/* Icon Container */}
+              <div className="relative">
+                <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
+                <div className="absolute -inset-[1px] blur-sm bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl"></div>
+                <div className="relative w-12 h-12 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center border border-neutral-200/40 shadow-sm">
+                  <PenSquare className="w-5 h-5 text-neutral-900" />
+                </div>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-b from-black to-neutral-800 bg-clip-text text-transparent">
+                  Compose Post
+                </h1>
+                <p className="text-sm text-neutral-600 mt-1">
+                  Create and schedule your LinkedIn content
+                </p>
+              </div>
             </div>
 
-            {/* Profile Selector in Header */}
+            {/* Profile Selector */}
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2.5">
-                <div className="bg-primary/5 p-2 rounded-lg">
-                  <Linkedin className="w-4 h-4 text-primary" />
+                <div className="relative size-8 rounded-lg bg-primary/5 flex items-center justify-center">
+                  <Linkedin className="size-4 text-primary" />
                 </div>
                 <div className="hidden sm:block">
-                  <div className="text-sm font-medium text-gray-900">Publishing To</div>
+                  <div className="text-sm font-medium text-neutral-900">Publishing To</div>
                 </div>
               </div>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="gap-2 h-8 px-3 border-gray-200 hover:bg-gray-50/50"
-                  >
-                    {selectedProfile ? (
-                      <>
-                        <Image
-                          src={selectedProfile.avatarUrl}
-                          alt={selectedProfile.name}
-                          width={18}
-                          height={18}
-                          className="rounded-full"
-                        />
-                        <span className="text-sm font-medium text-gray-700">
-                          {selectedProfile.name}
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <Linkedin className="w-3.5 h-3.5" />
-                        <span className="text-sm">Select Profile</span>
-                      </>
-                    )}
-                    <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
-                  </Button>
+                  <button className="group relative">
+                    <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+                    <div className="relative flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/50 backdrop-blur-sm border border-neutral-200/60">
+                      {selectedProfile ? (
+                        <>
+                          <Image
+                            src={selectedProfile.avatarUrl}
+                            alt={selectedProfile.name}
+                            width={18}
+                            height={18}
+                            className="rounded-full"
+                          />
+                          <span className="text-sm font-medium text-neutral-900">
+                            {selectedProfile.name}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <Linkedin className="size-3.5" />
+                          <span className="text-sm">Select Profile</span>
+                        </>
+                      )}
+                      <ChevronDown className="size-3.5 text-neutral-400" />
+                    </div>
+                  </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[280px] p-2">
-                  <div className="px-3 py-2 mb-1 border-b border-gray-100">
-                    <h4 className="text-sm font-medium text-gray-900">
+                  <div className="px-3 py-2 mb-1 border-b border-neutral-100">
+                    <h4 className="text-sm font-medium text-neutral-900">
                       LinkedIn Profiles
                     </h4>
                   </div>
@@ -137,14 +145,12 @@ const ComposePage = () => {
                       <DropdownMenuItem
                         key={profile.id}
                         onClick={() => handleProfileSelect(profile)}
-                        className={`
-                          flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer
-                          ${
-                            selectedProfile?.id === profile.id
-                              ? "bg-primary/5 text-primary"
-                              : "hover:bg-gray-50"
-                          }
-                        `}
+                        className={cn(
+                          "flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer",
+                          selectedProfile?.id === profile.id
+                            ? "bg-primary/5 text-primary"
+                            : "hover:bg-neutral-50"
+                        )}
                       >
                         <div className="relative">
                           <Image
@@ -154,7 +160,7 @@ const ComposePage = () => {
                             height={28}
                             className="rounded-full ring-2 ring-white"
                           />
-                          <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full ring-2 ring-white" />
+                          <div className="absolute -bottom-0.5 -right-0.5 size-2 bg-green-500 rounded-full ring-2 ring-white" />
                         </div>
                         <span className="text-sm font-medium">
                           {profile.name}
@@ -163,20 +169,19 @@ const ComposePage = () => {
                     ))
                   ) : (
                     <div className="p-6 text-center">
-                      <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center mx-auto mb-3">
-                        <Linkedin className="h-5 w-5 text-primary" />
+                      <div className="size-10 rounded-xl bg-primary/5 flex items-center justify-center mx-auto mb-3">
+                        <Linkedin className="size-5 text-primary" />
                       </div>
-                      <h3 className="text-sm font-medium text-gray-900 mb-2">
+                      <h3 className="text-sm font-medium text-neutral-900 mb-2">
                         No Profiles Connected
                       </h3>
                       <Link href="/accounts">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-8 px-3 text-sm border-primary/20 text-primary hover:bg-primary/5"
-                        >
-                          Connect LinkedIn
-                        </Button>
+                        <button className="group relative">
+                          <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+                          <div className="relative px-3 py-1.5 text-sm font-medium text-primary rounded-lg border border-primary/20 hover:bg-primary/5 transition-colors">
+                            Connect LinkedIn
+                          </div>
+                        </button>
                       </Link>
                     </div>
                   )}
@@ -187,37 +192,38 @@ const ComposePage = () => {
         </div>
       </div>
 
-      <div className="px-8 py-6 max-w-[1920px] mx-auto">
+      <div className="px-8 py-8 max-w-[1920px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr,400px] gap-6">
           {/* Left Column */}
           <div className="space-y-6">
-            {/* Remove old Profile Selector Card */}
             <ComposeSection
-              content={content}
-              setContent={setContent}
-              isGenerating={isGenerating}
-              setIsGenerating={setIsGenerating}
-              isScheduleModalOpen={isScheduleModalOpen}
-              setIsScheduleModalOpen={setIsScheduleModalOpen}
-              scheduledDate={scheduledDate}
-              onSchedule={handleSchedule}
-              isEditing={isEditing}
-              postDetails={postDetails}
-              onPostNow={handlePostNow}
-              isPosting={isPosting}
-              selectedLinkedInProfile={selectedProfile}
-              onProfileSelect={setSelectedProfile}
-              isAutoSaving={isAutoSaving}
-              imageUrls={imageUrls}
-              onImageUrlsChange={handleImageUrlsChange}
-              postId={postDetails?.id || ""}
-              handleImageUpload={handleImageUpload}
-              handleImageDelete={handleImageDelete}
-              handleImageReorder={handleImageReorder}
-              isUploading={isUploading}
-              imageOrder={images.map((img) => img.id)}
-              onAddToQueue={handleAddToQueue}
-              isAddingToQueue={isAddingToQueue}
+              {...{
+                content,
+                setContent,
+                isGenerating,
+                setIsGenerating,
+                isScheduleModalOpen,
+                setIsScheduleModalOpen,
+                scheduledDate,
+                onSchedule: handleSchedule,
+                isEditing,
+                postDetails,
+                onPostNow: handlePostNow,
+                isPosting,
+                selectedLinkedInProfile: selectedProfile,
+                onProfileSelect: setSelectedProfile,
+                isAutoSaving,
+                imageUrls,
+                onImageUrlsChange: handleImageUrlsChange,
+                postId: postDetails?.id || "",
+                handleImageUpload,
+                handleImageDelete,
+                handleImageReorder,
+                isUploading,
+                imageOrder: images.map((img) => img.id),
+                onAddToQueue: handleAddToQueue,
+                isAddingToQueue,
+              }}
             />
           </div>
 

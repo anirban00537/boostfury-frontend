@@ -1,163 +1,241 @@
 import Link from "next/link";
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowRightIcon, Sparkles } from "lucide-react";
+import { ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import HeroVideoDialog from "../ui/hero-video-dialog";
 
-const heroTextVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.8,
-      ease: "easeOut",
-      staggerChildren: 0.2,
-    },
-  },
-};
+const BackgroundPattern = () => {
+  return (
+    <>
+      {/* Subtle Animated Grid */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-[0.02]" />
+        <motion.div
+          className="absolute inset-0"
+          style={{
+            background: "radial-gradient(circle at center, transparent 0%, white 70%)",
+          }}
+          animate={{
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      </div>
 
-const fadeInUpVariant = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: "easeOut" }
-  }
-};
+      {/* Floating Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute size-[2px] rounded-full"
+            style={{
+              background: i % 2 === 0 ? "#0A66C2" : "#000000",
+              opacity: 0.07,
+            }}
+            animate={{
+              y: [-20, 20, -20],
+              x: [-10, 10, -10],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 5 + Math.random() * 3,
+              repeat: Infinity,
+              delay: i * 0.2,
+              ease: "easeInOut",
+            }}
+            initial={{
+              x: Math.random() * window.innerWidth,
+              y: Math.random() * window.innerHeight,
+            }}
+          />
+        ))}
+      </div>
 
-const stats = [
-  { number: "10k+", label: "Active Users" },
-  { number: "93%", label: "Engagement Rate" },
-  { number: "2.5M", label: "Posts Generated" },
-];
+      {/* Gradient Orbs */}
+      <div className="absolute inset-0">
+        <motion.div
+          className="absolute size-[800px] rounded-full opacity-[0.07]"
+          style={{
+            background: "radial-gradient(circle at center, #0A66C2 0%, transparent 70%)",
+            top: '10%',
+            left: '30%',
+            transform: 'translate(-50%, -50%)',
+          }}
+          animate={{
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="absolute size-[600px] rounded-full opacity-[0.05]"
+          style={{
+            background: "radial-gradient(circle at center, #000000 0%, transparent 70%)",
+            bottom: '10%',
+            right: '20%',
+            transform: 'translate(50%, 50%)',
+          }}
+          animate={{
+            scale: [1.1, 1, 1.1],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2,
+          }}
+        />
+      </div>
+    </>
+  );
+};
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center py-20 overflow-hidden bg-white">
-      {/* Enhanced gradient background */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(var(--primary-rgb),0.15),rgba(255,255,255,0))]" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(var(--primary-rgb),0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(var(--primary-rgb),0.05)_1px,transparent_1px)] bg-[size:60px_60px]" />
-      <div className="absolute right-0 top-0 -z-10 h-[500px] w-[500px] bg-primary/20 opacity-20 blur-[100px]" />
-      <div className="absolute left-0 bottom-0 -z-10 h-[500px] w-[500px] bg-primary/20 opacity-20 blur-[100px]" />
-      
-      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          {/* Top Badge */}
-          <motion.div 
-            variants={fadeInUpVariant}
-            initial="hidden"
-            animate="visible"
-            className="flex justify-center mb-8"
+    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-gray-50/50 to-white">
+        <BackgroundPattern />
+      </div>
+
+      {/* Content */}
+      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-20">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Main Heading */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="relative mb-8"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-primary/20 shadow-[0_2px_8px_rgba(var(--primary-rgb),0.1)]">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">
-                New: AI Post Generator v2.0
+            <h1 className="text-[clamp(2.5rem,6vw,4rem)] leading-[1.2] font-bold tracking-tight">
+              <span className="relative bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent">
+                Create Viral{" "}
               </span>
-            </div>
+              <span className="text-[#0A66C2] relative">
+                LinkedIn{" "}
+                <motion.div
+                  className="absolute -inset-2 bg-[#0A66C2]/5 blur-xl rounded-full"
+                  animate={{ opacity: [0.3, 0.6, 0.3] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                />
+              </span>
+              <span className="relative bg-gradient-to-b from-gray-800 via-gray-700 to-gray-600 bg-clip-text text-transparent">
+                Content in Minutes{" "}
+              </span>
+              <span className="text-primary font-semibold relative">
+                with AI
+                <motion.div
+                  className="absolute -inset-2 bg-primary/5 blur-xl rounded-full"
+                  animate={{ opacity: [0.3, 0.6, 0.3] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                />
+              </span>
+            </h1>
           </motion.div>
 
-          {/* Main Content */}
-          <div className="text-center mb-12">
-            <motion.h1
-              variants={heroTextVariants}
-              initial="hidden"
-              animate="visible"
-              className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 bg-gradient-to-b from-gray-900 to-gray-600 bg-clip-text text-transparent"
-            >
-              Create{" "}
-              <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary">
-                Viral
-              </span>{" "}
-              LinkedIn Content in Minutes
-            </motion.h1>
-
-            <motion.p
-              variants={fadeInUpVariant}
-              initial="hidden"
-              animate="visible"
-              className="max-w-2xl mx-auto text-xl text-gray-600 mb-8"
-            >
-              Transform your LinkedIn presence with AI-generated content that drives engagement. Save hours of work and{" "}
-              <span className="font-semibold text-primary">10x your reach</span>.
-            </motion.p>
-
-            {/* CTAs */}
-            <motion.div
-              variants={fadeInUpVariant}
-              initial="hidden"
-              animate="visible"
-              className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
-            >
-              <Link 
-                href="/ai-writer" 
-                className="group inline-flex items-center justify-center relative"
-              >
-                <div className="absolute -inset-[2px] bg-gradient-to-r from-primary to-primary/80 rounded-xl blur opacity-70 group-hover:opacity-100 transition duration-200" />
-                <div className="relative px-8 py-4 bg-primary rounded-lg font-medium text-white flex items-center gap-2 transition-transform duration-200 group-hover:scale-[1.02]">
-                  Start Creating Free
-                  <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </Link>
-
-              <HeroVideoDialog
-                className="inline-flex"
-                animationStyle="from-center"
-                videoSrc="https://www.youtube.com/embed/4pgUovPcVBM"
-                thumbnailSrc="/demo.png"
-                thumbnailAlt="Watch demo"
-                buttonClassName="group"
-                buttonContent={
-                  <div className="px-8 py-4 rounded-lg border border-gray-200 bg-white shadow-sm flex items-center gap-2 transition-transform duration-200 group-hover:scale-[1.02] hover:border-primary/20">
-                    <div className="w-4 h-4 rounded-full bg-primary/10 flex items-center justify-center">
-                      <div className="w-0 h-0 border-t-[4px] border-t-transparent border-l-[6px] border-l-primary border-b-[4px] border-b-transparent ml-0.5" />
-                    </div>
-                    <span className="text-gray-700">Watch Demo</span>
-                  </div>
-                }
-              />
-            </motion.div>
-
-            {/* Stats */}
-            <motion.div
-              variants={fadeInUpVariant}
-              initial="hidden"
-              animate="visible"
-              className="grid grid-cols-3 gap-8 max-w-3xl mx-auto mb-16"
-            >
-              {stats.map((stat, index) => (
-                <div key={index} className="text-center">
-                  <div className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                    {stat.number}
-                  </div>
-                  <div className="text-sm text-gray-500">{stat.label}</div>
-                </div>
-              ))}
-            </motion.div>
-
-            {/* Product Preview */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
-            >
-              <div className="relative rounded-xl overflow-hidden bg-white p-2 border border-gray-200/50 shadow-[0_8px_32px_rgba(0,0,0,0.06)]">
-                <Image
-                  src="/demo.png"
-                  alt="BoostFury LinkedIn Content Creator"
-                  width={1200}
-                  height={800}
-                  className="rounded-lg shadow-sm"
-                  priority
+          {/* Enhanced Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-xl md:text-2xl text-gray-600 mb-14 max-w-3xl mx-auto font-medium"
+          >
+            Transform your LinkedIn presence with AI-powered content that{" "}
+            <span className="relative inline-block group">
+              <span className="relative z-10 font-bold text-gray-900">
+                drives engagement
+                <motion.div
+                  className="absolute bottom-0 left-0 h-[6px] w-full bg-[#0A66C2]/10 -rotate-1"
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 0.8, delay: 1 }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-white/5 to-transparent pointer-events-none" />
+              </span>
+            </span>
+            . Save hours of work and generate content that{" "}
+            <span className="relative inline-block group">
+              <span className="relative z-10 font-bold text-gray-900">
+                converts
+                <motion.div
+                  className="absolute bottom-0 left-0 h-[6px] w-full bg-primary/10 -rotate-1"
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 0.8, delay: 1.5 }}
+                />
+              </span>
+            </span>
+            .
+          </motion.p>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="flex flex-col sm:flex-row gap-5 justify-center"
+          >
+            {/* Start Creating Button */}
+            <Link
+              href="/ai-writer"
+              className="group inline-flex items-center justify-center relative"
+            >
+              <div className="absolute -inset-[2px] bg-gradient-to-r from-gray-900 via-gray-800 to-gray-800 rounded-xl blur-sm opacity-75 group-hover:opacity-100 transition duration-200" />
+              <div className="relative px-8 py-4 bg-gray-900 rounded-xl font-semibold text-white flex items-center gap-2 transition-all duration-200 group-hover:scale-[1.02]">
+                <span>Start Creating Free</span>
+                <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </div>
-            </motion.div>
-          </div>
+            </Link>
+
+            {/* Watch Demo Button */}
+            <HeroVideoDialog
+              className="inline-flex"
+              animationStyle="from-center"
+              videoSrc="https://www.youtube.com/embed/4pgUovPcVBM"
+              thumbnailSrc="/demo.png"
+              thumbnailAlt="Watch demo"
+              buttonClassName="group"
+              buttonContent={
+                <div className="relative">
+                  <div className="absolute -inset-[2px] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded-xl opacity-75 group-hover:opacity-100 transition duration-200" />
+                  <div className="relative px-8 py-4 rounded-xl bg-white border border-gray-200 text-gray-900 font-semibold hover:bg-gray-50/80 transition-colors flex items-center gap-2">
+                    <div className="size-5 rounded-full bg-gray-100/80 flex items-center justify-center">
+                      <div className="w-0 h-0 border-t-[5px] border-t-transparent border-l-[8px] border-l-gray-900 border-b-[5px] border-b-transparent ml-0.5" />
+                    </div>
+                    Watch Demo
+                  </div>
+                </div>
+              }
+            />
+          </motion.div>
         </div>
+      </div>
+
+      {/* Enhanced bottom decoration */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <motion.div 
+          className="h-px"
+          style={{
+            background: "linear-gradient(to right, transparent, rgb(0 0 0 / 0.1), transparent)"
+          }}
+          animate={{
+            opacity: [0.1, 0.2, 0.1],
+            scaleX: [0.9, 1, 0.9],
+          }}
+          transition={{
+            duration: 5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
       </div>
     </section>
   );

@@ -103,110 +103,112 @@ const ContentCreationTools: React.FC = () => {
   }, [content, ideas, generatedPost, isGeneratingLinkedinPosts]);
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.01)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_40%,transparent_100%)]" />
+
+      <div className="relative px-4 sm:px-6 lg:px-8 py-12">
+        {/* Centered Header */}
         <Header />
 
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          {/* Tab List */}
-          <div className="flex flex-col gap-6 mb-8">
-            <div className="relative w-full">
-              <TabsList className="w-[400px] grid grid-cols-2 p-0.5 bg-gray-100/80 rounded-2xl">
-                {tabItems.map((item) => (
-                  <TabsTrigger
-                    key={item.value}
-                    value={item.value}
-                    className={cn(
-                      "relative flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-200",
-                      "outline-none ring-0",
-                      item.value === activeTab
-                        ? "bg-white text-gray-900 shadow-[inset_0_1px_0_0_rgba(255,255,255,1),0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)] border border-gray-200/80"
-                        : "text-gray-500 hover:text-gray-700 hover:bg-white/40"
-                    )}
-                  >
-                    <div className="size-4 flex items-center justify-center">
-                      <item.icon className="size-3.5" />
-                    </div>
-
-                    <span className="text-[13px] font-medium">
-                      {item.label}
-                    </span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+        {/* Content Area with Max Width */}
+        <div className=" mx-auto">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            {/* Tab List - Centered */}
+            <div className="flex flex-col items-center gap-6 mb-8">
+              <div className="relative">
+                <TabsList className="w-[400px] grid grid-cols-2 p-0.5 bg-neutral-100/80 rounded-2xl">
+                  {tabItems.map((item) => (
+                    <TabsTrigger
+                      key={item.value}
+                      value={item.value}
+                      className={cn(
+                        "relative flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-200",
+                        "outline-none ring-0",
+                        item.value === activeTab
+                          ? "bg-white text-neutral-900 shadow-[inset_0_1px_0_0_rgba(255,255,255,1),0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)] border border-neutral-200/80"
+                          : "text-neutral-500 hover:text-neutral-700 hover:bg-white/40"
+                      )}
+                    >
+                      <div className="size-4 flex items-center justify-center">
+                        <item.icon className="size-3.5" />
+                      </div>
+                      <span className="text-[13px] font-medium">{item.label}</span>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
             </div>
-          </div>
 
-          {/* Content Area */}
-          <div
-            className={cn(
+            {/* Content Area */}
+            <div className={cn(
               "grid gap-8",
               activeTab === "write"
                 ? "grid-cols-1 lg:grid-cols-2"
                 : "grid-cols-1"
-            )}
-          >
-            <div className={activeTab === "ideas" ? "col-span-full" : ""}>
-              <TabsContent value="write" className="mt-0">
-                <motion.div
-                  variants={fadeInUpVariant}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <ContentInput
-                    {...{
-                      contentSource,
-                      isGenerating: isGeneratingLinkedinPosts,
-                      handleGenerate: handleGenerateLinkedIn,
-                      handleTextChange: handleLocalTextChange,
-                      setContent,
-                      isGeneratingLinkedinPosts,
-                      handleGenerateLinkedIn,
-                      handleLinkedInTextChange,
-                      content,
-                      postTone,
-                      setPostTone,
-                    }}
-                  />
-                </motion.div>
-              </TabsContent>
-
-              <TabsContent value="ideas" className="mt-0">
-                <motion.div
-                  variants={fadeInUpVariant}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <ContentIdeas
-                    loading={loading}
-                    ideas={ideas}
-                    handleGenerateTopic={handleGenerateIdeas}
-                    handleTopicSelect={handleTopicSelect}
-                  />
-                </motion.div>
-              </TabsContent>
-            </div>
-
-            {activeTab === "write" && (
-              <div className="w-full">
-                <AnimatePresence mode="wait">
+            )}>
+              <div className={activeTab === "ideas" ? "col-span-full" : ""}>
+                <TabsContent value="write" className="mt-0">
                   <motion.div
-                    key={activeTab}
                     variants={fadeInUpVariant}
                     initial="hidden"
                     animate="visible"
                   >
-                    <AIWritingPreview
-                      isGenerating={isGeneratingLinkedinPosts}
-                      generatedPost={generatedPost}
-                      title="AI Generated LinkedIn Post"
+                    <ContentInput
+                      {...{
+                        contentSource,
+                        isGenerating: isGeneratingLinkedinPosts,
+                        handleGenerate: handleGenerateLinkedIn,
+                        handleTextChange: handleLocalTextChange,
+                        setContent,
+                        isGeneratingLinkedinPosts,
+                        handleGenerateLinkedIn,
+                        handleLinkedInTextChange,
+                        content,
+                        postTone,
+                        setPostTone,
+                      }}
                     />
                   </motion.div>
-                </AnimatePresence>
+                </TabsContent>
+
+                <TabsContent value="ideas" className="mt-0">
+                  <motion.div
+                    variants={fadeInUpVariant}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <ContentIdeas
+                      loading={loading}
+                      ideas={ideas}
+                      handleGenerateTopic={handleGenerateIdeas}
+                      handleTopicSelect={handleTopicSelect}
+                    />
+                  </motion.div>
+                </TabsContent>
               </div>
-            )}
-          </div>
-        </Tabs>
+
+              {activeTab === "write" && (
+                <div className="w-full">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={activeTab}
+                      variants={fadeInUpVariant}
+                      initial="hidden"
+                      animate="visible"
+                    >
+                      <AIWritingPreview
+                        isGenerating={isGeneratingLinkedinPosts}
+                        generatedPost={generatedPost}
+                        title="AI Generated LinkedIn Post"
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              )}
+            </div>
+          </Tabs>
+        </div>
       </div>
 
       {/* Ref for scrolling */}

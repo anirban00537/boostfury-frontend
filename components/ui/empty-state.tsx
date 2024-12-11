@@ -2,6 +2,7 @@ import React from "react";
 import { LucideIcon } from "lucide-react";
 import { Button } from "./button";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface EmptyStateProps {
   icon: LucideIcon;
@@ -30,65 +31,86 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4">
-      {/* Icon Container */}
-      <div className="w-16 h-16 mb-6">
-        <div className="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center">
-          <Icon className="w-8 h-8 text-primary" />
+      {/* Icon Container with Glassmorphism */}
+      <div className="relative mb-8 group">
+        <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/50 via-neutral-300/50 to-neutral-200/50 rounded-xl blur-md group-hover:blur-lg transition-all duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-r from-neutral-50 via-white to-neutral-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        
+        <div className="relative w-20 h-20 bg-white backdrop-blur-xl rounded-xl 
+          flex items-center justify-center border border-neutral-200/60 
+          shadow-lg shadow-neutral-200/50 group-hover:shadow-xl 
+          transition-all duration-500">
+          <Icon className="w-10 h-10 text-neutral-900" />
         </div>
       </div>
 
       {/* Text Content */}
-      <h3 className="text-xl font-semibold text-gray-900 mb-2 text-center">
-        {title}
-      </h3>
-      <p className="text-gray-500 text-center max-w-md mb-8">
-        {description}
-      </p>
+      <div className="text-center space-y-2 mb-8">
+        <h3 className="text-2xl font-bold bg-gradient-to-b from-neutral-900 via-neutral-800 to-neutral-700 bg-clip-text text-transparent">
+          {title}
+        </h3>
+        <p className="text-neutral-600 max-w-md">
+          {description}
+        </p>
+      </div>
 
       {/* Action Buttons */}
       {(primaryAction || secondaryAction) && (
-        <div className="flex gap-4">
+        <div className="flex gap-3">
           {primaryAction && (
             primaryAction.onClick ? (
-              <Button
+              <button
                 onClick={primaryAction.onClick}
-                className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg
-                          flex items-center gap-2 shadow-sm hover:shadow transition-all duration-200"
+                className="group relative"
               >
-                {primaryAction.icon && <primaryAction.icon className="w-4 h-4" />}
-                {primaryAction.label}
-              </Button>
-            ) : (
-              <Link href={primaryAction.href}>
-                <Button
-                  className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg
-                            flex items-center gap-2 shadow-sm hover:shadow transition-all duration-200"
-                >
+                <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+                <div className="relative flex items-center gap-2 px-6 py-2.5 rounded-xl 
+                  bg-neutral-900 text-white text-sm font-medium
+                  hover:bg-neutral-800 transition-all duration-200">
                   {primaryAction.icon && <primaryAction.icon className="w-4 h-4" />}
                   {primaryAction.label}
-                </Button>
+                </div>
+              </button>
+            ) : (
+              <Link href={primaryAction.href}>
+                <div className="group relative">
+                  <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+                  <div className="relative flex items-center gap-2 px-6 py-2.5 rounded-xl 
+                    bg-neutral-900 text-white text-sm font-medium
+                    hover:bg-neutral-800 transition-all duration-200">
+                    {primaryAction.icon && <primaryAction.icon className="w-4 h-4" />}
+                    {primaryAction.label}
+                  </div>
+                </div>
               </Link>
             )
           )}
+
           {secondaryAction && (
             secondaryAction.onClick ? (
-              <Button
-                variant="outline"
+              <button
                 onClick={secondaryAction.onClick}
-                className="px-6 py-2 rounded-lg flex items-center gap-2"
+                className="group relative"
               >
-                {secondaryAction.icon && <secondaryAction.icon className="w-4 h-4" />}
-                {secondaryAction.label}
-              </Button>
-            ) : (
-              <Link href={secondaryAction.href}>
-                <Button
-                  variant="outline"
-                  className="px-6 py-2 rounded-lg flex items-center gap-2"
-                >
+                <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+                <div className="relative flex items-center gap-2 px-6 py-2.5 rounded-xl 
+                  bg-white/50 backdrop-blur-sm border border-neutral-200/60 text-sm font-medium text-neutral-900
+                  hover:bg-white/80 hover:border-neutral-300/80 transition-all duration-200">
                   {secondaryAction.icon && <secondaryAction.icon className="w-4 h-4" />}
                   {secondaryAction.label}
-                </Button>
+                </div>
+              </button>
+            ) : (
+              <Link href={secondaryAction.href}>
+                <div className="group relative">
+                  <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+                  <div className="relative flex items-center gap-2 px-6 py-2.5 rounded-xl 
+                    bg-white/50 backdrop-blur-sm border border-neutral-200/60 text-sm font-medium text-neutral-900
+                    hover:bg-white/80 hover:border-neutral-300/80 transition-all duration-200">
+                    {secondaryAction.icon && <secondaryAction.icon className="w-4 h-4" />}
+                    {secondaryAction.label}
+                  </div>
+                </div>
               </Link>
             )
           )}

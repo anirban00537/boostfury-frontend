@@ -171,67 +171,48 @@ export function ScheduleModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[600px] h-[700px] p-0 flex flex-col overflow-hidden">
+      <DialogContent className="max-w-[600px] h-[700px] p-0 flex flex-col overflow-hidden bg-white">
         {/* Fixed Header */}
-        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between shrink-0">
-          <div className="space-y-1">
-            <h2 className="text-xl font-semibold text-gray-900">Schedule Post</h2>
-            <p className="text-sm text-gray-500">Choose when your post will be published</p>
+        <div className="px-6 py-4 border-b border-gray-100">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <h2 className="text-xl font-semibold text-gray-900">Schedule Post</h2>
+              <p className="text-sm text-gray-500">
+                Choose when your post will be published
+              </p>
+            </div>
+            <button
+              onClick={onClose}
+              className="size-8 rounded-lg flex items-center justify-center hover:bg-gray-50"
+            >
+              <X className="size-4 text-gray-400" />
+            </button>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 rounded-full hover:bg-gray-100"
-            onClick={onClose}
-          >
-            <X className="h-4 w-4 text-gray-500" />
-          </Button>
         </div>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto px-6  space-y-6">
+        <div className="flex-1 overflow-y-auto px-6 space-y-6 py-6">
           {/* Timezone Section */}
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Globe className="w-4 h-4 text-primary" />
+              <Globe className="size-4 text-gray-400" />
               <span className="text-sm font-medium text-gray-900">Timezone</span>
             </div>
             
-            <Select
-              value={timezone}
-              onValueChange={setTimezone}
-            >
-              <SelectTrigger className="w-full h-11 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
+            <Select value={timezone} onValueChange={setTimezone}>
+              <SelectTrigger className="w-full h-10 bg-white border border-gray-200 rounded-lg">
                 <SelectValue placeholder="Select timezone" className="text-sm" />
               </SelectTrigger>
-              <SelectContent 
-                className="max-h-[320px] w-[320px]" 
-                align="start"
-                position="popper"
-              >
-                <div className="sticky top-0 bg-white px-2 py-1.5 mb-1 z-10 border-b border-gray-100">
-                  <div className="flex items-center gap-2">
-                    <Globe className="w-4 h-4 text-primary shrink-0" />
-                    <span className="text-xs font-medium text-gray-500">
-                      Current timezone
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="overflow-y-auto max-h-[280px] px-1">
-                  {timezoneOptions.map((tz) => (
-                    <SelectItem
-                      key={tz.value}
-                      value={tz.value}
-                      className="rounded-md text-sm py-2.5 px-2 my-0.5 cursor-pointer data-[highlighted]:bg-primary/5 data-[highlighted]:text-primary"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Globe className="w-3.5 h-3.5 text-gray-400" />
-                        <span className="truncate">{tz.label}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </div>
+              <SelectContent className="max-h-[320px]">
+                {timezoneOptions.map((tz) => (
+                  <SelectItem
+                    key={tz.value}
+                    value={tz.value}
+                    className="text-sm py-2.5"
+                  >
+                    {tz.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -239,93 +220,68 @@ export function ScheduleModal({
           {/* Quick Schedule Section */}
           <div className="space-y-3">
             <h3 className="text-sm font-medium text-gray-900">Quick Schedule</h3>
-            <div className="relative group">
-              {/* Left Scroll Button */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className={cn(
-                  "absolute left-0 top-1/2 -translate-y-1/2 z-20 h-8 w-8 rounded-full",
-                  "bg-white/90 hover:bg-white shadow-md",
-                  "opacity-0 group-hover:opacity-100 transition-opacity",
-                  "disabled:opacity-0 hover:text-primary"
-                )}
+            <div className="relative">
+              {/* Scroll Buttons */}
+              <button
                 onClick={() => handleScroll('left')}
-                disabled={scrollContainerRef.current?.scrollLeft === 0}
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10"
               >
-                <ChevronLeft className="h-5 w-5" />
-              </Button>
+                <div className="size-8 rounded-lg flex items-center justify-center bg-white border border-gray-200 hover:bg-gray-50">
+                  <ChevronLeft className="size-4 text-gray-400" />
+                </div>
+              </button>
 
-              {/* Right Scroll Button */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className={cn(
-                  "absolute right-0 top-1/2 -translate-y-1/2 z-20 h-8 w-8 rounded-full",
-                  "bg-white/90 hover:bg-white shadow-md",
-                  "opacity-0 group-hover:opacity-100 transition-opacity",
-                  "disabled:opacity-0 hover:text-primary"
-                )}
-                onClick={() => handleScroll('right')}
-                disabled={
-                  scrollContainerRef.current
-                    ? scrollContainerRef.current.scrollLeft + scrollContainerRef.current.clientWidth >=
-                      scrollContainerRef.current.scrollWidth
-                    : false
-                }
-              >
-                <ChevronRight className="h-5 w-5" />
-              </Button>
-
-              {/* Gradient Shadows */}
-              <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-              <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-              
-              {/* Scrollable Container */}
               <div 
                 ref={scrollContainerRef}
                 className="overflow-x-auto scrollbar-hide scroll-smooth"
               >
                 <div className="flex gap-2 px-8 pb-2 min-w-min">
                   {getQuickOptions().map((option, index) => (
-                    <Button
+                    <button
                       key={index}
-                      variant="outline"
-                      className={cn(
-                        "flex-none px-4 py-2 h-auto rounded-full border-primary/20",
-                        "hover:bg-primary/5 hover:text-primary hover:border-primary/30",
-                        "transition-all duration-200 min-w-[100px]",
-                        selectedTime && date && 
-                        format(option.date, 'HH:mm') === selectedTime &&
-                        format(option.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
-                          ? "bg-primary/5 text-primary border-primary/30"
-                          : "bg-white text-gray-600"
-                      )}
                       onClick={() => {
                         setDate(option.date);
                         setSelectedTime(format(option.date, 'HH:mm'));
                       }}
+                      className={cn(
+                        "flex-none min-w-[100px] px-4 py-2 rounded-lg border transition-colors",
+                        selectedTime && date && 
+                        format(option.date, 'HH:mm') === selectedTime &&
+                        format(option.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
+                          ? "bg-primary/5 border-primary text-primary"
+                          : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                      )}
                     >
                       <div className="flex flex-col items-center gap-0.5">
                         <span className="text-sm font-medium">{option.label}</span>
-                        <span className="text-xs text-gray-500">{option.subLabel}</span>
+                        <span className="text-xs text-gray-400">{option.subLabel}</span>
                       </div>
-                    </Button>
+                    </button>
                   ))}
                 </div>
               </div>
+
+              <button
+                onClick={() => handleScroll('right')}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10"
+              >
+                <div className="size-8 rounded-lg flex items-center justify-center bg-white border border-gray-200 hover:bg-gray-50">
+                  <ChevronRight className="size-4 text-gray-400" />
+                </div>
+              </button>
             </div>
           </div>
 
           {/* Date & Time Selection */}
           <div className="grid grid-cols-[1.5fr,1fr] gap-6">
-            {/* Date Selection */}
+            {/* Calendar Section */}
             <div className="space-y-3">
-              <h3 className="text-sm font-medium text-gray-900 flex items-center gap-2">
-                <CalendarIcon className="w-4 h-4 text-primary" />
-                Select Date
-              </h3>
-              <div className="p-4 bg-white rounded-lg border border-gray-200">
+              <div className="flex items-center gap-2">
+                <CalendarIcon className="size-4 text-gray-400" />
+                <span className="text-sm font-medium text-gray-900">Select Date</span>
+              </div>
+
+              <div className="p-4 bg-white border border-gray-200 rounded-lg">
                 <Calendar
                   mode="single"
                   selected={date}
@@ -338,10 +294,10 @@ export function ScheduleModal({
                     cell: "h-10 w-10 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-primary/5",
                     day: cn(
                       "h-10 w-10 p-0 font-normal aria-selected:opacity-100",
-                      "hover:bg-primary/5 hover:text-primary transition-colors",
-                      "aria-selected:bg-primary aria-selected:text-white aria-selected:rounded-full"
+                      "hover:bg-gray-100 transition-colors",
+                      "aria-selected:bg-primary aria-selected:text-white aria-selected:hover:bg-primary"
                     ),
-                    nav_button: "h-7 w-7 bg-transparent p-0 hover:bg-primary/5 rounded-full transition-colors",
+                    nav_button: "h-7 w-7 bg-transparent p-0 hover:bg-gray-100 rounded-lg transition-colors",
                     nav_button_previous: "absolute left-1",
                     nav_button_next: "absolute right-1",
                   }}
@@ -351,107 +307,36 @@ export function ScheduleModal({
 
             {/* Time Selection */}
             <div className="space-y-3">
-              <h3 className="text-sm font-medium text-gray-900 flex items-center gap-2">
-                <Clock className="w-4 h-4 text-primary" />
-                Select Time
-              </h3>
-              <div className="bg-white rounded-lg border border-gray-200 h-[350px] overflow-y-auto">
+              <div className="flex items-center gap-2">
+                <Clock className="size-4 text-gray-400" />
+                <span className="text-sm font-medium text-gray-900">Select Time</span>
+              </div>
+
+              <div className="bg-white border border-gray-200 rounded-lg h-[350px] overflow-y-auto">
                 <div className="divide-y divide-gray-100">
-                  {/* Morning Times */}
-                  <div>
-                    <h4 className="text-xs font-medium text-gray-500 px-4 py-2 bg-gray-50">
-                      Morning (5 AM - 11:59 AM)
-                    </h4>
-                    <div className="py-1">
-                      {TIME_GROUPS.morning.map((time) => (
-                        <Button
-                          key={time.value}
-                          variant="ghost"
-                          className={cn(
-                            "w-full justify-start h-9 px-4 rounded-none transition-colors",
-                            selectedTime === time.value
-                              ? "bg-primary/5 text-primary font-medium"
-                              : "text-gray-600 hover:bg-primary/5 hover:text-primary"
-                          )}
-                          onClick={() => setSelectedTime(time.value)}
-                        >
-                          <span className="text-sm">{time.label}</span>
-                        </Button>
-                      ))}
+                  {Object.entries(TIME_GROUPS).map(([period, times]) => (
+                    <div key={period}>
+                      <h4 className="text-xs font-medium text-gray-500 px-4 py-2 bg-gray-50">
+                        {period.charAt(0).toUpperCase() + period.slice(1)} Times
+                      </h4>
+                      <div className="py-1">
+                        {times.map((time) => (
+                          <button
+                            key={time.value}
+                            onClick={() => setSelectedTime(time.value)}
+                            className={cn(
+                              "w-full text-left px-4 py-2 text-sm transition-colors",
+                              selectedTime === time.value
+                                ? "bg-primary/5 text-primary font-medium"
+                                : "text-gray-600 hover:bg-gray-50"
+                            )}
+                          >
+                            {time.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Afternoon Times */}
-                  <div>
-                    <h4 className="text-xs font-medium text-gray-500 px-4 py-2 bg-gray-50">
-                      Afternoon (12 PM - 4:59 PM)
-                    </h4>
-                    <div className="py-1">
-                      {TIME_GROUPS.afternoon.map((time) => (
-                        <Button
-                          key={time.value}
-                          variant="ghost"
-                          className={cn(
-                            "w-full justify-start h-9 px-4 rounded-none transition-colors",
-                            selectedTime === time.value
-                              ? "bg-primary/5 text-primary font-medium"
-                              : "text-gray-600 hover:bg-primary/5 hover:text-primary"
-                          )}
-                          onClick={() => setSelectedTime(time.value)}
-                        >
-                          <span className="text-sm">{time.label}</span>
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Evening Times */}
-                  <div>
-                    <h4 className="text-xs font-medium text-gray-500 px-4 py-2 bg-gray-50">
-                      Evening (5 PM - 8:59 PM)
-                    </h4>
-                    <div className="py-1">
-                      {TIME_GROUPS.evening.map((time) => (
-                        <Button
-                          key={time.value}
-                          variant="ghost"
-                          className={cn(
-                            "w-full justify-start h-9 px-4 rounded-none transition-colors",
-                            selectedTime === time.value
-                              ? "bg-primary/5 text-primary font-medium"
-                              : "text-gray-600 hover:bg-primary/5 hover:text-primary"
-                          )}
-                          onClick={() => setSelectedTime(time.value)}
-                        >
-                          <span className="text-sm">{time.label}</span>
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Night Times */}
-                  <div>
-                    <h4 className="text-xs font-medium text-gray-500 px-4 py-2 bg-gray-50">
-                      Night (9 PM - 4:59 AM)
-                    </h4>
-                    <div className="py-1">
-                      {TIME_GROUPS.night.map((time) => (
-                        <Button
-                          key={time.value}
-                          variant="ghost"
-                          className={cn(
-                            "w-full justify-start h-9 px-4 rounded-none transition-colors",
-                            selectedTime === time.value
-                              ? "bg-primary/5 text-primary font-medium"
-                              : "text-gray-600 hover:bg-primary/5 hover:text-primary"
-                          )}
-                          onClick={() => setSelectedTime(time.value)}
-                        >
-                          <span className="text-sm">{time.label}</span>
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -459,34 +344,36 @@ export function ScheduleModal({
         </div>
 
         {/* Fixed Footer */}
-        <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 shrink-0 bg-white">
-          <Button
-            variant="ghost"
-            className="h-10 px-6 hover:bg-gray-100 hover:text-gray-900"
-            onClick={onClose}
-            disabled={isScheduling}
-          >
-            Cancel
-          </Button>
-          <Button
-            className={cn(
-              "h-10 px-6 rounded-full transition-all duration-200",
-              !date || !selectedTime || isScheduling
-                ? "bg-primary/50 cursor-not-allowed"
-                : "bg-primary hover:bg-primary/90 shadow-sm hover:shadow"
-            )}
-            disabled={!date || !selectedTime || isScheduling}
-            onClick={handleSchedule}
-          >
-            {isScheduling ? (
-              <>
-                <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2"/>
-                <span className="text-white">Scheduling...</span>
-              </>
-            ) : (
-              <span className="text-white">Schedule Post</span>
-            )}
-          </Button>
+        <div className="px-6 py-4 border-t border-gray-100 bg-white">
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={onClose}
+              disabled={isScheduling}
+              className="px-6 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-200"
+            >
+              Cancel
+            </button>
+
+            <button
+              onClick={handleSchedule}
+              disabled={!date || !selectedTime || isScheduling}
+              className={cn(
+                "px-6 py-2 rounded-lg text-sm font-medium text-white transition-colors",
+                !date || !selectedTime || isScheduling
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-primary hover:bg-primary/90"
+              )}
+            >
+              {isScheduling ? (
+                <div className="flex items-center gap-2">
+                  <div className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  <span>Scheduling...</span>
+                </div>
+              ) : (
+                "Schedule Post"
+              )}
+            </button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

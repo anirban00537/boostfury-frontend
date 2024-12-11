@@ -16,7 +16,7 @@ interface AIWritingPreviewProps {
 
 const LoadingAnimation = () => (
   <div className="relative min-h-[300px] p-8">
-    <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-50/90 backdrop-blur-sm" />
+    <div className="absolute inset-0 bg-gradient-to-br from-neutral-50 via-white to-neutral-50/90 backdrop-blur-sm" />
     
     {/* Enhanced loading animation */}
     <div className="relative space-y-6">
@@ -28,7 +28,7 @@ const LoadingAnimation = () => (
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: i * 0.12 }}
         >
-          <div className={`h-4 rounded-lg bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5
+          <div className={`h-4 rounded-lg bg-gradient-to-r from-neutral-200/20 via-neutral-200/40 to-neutral-200/20
                           ${i === 0 ? 'w-3/5' : i === 3 ? 'w-2/5' : 'w-4/5'}`}>
             <motion.div
               className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
@@ -41,14 +41,10 @@ const LoadingAnimation = () => (
     </div>
 
     {/* AI Writing indicator */}
-    <motion.div
-      className="absolute inset-0 backdrop-blur-[2px] bg-white/70 
-                 flex items-center justify-center"
-    >
+    <motion.div className="absolute inset-0 backdrop-blur-[2px] bg-white/70 flex items-center justify-center">
       <motion.div
         className="flex items-center gap-5 px-10 py-5 rounded-2xl
-                   bg-gradient-to-br from-white/95 to-white/80
-                   border border-primary/5"
+                   bg-white/50 backdrop-blur-sm border border-neutral-200/60"
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.4 }}
@@ -56,17 +52,17 @@ const LoadingAnimation = () => (
         {/* Animated Icon */}
         <div className="relative w-6 h-6">
           <motion.div
-            className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent"
+            className="absolute inset-0 rounded-full border-2 border-neutral-900 border-t-transparent"
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
           />
           <motion.div
-            className="absolute inset-0 rounded-full border-2 border-primary/30 border-b-transparent"
+            className="absolute inset-0 rounded-full border-2 border-neutral-400 border-b-transparent"
             animate={{ rotate: -180 }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
           />
           <motion.div
-            className="absolute inset-1 rounded-full bg-primary/10"
+            className="absolute inset-1 rounded-full bg-neutral-200"
             animate={{ scale: [0.8, 1.1, 0.8] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           />
@@ -75,8 +71,7 @@ const LoadingAnimation = () => (
         {/* Text and Dots */}
         <div className="flex flex-col items-start">
           <motion.span
-            className="text-sm font-medium bg-gradient-to-r from-primary to-primary/80 
-                       bg-clip-text text-transparent"
+            className="text-sm font-medium bg-gradient-to-b from-black to-neutral-800 bg-clip-text text-transparent"
             animate={{ opacity: [0.7, 1, 0.7] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
@@ -86,7 +81,7 @@ const LoadingAnimation = () => (
             {[...Array(3)].map((_, i) => (
               <motion.span
                 key={i}
-                className="w-1.5 h-1.5 rounded-full bg-primary/60"
+                className="w-1.5 h-1.5 rounded-full bg-neutral-400"
                 animate={{
                   scale: [1, 1.5, 1],
                   opacity: [0.5, 1, 0.5],
@@ -151,111 +146,133 @@ export const AIWritingPreview = ({
 
   return (
     <div className="space-y-6">
-      <div className="relative rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-        <div className="p-6 space-y-6">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-gray-50 border border-gray-100 
-                            flex items-center justify-center">
-                <Wand2 className="h-5 w-5 text-gray-600" />
+      <div className="group relative">
+        {/* Enhanced Glowing Effects */}
+        <div className="absolute -inset-[1px] bg-gradient-to-t from-neutral-200/0 via-neutral-200/10 to-neutral-200/0 rounded-2xl group-hover:via-neutral-200/20 transition-all duration-500" />
+        <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
+
+        {/* Main Content */}
+        <div className="relative rounded-2xl bg-white/50 backdrop-blur-sm border border-neutral-200/60 overflow-hidden">
+          <div className="p-8 space-y-6">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                {/* Icon Container */}
+                <div className="relative">
+                  <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
+                  <div className="absolute -inset-[1px] blur-sm bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl"></div>
+                  <div className="relative w-12 h-12 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center border border-neutral-200/40 shadow-sm">
+                    <Wand2 className="w-5 h-5 text-neutral-900" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold bg-gradient-to-b from-black to-neutral-800 bg-clip-text text-transparent">
+                    {title}
+                  </h3>
+                  <span className="text-sm text-neutral-600">
+                    {content.length} characters
+                  </span>
+                </div>
               </div>
-              <div>
-                <h3 className="text-base font-medium text-gray-900">{title}</h3>
-                <span className="text-sm text-gray-500">
-                  {content.length} characters
-                </span>
-              </div>
+
+              <AnimatePresence>
+                {content && !isGenerating && (
+                  <motion.div
+                    className="flex items-center gap-2"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                  >
+                    <button
+                      onClick={handleCopy}
+                      className="group relative"
+                    >
+                      <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+                      <div className={cn(
+                        "relative flex items-center gap-2 px-3 py-1.5 rounded-xl",
+                        "bg-white/50 backdrop-blur-sm border border-neutral-200/60",
+                        "hover:bg-white/80 transition-colors duration-200",
+                        isCopied && "text-neutral-900"
+                      )}>
+                        {isCopied ? <Check size={16} /> : <Copy size={16} />}
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={handleSaveAndEdit}
+                      disabled={isCreatingDraft}
+                      className="group relative"
+                    >
+                      <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+                      <div className="relative flex items-center gap-2 px-4 py-1.5 rounded-xl
+                        bg-neutral-900 text-white text-sm font-medium
+                        hover:bg-neutral-800 transition-all duration-200">
+                        {isCreatingDraft ? (
+                          <>
+                            <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                            <span>Saving...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Edit size={16} />
+                            <span>Save & Edit</span>
+                          </>
+                        )}
+                      </div>
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            <AnimatePresence>
-              {content && !isGenerating && (
+            {/* Content Area */}
+            <div className="relative rounded-xl border border-neutral-200/60 overflow-hidden">
+              {isGenerating ? (
+                <LoadingAnimation />
+              ) : content ? (
                 <motion.div
-                  className="flex items-center gap-2"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="relative bg-white/50 backdrop-blur-sm"
                 >
-                  <button
-                    onClick={handleCopy}
-                    className={cn(
-                      "flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm",
-                      "bg-gray-50 border border-gray-200",
-                      "hover:bg-gray-100 transition-colors duration-200",
-                      isCopied && "text-green-600"
-                    )}
-                  >
-                    {isCopied ? <Check size={16} /> : <Copy size={16} />}
-                  </button>
-
-                  <button
-                    onClick={handleSaveAndEdit}
-                    disabled={isCreatingDraft}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm
-                             bg-primary text-white shadow-sm
-                             hover:shadow-md transition-all duration-200"
-                  >
-                    {isCreatingDraft ? (
-                      <>
-                        <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                        <span>Saving...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Edit size={16} />
-                        <span>Save & Edit</span>
-                      </>
-                    )}
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Content Area */}
-          <div className="relative rounded-lg border border-gray-200 bg-gray-50 overflow-hidden">
-            {isGenerating ? (
-              <LoadingAnimation />
-            ) : content ? (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="relative"
-              >
-                <div className="p-4">
-                  <div className="prose prose-sm max-w-none">
-                    <div className="whitespace-pre-wrap text-base text-gray-600 leading-relaxed">
-                      {content}
+                  <div className="p-6">
+                    <div className="prose prose-sm max-w-none">
+                      <div className="whitespace-pre-wrap text-base text-neutral-600 leading-relaxed">
+                        {content}
+                      </div>
                     </div>
                   </div>
-                </div>
-                {/* AI Badge */}
-                <div className="absolute bottom-3 right-3">
-                  <div className="flex items-center gap-1.5 px-2 py-1 rounded-md 
-                                bg-gray-100 border border-gray-200">
-                    <Sparkles className="h-3 w-3 text-gray-500" />
-                    <span className="text-[10px] font-medium text-gray-600">AI Enhanced</span>
+                  {/* AI Badge */}
+                  <div className="absolute bottom-3 right-3">
+                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg
+                      bg-white/80 backdrop-blur-sm border border-neutral-200/60">
+                      <Sparkles className="h-3 w-3 text-neutral-600" />
+                      <span className="text-[10px] font-medium text-neutral-600">AI Enhanced</span>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex flex-col items-center justify-center p-8 text-center"
-              >
-                <div className="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200
-                              flex items-center justify-center mb-3">
-                  <Wand2 className="h-5 w-5 text-gray-400" />
-                </div>
-                <h4 className="text-sm font-medium text-gray-900 mb-1">
-                  Ready to Generate
-                </h4>
-                <p className="text-sm text-gray-500">
-                  Use the editor on the left to start generating AI-powered content
-                </p>
-              </motion.div>
-            )}
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex flex-col items-center justify-center p-8 text-center bg-white/50 backdrop-blur-sm"
+                >
+                  <div className="relative mb-3">
+                    <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
+                    <div className="absolute -inset-[1px] blur-sm bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl"></div>
+                    <div className="relative w-12 h-12 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center border border-neutral-200/40 shadow-sm">
+                      <Wand2 className="w-5 h-5 text-neutral-400" />
+                    </div>
+                  </div>
+                  <h4 className="text-sm font-medium bg-gradient-to-b from-black to-neutral-800 bg-clip-text text-transparent mb-1">
+                    Ready to Generate
+                  </h4>
+                  <p className="text-sm text-neutral-600">
+                    Use the editor on the left to start generating AI-powered content
+                  </p>
+                </motion.div>
+              )}
+            </div>
           </div>
         </div>
       </div>

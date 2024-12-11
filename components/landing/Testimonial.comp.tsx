@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Star, Quote, Sparkles } from "lucide-react";
+import { Star, Quote } from "lucide-react";
 import Image from "next/image";
 
 const testimonials = [
@@ -57,111 +57,127 @@ const Testimonial = () => {
   return (
     <section
       id="testimonials"
-      className="relative py-32 overflow-hidden bg-white"
+      className="relative py-32 overflow-hidden"
+      role="region"
+      aria-label="Customer testimonials"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <motion.div 
-          variants={fadeInUpVariant}
-          initial="hidden"
-          animate="visible"
-          className="text-center max-w-3xl mx-auto mb-20"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-100 shadow-sm mb-8">
-            <div className="size-6 rounded-full bg-gradient-to-br from-primary/10 to-blue-500/10 flex items-center justify-center">
-              <Sparkles className="w-3.5 h-3.5 text-primary" />
-            </div>
-            <span className="text-sm font-medium bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-              Customer Success Stories
-            </span>
-          </div>
-          
-          <h2 className="text-4xl sm:text-5xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-transparent">
-            Loved by LinkedIn Professionals
-          </h2>
-          <p className="text-lg text-gray-600">
-            See how professionals are transforming their LinkedIn presence with BoostFury
-          </p>
-        </motion.div>
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.01)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_40%,transparent_100%)]" />
 
-        {/* Testimonials Grid */}
-        <div className="grid gap-8 md:grid-cols-3">
-          {testimonials.map((testimonial, index) => (
+      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto mb-24">
             <motion.div
-              key={testimonial.id}
-              variants={fadeInUpVariant}
-              initial="hidden"
-              animate="visible"
-              transition={{ delay: index * 0.2 }}
-              className="group relative bg-white rounded-2xl p-8 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-500"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
             >
-              {/* Quote Icon */}
-              <div className="absolute -top-4 -left-4">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/40 to-blue-500/40 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative size-8 rounded-full bg-white border border-gray-100 shadow-sm flex items-center justify-center">
-                    <Quote className="w-4 h-4 text-primary" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="mb-6">
-                {/* Rating */}
-                <div className="flex gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-primary text-primary" />
-                  ))}
-                </div>
-                
-                {/* Testimonial Text */}
-                <p className="text-gray-600 leading-relaxed mb-6">
-                  "{testimonial.text}"
+              <h2 className="text-[clamp(2.5rem,5vw,4.5rem)] leading-tight font-bold">
+                <span className="bg-gradient-to-b from-black to-neutral-800 bg-clip-text text-transparent">
+                  Loved by LinkedIn
+                </span>
+                <br />
+                <span className="bg-gradient-to-b from-neutral-700 to-neutral-500 bg-clip-text text-transparent">
+                  Professionals
+                </span>
+              </h2>
+              <div className="mt-8 relative">
+                <div className="absolute left-1/2 -translate-x-1/2 top-0 h-px w-12 bg-gradient-to-r from-transparent via-neutral-300 to-transparent" />
+                <p className="mt-6 text-xl text-neutral-600 max-w-2xl mx-auto">
+                  See how professionals are transforming their LinkedIn presence with BoostFury
                 </p>
-
-                {/* Stats Grid */}
-                <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-xl mb-6">
-                  {Object.entries(testimonial.stats).map(([key, value]) => (
-                    <div key={key} className="text-center">
-                      <div className="text-lg font-semibold text-primary">
-                        {value}
-                      </div>
-                      <div className="text-xs text-gray-500 capitalize">
-                        {key}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Author Info */}
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/40 to-blue-500/40 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <Image
-                    src={testimonial.image}
-                    alt={testimonial.author}
-                    width={48}
-                    height={48}
-                    className="relative rounded-full border-2 border-white shadow-sm"
-                  />
-                </div>
-                <div>
-                  <div className="font-semibold text-gray-900">
-                    {testimonial.author}
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    {testimonial.position}
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom Gradient Line */}
-              <div className="absolute bottom-0 left-0 right-0 h-[2px] overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/30 to-transparent translate-x-[-50%] group-hover:translate-x-[50%] transition-transform duration-1000" />
               </div>
             </motion.div>
-          ))}
+          </div>
+
+          {/* Testimonials Grid */}
+          <div className="grid gap-8 grid-cols-1 md:grid-cols-3 place-items-stretch">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={testimonial.id}
+                variants={fadeInUpVariant}
+                initial="hidden"
+                animate="visible"
+                transition={{ delay: index * 0.15 }}
+                className="group relative w-full h-full"
+              >
+                {/* Enhanced Glowing Effects */}
+                <div className="absolute -inset-[1px] bg-gradient-to-t from-neutral-200/0 via-neutral-200/10 to-neutral-200/0 rounded-2xl group-hover:via-neutral-200/20 transition-all duration-500" />
+                <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
+
+                {/* Testimonial Card */}
+                <div className="relative h-full p-8 rounded-2xl bg-white/50 backdrop-blur-sm border border-neutral-200/60 transition-all duration-300 flex flex-col group-hover:translate-y-[-2px]">
+                  {/* Quote Icon */}
+                  <div className="absolute -top-4 -left-4">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-r from-neutral-200/40 to-neutral-300/40 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <div className="relative w-8 h-8 bg-white rounded-full border border-neutral-200/60 shadow-sm flex items-center justify-center">
+                        <Quote className="w-4 h-4 text-neutral-900" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="mb-8">
+                    {/* Rating */}
+                    <div className="flex gap-1 mb-4">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-neutral-900 text-neutral-900" />
+                      ))}
+                    </div>
+                    
+                    {/* Testimonial Text */}
+                    <p className="text-neutral-600 leading-relaxed mb-6">
+                      "{testimonial.text}"
+                    </p>
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-3 gap-4 p-4 rounded-xl mb-6 bg-gradient-to-br from-neutral-50 to-white border border-neutral-200/60">
+                      {Object.entries(testimonial.stats).map(([key, value]) => (
+                        <div key={key} className="text-center">
+                          <div className="text-lg font-semibold text-neutral-900">
+                            {value}
+                          </div>
+                          <div className="text-xs text-neutral-500 capitalize">
+                            {key}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Author Info */}
+                  <div className="mt-auto flex items-center gap-4">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-br from-neutral-200/40 to-neutral-300/40 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <Image
+                        src={testimonial.image}
+                        alt={testimonial.author}
+                        width={48}
+                        height={48}
+                        className="relative rounded-full border-2 border-white shadow-sm"
+                      />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-neutral-900">
+                        {testimonial.author}
+                      </div>
+                      <div className="text-sm text-neutral-500">
+                        {testimonial.position}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom Glowing Line */}
+                  <div className="absolute bottom-0 left-0 right-0 h-[1px]">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-neutral-300/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-neutral-300/20 to-transparent blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

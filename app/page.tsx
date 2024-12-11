@@ -12,7 +12,6 @@ const Page = () => {
   return (
     <div className="bg-background min-h-screen">
       <LandingNavbar />
-      <main className="pt-16"> {/* Add padding-top to account for fixed navbar */}
         <Hero />
         <section id="features">
           <FeaturesSection />
@@ -26,7 +25,6 @@ const Page = () => {
         <section id="testimonials">
           <Testimonial />
         </section>
-      </main>
       <Footer />
     </div>
   );

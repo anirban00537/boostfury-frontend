@@ -150,7 +150,7 @@ export default function RootLayout({
         {/* manifest.json provides metadata used when your web app is installed on a user's mobile device or desktop */}
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className={`${poppins.className} antialiased`}>
+      <body className={`antialiased`}>
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>

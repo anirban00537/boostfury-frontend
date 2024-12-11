@@ -113,147 +113,145 @@ export default function PostQueuePage() {
 
   return (
     <div className="min-h-screen">
-      <div className="w-full px-8 py-10">
-        {/* Header Section - Enhanced with better visual hierarchy */}
-        <div className="flex justify-between items-start mb-10">
-          <div>
-            <h1 className="text-2xl font-semibold">
-              <span className="text-gray-900">My</span>{" "}
-              <span className="text-primary">Queue</span>
-            </h1>
-            <p className="text-base text-gray-500 mt-2">
-              Schedule and manage your upcoming content
-            </p>
-          </div>
+      <div className="relative border-b border-neutral-200/60 bg-white/50 backdrop-blur-sm sticky top-0 z-10">
+        <div className="px-8 pt-8 pb-6">
+          {/* Header Section */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              {/* Icon Container */}
+              <div className="relative">
+                <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
+                <div className="absolute -inset-[1px] blur-sm bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl"></div>
+                <div className="relative w-12 h-12 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center border border-neutral-200/40 shadow-sm">
+                  <Clock className="w-5 h-5 text-neutral-900" />
+                </div>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-b from-black to-neutral-800 bg-clip-text text-transparent">
+                  Post Queue
+                </h1>
+                <p className="text-sm text-neutral-600 mt-1">
+                  Schedule and manage your upcoming content
+                </p>
+              </div>
+            </div>
 
-          {/* Action Buttons - Improved visual hierarchy and interactions */}
-          <div className="flex gap-4">
-            <GradientButton
-              variant="primary"
-              size="lg"
-              className="gap-3 border-gray-200 hover:border-gray-300 hover:bg-gray-50/50 transition-all duration-200"
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3">
+              <GradientButton
+                variant="primary"
+                onClick={() => handleOpenModal("add")}
+                className="shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center gap-2">
+                  <PenSquare className="h-4 w-4" />
+                  <span>Edit Preferred Time</span>
+                </div>
+              </GradientButton>
 
-              leftIcon={<PenSquare className="h-4 w-4" />}
-              onClick={() => handleOpenModal("add")}
-            >
-              Edit Preferred Time
-            </GradientButton>
-            <GradientButton
-              variant="outline"
-              size="lg"
-              className="gap-3 border-gray-200 hover:border-gray-300 hover:bg-gray-50/50 transition-all duration-200"
-              leftIcon={<Shuffle className="h-4 w-4" />}
-              onClick={handleShuffleQueue}
-              disabled={isShuffling || totalPosts < 2}
-
-            >
-              {isShuffling ? "Shuffling..." : "Shuffle"}
-            </GradientButton>
+              <GradientButton
+                variant="default"
+                onClick={handleShuffleQueue}
+                disabled={isShuffling || totalPosts < 2}
+                className="shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center gap-2">
+                  <Shuffle className="h-4 w-4" />
+                  <span>{isShuffling ? "Shuffling..." : "Shuffle"}</span>
+                </div>
+              </GradientButton>
+            </div>
           </div>
         </div>
-        {/* Queue Summary - Enhanced with more visual appeal */}
+      </div>
+
+      <div className="px-8 py-8">
+        {/* Queue Summary */}
         {totalPosts > 0 && (
-          <div className="mb-12 p-5 bg-gradient-to-r from-emerald-50/70 via-green-50/70 to-emerald-50/70 border border-emerald-100/80 rounded-2xl backdrop-blur-sm">
-            <p className="text-[15px] text-emerald-700 flex items-center gap-3 font-medium">
-              <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center">
-                <Calendar className="h-4 w-4 text-emerald-600" />
+          <div className="relative mb-8 group">
+            <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/50 via-neutral-300/50 to-neutral-200/50 rounded-xl blur-md opacity-0 group-hover:opacity-100 transition-all duration-500" />
+            <div className="relative p-6 rounded-xl bg-white/50 backdrop-blur-sm border border-neutral-200/60">
+              <div className="flex items-center gap-3">
+                <div className="relative size-10 rounded-xl bg-primary/5 flex items-center justify-center">
+                  <Calendar className="size-5 text-primary" />
+                </div>
+                <p className="text-sm text-neutral-600">
+                  You have <span className="font-medium text-neutral-900">{totalPosts} posts</span>{" "}
+                  scheduled. The last one will be published on{" "}
+                  <span className="font-medium text-neutral-900">
+                    {format(new Date(posts[posts.length - 1].scheduledTime), "EEEE MMMM do")}
+                  </span>
+                </p>
               </div>
-              You have <span className="font-semibold">{totalPosts} posts</span>{" "}
-              scheduled. The last one will be published on{" "}
-              <span className="font-semibold">
-                {format(
-                  new Date(posts[posts.length - 1].scheduledTime),
-                  "EEEE MMMM do"
-                )}
-              </span>
-            </p>
+            </div>
           </div>
         )}
-        {/* Posts List or Empty State */}
+
+        {/* Posts List */}
         {totalPosts > 0 ? (
-          <div className="space-y-14">
-            {Object.entries(groupPostsByDate(posts)).map(
-              ([date, datePosts]) => (
-                <div key={date}>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center gap-3 pl-1">
-                    <div className="h-7 w-7 rounded-full bg-gray-100 flex items-center justify-center">
-                      <Calendar className="h-4 w-4 text-gray-600" />
-                    </div>
+          <div className="space-y-12">
+            {Object.entries(groupPostsByDate(posts)).map(([date, datePosts]) => (
+              <div key={date}>
+                {/* Date Header */}
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="relative size-8 rounded-lg bg-neutral-100/80 flex items-center justify-center">
+                    <Calendar className="size-4 text-neutral-600" />
+                  </div>
+                  <h3 className="text-sm font-medium text-neutral-900">
                     {date}
                   </h3>
-                  <div className="space-y-4">
-                    {datePosts.map((post: Post) => (
-                      <motion.div
-                        key={post.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="group relative border border-gray-100 hover:border-gray-200 rounded-2xl transition-all duration-200 hover:shadow-[0_0_25px_-5px_rgba(0,0,0,0.05)]"
-                      >
-                        <div className="p-6 flex items-center gap-6">
-                          {/* Time with enhanced styling */}
-                          <div className="min-w-[100px]">
-                            <div className="text-gray-600 font-medium">
-                              {format(new Date(post.scheduledTime), "hh:mm a")}
-                            </div>
-                            <div className="text-xs text-gray-400 mt-1">
-                              {post.timeUntilPublishing}
-                            </div>
-                          </div>
+                </div>
 
-                          {/* Platform icon with enhanced styling */}
-                          <div className="h-10 w-10 rounded-xl bg-[#0077b5]/10 flex items-center justify-center">
-                            <Linkedin className="h-5 w-5 text-[#0077b5]" />
+                {/* Posts Grid */}
+                <div className="space-y-3">
+                  {datePosts.map((post: Post) => (
+                    <motion.div
+                      key={post.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="group relative"
+                    >
+                      <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+                      <div className="relative flex items-center gap-4 p-4 rounded-xl bg-white/50 backdrop-blur-sm border border-neutral-200/60">
+                        {/* Time */}
+                        <div className="min-w-[100px]">
+                          <div className="text-sm font-medium text-neutral-900">
+                            {format(new Date(post.scheduledTime), "hh:mm a")}
                           </div>
-
-                          {/* Content with better typography */}
-                          <div className="flex-1">
-                            <p className="text-[15px] text-gray-700 line-clamp-1 font-medium">
-                              {post.content}
-                            </p>
-                            {post.images?.length > 0 && (
-                              <div className="flex gap-2 mt-2">
-                                {post.images.map((image) => (
-                                  <div
-                                    key={image.id}
-                                    className="h-6 w-6 rounded-md bg-gray-100"
-                                  />
-                                ))}
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Action buttons with improved interaction */}
-                          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
-                            <Link href={`/compose?draft_id=${post.id}`}>
-                              <Button
-                                variant="ghost"
-                              size="icon"
-                              className="h-10 w-10 rounded-xl hover:bg-gray-50"
-                              onClick={() => handleOpenModal("edit", post)}
-                            >
-                                <PenSquare className="h-4 w-4 text-gray-500" />
-                              </Button>
-                            </Link>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-10 w-10 rounded-xl hover:bg-gray-50"
-                            >
-                              <Eye className="h-4 w-4 text-gray-500" />
-                            </Button>
-                          </div>
-
-                          {/* Status indicator */}
-                          <div className="absolute top-0 right-0 mt-2 mr-2">
-                            <div className="h-2 w-2 rounded-full bg-emerald-400" />
+                          <div className="text-xs text-neutral-500 mt-0.5">
+                            {post.timeUntilPublishing}
                           </div>
                         </div>
-                      </motion.div>
-                    ))}
-                  </div>
+
+                        {/* Platform Icon */}
+                        <div className="relative size-10 rounded-lg bg-[#0077b5]/10 flex items-center justify-center">
+                          <Linkedin className="size-5 text-[#0077b5]" />
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-neutral-700 truncate">
+                            {post.content}
+                          </p>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
+                          <Link href={`/compose?draft_id=${post.id}`}>
+                            <button className="relative size-8 rounded-lg flex items-center justify-center hover:bg-neutral-100/80 transition-colors">
+                              <PenSquare className="size-4 text-neutral-500" />
+                            </button>
+                          </Link>
+                          <button className="relative size-8 rounded-lg flex items-center justify-center hover:bg-neutral-100/80 transition-colors">
+                            <Eye className="size-4 text-neutral-500" />
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
-              )
-            )}
+              </div>
+            ))}
           </div>
         ) : (
           <EmptyState
@@ -262,14 +260,15 @@ export default function PostQueuePage() {
             description="Start scheduling your posts to maintain a consistent presence on your social media platforms."
           />
         )}
-        <QueueModal
-          isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
-          mode={modalMode}
-          post={selectedPost}
-          onSave={handleSaveQueue}
-        />{" "}
       </div>
+
+      <QueueModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        mode={modalMode}
+        post={selectedPost}
+        onSave={handleSaveQueue}
+      />
     </div>
   );
 }
