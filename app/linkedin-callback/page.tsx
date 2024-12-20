@@ -7,10 +7,10 @@ import { Linkedin, ArrowRight } from 'lucide-react';
 
 export default function LinkedInCallback() {
   const searchParams = useSearchParams();
-  const code = searchParams.get('code');
-  const state = searchParams.get('state');
-  const error = searchParams.get('error');
-  const errorDescription = searchParams.get('error_description');
+  const code = searchParams?.get('code') || null;
+  const state = searchParams?.get('state') || null;
+  const error = searchParams?.get('error') || null;
+  const errorDescription = searchParams?.get('error_description') || null;
   
   const { mutate: handleCallback, isLoading } = useLinkedInCallback(
     code, 

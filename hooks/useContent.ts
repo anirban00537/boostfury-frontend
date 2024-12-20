@@ -117,7 +117,7 @@ interface AddToQueueResponse {
 
 export const useContentPosting = () => {
   const searchParams = useSearchParams();
-  const draftId = searchParams.get("draft_id");
+  const draftId = searchParams?.get("draft_id");
   const router = useRouter();
 
   const { currentWorkspace } = useSelector((state: RootState) => state.user);
