@@ -108,7 +108,7 @@ const Hero = () => {
 
       {/* Content */}
       <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-20">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center">
           {/* Main Heading */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -116,7 +116,7 @@ const Hero = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative mb-8"
           >
-            <h1 className="text-[clamp(2.5rem,6vw,4rem)] leading-[1.2] font-bold tracking-tight">
+            <h1 className="text-[clamp(3rem,7vw,5rem)] leading-[1.1] font-bold tracking-tight">
               <span className="relative bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent">
                 Create Viral{" "}
               </span>
