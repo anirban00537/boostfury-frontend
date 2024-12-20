@@ -37,21 +37,19 @@ import { motion } from "framer-motion";
 import { processApiResponse } from "@/lib/functions";
 
 interface AISettingsModalProps {
-  trigger: React.ReactNode;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  open: boolean;
+  onClose: () => void;
 }
 
 export const AISettingsModal = ({
-  trigger,
   open,
-  onOpenChange,
+  onClose,
 }: AISettingsModalProps) => {
   const [personalAiVoiceState, setPersonalAiVoiceState] = React.useState("");
   const [internalOpen, setInternalOpen] = React.useState(false);
   const isControlled = open !== undefined;
   const isOpen = isControlled ? open : internalOpen;
-  const setIsOpen = isControlled ? onOpenChange : setInternalOpen;
+  const setIsOpen = isControlled ? onClose : setInternalOpen;
   const { currentWorkspace } = useSelector((state: RootState) => state.user);
   const { data, isLoading } = useWorkspaceById();
   const dispatch = useDispatch();
@@ -90,7 +88,6 @@ export const AISettingsModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader className="space-y-3">
           <motion.div

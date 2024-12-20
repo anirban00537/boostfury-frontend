@@ -156,7 +156,7 @@ export const ContentIdeas = ({
 
       {showAISettings && (
         <AISettingsModal
-          isOpen={showAISettings}
+          open={showAISettings}
           onClose={() => setShowAISettings(false)}
         />
       )}
