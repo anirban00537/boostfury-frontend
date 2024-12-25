@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { AISettingsModal } from "@/components/ai-settings/AISettingsModal";
 import React from "react";
 import { cn } from "@/lib/utils";
+import ShimmerButton from "../magicui/Shimmer-Button.comp";
 
 interface ContentIdea {
   idea: string;
@@ -49,57 +50,59 @@ export const ContentIdeas = ({
   return (
     <div className="group relative">
       {/* Enhanced Glowing Effects */}
-      <div className="absolute -inset-[1px] bg-gradient-to-t from-neutral-200/0 via-neutral-200/10 to-neutral-200/0 rounded-2xl group-hover:via-neutral-200/20 transition-all duration-500" />
-      <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
+      <div className="absolute -inset-[1px] bg-gradient-to-t from-blue-100/20 via-white to-blue-50/20 rounded-2xl opacity-40 group-hover:opacity-70 transition-all duration-500" />
 
       {/* Main Content */}
-      <div className="relative rounded-2xl bg-white/50 backdrop-blur-sm border border-neutral-200/60 overflow-hidden">
+      <div
+        className="relative rounded-2xl bg-white border border-neutral-200/60 overflow-hidden 
+        shadow-[0_4px_12px_-2px_rgba(0,0,0,0.08),0_2px_6px_-2px_rgba(0,0,0,0.06)] 
+        hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.08),0_4px_12px_-4px_rgba(0,0,0,0.06)] 
+        transition-shadow duration-300"
+      >
         <div className="p-8 space-y-6">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {/* Icon Container */}
               <div className="relative">
-                <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
-                <div className="absolute -inset-[1px] blur-sm bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl"></div>
-                <div className="relative w-12 h-12 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center border border-neutral-200/40 shadow-sm">
-                  <Lightbulb className="w-5 h-5 text-neutral-900" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-white rounded-xl blur-md" />
+                <div className="relative w-12 h-12 bg-gradient-to-br from-white to-blue-50 rounded-xl flex items-center justify-center border border-blue-100/30 shadow-sm">
+                  <Lightbulb className="w-5 h-5 text-blue-600" />
                 </div>
               </div>
               <div>
-                <h2 className="text-[clamp(1.25rem,3vw,1.75rem)] font-bold">
-                  <span className="bg-gradient-to-b from-black to-neutral-800 bg-clip-text text-transparent">
-                    Content
-                  </span>{" "}
-                  <span className="bg-gradient-to-b from-neutral-700 to-neutral-500 bg-clip-text text-transparent">
-                    Ideas
-                  </span>
-                </h2>
-                <p className="text-sm text-neutral-600">
-                  Generate viral content ideas for your posts
-                </p>
+                <h3 className="text-base font-semibold bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">
+                  Content Ideas
+                </h3>
+                <span className="text-sm text-slate-600">
+                  AI-powered content suggestions
+                </span>
               </div>
             </div>
 
             {/* Generate Button */}
-            <button
+            <ShimmerButton
               onClick={handleGenerateClick}
               disabled={loading}
-              className="group relative"
+              shimmerColor="rgba(255, 255, 255, 0.6)"
+              shimmerSize="0.15em"
+              shimmerDuration="2s"
+              borderRadius="0.75rem"
+              background="linear-gradient(45deg, #2563eb, #3b82f6, #2563eb)"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium"
             >
-              <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
-              <div className="relative flex items-center gap-2 px-4 py-2 rounded-xl
-                bg-neutral-900 text-white text-sm font-medium
-                hover:bg-neutral-800 disabled:bg-neutral-300
-                transition-all duration-200">
-                {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
+              {loading ? (
+                <>
                   <Sparkles className="h-4 w-4" />
-                )}
-                Generate Ideas
-              </div>
-            </button>
+                  <span>Generating...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4" />
+                  <span>Generate Ideas</span>
+                </>
+              )}
+            </ShimmerButton>
           </div>
 
           {/* Ideas List */}
@@ -111,17 +114,16 @@ export const ContentIdeas = ({
                 className="flex flex-col items-center justify-center h-[200px] space-y-4"
               >
                 <div className="relative">
-                  <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
-                  <div className="absolute -inset-[1px] blur-sm bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl"></div>
-                  <div className="relative w-12 h-12 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center border border-neutral-200/40 shadow-sm">
-                    <Lightbulb className="w-5 h-5 text-neutral-400" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-white rounded-xl blur-md" />
+                  <div className="relative w-12 h-12 bg-gradient-to-br from-white to-blue-50 rounded-xl flex items-center justify-center border border-blue-100/30 shadow-sm">
+                    <Lightbulb className="w-5 h-5 text-slate-400" />
                   </div>
                 </div>
                 <div className="text-center">
-                  <h4 className="text-sm font-medium bg-gradient-to-b from-black to-neutral-800 bg-clip-text text-transparent mb-1">
+                  <h4 className="text-sm font-medium text-slate-900 mb-1">
                     No ideas yet
                   </h4>
-                  <p className="text-sm text-neutral-600">
+                  <p className="text-sm text-slate-600">
                     Click generate to create new ideas
                   </p>
                 </div>
@@ -137,12 +139,13 @@ export const ContentIdeas = ({
                     transition={{ delay: index * 0.1 }}
                     className="group relative w-full"
                   >
-                    <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
-                    <div className="relative p-4 text-left rounded-xl bg-white/50 backdrop-blur-sm 
-                      border border-neutral-200/60 
-                      group-hover:bg-white/80 group-hover:border-neutral-300/80
-                      transition-all duration-200">
-                      <p className="text-sm text-neutral-600 group-hover:text-neutral-900">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                    <div
+                      className="relative p-4 text-left rounded-xl bg-white border border-blue-100/50 
+                      group-hover:border-blue-200/80 group-hover:bg-gradient-to-br group-hover:from-white group-hover:to-blue-50/50
+                      transition-all duration-200"
+                    >
+                      <p className="text-sm text-slate-600 group-hover:text-slate-900">
                         {idea.idea}
                       </p>
                     </div>

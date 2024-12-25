@@ -1,8 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Copy, Check, Wand2, Edit, ArrowRight } from "lucide-react";
+import { Sparkles, Copy, Check, Wand2, Edit } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Button } from "../ui/button";
 import { useContentPosting } from "@/hooks/useContent";
 import { useRouter } from "next/navigation";
 import { GradientButton } from "../ui/gradient-button";
@@ -17,7 +16,7 @@ interface AIWritingPreviewProps {
 const LoadingAnimation = () => (
   <div className="relative min-h-[300px] p-8">
     <div className="absolute inset-0 bg-gradient-to-br from-neutral-50 via-white to-neutral-50/90 backdrop-blur-sm" />
-    
+
     {/* Enhanced loading animation */}
     <div className="relative space-y-6">
       {[...Array(4)].map((_, i) => (
@@ -28,11 +27,13 @@ const LoadingAnimation = () => (
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: i * 0.12 }}
         >
-          <div className={`h-4 rounded-lg bg-gradient-to-r from-neutral-200/20 via-neutral-200/40 to-neutral-200/20
-                          ${i === 0 ? 'w-3/5' : i === 3 ? 'w-2/5' : 'w-4/5'}`}>
+          <div
+            className={`h-4 rounded-lg bg-gradient-to-r from-neutral-200/20 via-neutral-200/40 to-neutral-200/20
+                          ${i === 0 ? "w-3/5" : i === 3 ? "w-2/5" : "w-4/5"}`}
+          >
             <motion.div
               className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
-              animate={{ x: ['-100%', '100%'] }}
+              animate={{ x: ["-100%", "100%"] }}
               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
             />
           </div>
@@ -148,28 +149,31 @@ export const AIWritingPreview = ({
     <div className="space-y-6">
       <div className="group relative">
         {/* Enhanced Glowing Effects */}
-        <div className="absolute -inset-[1px] bg-gradient-to-t from-neutral-200/0 via-neutral-200/10 to-neutral-200/0 rounded-2xl group-hover:via-neutral-200/20 transition-all duration-500" />
-        <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
+        <div className="absolute -inset-[1px] bg-gradient-to-t from-blue-100/20 via-white to-blue-50/20 rounded-2xl opacity-40 group-hover:opacity-70 transition-all duration-500" />
 
         {/* Main Content */}
-        <div className="relative rounded-2xl bg-white/50 backdrop-blur-sm border border-neutral-200/60 overflow-hidden">
+        <div
+          className="relative rounded-2xl bg-white border border-neutral-200/60 overflow-hidden 
+          shadow-[0_4px_12px_-2px_rgba(0,0,0,0.08),0_2px_6px_-2px_rgba(0,0,0,0.06)] 
+          hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.08),0_4px_12px_-4px_rgba(0,0,0,0.06)] 
+          transition-shadow duration-300"
+        >
           <div className="p-8 space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 {/* Icon Container */}
                 <div className="relative">
-                  <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
-                  <div className="absolute -inset-[1px] blur-sm bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl"></div>
-                  <div className="relative w-12 h-12 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center border border-neutral-200/40 shadow-sm">
-                    <Wand2 className="w-5 h-5 text-neutral-900" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-white rounded-xl blur-md" />
+                  <div className="relative w-12 h-12 bg-gradient-to-br from-white to-blue-50 rounded-xl flex items-center justify-center border border-blue-100/30 shadow-sm">
+                    <Wand2 className="w-5 h-5 text-blue-600" />
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold bg-gradient-to-b from-black to-neutral-800 bg-clip-text text-transparent">
+                  <h3 className="text-base font-semibold bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">
                     {title}
                   </h3>
-                  <span className="text-sm text-neutral-600">
+                  <span className="text-sm text-slate-600">
                     {content.length} characters
                   </span>
                 </div>
@@ -183,71 +187,65 @@ export const AIWritingPreview = ({
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                   >
-                    <button
-                      onClick={handleCopy}
-                      className="group relative"
-                    >
-                      <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
-                      <div className={cn(
-                        "relative flex items-center gap-2 px-3 py-1.5 rounded-xl",
-                        "bg-white/50 backdrop-blur-sm border border-neutral-200/60",
-                        "hover:bg-white/80 transition-colors duration-200",
-                        isCopied && "text-neutral-900"
-                      )}>
+                    <button onClick={handleCopy} className="group relative">
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                      <div
+                        className={cn(
+                          "relative flex items-center gap-2 px-3 py-1.5 rounded-xl",
+                          "bg-white border border-blue-100/50",
+                          "hover:border-blue-200/80 hover:bg-gradient-to-br hover:from-white hover:to-blue-50/50",
+                          "transition-all duration-200",
+                          isCopied && "text-blue-600"
+                        )}
+                      >
                         {isCopied ? <Check size={16} /> : <Copy size={16} />}
                       </div>
                     </button>
 
-                    <button
+                    <GradientButton
                       onClick={handleSaveAndEdit}
                       disabled={isCreatingDraft}
-                      className="group relative"
-                    >
-                      <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
-                      <div className="relative flex items-center gap-2 px-4 py-1.5 rounded-xl
-                        bg-neutral-900 text-white text-sm font-medium
-                        hover:bg-neutral-800 transition-all duration-200">
-                        {isCreatingDraft ? (
-                          <>
-                            <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                            <span>Saving...</span>
-                          </>
+                      variant="primary"
+                      className="flex items-center gap-2"
+                      leftIcon={
+                        isCreatingDraft ? (
+                          <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                         ) : (
-                          <>
-                            <Edit size={16} />
-                            <span>Save & Edit</span>
-                          </>
-                        )}
-                      </div>
-                    </button>
+                          <Edit className="h-4 w-4" />
+                        )
+                      }
+                    >
+                      {isCreatingDraft ? "Saving..." : "Save & Edit"}
+                    </GradientButton>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
             {/* Content Area */}
-            <div className="relative rounded-xl border border-neutral-200/60 overflow-hidden">
+            <div className="relative rounded-xl border border-blue-100/50 overflow-hidden">
               {isGenerating ? (
                 <LoadingAnimation />
               ) : content ? (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="relative bg-white/50 backdrop-blur-sm"
+                  className="relative bg-white"
                 >
                   <div className="p-6">
                     <div className="prose prose-sm max-w-none">
-                      <div className="whitespace-pre-wrap text-base text-neutral-600 leading-relaxed">
+                      <div className="whitespace-pre-wrap text-base text-slate-600 leading-relaxed">
                         {content}
                       </div>
                     </div>
                   </div>
                   {/* AI Badge */}
                   <div className="absolute bottom-3 right-3">
-                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg
-                      bg-white/80 backdrop-blur-sm border border-neutral-200/60">
-                      <Sparkles className="h-3 w-3 text-neutral-600" />
-                      <span className="text-[10px] font-medium text-neutral-600">AI Enhanced</span>
+                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white border border-blue-100/50">
+                      <Sparkles className="h-3 w-3 text-blue-600" />
+                      <span className="text-[10px] font-medium text-slate-600">
+                        AI Enhanced
+                      </span>
                     </div>
                   </div>
                 </motion.div>
@@ -255,20 +253,20 @@ export const AIWritingPreview = ({
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="flex flex-col items-center justify-center p-8 text-center bg-white/50 backdrop-blur-sm"
+                  className="flex flex-col items-center justify-center p-8 text-center bg-white"
                 >
                   <div className="relative mb-3">
-                    <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
-                    <div className="absolute -inset-[1px] blur-sm bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl"></div>
-                    <div className="relative w-12 h-12 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center border border-neutral-200/40 shadow-sm">
-                      <Wand2 className="w-5 h-5 text-neutral-400" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-white rounded-xl blur-md" />
+                    <div className="relative w-12 h-12 bg-gradient-to-br from-white to-blue-50 rounded-xl flex items-center justify-center border border-blue-100/30 shadow-sm">
+                      <Wand2 className="w-5 h-5 text-slate-400" />
                     </div>
                   </div>
-                  <h4 className="text-sm font-medium bg-gradient-to-b from-black to-neutral-800 bg-clip-text text-transparent mb-1">
+                  <h4 className="text-sm font-medium text-slate-900 mb-1">
                     Ready to Generate
                   </h4>
-                  <p className="text-sm text-neutral-600">
-                    Use the editor on the left to start generating AI-powered content
+                  <p className="text-sm text-slate-600">
+                    Use the editor on the left to start generating AI-powered
+                    content
                   </p>
                 </motion.div>
               )}

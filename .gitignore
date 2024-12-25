@@ -8,7 +8,7 @@
 /uploads
 # testing
 /coverage
-.env
+# .env
 .env.server
 # next.js
 /.next/

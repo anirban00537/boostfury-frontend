@@ -1,23 +1,39 @@
 import { motion } from "framer-motion";
+import { Sparkles } from "lucide-react";
 
 export const Header = () => {
   return (
-    <div className="flex items-center justify-center mb-7">
+    <div className="flex flex-col items-center justify-center mb-10 space-y-4">
       {/* Text Content with Animation */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="flex flex-col items-start text-left"
+        className="relative"
       >
-        <h1 className="text-7xl font-bold tracking-tight">
-          <span className="bg-gradient-to-b from-neutral-900 via-neutral-800 to-neutral-700 bg-clip-text text-transparent">
-            AI Viral
-          </span>{" "}
-          <span className="bg-gradient-to-b from-neutral-700 via-neutral-600 to-neutral-500 bg-clip-text text-transparent">
-            Post Writer
-          </span>
-        </h1>
+        <div className="relative flex flex-col items-center text-center space-y-3">
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#0A66C2]/10 to-[#2C8EFF]/10 border border-[#0A66C2]/20">
+            <Sparkles className="w-4 h-4 text-[#0A66C2]" />
+            <span className="text-sm font-medium bg-gradient-to-r from-[#0A66C2] to-[#2C8EFF] bg-clip-text text-transparent">
+              AI-Powered Content Creation
+            </span>
+          </div>
+
+          <h1 className="text-6xl font-bold tracking-tight leading-tight">
+            <span className="bg-gradient-to-r from-[#0A66C2] via-[#0A66C2] to-[#2C8EFF] bg-clip-text text-transparent">
+              Create Viral
+            </span>{" "}
+            <span className="bg-gradient-to-r from-[#2C8EFF] via-[#0A66C2] to-[#0A66C2] bg-clip-text text-transparent">
+              LinkedIn Posts
+            </span>
+          </h1>
+
+          <p className="text-lg text-slate-600 max-w-2xl">
+            Transform your ideas into engaging content with our AI writer.
+            Generate professional posts that drive engagement and grow your
+            network.
+          </p>
+        </div>
       </motion.div>
     </div>
   );

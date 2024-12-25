@@ -128,56 +128,51 @@ const NavigationItem: React.FC<{
     <Link
       href={item.href}
       className={cn(
-        "group relative flex items-center gap-x-2.5 px-2 py-1 rounded-xl",
+        "group relative flex items-center gap-x-3 rounded-xl p-2",
         "transition-all duration-200",
-        isActive ? "z-10" : ""
+        isActive
+          ? "bg-blue-50/80 text-blue-600"
+          : "hover:bg-slate-50 text-slate-600"
       )}
     >
-      {/* Hover/Active Glowing Effects */}
-      <div className="absolute -inset-[1px] bg-gradient-to-t from-neutral-200/0 via-neutral-200/10 to-neutral-200/0 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
-      <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
-      
-      {/* Content */}
-      <div className={cn(
-        "relative flex items-center gap-x-2.5 w-full",
-        "border border-neutral-200/60 rounded-xl p-2",
-        isActive 
-          ? "bg-white/80 backdrop-blur-sm border-neutral-300/80 shadow-sm" 
-          : "bg-white/50 hover:bg-white/80"
-      )}>
-        {/* Icon Container */}
-        <div className="relative">
-          <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-lg opacity-0 group-hover:opacity-100"></div>
-          <div className="relative w-8 h-8 rounded-lg bg-white/80 backdrop-blur-sm 
-            flex items-center justify-center border border-neutral-200/40">
-            <item.icon className={cn(
-              "w-4 h-4 transition-colors duration-200",
-              isActive ? "text-neutral-900" : "text-neutral-500 group-hover:text-neutral-700"
-            )} />
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-0.5 flex-1">
-          <span className={cn(
-            "text-sm font-medium leading-none",
-            isActive 
-              ? "text-neutral-900" 
-              : "text-neutral-600 group-hover:text-neutral-800"
-          )}>
-            {item.name}
-          </span>
-          {item.description && (
-            <span className="text-xs text-neutral-500 group-hover:text-neutral-600 leading-tight">
-              {item.description}
-            </span>
+      {/* Icon Container */}
+      <div
+        className={cn(
+          "flex items-center justify-center w-9 h-9 rounded-lg",
+          isActive
+            ? "bg-blue-100/80"
+            : "bg-slate-100/70 group-hover:bg-blue-50/50"
+        )}
+      >
+        <item.icon
+          className={cn(
+            "w-[18px] h-[18px] transition-colors duration-200",
+            isActive
+              ? "text-blue-600"
+              : "text-slate-600 group-hover:text-blue-500"
           )}
-        </div>
+        />
+      </div>
+
+      <div className="flex items-center justify-between flex-1">
+        <span
+          className={cn(
+            "text-sm font-medium",
+            isActive
+              ? "text-blue-700"
+              : "text-slate-700 group-hover:text-blue-600"
+          )}
+        >
+          {item.name}
+        </span>
 
         {item.badge && (
-          <span className={cn(
-            "px-1.5 py-0.5 text-[10px] font-medium rounded-full",
-            "bg-neutral-900 text-white"
-          )}>
+          <span
+            className={cn(
+              "px-2 py-0.5 text-[10px] font-medium rounded-full",
+              item.badgeColor || "bg-blue-50 text-blue-600"
+            )}
+          >
             {item.badge}
           </span>
         )}
@@ -276,7 +271,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   }, [router]);
 
   return (
-    <div className="relative w-[280px] sm:w-72 h-screen flex flex-col bg-white/50 backdrop-blur-sm border-r border-neutral-200/60 shadow-sm">
+    <div className="relative w-[280px] sm:w-72 h-screen flex flex-col bg-white/80 backdrop-blur-sm border-r border-slate-200/60 shadow-sm">
       {/* Close button for mobile */}
       <button
         onClick={onClose}
@@ -301,19 +296,18 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
         {/* Workspace Selector */}
         <button
           onClick={() => setIsManageModalOpen(true)}
-          className="group relative w-full"
+          className="group relative w-full px-3 py-2.5 rounded-xl
+            bg-slate-50/80 hover:bg-blue-50/50 
+            transition-all duration-200"
         >
-          <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
-          <div className="relative flex items-center justify-between gap-2 px-3 py-2 rounded-xl
-            bg-white/50 backdrop-blur-sm border border-neutral-200/60
-            group-hover:bg-white/80 transition-all duration-200">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-neutral-500" />
-              <span className="text-sm font-medium text-neutral-700">
+              <Users className="h-4 w-4 text-slate-500 group-hover:text-blue-500" />
+              <span className="text-sm font-medium text-slate-700 group-hover:text-blue-600">
                 {currentWorkspace?.name || "Select workspace..."}
               </span>
             </div>
-            <ChevronDown className="h-4 w-4 text-neutral-500" />
+            <ChevronDown className="h-4 w-4 text-slate-400 group-hover:text-blue-500" />
           </div>
         </button>
 
@@ -348,8 +342,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
-                  <div className="relative w-10 h-10 bg-white/80 backdrop-blur-sm rounded-xl 
-                    flex items-center justify-center border border-neutral-200/40">
+                  <div
+                    className="relative w-10 h-10 bg-white/80 backdrop-blur-sm rounded-xl 
+                    flex items-center justify-center border border-neutral-200/40"
+                  >
                     <Wand2 className="w-5 h-5 text-neutral-900" />
                   </div>
                 </div>
@@ -357,8 +353,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
                   AI Credits
                 </span>
               </div>
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full
-                bg-white/50 backdrop-blur-sm border border-neutral-200/60 text-neutral-600">
+              <span
+                className="text-xs font-medium px-2 py-0.5 rounded-full
+                bg-white/50 backdrop-blur-sm border border-neutral-200/60 text-neutral-600"
+              >
                 {formatTokens(wordUsage.used)} / {formatTokens(wordUsage.limit)}
               </span>
             </div>
@@ -366,9 +364,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
               <div
                 className={cn(
                   "h-full transition-all duration-300 ease-in-out",
-                  wordUsage.percentage > 80
-                    ? "bg-red-500"
-                    : "bg-neutral-900"
+                  wordUsage.percentage > 80 ? "bg-red-500" : "bg-neutral-900"
                 )}
                 style={{ width: `${wordUsage.percentage}%` }}
               />
@@ -383,8 +379,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
-                  <div className="relative w-10 h-10 bg-white/80 backdrop-blur-sm rounded-xl 
-                    flex items-center justify-center border border-neutral-200/40 text-neutral-900">
+                  <div
+                    className="relative w-10 h-10 bg-white/80 backdrop-blur-sm rounded-xl 
+                    flex items-center justify-center border border-neutral-200/40 text-neutral-900"
+                  >
                     {userinfo?.first_name?.charAt(0) || "U"}
                   </div>
                 </div>
