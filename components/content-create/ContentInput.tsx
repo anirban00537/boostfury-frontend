@@ -64,76 +64,46 @@ interface StyleConfigType {
 // Update the tone configuration with proper typing
 const toneConfig: ToneConfigType = {
   Professional: {
-    icon: <Briefcase className="h-4 w-4" />,
-    activeColor:
-      "bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600 border-blue-200",
-    hoverColor: "hover:bg-blue-50/80 hover:border-blue-200",
-    iconBg: "bg-gradient-to-br from-blue-100 to-blue-200",
-    description: "Business and corporate content",
-    category: "Business",
+    icon: <Briefcase className="size-4" />,
+    activeColor: "#0A66C2", // LinkedIn blue
+    hoverColor: "#2C8EFF",
+    iconBg: "from-[#0A66C2]/10 to-[#2C8EFF]/5",
+    description: "Formal and business-oriented content",
   },
   Casual: {
-    icon: <Smile className="h-4 w-4" />,
-    activeColor:
-      "bg-gradient-to-br from-green-50 to-green-100 text-green-600 border-green-200",
-    hoverColor: "hover:bg-green-50/80 hover:border-green-200",
-    iconBg: "bg-gradient-to-br from-green-100 to-green-200",
-    description: "Relaxed and conversational",
-    category: "Social",
+    icon: <MessageCircle className="size-4" />,
+    activeColor: "#FF6B6B", // Warm red
+    hoverColor: "#FF8787",
+    iconBg: "from-[#FF6B6B]/10 to-[#FF8787]/5",
+    description: "Friendly and conversational tone",
   },
-  Friendly: {
-    icon: <MessageCircle className="h-4 w-4" />,
-    activeColor:
-      "bg-gradient-to-br from-purple-50 to-purple-100 text-purple-600 border-purple-200",
-    hoverColor: "hover:bg-purple-50/80 hover:border-purple-200",
-    iconBg: "bg-gradient-to-br from-purple-100 to-purple-200",
-    description: "Warm and approachable tone",
-    category: "Social",
-  },
-  Authoritative: {
-    icon: <BookMarked className="h-4 w-4" />,
-    activeColor:
-      "bg-gradient-to-br from-red-50 to-red-100 text-red-600 border-red-200",
-    hoverColor: "hover:bg-red-50/80 hover:border-red-200",
-    iconBg: "bg-gradient-to-br from-red-100 to-red-200",
-    description: "Expert and commanding voice",
-    category: "Professional",
-  },
-  Humorous: {
-    icon: <Sparkles className="h-4 w-4" />,
-    activeColor:
-      "bg-gradient-to-br from-yellow-50 to-yellow-100 text-yellow-600 border-yellow-200",
-    hoverColor: "hover:bg-yellow-50/80 hover:border-yellow-200",
-    iconBg: "bg-gradient-to-br from-yellow-100 to-yellow-200",
-    description: "Light and entertaining style",
-    category: "Creative",
-  },
-  Formal: {
-    icon: <FileText className="h-4 w-4" />,
-    activeColor:
-      "bg-gradient-to-br from-gray-50 to-gray-100 text-gray-600 border-gray-200",
-    hoverColor: "hover:bg-gray-50/80 hover:border-gray-200",
-    iconBg: "bg-gradient-to-br from-gray-100 to-gray-200",
-    description: "Traditional and proper tone",
-    category: "Professional",
+  Storytelling: {
+    icon: <BookOpen className="size-4" />,
+    activeColor: "#845EF7", // Purple
+    hoverColor: "#9775FA",
+    iconBg: "from-[#845EF7]/10 to-[#9775FA]/5",
+    description: "Narrative and engaging style",
   },
   Inspirational: {
-    icon: <Lightbulb className="h-4 w-4" />,
-    activeColor:
-      "bg-gradient-to-br from-amber-50 to-amber-100 text-amber-600 border-amber-200",
-    hoverColor: "hover:bg-amber-50/80 hover:border-amber-200",
-    iconBg: "bg-gradient-to-br from-amber-100 to-amber-200",
-    description: "Motivational and uplifting",
-    category: "Creative",
+    icon: <Sparkles className="size-4" />,
+    activeColor: "#FAB005", // Gold
+    hoverColor: "#FFD43B",
+    iconBg: "from-[#FAB005]/10 to-[#FFD43B]/5",
+    description: "Motivational and uplifting content",
   },
-  Technical: {
-    icon: <Code className="h-4 w-4" />,
-    activeColor:
-      "bg-gradient-to-br from-indigo-50 to-indigo-100 text-indigo-600 border-indigo-200",
-    hoverColor: "hover:bg-indigo-50/80 hover:border-indigo-200",
-    iconBg: "bg-gradient-to-br from-indigo-100 to-indigo-200",
-    description: "Detailed and precise content",
-    category: "Technical",
+  Educational: {
+    icon: <GraduationCap className="size-4" />,
+    activeColor: "#20C997", // Teal
+    hoverColor: "#38D9A9",
+    iconBg: "from-[#20C997]/10 to-[#38D9A9]/5",
+    description: "Informative and instructional",
+  },
+  Analytical: {
+    icon: <BarChart2 className="size-4" />,
+    activeColor: "#4C6EF5", // Indigo
+    hoverColor: "#748FFC",
+    iconBg: "from-[#4C6EF5]/10 to-[#748FFC]/5",
+    description: "Data-driven and logical approach",
   },
 };
 
@@ -251,39 +221,73 @@ export const ContentInput = ({
               Content Tone
             </label>
             <div className="grid grid-cols-3 gap-2">
-              {toneOptions.map(({ tone, icon: Icon }) => (
+              {Object.entries(toneConfig).map(([tone, config]) => (
                 <button
                   key={tone}
                   onClick={() => setPostTone(tone)}
                   className="group relative"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                  <div
+                    className="absolute inset-0 bg-gradient-to-br from-[var(--hover-color)]/10 to-transparent rounded-xl transition-all duration-300"
+                    style={
+                      {
+                        "--hover-color": config.activeColor,
+                      } as React.CSSProperties
+                    }
+                  />
                   <div
                     className={cn(
                       "relative flex items-center gap-2 p-3 rounded-xl border transition-all duration-200",
-                      "hover:bg-gradient-to-br hover:from-white hover:to-blue-50/50",
+                      "hover:bg-gradient-to-br hover:from-white hover:to-[var(--hover-color)]/20",
                       postTone === tone
-                        ? "bg-white border-blue-200 shadow-sm"
-                        : "bg-white/80 border-blue-100/50"
+                        ? [
+                            "bg-white border-[var(--active-color)] shadow-sm",
+                            "shadow-[var(--active-color)]/10",
+                          ].join(" ")
+                        : "bg-white/80 border-[var(--active-color)]/20"
                     )}
+                    style={
+                      {
+                        "--active-color": config.activeColor,
+                        "--hover-color": config.activeColor,
+                      } as React.CSSProperties
+                    }
                   >
                     <div
                       className={cn(
                         "size-8 rounded-lg flex items-center justify-center transition-all duration-200",
                         postTone === tone
-                          ? "bg-gradient-to-br from-blue-100 to-blue-50 text-blue-600 shadow-inner"
-                          : "bg-white/80 text-slate-500 group-hover:text-blue-500"
+                          ? [
+                              "bg-gradient-to-br",
+                              config.iconBg,
+                              "text-[var(--active-color)]",
+                              "shadow-inner",
+                            ].join(" ")
+                          : [
+                              "bg-white/80",
+                              "text-[var(--active-color)]",
+                            ].join(" ")
                       )}
+                      style={
+                        {
+                          "--active-color": config.activeColor,
+                        } as React.CSSProperties
+                      }
                     >
-                      <Icon className="size-4" />
+                      {config.icon}
                     </div>
                     <span
                       className={cn(
                         "text-sm font-medium transition-colors duration-200",
                         postTone === tone
-                          ? "text-blue-900"
-                          : "text-slate-600 group-hover:text-blue-800"
+                          ? "text-[var(--active-color)]"
+                          : "text-[var(--active-color)]/70 group-hover:text-[var(--active-color)]"
                       )}
+                      style={
+                        {
+                          "--active-color": config.activeColor,
+                        } as React.CSSProperties
+                      }
                     >
                       {tone}
                     </span>
