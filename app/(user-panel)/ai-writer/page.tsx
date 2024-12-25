@@ -126,14 +126,21 @@ const ContentCreationTools: React.FC = () => {
                         "relative flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-200",
                         "outline-none ring-0",
                         item.value === activeTab
-                          ? "bg-white text-neutral-900 shadow-[inset_0_1px_0_0_rgba(255,255,255,1),0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)] border border-neutral-200/80"
+                          ? [
+                              "bg-gradient-to-r from-[#0A66C2] to-[#2C8EFF]",
+                              "text-white [&_*]:text-white",
+                              "shadow-[0_2px_4px_rgba(10,102,194,0.2)]",
+                              "border-none",
+                            ].join(" ")
                           : "text-neutral-500 hover:text-neutral-700 hover:bg-white/40"
                       )}
                     >
                       <div className="size-4 flex items-center justify-center">
                         <item.icon className="size-3.5" />
                       </div>
-                      <span className="text-[13px] font-medium">{item.label}</span>
+                      <span className="text-[13px] font-medium">
+                        {item.label}
+                      </span>
                     </TabsTrigger>
                   ))}
                 </TabsList>
@@ -141,12 +148,14 @@ const ContentCreationTools: React.FC = () => {
             </div>
 
             {/* Content Area */}
-            <div className={cn(
-              "grid gap-8",
-              activeTab === "write"
-                ? "grid-cols-1 lg:grid-cols-2"
-                : "grid-cols-1"
-            )}>
+            <div
+              className={cn(
+                "grid gap-8",
+                activeTab === "write"
+                  ? "grid-cols-1 lg:grid-cols-2"
+                  : "grid-cols-1"
+              )}
+            >
               <div className={activeTab === "ideas" ? "col-span-full" : ""}>
                 <TabsContent value="write" className="mt-0">
                   <motion.div

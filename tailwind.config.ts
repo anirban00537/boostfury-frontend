@@ -28,12 +28,12 @@ const config: Config = {
         ring: "#c0c0c0",
         foreground: "#000000",
         primary: {
-          DEFAULT: "#000000",
+          DEFAULT: "#0A66C2",
           foreground: "#ffffff",
         },
         secondary: {
           //dark grey
-          DEFAULT: "#111111",
+          DEFAULT: "#2C8EFF",
           foreground: "#000000",
         },
         destructive: {

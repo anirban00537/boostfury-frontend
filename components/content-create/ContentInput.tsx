@@ -177,62 +177,77 @@ export const ContentInput = ({
   return (
     <div className="group relative">
       {/* Enhanced Glowing Effects */}
-      <div className="absolute -inset-[1px] bg-gradient-to-t from-neutral-200/0 via-neutral-200/10 to-neutral-200/0 rounded-2xl group-hover:via-neutral-200/20 transition-all duration-500" />
-      <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
+      <div className="absolute -inset-[1px] bg-gradient-to-t from-blue-100/20 via-white to-blue-50/20 rounded-2xl opacity-40 group-hover:opacity-70 transition-all duration-500" />
 
       {/* Main Content */}
-      <div className="relative rounded-2xl bg-white/50 backdrop-blur-sm border border-neutral-200/60 overflow-hidden">
+      <div
+        className="relative rounded-2xl bg-gradient-to-b from-white to-slate-50/80 border border-blue-100/50 overflow-hidden backdrop-blur-sm 
+        shadow-[0_4px_12px_-2px_rgba(0,0,0,0.08),0_2px_6px_-2px_rgba(0,0,0,0.06)] 
+        hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.08),0_4px_12px_-4px_rgba(0,0,0,0.06)] 
+        transition-shadow duration-300"
+      >
         <div className="p-8 space-y-6">
-          {/* Header */}
+          {/* Header Section */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              {/* Icon Container */}
+              {/* Icon Container with enhanced glassmorphism */}
               <div className="relative">
-                <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
-                <div className="absolute -inset-[1px] blur-sm bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl"></div>
-                <div className="relative w-12 h-12 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center border border-neutral-200/40 shadow-sm">
-                  <Pencil className="w-5 h-5 text-neutral-900" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-white rounded-xl blur-md" />
+                <div className="relative w-12 h-12 bg-gradient-to-br from-white to-blue-50 rounded-xl flex items-center justify-center border border-blue-100/30 shadow-sm">
+                  <Pencil className="w-5 h-5 text-blue-600" />
                 </div>
               </div>
               <div>
-                <h3 className="text-base font-semibold bg-gradient-to-b from-black to-neutral-800 bg-clip-text text-transparent">
+                <h3 className="text-base font-semibold bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">
                   Content Editor
                 </h3>
-                <span className="text-sm text-neutral-600">Write or edit your content</span>
+                <span className="text-sm text-slate-600">
+                  Write or edit your content
+                </span>
               </div>
             </div>
 
-            {/* Character counter */}
+            {/* Enhanced character counter */}
             <div className="relative group">
-              <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
-              <div className="relative flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/50 backdrop-blur-sm border border-neutral-200/60">
-                <div className={`h-2 w-2 rounded-full transition-colors duration-200
-                  ${charCount >= MIN_CHARS ? "bg-neutral-900" : "bg-neutral-300"}`} />
-                <span className="text-sm text-neutral-600">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-white rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300" />
+              <div className="relative flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-white/80 to-blue-50/50 border border-blue-100/50">
+                <div
+                  className={cn(
+                    "h-2 w-2 rounded-full transition-all duration-300",
+                    charCount >= MIN_CHARS
+                      ? "bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]"
+                      : "bg-slate-300"
+                  )}
+                />
+                <span className="text-sm text-slate-600">
                   {charCount}/{MAX_CHARS}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Textarea */}
-          <div className="relative">
-            <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl"></div>
+          {/* Enhanced Textarea */}
+          <div className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-100/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300" />
             <textarea
               value={content}
               onChange={handleLinkedInTextChange}
               placeholder="What would you like to write about?"
-              className="relative w-full min-h-[200px] p-4 rounded-xl bg-white/80 backdrop-blur-sm 
-                text-neutral-700 text-sm resize-none outline-none
-                border border-neutral-200/60
-                focus:border-neutral-300 focus:ring-2 focus:ring-neutral-200/50
-                transition-all duration-200"
+              className={cn(
+                "relative w-full min-h-[200px] p-4 rounded-xl",
+                "bg-white/80 backdrop-blur-sm text-slate-700 text-sm",
+                "border border-blue-100/50",
+                "placeholder:text-slate-400",
+                "resize-none outline-none",
+                "focus:border-blue-200 focus:ring-2 focus:ring-blue-100",
+                "transition-all duration-200"
+              )}
             />
           </div>
 
-          {/* Content Tone Section - Updated Design */}
+          {/* Enhanced Content Tone Section */}
           <div className="space-y-3">
-            <label className="text-sm font-medium text-neutral-900">
+            <label className="text-sm font-medium text-slate-900">
               Content Tone
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -240,35 +255,36 @@ export const ContentInput = ({
                 <button
                   key={tone}
                   onClick={() => setPostTone(tone)}
-                  className={cn(
-                    "group relative",
-                    "transition-all duration-200"
-                  )}
+                  className="group relative"
                 >
-                  {/* Hover/Active Glowing Effects */}
-                  <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
-                  
-                  <div className={cn(
-                    "relative flex items-center gap-2 p-3 rounded-xl border transition-all duration-200",
-                    "hover:bg-white/80",
-                    postTone === tone
-                      ? "bg-white border-neutral-300/80 shadow-sm"
-                      : "bg-white/50 border-neutral-200/60"
-                  )}>
-                    <div className={cn(
-                      "size-8 rounded-lg flex items-center justify-center transition-colors",
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                  <div
+                    className={cn(
+                      "relative flex items-center gap-2 p-3 rounded-xl border transition-all duration-200",
+                      "hover:bg-gradient-to-br hover:from-white hover:to-blue-50/50",
                       postTone === tone
-                        ? "bg-gradient-to-br from-primary/10 to-primary/5 text-primary shadow-inner"
-                        : "bg-white/80 text-neutral-500 group-hover:text-primary/80"
-                    )}>
+                        ? "bg-white border-blue-200 shadow-sm"
+                        : "bg-white/80 border-blue-100/50"
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "size-8 rounded-lg flex items-center justify-center transition-all duration-200",
+                        postTone === tone
+                          ? "bg-gradient-to-br from-blue-100 to-blue-50 text-blue-600 shadow-inner"
+                          : "bg-white/80 text-slate-500 group-hover:text-blue-500"
+                      )}
+                    >
                       <Icon className="size-4" />
                     </div>
-                    <span className={cn(
-                      "text-sm font-medium",
-                      postTone === tone
-                        ? "text-neutral-900"
-                        : "text-neutral-600 group-hover:text-neutral-800"
-                    )}>
+                    <span
+                      className={cn(
+                        "text-sm font-medium transition-colors duration-200",
+                        postTone === tone
+                          ? "text-blue-900"
+                          : "text-slate-600 group-hover:text-blue-800"
+                      )}
+                    >
                       {tone}
                     </span>
                   </div>
@@ -277,31 +293,40 @@ export const ContentInput = ({
             </div>
           </div>
 
-          {/* Generate button */}
-          <div className="flex justify-end pt-4 border-t border-neutral-200/60">
-            <button
+          {/* Generate button section */}
+          <div className="flex justify-end pt-4 border-t border-blue-100/50">
+            <ShimmerButton
               onClick={onGenerate}
               disabled={!isValidLength || isGeneratingContent}
-              className="group relative"
+              shimmerColor="rgba(255, 255, 255, 0.6)"
+              shimmerSize="0.15em"
+              shimmerDuration="2s"
+              borderRadius="0.75rem"
+              background={
+                isValidLength
+                  ? "linear-gradient(45deg, #2563eb, #3b82f6, #2563eb)"
+                  : "#94a3b8"
+              }
+              className={cn(
+                "flex items-center gap-2 px-6 py-2.5 text-sm font-medium",
+                "border border-white/20",
+                "shadow-[0_1px_2px_rgba(0,0,0,0.1)]",
+                !isValidLength && "opacity-50 cursor-not-allowed"
+              )}
+              enableShimmer={isValidLength && !isGeneratingContent}
             >
-              <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
-              <div className="relative flex items-center gap-2 px-6 py-2.5 rounded-xl 
-                bg-neutral-900 text-white text-sm font-medium
-                hover:bg-neutral-800 disabled:bg-neutral-300
-                transition-all duration-200">
-                {isGeneratingContent ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <span>Generating...</span>
-                  </>
-                ) : (
-                  <>
-                    <Wand2 className="h-4 w-4" />
-                    <span>Generate Content</span>
-                  </>
-                )}
-              </div>
-            </button>
+              {isGeneratingContent ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Generating...</span>
+                </>
+              ) : (
+                <>
+                  <Wand2 className="h-4 w-4" />
+                  <span>Generate Content</span>
+                </>
+              )}
+            </ShimmerButton>
           </div>
         </div>
       </div>
