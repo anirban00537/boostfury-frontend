@@ -7,15 +7,21 @@ import { AIWritingPreview } from "@/components/content-create/AIWritingPreview";
 import { useGenerateLinkedInPosts } from "@/hooks/useGenerateLinkedInPosts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ContentIdeas } from "@/components/content-create/ContentIdeas";
-import { Lightbulb, Pencil, Sparkles } from "lucide-react";
+import { Lightbulb, Pencil, Sparkles, ArrowLeft, FileText, Youtube, Link, LayoutTemplate, Upload, X } from "lucide-react";
 import { useGenerateContentIdeas } from "@/hooks/useGenerateLinkedInPosts";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
+import { PDFToPost } from "@/components/content-create/features/PDFToPost";
+import { YouTubeToPost } from "@/components/content-create/features/YouTubeToPost";
+import { ArticleToPost } from "@/components/content-create/features/ArticleToPost";
+import { FormatContent } from "@/components/content-create/features/FormatContent";
+import { ViralPostGenerator } from "@/components/content-create/features/ViralPostGenerator";
 
 interface TabItem {
   value: string;
   icon: LucideIcon;
   label: string;
+  description: string;
 }
 
 const tabItems: TabItem[] = [
@@ -23,12 +29,38 @@ const tabItems: TabItem[] = [
     value: "write",
     icon: Pencil,
     label: "Viral Post Generator",
+    description: "Create engaging viral posts from scratch"
   },
   {
     value: "ideas",
     icon: Lightbulb,
     label: "Idea Generator",
+    description: "Get AI-powered content ideas"
   },
+  {
+    value: "pdf",
+    icon: FileText,
+    label: "PDF to Post",
+    description: "Convert PDF content into engaging posts"
+  },
+  {
+    value: "youtube",
+    icon: Youtube,
+    label: "YouTube to Post",
+    description: "Create posts from YouTube videos"
+  },
+  {
+    value: "article",
+    icon: Link,
+    label: "Article to Post",
+    description: "Transform articles into LinkedIn content"
+  },
+  {
+    value: "format",
+    icon: LayoutTemplate,
+    label: "Format Content",
+    description: "Format and structure your content"
+  }
 ];
 
 const fadeInUpVariant = {
@@ -40,10 +72,30 @@ const fadeInUpVariant = {
   },
 };
 
+// Add these color mappings for each tool
+const toolColors = {
+  write: { light: '#E3F2FD', main: '#2196F3', hover: '#E3F2FD' },
+  ideas: { light: '#F3E5F5', main: '#9C27B0', hover: '#F3E5F5' },
+  pdf: { light: '#FFEBEE', main: '#F44336', hover: '#FFEBEE' },
+  youtube: { light: '#FCE4EC', main: '#E91E63', hover: '#FCE4EC' },
+  article: { light: '#E8F5E9', main: '#4CAF50', hover: '#E8F5E9' },
+  format: { light: '#FFF3E0', main: '#FF9800', hover: '#FFF3E0' },
+};
+
+// Add this type for the PDF state
+interface PDFFile {
+  name: string;
+  size: number;
+  url: string;
+}
+
 const ContentCreationTools: React.FC = () => {
   const [characterCount, setCharacterCount] = useState(0);
   const [contentSource, setContentSource] = useState("plain-prompt");
   const [activeTab, setActiveTab] = useState("write");
+  const [selectedTool, setSelectedTool] = useState<string | null>(null);
+  const [pdfFile, setPdfFile] = useState<PDFFile | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const {
     content,
@@ -79,6 +131,11 @@ const ContentCreationTools: React.FC = () => {
     }
   };
 
+  const handleToolSelect = (value: string) => {
+    setSelectedTool(value);
+    setActiveTab(value);
+  };
+
   // Slow scroll to the bottom after content is loaded or updated
   useEffect(() => {
     const scrollSlowly = () => {
@@ -102,122 +159,167 @@ const ContentCreationTools: React.FC = () => {
     scrollSlowly();
   }, [content, ideas, generatedPost, isGeneratingLinkedinPosts]);
 
+  // Add these handler functions
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === 'application/pdf') {
+      setPdfFile({
+        name: file.name,
+        size: file.size,
+        url: URL.createObjectURL(file)
+      });
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPdfFile({
+        name: file.name,
+        size: file.size,
+        url: URL.createObjectURL(file)
+      });
+    }
+  };
+
+  const removePdf = () => {
+    setPdfFile(null);
+  };
+
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.01)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_40%,transparent_100%)]" />
-
-      <div className="relative px-4 sm:px-6 lg:px-8 py-12">
-        {/* Centered Header */}
-        <Header />
-
-        {/* Content Area with Max Width */}
-        <div className=" mx-auto">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            {/* Tab List - Centered */}
-            <div className="flex flex-col items-center gap-6 mb-8">
-              <div className="relative">
-                <TabsList className="w-[400px] grid grid-cols-2 p-0.5 bg-neutral-100/80 rounded-2xl">
-                  {tabItems.map((item) => (
-                    <TabsTrigger
-                      key={item.value}
-                      value={item.value}
-                      className={cn(
-                        "relative flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-200",
-                        "outline-none ring-0",
-                        item.value === activeTab
-                          ? [
-                              "bg-gradient-to-r from-[#0A66C2] to-[#2C8EFF]",
-                              "text-white [&_*]:text-white",
-                              "shadow-[0_2px_4px_rgba(10,102,194,0.2)]",
-                              "border-none",
-                            ].join(" ")
-                          : "text-neutral-500 hover:text-neutral-700 hover:bg-white/40"
-                      )}
-                    >
-                      <div className="size-4 flex items-center justify-center">
-                        <item.icon className="size-3.5" />
-                      </div>
-                      <span className="text-[13px] font-medium">
-                        {item.label}
-                      </span>
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-              </div>
+    <div className="relative min-h-screen bg-white">
+      <div className="relative h-full p-6">
+        {!selectedTool ? (
+          // Tool Selection Page
+          <div className="max-w-[1200px] mx-auto">
+            <div className="text-center mb-12">
+              <span className="inline-block px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-sm font-medium mb-4">
+                ✨ AI-Powered Content Creation
+              </span>
+              <h1 className="text-3xl font-bold mb-4 bg-gradient-to-r from-neutral-800 to-neutral-600 bg-clip-text text-transparent">
+                Create Viral LinkedIn Posts
+              </h1>
+              <p className="text-neutral-500 max-w-2xl mx-auto">
+                Transform your ideas into engaging content with our AI writer. Generate
+                professional posts that drive engagement and grow your network.
+              </p>
             </div>
 
-            {/* Content Area */}
-            <div
-              className={cn(
-                "grid gap-8",
-                activeTab === "write"
-                  ? "grid-cols-1 lg:grid-cols-2"
-                  : "grid-cols-1"
-              )}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {tabItems.map((item) => (
+                <button
+                  key={item.value}
+                  onClick={() => handleToolSelect(item.value)}
+                  className={cn(
+                    "flex flex-col items-center p-8 rounded-xl",
+                    "bg-white border-2 border-transparent",
+                    "transition-all duration-300 group",
+                    "hover:shadow-[0_0_30px_rgba(0,0,0,0.05)]",
+                    "relative overflow-hidden"
+                  )}
+                  style={{
+                    '--tool-color': toolColors[item.value].main,
+                    '--tool-light': toolColors[item.value].light,
+                  } as React.CSSProperties}
+                >
+                  {/* Hover background effect */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                       style={{ backgroundColor: toolColors[item.value].light }} />
+
+                  {/* Icon container */}
+                  <div className={cn(
+                    "relative mb-6 rounded-xl p-4",
+                    "transition-all duration-300 group-hover:scale-110",
+                    "bg-opacity-0 group-hover:bg-opacity-100"
+                  )}
+                  style={{ backgroundColor: toolColors[item.value].light }}>
+                    <item.icon 
+                      className="size-8 transition-colors duration-300"
+                      style={{ color: toolColors[item.value].main }}
+                    />
+                  </div>
+
+                  {/* Text content */}
+                  <div className="relative text-center">
+                    <h3 className="text-lg font-semibold mb-2 group-hover:text-[var(--tool-color)] transition-colors">
+                      {item.label}
+                    </h3>
+                    <p className="text-sm text-neutral-500 transition-colors group-hover:text-neutral-600">
+                      {item.description}
+                    </p>
+                  </div>
+
+                  {/* Bottom border indicator */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
+                       style={{ backgroundColor: toolColors[item.value].main }} />
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          // Tool Content Page
+          <div className="max-w-[1200px] mx-auto space-y-8">
+            <button
+              onClick={() => setSelectedTool(null)}
+              className="group flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-neutral-50 text-neutral-600 transition-all"
             >
-              <div className={activeTab === "ideas" ? "col-span-full" : ""}>
-                <TabsContent value="write" className="mt-0">
-                  <motion.div
-                    variants={fadeInUpVariant}
-                    initial="hidden"
-                    animate="visible"
-                  >
-                    <ContentInput
-                      {...{
-                        contentSource,
-                        isGenerating: isGeneratingLinkedinPosts,
-                        handleGenerate: handleGenerateLinkedIn,
-                        handleTextChange: handleLocalTextChange,
-                        setContent,
-                        isGeneratingLinkedinPosts,
-                        handleGenerateLinkedIn,
-                        handleLinkedInTextChange,
-                        content,
-                        postTone,
-                        setPostTone,
-                      }}
-                    />
-                  </motion.div>
-                </TabsContent>
+              <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
+              <span className="font-medium">Back to Tools</span>
+            </button>
 
-                <TabsContent value="ideas" className="mt-0">
-                  <motion.div
-                    variants={fadeInUpVariant}
-                    initial="hidden"
-                    animate="visible"
-                  >
-                    <ContentIdeas
-                      loading={loading}
-                      ideas={ideas}
-                      handleGenerateTopic={handleGenerateIdeas}
-                      handleTopicSelect={handleTopicSelect}
-                    />
-                  </motion.div>
-                </TabsContent>
-              </div>
-
-              {activeTab === "write" && (
-                <div className="w-full">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={activeTab}
-                      variants={fadeInUpVariant}
-                      initial="hidden"
-                      animate="visible"
-                    >
-                      <AIWritingPreview
-                        isGenerating={isGeneratingLinkedinPosts}
-                        generatedPost={generatedPost}
-                        title="AI Generated LinkedIn Post"
-                      />
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
+            <div className="pt-2">
+              {selectedTool === "write" && (
+                <ViralPostGenerator
+                  contentInputProps={{
+                    contentSource,
+                    isGenerating: isGeneratingLinkedinPosts,
+                    handleGenerate: handleGenerateLinkedIn,
+                    handleTextChange: handleLocalTextChange,
+                    setContent,
+                    isGeneratingLinkedinPosts,
+                    handleGenerateLinkedIn,
+                    handleLinkedInTextChange,
+                    content,
+                    postTone,
+                    setPostTone,
+                  }}
+                  previewProps={{
+                    isGenerating: isGeneratingLinkedinPosts,
+                    generatedPost,
+                    title: "AI Generated LinkedIn Post"
+                  }}
+                />
               )}
+
+              {selectedTool === "ideas" && (
+                <ContentIdeas
+                  loading={loading}
+                  ideas={ideas}
+                  handleGenerateTopic={handleGenerateIdeas}
+                  handleTopicSelect={handleTopicSelect}
+                />
+              )}
+
+              {selectedTool === "pdf" && <PDFToPost />}
+              {selectedTool === "youtube" && <YouTubeToPost />}
+              {selectedTool === "article" && <ArticleToPost />}
+              {selectedTool === "format" && <FormatContent />}
             </div>
-          </Tabs>
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Ref for scrolling */}
