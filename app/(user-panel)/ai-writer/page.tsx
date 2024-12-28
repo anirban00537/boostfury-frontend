@@ -17,8 +17,11 @@ import { ArticleToPost } from "@/components/content-create/features/ArticleToPos
 import { FormatContent } from "@/components/content-create/features/FormatContent";
 import { ViralPostGenerator } from "@/components/content-create/features/ViralPostGenerator";
 
+// Add this type to define valid tool values
+type ToolValue = 'write' | 'ideas' | 'pdf' | 'youtube' | 'article' | 'format';
+
 interface TabItem {
-  value: string;
+  value: ToolValue;  // Instead of string
   icon: LucideIcon;
   label: string;
   description: string;
@@ -72,8 +75,8 @@ const fadeInUpVariant = {
   },
 };
 
-// Add these color mappings for each tool
-const toolColors = {
+// Now toolColors will be properly typed
+const toolColors: Record<ToolValue, { light: string; main: string; hover: string }> = {
   write: { light: '#E3F2FD', main: '#2196F3', hover: '#E3F2FD' },
   ideas: { light: '#F3E5F5', main: '#9C27B0', hover: '#F3E5F5' },
   pdf: { light: '#FFEBEE', main: '#F44336', hover: '#FFEBEE' },

@@ -1,16 +1,31 @@
 import { cn } from "@/lib/utils";
 import { FileText, Upload, X, Sparkles } from "lucide-react";
 import { useState } from "react";
+import * as pdfjsLib from 'pdfjs-dist';
+import { useGenerateLinkedInPosts } from "@/hooks/useGenerateLinkedInPosts";
+
+// Set up PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 interface PDFFile {
   name: string;
   size: number;
   url: string;
+  content?: string;
 }
 
 export const PDFToPost = () => {
+  const {
+    handleGenerateLinkedIn,
+    isGeneratingLinkedinPosts,
+    generatedPost,
+    setContent
+  } = useGenerateLinkedInPosts();
+
   const [pdfFile, setPdfFile] = useState<PDFFile | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isExtracting, setIsExtracting] = useState(false);
+  const [extractedText, setExtractedText] = useState<string>("");
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -22,33 +37,74 @@ export const PDFToPost = () => {
     setIsDragging(false);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const extractPdfContent = async (file: File) => {
+    setIsExtracting(true);
+    try {
+      // Load the PDF file
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      
+      let fullText = '';
+      
+      // Extract text from each page
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items
+          .map((item: any) => item.str)
+          .join(' ');
+        fullText += pageText + '\n';
+      }
+
+      return fullText;
+    } catch (error) {
+      console.error('Error extracting PDF content:', error);
+      throw error;
+    } finally {
+      setIsExtracting(false);
+    }
+  };
+
+  const handleFileProcess = async (file: File) => {
+    try {
+      const extractedContent = await extractPdfContent(file);
+      setPdfFile({
+        name: file.name,
+        size: file.size,
+        url: URL.createObjectURL(file),
+        content: extractedContent
+      });
+      setExtractedText(extractedContent);
+      setContent(extractedContent);
+    } catch (error) {
+      console.error('Error processing file:', error);
+    }
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
     
     const file = e.dataTransfer.files[0];
     if (file && file.type === 'application/pdf') {
-      setPdfFile({
-        name: file.name,
-        size: file.size,
-        url: URL.createObjectURL(file)
-      });
+      await handleFileProcess(file);
     }
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setPdfFile({
-        name: file.name,
-        size: file.size,
-        url: URL.createObjectURL(file)
-      });
+      await handleFileProcess(file);
     }
   };
 
   const removePdf = () => {
     setPdfFile(null);
+  };
+
+  const generateLinkedInPost = () => {
+    if (!pdfFile?.content) return;
+    handleGenerateLinkedIn();
   };
 
   return (
@@ -120,10 +176,28 @@ export const PDFToPost = () => {
 
           {pdfFile && (
             <button
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition"
+              onClick={generateLinkedInPost}
+              disabled={isGeneratingLinkedinPosts}
+              className={cn(
+                "w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg",
+                "bg-white border border-neutral-200 text-neutral-900",
+                "hover:border-neutral-300 transition-all duration-200",
+                isGeneratingLinkedinPosts && "opacity-50 cursor-not-allowed"
+              )}
             >
-              <Sparkles className="size-4" />
-              <span>Generate LinkedIn Post</span>
+              {isGeneratingLinkedinPosts ? (
+                <>
+                  <div className="animate-spin">
+                    <Sparkles className="size-4 text-blue-500" />
+                  </div>
+                  <span>Generating...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="size-4 text-blue-500" />
+                  <span>Generate Content</span>
+                </>
+              )}
             </button>
           )}
         </div>
@@ -136,11 +210,31 @@ export const PDFToPost = () => {
             </div>
             <div>
               <h3 className="font-medium text-neutral-900">Generated Post</h3>
-              <p className="text-sm text-neutral-500">Your post will appear here</p>
+              <p className="text-sm text-neutral-500">
+                {generatedPost ? 'Your LinkedIn post is ready' : 'Your post will appear here'}
+              </p>
             </div>
           </div>
 
-          {!pdfFile ? (
+          {isExtracting ? (
+            <div className="h-[400px] rounded-lg border border-neutral-200 bg-neutral-50 flex items-center justify-center">
+              <div className="flex flex-col items-center gap-3">
+                <div className="animate-spin">
+                  <Sparkles className="size-6 text-blue-500" />
+                </div>
+                <p className="text-sm text-neutral-500">Extracting PDF content...</p>
+              </div>
+            </div>
+          ) : isGeneratingLinkedinPosts ? (
+            <div className="h-[400px] rounded-lg border border-neutral-200 bg-neutral-50 flex items-center justify-center">
+              <div className="flex flex-col items-center gap-3">
+                <div className="animate-spin">
+                  <Sparkles className="size-6 text-blue-500" />
+                </div>
+                <p className="text-sm text-neutral-500">Generating LinkedIn post...</p>
+              </div>
+            </div>
+          ) : !pdfFile ? (
             <div className="flex flex-col items-center justify-center text-center py-12 px-4">
               <div className="size-16 flex items-center justify-center bg-neutral-50 rounded-full mb-4">
                 <Sparkles className="size-8 text-neutral-400" />
@@ -150,9 +244,21 @@ export const PDFToPost = () => {
                 Upload a PDF to start generating AI-powered content
               </p>
             </div>
+          ) : generatedPost ? (
+            <div className="h-[400px] rounded-lg border border-neutral-200 bg-neutral-50 overflow-auto p-4">
+              <div className="prose prose-sm max-w-none">
+                {generatedPost}
+              </div>
+            </div>
           ) : (
-            <div className="h-[400px] rounded-lg border border-neutral-200 bg-neutral-50 flex items-center justify-center">
-              <p className="text-neutral-500">Generated content will appear here</p>
+            <div className="flex flex-col items-center justify-center text-center py-12 px-4">
+              <div className="size-16 flex items-center justify-center bg-blue-50 rounded-full mb-4">
+                <Sparkles className="size-8 text-blue-500" />
+              </div>
+              <h3 className="text-neutral-900 font-medium mb-1">PDF Uploaded Successfully</h3>
+              <p className="text-sm text-neutral-500">
+                Click "Generate LinkedIn Post" to create your content
+              </p>
             </div>
           )}
         </div>
