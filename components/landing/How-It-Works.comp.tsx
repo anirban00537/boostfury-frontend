@@ -1,126 +1,147 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Sparkles, PenLine, Share, BarChart } from "lucide-react";
+import { Sparkles, PenLine, Share, BarChart, ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const steps = [
   {
-    icon: <PenLine />,
+    icon: <PenLine className="w-6 h-6" />,
     title: "Write Your Content",
-    description: "Start with your content ideas or let our AI help you generate engaging LinkedIn posts.",
+    description:
+      "Start with your content ideas or let our AI help you generate engaging LinkedIn posts.",
+    color: "#0A66C2",
+    gradient: "from-[#0A66C2]/10 to-[#2C8EFF]/5",
   },
   {
-    icon: <Sparkles />,
+    icon: <Sparkles className="w-6 h-6" />,
     title: "AI Enhancement",
-    description: "Our AI analyzes and enhances your content for maximum engagement and reach.",
+    description:
+      "Our AI analyzes and enhances your content for maximum engagement and reach.",
+    color: "#845EF7",
+    gradient: "from-[#845EF7]/10 to-[#9775FA]/5",
   },
   {
-    icon: <Share />,
+    icon: <Share className="w-6 h-6" />,
     title: "Create & Share",
-    description: "Transform your content into beautiful carousels and share directly to LinkedIn.",
+    description:
+      "Transform your content into beautiful carousels and share directly to LinkedIn.",
+    color: "#20C997",
+    gradient: "from-[#20C997]/10 to-[#38D9A9]/5",
   },
   {
-    icon: <BarChart />,
+    icon: <BarChart className="w-6 h-6" />,
     title: "Track Results",
-    description: "Monitor your post performance and get insights to improve future content.",
+    description:
+      "Monitor your post performance and get insights to improve future content.",
+    color: "#FAB005",
+    gradient: "from-[#FAB005]/10 to-[#FFD43B]/5",
   },
 ];
 
-const fadeInUpVariant = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: "easeOut" },
-  },
-};
-
 const HowItWorksSection = () => {
   return (
-    <section
-      id="how-it-works"
-      className="relative py-32 overflow-hidden"
-      role="region"
-      aria-label="How it works"
-    >
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.01)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_40%,transparent_100%)]" />
+    <section className="relative py-32 overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#f8fafc_1px,transparent_1px),linear-gradient(to_bottom,#f8fafc_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+      </div>
 
       <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          {/* Section Header */}
-          <div className="text-center max-w-3xl mx-auto mb-24">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <h2 className="text-[clamp(2.5rem,5vw,4.5rem)] leading-tight font-bold">
-                <span className="bg-gradient-to-b from-black to-neutral-800 bg-clip-text text-transparent">
-                  How it works
-                </span>
-                <br />
-                <span className="bg-gradient-to-b from-neutral-700 to-neutral-500 bg-clip-text text-transparent">
-                  Simple steps
-                </span>
-              </h2>
-              <div className="mt-8 relative">
-                <div className="absolute left-1/2 -translate-x-1/2 top-0 h-px w-12 bg-gradient-to-r from-transparent via-neutral-300 to-transparent" />
-                <p className="mt-6 text-xl text-neutral-600 max-w-2xl mx-auto">
-                  Create and share engaging LinkedIn content in minutes
-                </p>
-              </div>
-            </motion.div>
-          </div>
+        {/* Section Header */}
+        <div className="text-center mb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex mb-4"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-[#0A66C2]/10 to-[#2C8EFF]/10 border border-[#0A66C2]/20">
+              <ArrowRight className="w-4 h-4 text-[#0A66C2]" />
+              <span className="text-sm font-medium bg-gradient-to-r from-[#0A66C2] to-[#2C8EFF] bg-clip-text text-transparent">
+                How It Works
+              </span>
+            </div>
+          </motion.div>
 
-          {/* Steps Grid */}
-          <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 place-items-stretch">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <h2 className="text-4xl font-bold tracking-tight mb-4">
+              Create viral content in
+              <span className="bg-gradient-to-r from-[#0A66C2] to-[#2C8EFF] bg-clip-text text-transparent">
+                {" "}
+                four simple steps
+              </span>
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Our streamlined process helps you create and share engaging
+              LinkedIn content in minutes
+            </p>
+          </motion.div>
+        </div>
+
+        {/* Steps Grid with Connection Lines */}
+        <div className="relative">
+          {/* Connection Lines */}
+          <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-[#0A66C2]/10 via-[#2C8EFF]/20 to-[#0A66C2]/10 hidden lg:block" />
+
+          <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
             {steps.map((step, index) => (
               <motion.div
                 key={step.title}
-                variants={fadeInUpVariant}
-                initial="hidden"
-                animate="visible"
-                transition={{ delay: index * 0.15 }}
-                className="group relative w-full h-full"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                {/* Enhanced Glowing Effects */}
-                <div className="absolute -inset-[1px] bg-gradient-to-t from-neutral-200/0 via-neutral-200/10 to-neutral-200/0 rounded-2xl group-hover:via-neutral-200/20 transition-all duration-500" />
-                <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
+                <div className="group relative h-full">
+                  <div
+                    className={cn(
+                      "absolute inset-0 rounded-3xl bg-gradient-to-b opacity-0 group-hover:opacity-100 transition-all duration-500",
+                      step.gradient
+                    )}
+                  />
 
-                {/* Step Card */}
-                <div className="relative h-full p-8 rounded-2xl bg-white/50 backdrop-blur-sm border border-neutral-200/60 transition-all duration-300 flex flex-col group-hover:translate-y-[-2px]">
-                  {/* Step Number */}
-                  <div className="absolute top-6 right-6 text-sm font-medium text-neutral-400">
-                    Step {index + 1}
-                  </div>
+                  <div className="relative h-full p-8 rounded-3xl bg-white border border-slate-200 hover:border-slate-300 transition-colors duration-300">
+                    {/* Step Number */}
+                    <div
+                      className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium"
+                      style={{
+                        backgroundColor: `${step.color}10`,
+                        color: step.color,
+                      }}
+                    >
+                      {index + 1}
+                    </div>
 
-                  {/* Icon Container */}
-                  <div className="mb-8 flex justify-center">
-                    <div className="relative group-hover:scale-105 transition-transform duration-300">
-                      <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
-                      <div className="absolute -inset-[1px] blur-sm bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl"></div>
-                      <div className="relative w-14 h-14 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center border border-neutral-200/40 shadow-sm">
-                        {React.cloneElement(step.icon, {
-                          className: "w-6 h-6 text-neutral-900 group-hover:scale-110 transition-transform duration-300",
-                        })}
+                    {/* Icon */}
+                    <div className="mb-5 inline-flex">
+                      <div
+                        className={cn(
+                          "relative flex items-center justify-center w-12 h-12 rounded-2xl",
+                          `bg-gradient-to-b ${step.gradient}`
+                        )}
+                      >
+                        <div className="relative" style={{ color: step.color }}>
+                          {step.icon}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Content */}
-                  <div className="text-center flex-grow flex flex-col">
-                    <h3 className="text-xl font-semibold text-neutral-900 mb-4 group-hover:text-black transition-colors">
+                    {/* Content */}
+                    <h3
+                      className="text-xl font-semibold mb-3"
+                      style={{ color: step.color }}
+                    >
                       {step.title}
                     </h3>
-                    <p className="text-neutral-600 text-base leading-relaxed group-hover:text-neutral-700 transition-colors">
+                    <p className="text-slate-600 leading-relaxed">
                       {step.description}
                     </p>
-                  </div>
-
-                  {/* Bottom Glowing Line */}
-                  <div className="absolute bottom-0 left-0 right-0 h-[1px]">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-neutral-300/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-neutral-300/20 to-transparent blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </div>
                 </div>
               </motion.div>
