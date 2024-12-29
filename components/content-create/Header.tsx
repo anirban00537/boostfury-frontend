@@ -20,12 +20,11 @@ export const Header = () => {
           </div>
 
           <h1 className="text-6xl font-bold tracking-tight leading-tight">
+            <span className="text-slate-600">What</span>{" "}
             <span className="bg-gradient-to-r from-[#0A66C2] via-[#0A66C2] to-[#2C8EFF] bg-clip-text text-transparent">
-              Create Viral
+              viral post
             </span>{" "}
-            <span className="bg-gradient-to-r from-[#2C8EFF] via-[#0A66C2] to-[#0A66C2] bg-clip-text text-transparent">
-              LinkedIn Posts
-            </span>
+            <span className="text-slate-600">do you want to create?</span>
           </h1>
 
           <p className="text-lg text-slate-600 max-w-2xl">
