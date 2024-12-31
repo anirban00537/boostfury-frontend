@@ -5,18 +5,19 @@
 /.pnp
 .pnp.js
 .yarn/install-state.gz
+
+# uploads
 /uploads
+
 # testing
 /coverage
-# .env
-.env.server
+
 # next.js
 /.next/
 /out/
 
 # production
 /build
-# /public/uploads
 
 # misc
 .DS_Store
@@ -27,13 +28,18 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
+# environment variables
 .env
+.env.*
+.env.local
+.env.development
+.env.test
+.env.production
+.env.server
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-.env
