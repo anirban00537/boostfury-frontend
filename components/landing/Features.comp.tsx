@@ -54,10 +54,10 @@ const features = [
     gradient: "from-[#FAB005]/10 to-[#FFD43B]/5",
   },
   {
-    name: "High-Resolution Downloads",
+    name: "AI Writing Studio",
     description:
-      "Download platform-optimized carousel images in high resolution for LinkedIn, Instagram, and TikTok.",
-    icon: <DownloadCloud className="w-6 h-6" />,
+      "Enhance your LinkedIn posts with AI-powered rewriting, tone adjustments, and content optimization to maximize engagement and impact.",
+    icon: <Sparkles className="w-6 h-6" />,
     color: "#4C6EF5",
     gradient: "from-[#4C6EF5]/10 to-[#748FFC]/5",
   },

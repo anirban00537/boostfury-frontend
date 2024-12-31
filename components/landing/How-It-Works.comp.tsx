@@ -1,38 +1,45 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Sparkles, PenLine, Share, BarChart, ArrowRight } from "lucide-react";
+import {
+  Sparkles,
+  PenLine,
+  Share,
+  BarChart,
+  ArrowRight,
+  Lightbulb,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const steps = [
   {
-    icon: <PenLine className="w-6 h-6" />,
-    title: "Write Your Content",
+    icon: <Lightbulb className="w-6 h-6" />,
+    title: "Generate Ideas",
     description:
-      "Start with your content ideas or let our AI help you generate engaging LinkedIn posts.",
+      "Get AI-powered content ideas tailored to your industry and audience. Never run out of engaging topics to write about.",
     color: "#0A66C2",
     gradient: "from-[#0A66C2]/10 to-[#2C8EFF]/5",
   },
   {
-    icon: <Sparkles className="w-6 h-6" />,
-    title: "AI Enhancement",
+    icon: <PenLine className="w-6 h-6" />,
+    title: "Create Your Post",
     description:
-      "Our AI analyzes and enhances your content for maximum engagement and reach.",
+      "Transform ideas into engaging content with our AI writer. Optimize your posts for maximum impact and engagement.",
     color: "#845EF7",
     gradient: "from-[#845EF7]/10 to-[#9775FA]/5",
   },
   {
-    icon: <Share className="w-6 h-6" />,
-    title: "Create & Share",
+    icon: <Sparkles className="w-6 h-6" />,
+    title: "Enhance Content",
     description:
-      "Transform your content into beautiful carousels and share directly to LinkedIn.",
+      "Fine-tune your content with AI-powered suggestions, tone adjustments, and engagement optimization.",
     color: "#20C997",
     gradient: "from-[#20C997]/10 to-[#38D9A9]/5",
   },
   {
-    icon: <BarChart className="w-6 h-6" />,
-    title: "Track Results",
+    icon: <Share className="w-6 h-6" />,
+    title: "Share & Grow",
     description:
-      "Monitor your post performance and get insights to improve future content.",
+      "Schedule and share your optimized content directly to LinkedIn. Track performance and grow your presence.",
     color: "#FAB005",
     gradient: "from-[#FAB005]/10 to-[#FFD43B]/5",
   },
