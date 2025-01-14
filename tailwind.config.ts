@@ -1,10 +1,6 @@
 import type { Config } from "tailwindcss";
 
-const {
-  default: flattenColorPalette,
-} = require("tailwindcss/lib/util/flattenColorPalette");
-
-const config: Config = {
+const config = {
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
@@ -23,60 +19,44 @@ const config: Config = {
     },
     extend: {
       colors: {
-        border: "#dcdcdc",
-        input: "#f5f5f5",
-        ring: "#c0c0c0",
-        foreground: "#000000",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#0A66C2",
-          foreground: "#ffffff",
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          //dark grey
-          DEFAULT: "#2C8EFF",
-          foreground: "#000000",
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
-          DEFAULT: "#e3342f",
-          foreground: "#ffffff",
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
         muted: {
-          DEFAULT: "#f5f5f5",
-          foreground: "#737373",
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "#3490dc",
-          foreground: "#ffffff",
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
-          DEFAULT: "#ffffff",
-          foreground: "#000000",
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
         },
         card: {
-          DEFAULT: "#f8f9fa",
-          foreground: "#212529",
-        },
-        background: {
-          DEFAULT: "#FFFFFF",
-          foreground: "#F8FAFC",
-        },
-        cardBackground: {
-          DEFAULT: "#f8fafc",
-          foreground: "#E2E8F0",
-        },
-        textColor: {
-          DEFAULT: "#1E293B",
-          foreground: "#64748B",
-        },
-        borderColor: {
-          DEFAULT: "#E2E8F0",
-          foreground: "#CBD5E1",
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
         },
       },
       borderRadius: {
-        lg: "0.75rem",
-        md: "0.5rem",
-        sm: "0.25rem",
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
         "accordion-down": {
@@ -87,50 +67,14 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        scroll: {
-          to: { transform: "translate(calc(-50% - 0.5rem))" },
-        },
-        shimmer: {
-          "0%, 90%, 100%": {
-            "background-position": "calc(-100% - var(--shimmer-width)) 0",
-          },
-          "30%, 60%": {
-            "background-position": "calc(100% + var(--shimmer-width)) 0",
-          },
-        },
-        "spin-around": {
-          "0%": { transform: "translateZ(0) rotate(0)" },
-          "15%, 35%": { transform: "translateZ(0) rotate(90deg)" },
-          "65%, 85%": { transform: "translateZ(0) rotate(270deg)" },
-          "100%": { transform: "translateZ(0) rotate(360deg)" },
-        },
-        slide: {
-          to: { transform: "translate(calc(100cqw - 100%), 0)" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        scroll:
-          "scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite",
-        shimmer: "shimmer 8s infinite",
-        "spin-around": "spin-around calc(var(--speed) * 2) infinite linear",
-        slide: "slide var(--speed) ease-in-out infinite alternate",
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), addVariablesForColors],
-};
-
-function addVariablesForColors({ addBase, theme }: any) {
-  let allColors = flattenColorPalette(theme("colors"));
-  let newVars = Object.fromEntries(
-    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
-  );
-
-  addBase({
-    ":root": newVars,
-  });
-}
+  plugins: [require("tailwindcss-animate")],
+} satisfies Config;
 
 export default config;

@@ -1,33 +1,16 @@
-"use client";
-import React from "react";
-import LandingNavbar from "@/components/landing/Landing-Navbar.comp";
-import Hero from "@/components/landing/Hero.comp";
-import Testimonial from "@/components/landing/Testimonial.comp";
-import Footer from "@/components/landing/Footer.comp";
-import FeaturesSection from "@/components/landing/Features.comp";
-import PlanSection from "@/components/landing/Pricing.comp";
+import Hero from "@/components/hero";
+import ConnectSupabaseSteps from "@/components/tutorial/connect-supabase-steps";
+import SignUpUserSteps from "@/components/tutorial/sign-up-user-steps";
+import { hasEnvVars } from "@/utils/supabase/check-env-vars";
 
-import HowItWorksSection from "@/components/landing/How-It-Works.comp";
-const Page = () => {
+export default async function Home() {
   return (
-    <div className="bg-background min-h-screen">
-      <LandingNavbar />
-        <Hero />
-        <section id="features">
-          <FeaturesSection />
-        </section>
-        <section id="how-it-works">
-          <HowItWorksSection />
-        </section>
-        <section id="plans">
-          <PlanSection />
-        </section>
-        <section id="testimonials">
-          <Testimonial />
-        </section>
-      <Footer />
-    </div>
+    <>
+      <Hero />
+      <main className="flex-1 flex flex-col gap-6 px-4">
+        <h2 className="font-medium text-xl mb-4">Next steps</h2>
+        {hasEnvVars ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
+      </main>
+    </>
   );
-};
-
-export default Page;
+}
