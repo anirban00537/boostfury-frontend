@@ -1,9 +1,4 @@
-import DeployButton from "@/components/deploy-button";
-import { EnvVarWarning } from "@/components/env-var-warning";
-import HeaderAuth from "@/components/header-auth";
-import { hasEnvVars } from "@/utils/supabase/check-env-vars";
 import { Geist } from "next/font/google";
-import Link from "next/link";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
