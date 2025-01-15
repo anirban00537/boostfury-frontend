@@ -66,8 +66,7 @@ I'm already working on new features based on early user feedback. Stay tuned!
     <div className="flex h-[calc(100vh-4rem)] bg-gray-50/50 relative">
       <div className="flex-1 flex flex-col max-w-4xl mx-auto">
         {/* Scrollable Content Area */}
-        <div className="flex-1  px-6 py-6 pb-40">
-          {/* LinkedIn Post Preview */}
+        <div className="flex-1 px-6 py-6 pb-40">
           <LinkedInPostPreview
             content={generatedPost}
             onPostNow={handlePostNow}
@@ -80,24 +79,26 @@ I'm already working on new features based on early user feedback. Stay tuned!
         <div className="fixed bottom-0 left-64 right-0">
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col gap-2 max-w-4xl mx-auto p-4"
+            className="flex flex-col gap-3 max-w-4xl mx-auto p-4"
           >
-            <div className="bg-white/95 backdrop-blur-sm rounded-xl border border-gray-200/50 shadow-sm">
+            <div className="bg-white/40 backdrop-blur-sm rounded-xl border border-gray-200 shadow-sm">
               <Textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Describe the LinkedIn post you want to create..."
-                className="w-full resize-none border-0 focus:ring-0 rounded-t-xl rounded-b-none p-3 text-[13px] leading-relaxed placeholder:text-gray-400 bg-transparent"
+                className="w-full resize-none mx-3 border-0 focus:ring-0 rounded-t-xl rounded-b-none p-4 text-[13px] leading-relaxed placeholder:text-gray-400 bg-transparent"
                 rows={2}
               />
-              <div className="flex items-center justify-between px-3 py-2 border-t border-gray-200/50">
-                <div className="flex items-center gap-4">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-[8px] font-medium text-gray-400 uppercase tracking-wide">
+
+              <div className="flex items-center justify-between p-3 border-t border-gray-100">
+                <div className="flex items-center gap-6">
+                  {/* Tone Selection */}
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide px-0.5">
                       Tone
                     </span>
                     <Select value={tone} onValueChange={setTone}>
-                      <SelectTrigger className="w-[110px] border-0 bg-transparent text-xs focus:ring-0 h-7 py-0">
+                      <SelectTrigger className="w-[130px] border border-gray-200 bg-white text-xs h-8 px-3">
                         <SelectValue placeholder="Select tone" />
                       </SelectTrigger>
                       <SelectContent>
@@ -113,14 +114,13 @@ I'm already working on new features based on early user feedback. Stay tuned!
                     </Select>
                   </div>
 
-                  <div className="h-7 w-px bg-gray-200"></div>
-
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-[8px] font-medium text-gray-400 uppercase tracking-wide">
+                  {/* Length Selection */}
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide px-0.5">
                       Length
                     </span>
                     <Select value={length} onValueChange={setLength}>
-                      <SelectTrigger className="w-[90px] border-0 bg-transparent text-xs focus:ring-0 h-7 py-0">
+                      <SelectTrigger className="w-[110px] border border-gray-200 bg-white text-xs h-8 px-3">
                         <SelectValue placeholder="Select length" />
                       </SelectTrigger>
                       <SelectContent>
@@ -134,7 +134,7 @@ I'm already working on new features based on early user feedback. Stay tuned!
 
                 <Button
                   type="submit"
-                  className="h-7 px-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-sm text-[13px]"
+                  className="h-8 px-4 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-[13px] font-medium shadow-sm"
                 >
                   Generate Post
                   <SendHorizontal className="w-3.5 h-3.5 ml-2" />

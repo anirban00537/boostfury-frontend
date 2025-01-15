@@ -129,8 +129,8 @@ export function PostActionSheet({
                 className="w-full text-[14px] leading-[1.3333] resize-none border-0 focus:ring-0 focus:outline-none p-0"
                 placeholder="Write your post..."
                 style={{
-                  minHeight: '100%',
-                  height: textareaRef.current?.scrollHeight + 'px' || 'auto'
+                  minHeight: "100%",
+                  height: textareaRef.current?.scrollHeight + "px" || "auto",
                 }}
               />
             </div>
