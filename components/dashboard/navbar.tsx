@@ -14,7 +14,7 @@ interface NavbarProps {
 
 export function Navbar({ userEmail }: NavbarProps) {
   return (
-    <nav className="fixed top-0 right-0 left-64 h-16 bg-white border-b border-gray-200 px-6 flex items-center justify-between z-50">
+    <nav className="fixed top-0 right-0 left-64 h-16 bg-transparent px-6 flex items-center justify-between z-50">
       {/* Left side */}
       <div className="flex items-center gap-3">
         <button className="p-2 hover:bg-gray-100 rounded-lg lg:hidden">

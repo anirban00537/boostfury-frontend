@@ -7,6 +7,7 @@ import {
   MessageSquare,
   ChevronRight,
   BrainCircuit,
+  LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -28,20 +29,15 @@ const navigationItems = [
       { icon: Settings, label: "AI Preferences" },
     ],
   },
-] as const;
+];
 
 export function Sidebar() {
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white border-r border-gray-200 flex flex-col">
       {/* Logo Section */}
       <div className="h-16 px-6 border-b border-gray-200 flex items-center">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center">
-            <span className="text-lg font-bold text-white">L</span>
-          </div>
-          <span className="text-lg font-semibold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-            LinkedGenius
-          </span>
+        <Link href="/dashboard">
+          <img src="/logo.svg" alt="LinkedGenius" className="h-10" />
         </Link>
       </div>
 
