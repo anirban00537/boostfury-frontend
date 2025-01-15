@@ -47,13 +47,33 @@ I'm already working on new features based on early user feedback. Stay tuned!
     // TODO: Implement AI generation logic
   };
 
+  const handlePostNow = () => {
+    // Implement post now logic
+    console.log("Posting now...");
+  };
+
+  const handleQueue = () => {
+    // Implement queue logic
+    console.log("Added to queue");
+  };
+
+  const handleSchedule = (date: Date) => {
+    // Implement schedule logic
+    console.log("Scheduled for:", date);
+  };
+
   return (
     <div className="flex h-[calc(100vh-4rem)] bg-gray-50/50 relative">
       <div className="flex-1 flex flex-col max-w-4xl mx-auto">
         {/* Scrollable Content Area */}
-        <div className="flex-1  px-6 py-6 pb-32">
+        <div className="flex-1  px-6 py-6 pb-40">
           {/* LinkedIn Post Preview */}
-          <LinkedInPostPreview content={generatedPost} />
+          <LinkedInPostPreview
+            content={generatedPost}
+            onPostNow={handlePostNow}
+            onQueue={handleQueue}
+            onSchedule={handleSchedule}
+          />
         </div>
 
         {/* Input Area - Fixed at bottom */}
