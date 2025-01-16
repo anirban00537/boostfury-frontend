@@ -50,7 +50,7 @@ I'm already working on new features based on early user feedback. Stay tuned!
     <div className="flex h-[calc(100vh-4rem)] relative">
       <div className="flex-1 flex flex-col max-w-4xl mx-auto">
         {/* Scrollable Content Area */}
-        <div className="flex-1 px-6 py-6 pb-40">
+        <div className="flex-1 px-6 py-6 mb-48">
           <LinkedInPostPreview
             content={generatedPost}
             onPostNow={handlePostNow}
