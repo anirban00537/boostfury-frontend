@@ -24,15 +24,15 @@ export function LinkedInPostPreview({
     return text.split("\n").map((line, i) => {
       if (line.startsWith("•")) {
         return (
-          <div key={i} className="flex items-start gap-2 mb-1 pl-0.5">
-            <span className="text-gray-700">•</span>
+          <div key={i} className="flex items-start gap-1.5 mb-0.5 pl-0.5">
+            <span className="text-gray-600">•</span>
             <span className="flex-1">{line.slice(1).trim()}</span>
           </div>
         );
       }
 
       if (line.trim() === "") {
-        return <div key={i} className="h-3" />;
+        return <div key={i} className="h-2" />;
       }
 
       const words = line.split(" ");
@@ -51,7 +51,7 @@ export function LinkedInPostPreview({
       });
 
       return (
-        <p key={i} className={line.trim() !== "" ? "mb-3 last:mb-0" : ""}>
+        <p key={i} className={line.trim() !== "" ? "mb-2 last:mb-0" : ""}>
           {formattedWords}
         </p>
       );
@@ -68,28 +68,30 @@ export function LinkedInPostPreview({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-xl mx-auto bg-white rounded-lg shadow-md overflow-hidden"
+        className="w-full max-w-lg mx-auto bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden"
       >
-        <div className="flex items-start justify-between p-3 border-b border-gray-100">
-          <div className="flex gap-3">
+        <div className="flex items-start justify-between p-2 border-b border-gray-50">
+          <div className="flex gap-2">
             <img
               src="https://media.licdn.com/dms/image/v2/D4E03AQGSALKCBLx4wQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1680857805267?e=1742428800&v=beta&t=YpN5D34ajmReumjdL6XvZmnh3EWhbSK6Gt4H_Hh0PKg"
               alt="LinkedIn Profile"
-              className="h-12 w-12 rounded-full object-cover"
+              className="h-8 w-8 rounded-full object-cover ring-1 ring-gray-100 shadow-sm"
             />
             <div className="flex flex-col">
               <div className="flex items-center gap-1">
-                <span className="text-sm font-semibold text-gray-900">
+                <span className="text-[12px] font-semibold text-gray-900">
                   Eilidh Morone
                 </span>
-                <span className="text-sm text-gray-500">• 1st</span>
+                <span className="text-[12px] text-gray-500">• 1st</span>
               </div>
-              <span className="text-xs text-gray-500">Software Engineer</span>
-              <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
+              <span className="text-[10px] text-gray-600">
+                Software Engineer
+              </span>
+              <div className="flex items-center gap-1 text-[10px] text-gray-500">
                 <span>22h</span>
                 <span>•</span>
                 <svg
-                  className="w-3 h-3"
+                  className="w-2 h-2"
                   viewBox="0 0 16 16"
                   fill="currentColor"
                 >
@@ -108,32 +110,32 @@ export function LinkedInPostPreview({
         </div>
 
         {/* Content */}
-        <div className="px-3 pt-2 pb-1">
-          <div className="text-[14px] text-gray-900 leading-[1.3333] text-left">
+        <div className="px-2 pt-1.5 pb-1">
+          <div className="text-[12px] text-gray-800 leading-[1.35] text-left">
             {formatContent(content)}
           </div>
-          <div className="mt-2 text-[14px] text-gray-500">
+          <div className="mt-1 text-[10px] text-gray-500">
             <span>1 repost</span>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-0.5 px-2 pt-1 pb-1 border-t border-gray-100">
+        <div className="flex items-center gap-0.5 px-1 pt-0.5 pb-0.5 border-t border-gray-50">
           <Button
             variant="ghost"
             size="sm"
-            className="text-gray-600 h-[40px] px-3 text-[13px] font-normal hover:bg-gray-100 hover:text-gray-700"
+            className="text-gray-600 h-7 px-2 text-[11px] font-normal hover:bg-gray-50 hover:text-gray-700"
           >
-            <ThumbsUp className="w-[18px] h-[18px] mr-2" />
+            <ThumbsUp className="w-3 h-3 mr-1" />
             Like
           </Button>
           <Button
             variant="ghost"
             size="sm"
-            className="text-gray-600 h-8 text-xs font-normal"
+            className="text-gray-600 h-7 px-2 text-[11px] font-normal hover:bg-gray-50 hover:text-gray-700"
           >
             <svg
-              className="w-4 h-4 mr-1"
+              className="w-3 h-3 mr-1"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -146,10 +148,10 @@ export function LinkedInPostPreview({
           <Button
             variant="ghost"
             size="sm"
-            className="text-gray-600 h-8 text-xs font-normal"
+            className="text-gray-600 h-7 px-2 text-[11px] font-normal hover:bg-gray-50 hover:text-gray-700"
           >
             <svg
-              className="w-4 h-4 mr-1"
+              className="w-3 h-3 mr-1"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -162,10 +164,10 @@ export function LinkedInPostPreview({
           <Button
             variant="ghost"
             size="sm"
-            className="text-gray-600 h-8 text-xs font-normal"
+            className="text-gray-600 h-7 px-2 text-[11px] font-normal hover:bg-gray-50 hover:text-gray-700"
           >
             <svg
-              className="w-4 h-4 mr-1"
+              className="w-3 h-3 mr-1"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

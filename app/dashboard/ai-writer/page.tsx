@@ -1,24 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import {
-  SendHorizontal,
-  Copy,
-  ThumbsUp,
-  Wand2,
-  MoreHorizontal,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { motion } from "framer-motion";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { LinkedInPostPreview } from "@/components/linkedin-post-preview";
+import { InputArea } from "@/components/ai-writer/input-area";
 
 export default function AIWriter() {
   const [prompt, setPrompt] = useState("");
@@ -63,7 +47,7 @@ I'm already working on new features based on early user feedback. Stay tuned!
   };
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] bg-gray-50/50 relative">
+    <div className="flex h-[calc(100vh-4rem)] relative">
       <div className="flex-1 flex flex-col max-w-4xl mx-auto">
         {/* Scrollable Content Area */}
         <div className="flex-1 px-6 py-6 pb-40">
@@ -75,74 +59,16 @@ I'm already working on new features based on early user feedback. Stay tuned!
           />
         </div>
 
-        {/* Input Area - Fixed at bottom */}
-        <div className="fixed bottom-0 left-64 right-0">
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col gap-3 max-w-4xl mx-auto p-4"
-          >
-            <div className="bg-white/40 backdrop-blur-sm rounded-xl border border-gray-200 shadow-sm">
-              <Textarea
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Describe the LinkedIn post you want to create..."
-                className="w-full resize-none mx-3 border-0 focus:ring-0 rounded-t-xl rounded-b-none p-4 text-[13px] leading-relaxed placeholder:text-gray-400 bg-transparent"
-                rows={2}
-              />
-
-              <div className="flex items-center justify-between p-3 border-t border-gray-100">
-                <div className="flex items-center gap-6">
-                  {/* Tone Selection */}
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide px-0.5">
-                      Tone
-                    </span>
-                    <Select value={tone} onValueChange={setTone}>
-                      <SelectTrigger className="w-[130px] border border-gray-200 bg-white text-xs h-8 px-3">
-                        <SelectValue placeholder="Select tone" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="professional">
-                          Professional
-                        </SelectItem>
-                        <SelectItem value="casual">Casual</SelectItem>
-                        <SelectItem value="enthusiastic">
-                          Enthusiastic
-                        </SelectItem>
-                        <SelectItem value="informative">Informative</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Length Selection */}
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide px-0.5">
-                      Length
-                    </span>
-                    <Select value={length} onValueChange={setLength}>
-                      <SelectTrigger className="w-[110px] border border-gray-200 bg-white text-xs h-8 px-3">
-                        <SelectValue placeholder="Select length" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="short">Short</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="long">Long</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <Button
-                  type="submit"
-                  className="h-8 px-4 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-[13px] font-medium shadow-sm"
-                >
-                  Generate Post
-                  <SendHorizontal className="w-3.5 h-3.5 ml-2" />
-                </Button>
-              </div>
-            </div>
-          </form>
-        </div>
+        {/* Input Area */}
+        <InputArea
+          prompt={prompt}
+          tone={tone}
+          length={length}
+          onPromptChange={setPrompt}
+          onToneChange={setTone}
+          onLengthChange={setLength}
+          onSubmit={handleSubmit}
+        />
       </div>
     </div>
   );

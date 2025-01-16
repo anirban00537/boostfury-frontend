@@ -1,38 +1,68 @@
+"use client";
+
 import { Navbar } from "@/components/dashboard/navbar";
 import { Sidebar } from "@/components/dashboard/sidebar";
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { X, Menu } from "lucide-react";
 
-export default async function DashboardLayout({
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Set initial sidebar state based on screen size
+  useEffect(() => {
+    setIsSidebarOpen(window.innerWidth >= 1024);
+  }, []);
 
-  if (!user) {
-    return redirect("/sign-in");
-  }
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50/50">
       {/* Sidebar */}
-      <Sidebar />
+      <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
 
       {/* Main Content Wrapper */}
-      <div className="ml-64">
+      <div
+        className={`transition-all duration-300 ease-in-out ${
+          isSidebarOpen ? "lg:ml-64" : "lg:ml-20"
+        }`}
+      >
+        {/* Mobile Toggle Button - Shown only on mobile */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="fixed top-3 left-4 z-50 lg:hidden"
+          onClick={toggleSidebar}
+        >
+          {isSidebarOpen ? (
+            <X className="h-5 w-5" />
+          ) : (
+            <Menu className="h-5 w-5" />
+          )}
+        </Button>
+
         {/* Navbar */}
-        <Navbar userEmail={user.email} />
+        <Navbar />
         {/* Page Content */}
-        <main className="pt-16">
-          {" "}
-          {/* Add padding-top equal to navbar height */}
-          <div className="p-8">{children}</div>
-        </main>
+        <main className="pt-16 px-4 sm:px-6 lg:px-8">{children}</main>
       </div>
     </div>
   );
