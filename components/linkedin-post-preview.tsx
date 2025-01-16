@@ -68,115 +68,160 @@ export function LinkedInPostPreview({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-lg mx-auto bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden"
+        className="w-full max-w-[540px] mx-auto bg-white rounded-xl shadow-md border border-gray-200/80 overflow-hidden hover:shadow-lg mb-64 transition-shadow duration-200"
       >
-        <div className="flex items-start justify-between p-2 border-b border-gray-50">
-          <div className="flex gap-2">
-            <img
-              src="https://media.licdn.com/dms/image/v2/D4E03AQGSALKCBLx4wQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1680857805267?e=1742428800&v=beta&t=YpN5D34ajmReumjdL6XvZmnh3EWhbSK6Gt4H_Hh0PKg"
-              alt="LinkedIn Profile"
-              className="h-8 w-8 rounded-full object-cover ring-1 ring-gray-100 shadow-sm"
-            />
-            <div className="flex flex-col">
-              <div className="flex items-center gap-1">
-                <span className="text-[12px] font-semibold text-gray-900">
-                  Eilidh Morone
-                </span>
-                <span className="text-[12px] text-gray-500">• 1st</span>
+        {/* Header */}
+        <div className="border-b border-gray-100">
+          <div className="flex items-start justify-between p-4">
+            <div className="flex gap-3">
+              <div className="relative group">
+                <motion.img
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: 1 }}
+                  src="https://media.licdn.com/dms/image/v2/D4E03AQGSALKCBLx4wQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1680857805267?e=1742428800&v=beta&t=YpN5D34ajmReumjdL6XvZmnh3EWhbSK6Gt4H_Hh0PKg"
+                  alt="LinkedIn Profile"
+                  className="h-12 w-12 rounded-full object-cover ring-2 ring-white shadow-sm group-hover:ring-4 group-hover:ring-blue-50 transition-all duration-200"
+                />
+                <div className="absolute -bottom-0.5 -right-0.5 h-4.5 w-4.5 bg-white rounded-full flex items-center justify-center">
+                  <span className="text-[9px] font-bold text-[#0a66c2]">3</span>
+                </div>
               </div>
-              <span className="text-[10px] text-gray-600">
-                Software Engineer
-              </span>
-              <div className="flex items-center gap-1 text-[10px] text-gray-500">
-                <span>22h</span>
+              <div className="flex flex-col pt-0.5">
+                <div className="flex items-center gap-1">
+                  <span className="text-[14px] font-semibold text-gray-900 hover:text-[#0a66c2] hover:underline cursor-pointer">
+                    Eilidh Morone
+                  </span>
+                  <span className="text-[14px] text-gray-500">• 1st</span>
+                  <svg
+                    className="w-4 h-4 text-[#0a66c2]"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                  >
+                    <path d="M13.5 3.5a2 2 0 110 4 2 2 0 010-4zM13.5 9.5a2 2 0 110 4 2 2 0 010-4zM6.5 9.5a2 2 0 110 4 2 2 0 010-4zM6.5 3.5a2 2 0 110 4 2 2 0 010-4z" />
+                  </svg>
+                </div>
+                <span className="text-[13px] text-gray-600 font-medium">
+                  Software Engineer at BoostFury
+                </span>
+                <div className="flex items-center gap-1 text-[12px] text-gray-500 mt-0.5">
+                  <span>22h</span>
+                  <span>•</span>
+                  <svg
+                    className="w-3.5 h-3.5"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                  >
+                    <path d="M8 0a8 8 0 100 16A8 8 0 008 0zm0 15a7 7 0 110-14 7 7 0 010 14zM7 7H4v1h3v3h1V8h3V7H8V4H7v3z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <PostActionSheet
+              content={content}
+              onPostNow={onPostNow}
+              onQueue={onQueue}
+              onSchedule={() => setIsScheduleModalOpen(true)}
+            />
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="px-4 pt-3 pb-2">
+          <div className="text-[14px] text-gray-900 leading-[1.4] text-left">
+            {formatContent(content)}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="bg-white border-t border-gray-100">
+          {/* Reactions and Stats */}
+          <div className="px-4 py-2 border-b border-gray-100">
+            <div className="flex items-center justify-between text-[12px] text-gray-500">
+              <div className="flex items-center gap-1">
+                <div className="flex -space-x-1">
+                  <div className="w-4 h-4 rounded-full border-2 border-white bg-blue-500 flex items-center justify-center shadow-sm">
+                    <ThumbsUp className="w-2 h-2 text-white" />
+                  </div>
+                  <div className="w-4 h-4 rounded-full border-2 border-white bg-red-500 flex items-center justify-center shadow-sm">
+                    <svg
+                      className="w-2 h-2 text-white"
+                      viewBox="0 0 16 16"
+                      fill="currentColor"
+                    >
+                      <path d="M8 0a8 8 0 100 16A8 8 0 008 0zM4.5 8a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8 13a5 5 0 01-4.11-2.15 1 1 0 011.61-1.17A3 3 0 008 11a3 3 0 002.5-1.32 1 1 0 011.61 1.17A5 5 0 018 13z" />
+                    </svg>
+                  </div>
+                </div>
+                <span className="ml-1">You and 47 others</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span>22 comments</span>
                 <span>•</span>
-                <svg
-                  className="w-2 h-2"
-                  viewBox="0 0 16 16"
-                  fill="currentColor"
-                >
-                  <path d="M8 0a8 8 0 100 16A8 8 0 008 0zm0 15a7 7 0 110-14 7 7 0 010 14zM7 7H4v1h3v3h1V8h3V7H8V4H7v3z" />
-                </svg>
+                <span>8 reposts</span>
               </div>
             </div>
           </div>
 
-          <PostActionSheet
-            content={content}
-            onPostNow={onPostNow}
-            onQueue={onQueue}
-            onSchedule={() => setIsScheduleModalOpen(true)}
-          />
-        </div>
-
-        {/* Content */}
-        <div className="px-2 pt-1.5 pb-1">
-          <div className="text-[12px] text-gray-800 leading-[1.35] text-left">
-            {formatContent(content)}
+          {/* Action Buttons */}
+          <div className="flex items-center gap-1 px-2 py-1.5 bg-white">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-gray-600 h-8 px-3 text-[13px] font-medium hover:bg-gray-50 hover:text-[#0a66c2] flex-1 transition-colors"
+            >
+              <ThumbsUp className="w-4 h-4 mr-1.5" />
+              Like
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-gray-600 h-8 px-3 text-[13px] font-medium hover:bg-gray-50 hover:text-[#0a66c2] flex-1 transition-colors"
+            >
+              <svg
+                className="w-4 h-4 mr-1.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+              </svg>
+              Comment
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-gray-600 h-8 px-3 text-[13px] font-medium hover:bg-gray-50 hover:text-[#0a66c2] flex-1 transition-colors"
+            >
+              <svg
+                className="w-4 h-4 mr-1.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M4 4v7a4 4 0 004 4h12M4 11l7-7m0 0l7 7m-7-7v18" />
+              </svg>
+              Repost
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-gray-600 h-8 px-3 text-[13px] font-medium hover:bg-gray-50 hover:text-[#0a66c2] flex-1 transition-colors"
+            >
+              <svg
+                className="w-4 h-4 mr-1.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M3 10h10a4 4 0 010 8h-4M7 10l-4-4m0 0l4-4m-4 4h11a7 7 0 017 7v0a7 7 0 01-7 7H7" />
+              </svg>
+              Send
+            </Button>
           </div>
-          <div className="mt-1 text-[10px] text-gray-500">
-            <span>1 repost</span>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center gap-0.5 px-1 pt-0.5 pb-0.5 border-t border-gray-50">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-gray-600 h-7 px-2 text-[11px] font-normal hover:bg-gray-50 hover:text-gray-700"
-          >
-            <ThumbsUp className="w-3 h-3 mr-1" />
-            Like
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-gray-600 h-7 px-2 text-[11px] font-normal hover:bg-gray-50 hover:text-gray-700"
-          >
-            <svg
-              className="w-3 h-3 mr-1"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-            </svg>
-            Comment
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-gray-600 h-7 px-2 text-[11px] font-normal hover:bg-gray-50 hover:text-gray-700"
-          >
-            <svg
-              className="w-3 h-3 mr-1"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M4 4v7a4 4 0 004 4h12M4 11l7-7m0 0l7 7m-7-7v18" />
-            </svg>
-            Repost
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-gray-600 h-7 px-2 text-[11px] font-normal hover:bg-gray-50 hover:text-gray-700"
-          >
-            <svg
-              className="w-3 h-3 mr-1"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M3 10h10a4 4 0 010 8h-4M7 10l-4-4m0 0l4-4m-4 4h11a7 7 0 017 7v0a7 7 0 01-7 7H7" />
-            </svg>
-            Send
-          </Button>
         </div>
       </motion.div>
 

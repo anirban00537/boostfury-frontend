@@ -56,7 +56,7 @@ export function InputArea({
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 placeholder="Describe your LinkedIn post idea... (e.g., 'Write a post about my recent achievement in launching a SaaS product')"
-                className="w-full resize-none border-0 bg-transparent focus:ring-0 rounded-t-xl text-[15px] leading-relaxed placeholder:text-gray-400 p-4 min-h-[100px]"
+                className="w-full resize-none border-0 bg-transparent focus:ring-0 rounded-t-xl text-[15px] leading-relaxed placeholder:text-gray-400 p-4 min-h-[60px]"
               />
 
               {/* Character count */}
