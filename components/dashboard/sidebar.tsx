@@ -1,47 +1,61 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import {
   Sparkles,
-  PenTool,
   ListTodo,
   FileText,
-  Settings,
   MessageSquare,
-  ChevronRight,
-  BrainCircuit,
   Menu,
   X,
+  ChevronRight,
 } from "lucide-react";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CollapseIcon } from "@/components/icons/collapse-icon";
-import { useState, useEffect } from "react";
 
 interface SidebarProps {
   isOpen: boolean;
   onToggle: () => void;
 }
 
-const navigationItems = [
+interface NavigationItem {
+  icon: React.ElementType;
+  label: string;
+  href: string;
+}
+
+interface NavigationGroup {
+  label: string;
+  items: NavigationItem[];
+}
+
+const navigationItems: NavigationGroup[] = [
   {
     label: "Content Creation",
     items: [
-      { icon: Sparkles, label: "AI Writer", active: true },
-      { icon: PenTool, label: "Post Editor" },
-      { icon: ListTodo, label: "Post Queue" },
-      { icon: FileText, label: "My Posts" },
+      { icon: Sparkles, label: "AI Writer", href: "/dashboard/ai-writer" },
+      { icon: ListTodo, label: "Schedule", href: "/dashboard/schedule" },
+      { icon: FileText, label: "Saved Posts", href: "/dashboard/saved-posts" },
     ],
   },
   {
     label: "Settings",
     items: [
-      { icon: BrainCircuit, label: "My AI" },
-      { icon: MessageSquare, label: "Tone & Voice" },
-      { icon: Settings, label: "AI Preferences" },
+      {
+        icon: MessageSquare,
+        label: "Topics & Instructions",
+        href: "/dashboard/tone-voice",
+      },
     ],
   },
 ];
 
 export function Sidebar({ isOpen, onToggle }: SidebarProps) {
+  const pathname = usePathname();
+
   // Close sidebar on small screens when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -126,40 +140,43 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
                 {group.label}
               </h3>
               <div className="space-y-1">
-                {group.items.map((item, index) => (
-                  <Link
-                    key={index}
-                    href="#"
-                    className={`group flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                      ${
-                        item.active
-                          ? "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-600"
-                          : "text-gray-600 hover:bg-gray-50"
-                      }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`p-1.5 rounded-md transition-colors ${
-                          item.active
-                            ? "bg-gradient-to-r from-blue-100 to-indigo-100"
-                            : "bg-gray-100 group-hover:bg-gray-200"
+                {group.items.map((item, index) => {
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={index}
+                      href={item.href}
+                      className={`group flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                        ${
+                          isActive
+                            ? "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-600"
+                            : "text-gray-600 hover:bg-gray-50"
                         }`}
-                      >
-                        <item.icon className="w-4 h-4" />
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`p-1.5 rounded-md transition-colors ${
+                            isActive
+                              ? "bg-gradient-to-r from-blue-100 to-indigo-100"
+                              : "bg-gray-100 group-hover:bg-gray-200"
+                          }`}
+                        >
+                          <item.icon className="w-4 h-4" />
+                        </div>
+                        {isOpen && <span>{item.label}</span>}
                       </div>
-                      {isOpen && <span>{item.label}</span>}
-                    </div>
-                    {isOpen && (
-                      <ChevronRight
-                        className={`w-4 h-4 transition-transform ${
-                          item.active
-                            ? "rotate-90 text-blue-600"
-                            : "text-gray-400"
-                        }`}
-                      />
-                    )}
-                  </Link>
-                ))}
+                      {isOpen && (
+                        <ChevronRight
+                          className={`w-4 h-4 transition-transform ${
+                            isActive
+                              ? "rotate-90 text-blue-600"
+                              : "text-gray-400"
+                          }`}
+                        />
+                      )}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           ))}
