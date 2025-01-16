@@ -28,11 +28,17 @@ export function PostActionSheet({
   // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
+      // Reset height before calculating new height
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height =
-        textareaRef.current.scrollHeight + "px";
+      // Add extra padding to ensure all content is visible
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 4}px`;
     }
   }, [editableContent]);
+
+  // Trigger resize on initial render
+  useEffect(() => {
+    setEditableContent(content);
+  }, [content]);
 
   const formatContent = (text: string) => {
     return text.split("\n").map((line, i) => {
@@ -75,34 +81,39 @@ export function PostActionSheet({
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <button className="flex items-center gap-2 p-1.5 bg-gradient-to-br from-blue-600 to-blue-700 text-sm px-3 hover:bg-blue-700 text-white rounded-md">
+        <button className="flex items-center gap-2 p-1.5 bg-gradient-to-br from-blue-500 to-blue-600 text-sm px-4 hover:from-blue-600 hover:to-blue-700 text-white rounded-full transition-all duration-200 shadow-md hover:shadow-lg">
           Post
         </button>
       </SheetTrigger>
-      <SheetContent className="w-[500px] sm:w-[540px] h-full p-0 flex flex-col">
-        <SheetHeader className="p-4 border-b border-gray-100">
-          <SheetTitle>Review & Post</SheetTitle>
+      <SheetContent className="w-[500px] sm:w-[540px] h-full p-0 flex flex-col bg-gray-50/80 backdrop-blur-sm">
+        <SheetHeader className="p-5 border-b border-gray-100 bg-white/80 backdrop-blur-sm">
+          <SheetTitle className="text-xl font-semibold text-gray-800">
+            Review & Post
+          </SheetTitle>
         </SheetHeader>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto px-5 py-4">
           {/* LinkedIn Post Preview Card */}
-          <div className="m-4 bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-            <div className="flex items-start justify-between p-3 border-b border-gray-100">
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md">
+            <div className="flex items-start justify-between p-4 border-b border-gray-50">
               <div className="flex gap-3">
-                <img
-                  src="https://media.licdn.com/dms/image/v2/D4E03AQGSALKCBLx4wQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1680857805267?e=1742428800&v=beta&t=YpN5D34ajmReumjdL6XvZmnh3EWhbSK6Gt4H_Hh0PKg"
-                  alt="LinkedIn Profile"
-                  className="h-12 w-12 rounded-full object-cover"
-                />
+                <div className="relative">
+                  <img
+                    src="https://media.licdn.com/dms/image/v2/D4E03AQGSALKCBLx4wQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1680857805267?e=1742428800&v=beta&t=YpN5D34ajmReumjdL6XvZmnh3EWhbSK6Gt4H_Hh0PKg"
+                    alt="LinkedIn Profile"
+                    className="h-12 w-12 rounded-full object-cover ring-2 ring-white shadow-sm"
+                  />
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white"></div>
+                </div>
                 <div className="flex flex-col">
                   <div className="flex items-center gap-1">
-                    <span className="text-sm font-semibold text-gray-900">
+                    <span className="text-sm font-semibold text-gray-900 hover:text-blue-600 cursor-pointer transition-colors">
                       Eilidh Morone
                     </span>
                     <span className="text-sm text-gray-500">• 1st</span>
                   </div>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-gray-600">
                     Software Engineer
                   </span>
                   <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
@@ -121,53 +132,63 @@ export function PostActionSheet({
             </div>
 
             {/* Content */}
-            <div className="px-3 pt-2 pb-1">
-              <textarea
-                ref={textareaRef}
-                value={editableContent}
-                onChange={(e) => setEditableContent(e.target.value)}
-                className="w-full text-[14px] leading-[1.3333] resize-none border-0 focus:ring-0 focus:outline-none p-0"
-                placeholder="Write your post..."
-                style={{
-                  minHeight: "100%",
-                  height: textareaRef.current?.scrollHeight + "px" || "auto",
-                }}
-              />
+            <div className="px-4 pt-3 pb-2">
+              <div className="relative min-h-[200px] max-h-[400px]">
+                <textarea
+                  ref={textareaRef}
+                  value={editableContent}
+                  onChange={(e) => setEditableContent(e.target.value)}
+                  className="w-full h-full min-h-[200px] max-h-[400px] text-[15px] leading-relaxed resize-none border-0 focus:ring-0 focus:outline-none p-0 overflow-y-auto bg-transparent placeholder:text-gray-400 scrollbar-thin scrollbar-thumb-gray-200 hover:scrollbar-thumb-gray-300"
+                  placeholder="Write your post..."
+                  rows={10}
+                  style={{
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                  }}
+                />
+              </div>
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-0.5 px-2 pt-1 pb-1 border-t border-gray-100">
+            <div className="flex items-center gap-1 px-2 pt-2 pb-2 border-t border-gray-50 bg-gray-50/50">
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-gray-600 h-[40px] px-3 text-[13px] font-normal hover:bg-gray-100 hover:text-gray-700"
+                className="text-gray-600 h-[38px] px-4 text-[13px] font-medium hover:bg-gray-100 hover:text-gray-700 rounded-full transition-colors"
               >
-                <ThumbsUp className="w-[18px] h-[18px] mr-2" />
+                <ThumbsUp className="w-[16px] h-[16px] mr-2" />
                 Like
               </Button>
-              {/* ... other action buttons ... */}
             </div>
           </div>
         </div>
 
         {/* Fixed Bottom Actions */}
-        <div className="border-t border-gray-100 bg-white p-4 mt-auto">
+        <div className="border-t border-gray-100 bg-white/80 backdrop-blur-sm p-5 mt-auto">
           <div className="space-y-3">
             <Button
               onClick={onPostNow}
-              className="w-full bg-blue-600 hover:bg-blue-700"
+              className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-full h-11 font-medium shadow-md hover:shadow-lg transition-all duration-200"
             >
               <Send className="w-4 h-4 mr-2" />
               Post Now
             </Button>
 
             <div className="grid grid-cols-2 gap-3">
-              <Button variant="outline" onClick={onQueue} className="w-full">
+              <Button
+                variant="outline"
+                onClick={onQueue}
+                className="w-full rounded-full h-11 font-medium border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors duration-200"
+              >
                 <Clock className="w-4 h-4 mr-2" />
                 Add to Queue
               </Button>
 
-              <Button variant="outline" onClick={onSchedule} className="w-full">
+              <Button
+                variant="outline"
+                onClick={onSchedule}
+                className="w-full rounded-full h-11 font-medium border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors duration-200"
+              >
                 <Calendar className="w-4 h-4 mr-2" />
                 Schedule
               </Button>

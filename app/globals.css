@@ -2,6 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Modern Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  margin-right: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.5);
+  border-radius: 10px;
+  transition: all 0.2s ease-in-out;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 114, 128, 0.7);
+}
+
+/* Hide scrollbar when not hovering */
+::-webkit-scrollbar-thumb {
+  opacity: 0;
+}
+
+*:hover::-webkit-scrollbar-thumb {
+  opacity: 1;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+*:hover {
+  scrollbar-color: rgba(107, 114, 128, 0.7) transparent;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
