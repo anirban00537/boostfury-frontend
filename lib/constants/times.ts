@@ -22,6 +22,11 @@ export const TIME_GROUPS = {
     { value: "19:00", label: "7:00 PM" },
     { value: "20:00", label: "8:00 PM" },
   ],
+  night: [
+    { value: "21:00", label: "9:00 PM" },
+    { value: "22:00", label: "10:00 PM" },
+    { value: "23:00", label: "11:00 PM" },
+  ],
 };
 
 export const ALL_TIMES = Object.values(TIME_GROUPS).flat();

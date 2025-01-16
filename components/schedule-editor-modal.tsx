@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -7,19 +8,25 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Info, Plus, Trash2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Info } from "lucide-react";
-import { ALL_TIMES } from "@/lib/constants/times";
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
+import { TimeSelect } from "./ui/time-select";
 
 interface ScheduleEditorModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+}
+
+interface TimeSlot {
+  id: string;
+  time: string;
 }
 
 const DAYS = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -28,121 +35,195 @@ export function ScheduleEditorModal({
   open,
   onOpenChange,
 }: ScheduleEditorModalProps) {
+  const [showHelp, setShowHelp] = useState(true);
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([
+    { id: "1", time: "09:00" },
+  ]);
+  const [selectedSlots, setSelectedSlots] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  const addNewTimeSlot = () => {
+    const newId = (timeSlots.length + 1).toString();
+    setTimeSlots([...timeSlots, { id: newId, time: "12:00" }]);
+  };
+
+  const removeTimeSlot = (slotId: string) => {
+    setTimeSlots(timeSlots.filter((slot) => slot.id !== slotId));
+    // Clean up selected slots
+    const newSelectedSlots = { ...selectedSlots };
+    Object.keys(newSelectedSlots).forEach((key) => {
+      if (key.includes(`-${slotId}`)) {
+        delete newSelectedSlots[key];
+      }
+    });
+    setSelectedSlots(newSelectedSlots);
+  };
+
+  const toggleTimeSlot = (day: string, slotId: string) => {
+    const key = `${day}-${slotId}`;
+    setSelectedSlots((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
+  const handleTimeChange = (slotId: string, newTime: string) => {
+    setTimeSlots((prev) =>
+      prev.map((slot) =>
+        slot.id === slotId ? { ...slot, time: newTime } : slot
+      )
+    );
+  };
+
+  const totalSelectedSlots =
+    Object.values(selectedSlots).filter(Boolean).length;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg p-4">
-        <DialogHeader className="mb-2">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] flex flex-col">
+        <DialogHeader className="space-y-2">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-sm">Edit post schedule</DialogTitle>
+            <DialogTitle className="text-base font-medium">
+              Edit your post schedule
+            </DialogTitle>
             <Button
               variant="outline"
               size="sm"
-              className="text-[10px] h-6 px-2"
+              onClick={addNewTimeSlot}
+              className="text-xs gap-1 h-7 px-2 border-dashed hover:bg-blue-50 hover:border-blue-600 hover:text-blue-600"
             >
-              + Add Time Slot
+              <Plus className="h-3 w-3" />
+              Add Time Slot
             </Button>
           </div>
+
+          <AnimatePresence>
+            {showHelp && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="bg-blue-50 rounded-lg p-3 text-xs text-blue-700 flex items-start gap-2"
+              >
+                <Info className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p>
+                    Select your preferred posting time and click on days to
+                    schedule posts.
+                  </p>
+                  <p>
+                    Click "Add Time Slot" to schedule posts for different times
+                    of the day.
+                  </p>
+                  <button
+                    onClick={() => setShowHelp(false)}
+                    className="text-blue-600 hover:underline"
+                  >
+                    Got it
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </DialogHeader>
 
-        <div className="bg-blue-50 p-2 rounded mb-3">
-          <div className="flex gap-1.5">
-            <Info className="w-3 h-3 text-blue-600 mt-0.5 flex-shrink-0" />
-            <div className="text-[10px] text-blue-900 space-y-0.5">
-              <p>Select posting time and click days to schedule.</p>
-              <Button
-                variant="link"
-                className="text-blue-600 p-0 h-5 text-[10px]"
+        <div className="flex-1 flex flex-col min-h-0">
+          <div className="grid grid-cols-[140px,repeat(7,1fr)] gap-1 pb-2 sticky top-0 bg-white z-10">
+            <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
+              Time Slots
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info className="h-3 w-3 text-gray-400" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Choose your posting time and select days</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            {DAYS.map((day) => (
+              <motion.div
+                key={day}
+                whileHover={{ scale: 1.05 }}
+                className="text-xs font-medium text-center text-gray-600"
               >
-                Got it
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          <div className="text-[10px] font-medium">Time Slots</div>
-
-          <div className="grid grid-cols-8 gap-2">
-            <div className="col-span-1">
-              <Select defaultValue="12:00">
-                <SelectTrigger className="h-6 text-[10px] px-2">
-                  <SelectValue placeholder="Select time" />
-                </SelectTrigger>
-                <SelectContent>
-                  {ALL_TIMES.map((time) => (
-                    <SelectItem
-                      key={time.value}
-                      value={time.value}
-                      className="text-[10px] h-6"
-                    >
-                      {time.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="col-span-7 grid grid-cols-7 gap-1">
-              {DAYS.map((day) => (
-                <Button
-                  key={day}
-                  variant="outline"
-                  className="aspect-square p-0 h-6 text-[10px] hover:bg-blue-50 hover:border-blue-600 data-[selected=true]:bg-blue-600 data-[selected=true]:text-white"
-                  data-selected={day === "TUE"}
-                >
-                  {day}
-                </Button>
-              ))}
-            </div>
+                {day}
+              </motion.div>
+            ))}
           </div>
 
-          <div className="grid grid-cols-8 gap-2">
-            <div className="col-span-1">
-              <Select defaultValue="16:00">
-                <SelectTrigger className="h-6 text-[10px] px-2">
-                  <SelectValue placeholder="Select time" />
-                </SelectTrigger>
-                <SelectContent>
-                  {ALL_TIMES.map((time) => (
-                    <SelectItem
-                      key={time.value}
-                      value={time.value}
-                      className="text-[10px] h-6"
-                    >
-                      {time.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="col-span-7 grid grid-cols-7 gap-1">
-              {DAYS.map((day) => (
-                <Button
-                  key={day}
-                  variant="outline"
-                  className="aspect-square p-0 h-6 text-[10px] hover:bg-blue-50 hover:border-blue-600 data-[selected=true]:bg-blue-600 data-[selected=true]:text-white"
-                  data-selected={day === "THU"}
+          <div className="overflow-y-auto min-h-0 flex-1 pr-1 -mr-1">
+            <div className="space-y-2">
+              {timeSlots.map((slot) => (
+                <motion.div
+                  key={slot.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="grid grid-cols-[140px,repeat(7,1fr)] gap-1 items-center group hover:bg-gray-50 p-1 rounded-lg transition-colors"
                 >
-                  {day}
-                </Button>
+                  <div className="pr-2 flex items-center gap-2">
+                    <TimeSelect
+                      value={slot.time}
+                      onChange={(newTime) => handleTimeChange(slot.id, newTime)}
+                      className="w-[120px] h-8"
+                    />
+                    {timeSlots.length > 1 && (
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => removeTimeSlot(slot.id)}
+                        className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-full hover:bg-red-50"
+                      >
+                        <Trash2 className="h-3 w-3 text-red-500" />
+                      </motion.button>
+                    )}
+                  </div>
+                  {DAYS.map((day) => {
+                    const key = `${day}-${slot.id}`;
+                    const isSelected = selectedSlots[key];
+
+                    return (
+                      <motion.button
+                        key={key}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => toggleTimeSlot(day, slot.id)}
+                        className={cn(
+                          "aspect-square rounded-md transition-all duration-200",
+                          "hover:ring-2 hover:ring-blue-600/20 focus:outline-none",
+                          isSelected
+                            ? "bg-blue-600 shadow-lg"
+                            : "bg-gray-100 hover:bg-gray-200"
+                        )}
+                      />
+                    );
+                  })}
+                </motion.div>
               ))}
             </div>
           </div>
         </div>
 
-        <div className="flex justify-between items-center mt-3 pt-3 border-t">
-          <div className="text-[10px] text-gray-500">2 time slots selected</div>
-          <div className="flex gap-1.5">
+        <div className="flex justify-between items-center gap-2 mt-4 pt-4 border-t">
+          <p className="text-xs text-gray-500">
+            {totalSelectedSlots} time slots selected
+          </p>
+          <div className="flex gap-2">
             <Button
               variant="outline"
-              onClick={() => onOpenChange(false)}
               size="sm"
-              className="text-[10px] h-6 px-2"
+              onClick={() => onOpenChange(false)}
+              className="text-xs hover:bg-blue-50 hover:text-blue-600"
             >
               Cancel
             </Button>
-            <Button size="sm" className="text-[10px] h-6 px-2">
+            <Button
+              size="sm"
+              disabled={totalSelectedSlots === 0}
+              className="text-xs bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+            >
               Save Schedule
             </Button>
           </div>
