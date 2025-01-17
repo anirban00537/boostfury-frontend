@@ -43,7 +43,7 @@ export function InputArea({
           className="relative"
         >
           <div
-            className={`bg-gray-50/90 rounded-3xl border transition-all duration-200 shadow-sm ${
+            className={`bg-gray-50 rounded-3xl border transition-all duration-200 shadow-sm ${
               isFocused
                 ? "border-blue-400 shadow-blue-100/50 ring-4 ring-blue-50"
                 : "border-gray-200 hover:border-gray-300"

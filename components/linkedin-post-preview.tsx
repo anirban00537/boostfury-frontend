@@ -1,9 +1,13 @@
+import { Source_Sans_3 } from "next/font/google";
 import { Copy, ThumbsUp, Calendar, Clock, Send, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { ScheduleModal } from "./schedule-modal";
 import { PostActionSheet } from "./post-action-sheet";
+
+// Initialize the font
+const sourceSans = Source_Sans_3({ subsets: ["latin"] });
 
 interface LinkedInPostPreviewProps {
   content: string;
@@ -26,7 +30,9 @@ export function LinkedInPostPreview({
         return (
           <div key={i} className="flex items-start gap-1.5 mb-0.5 pl-0.5">
             <span className="text-gray-600">•</span>
-            <span className="flex-1">{line.slice(1).trim()}</span>
+            <span className={`flex-1 ${sourceSans.className}`}>
+              {line.slice(1).trim()}
+            </span>
           </div>
         );
       }
@@ -41,7 +47,7 @@ export function LinkedInPostPreview({
           return (
             <span
               key={j}
-              className="text-[#0a66c2] hover:underline cursor-pointer"
+              className={`text-[#0a66c2] hover:underline cursor-pointer ${sourceSans.className}`}
             >
               {word}{" "}
             </span>
@@ -51,7 +57,10 @@ export function LinkedInPostPreview({
       });
 
       return (
-        <p key={i} className={line.trim() !== "" ? "mb-2 last:mb-0" : ""}>
+        <p
+          key={i}
+          className={`${line.trim() !== "" ? "mb-2 last:mb-0" : ""} ${sourceSans.className}`}
+        >
           {formattedWords}
         </p>
       );
@@ -68,7 +77,7 @@ export function LinkedInPostPreview({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-[540px] mx-auto bg-white rounded-xl shadow-md border border-gray-200/80 overflow-hidden hover:shadow-lg mb-64 transition-shadow duration-200"
+        className={`w-full max-w-[540px] mx-auto bg-white rounded-xl shadow-md border border-gray-200/80 overflow-hidden hover:shadow-lg mb-64 transition-shadow duration-200 ${sourceSans.className}`}
       >
         {/* Header */}
         <div className="border-b border-gray-100">

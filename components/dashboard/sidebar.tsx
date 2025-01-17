@@ -105,7 +105,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
         )}
       >
         {/* Logo Section */}
-        <div className="h-16 px-4 flex items-center justify-between border-b border-gray-100">
+        <div className="h-16 px-4 flex items-center justify-between border-b border-gray-50">
           <Link
             href="/dashboard"
             className={cn(
@@ -121,11 +121,13 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
             className="h-8 w-8 rounded-lg hover:bg-gray-100/80 transition-colors"
             onClick={onToggle}
           >
-            <CollapseIcon
+            <ChevronRight
               className={cn(
-                "text-gray-400 transition-transform duration-200 w-4 h-4",
+                "text-black font-extrabold transition-transform duration-200 w-4 h-4",
                 !isOpen && "rotate-180"
               )}
+              strokeWidth={3}
+              size={16}
             />
           </Button>
         </div>
