@@ -65,11 +65,11 @@ export function InputArea({
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 border-t border-gray-100 bg-gray-50/50">
-              <div className="flex items-center gap-6">
+            <div className="flex items-center justify-between p-1 border-t border-gray-100 bg-gray-50/50">
+              <div className="flex items-center gap-3">
                 {/* Tone Selection */}
                 <div className="space-y-1">
-                  <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide px-0.5">
+                  <span className="text-[8px] font-medium text-gray-500 uppercase tracking-wide px-0.5">
                     Writing Tone
                   </span>
                   <Select value={tone} onValueChange={onToneChange}>
@@ -93,7 +93,7 @@ export function InputArea({
 
                 {/* Length Selection */}
                 <div className="space-y-1">
-                  <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide px-0.5">
+                  <span className="text-[8px] font-medium text-gray-500 uppercase tracking-wide px-0.5">
                     Post Length
                   </span>
                   <Select value={length} onValueChange={onLengthChange}>
