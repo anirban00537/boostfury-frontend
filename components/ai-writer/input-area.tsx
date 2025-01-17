@@ -1,4 +1,4 @@
-import { SendHorizontal, Wand2, Sparkles } from "lucide-react";
+import { SendHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -43,70 +43,54 @@ export function InputArea({
           className="relative"
         >
           <div
-            className={`bg-white rounded-xl border transition-all duration-200 shadow-sm ${
+            className={`bg-gray-50/90 rounded-3xl border transition-all duration-200 shadow-sm ${
               isFocused
                 ? "border-blue-400 shadow-blue-100/50 ring-4 ring-blue-50"
                 : "border-gray-200 hover:border-gray-300"
             }`}
           >
-            <div className="relative">
-              <Textarea
-                value={prompt}
-                onChange={(e) => onPromptChange(e.target.value)}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                placeholder="Describe your LinkedIn post idea... (e.g., 'Write a post about my recent achievement in launching a SaaS product')"
-                className="w-full resize-none border-0 bg-transparent focus:ring-0 rounded-t-xl text-[15px] leading-relaxed placeholder:text-gray-400 p-4 min-h-[60px]"
-              />
+            <Textarea
+              value={prompt}
+              onChange={(e) => onPromptChange(e.target.value)}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              placeholder="Describe your LinkedIn post idea... (e.g., 'Write a post about my recent achievement in launching a SaaS product')"
+              className="w-full resize-none border-0 bg-transparent focus:ring-0 rounded-t-xl text-[15px] leading-relaxed placeholder:text-gray-400 p-4 min-h-[60px]"
+            />
 
-              {/* Character count */}
-              <div className="absolute bottom-2 right-4 text-xs text-gray-400">
-                {prompt.length}/500
-              </div>
-            </div>
+            <div className="flex items-center gap-4 p-3 rounded-b-xl">
+              <div className="flex items-center gap-3 flex-1">
+                {/* Character count */}
+                <div className="text-xs text-gray-400">{prompt.length}/500</div>
 
-            <div className="flex items-center justify-between p-1 border-t border-gray-100 bg-gray-50/50">
-              <div className="flex items-center gap-3">
                 {/* Tone Selection */}
-                <div className="space-y-1">
-                  <span className="text-[8px] font-medium text-gray-500 uppercase tracking-wide px-0.5">
-                    Writing Tone
-                  </span>
-                  <Select value={tone} onValueChange={onToneChange}>
-                    <SelectTrigger className="w-[130px] border border-gray-200 bg-white text-xs h-8 px-3 hover:bg-gray-50/50">
-                      <SelectValue placeholder="Select tone" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="professional">
-                        👔 Professional
-                      </SelectItem>
-                      <SelectItem value="casual">😊 Casual</SelectItem>
-                      <SelectItem value="enthusiastic">
-                        🚀 Enthusiastic
-                      </SelectItem>
-                      <SelectItem value="informative">
-                        📚 Informative
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <Select value={tone} onValueChange={onToneChange}>
+                  <SelectTrigger className="w-[130px] border border-gray-200 bg-white text-xs h-8 px-3 hover:bg-gray-50/50">
+                    <SelectValue placeholder="Select tone" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="professional">
+                      👔 Professional
+                    </SelectItem>
+                    <SelectItem value="casual">😊 Casual</SelectItem>
+                    <SelectItem value="enthusiastic">
+                      🚀 Enthusiastic
+                    </SelectItem>
+                    <SelectItem value="informative">📚 Informative</SelectItem>
+                  </SelectContent>
+                </Select>
 
                 {/* Length Selection */}
-                <div className="space-y-1">
-                  <span className="text-[8px] font-medium text-gray-500 uppercase tracking-wide px-0.5">
-                    Post Length
-                  </span>
-                  <Select value={length} onValueChange={onLengthChange}>
-                    <SelectTrigger className="w-[110px] border border-gray-200 bg-white text-xs h-8 px-3 hover:bg-gray-50/50">
-                      <SelectValue placeholder="Select length" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="short">📝 Short</SelectItem>
-                      <SelectItem value="medium">📄 Medium</SelectItem>
-                      <SelectItem value="long">📑 Long</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <Select value={length} onValueChange={onLengthChange}>
+                  <SelectTrigger className="w-[110px] border border-gray-200 bg-white text-xs h-8 px-3 hover:bg-gray-50/50">
+                    <SelectValue placeholder="Select length" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="short">📝 Short</SelectItem>
+                    <SelectItem value="medium">📄 Medium</SelectItem>
+                    <SelectItem value="long">📑 Long</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <Button
