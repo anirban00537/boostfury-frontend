@@ -99,7 +99,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
       <aside
         id="sidebar"
         className={cn(
-          "fixed left-0 top-0 bottom-0 bg-white border-r border-gray-200 flex flex-col z-40 transition-all duration-300 ease-in-out lg:translate-x-0",
+          "fixed left-0 top-0 bottom-0 bg-zinc-50 border-r border-gray-200 flex flex-col z-40 transition-all duration-300 ease-in-out lg:translate-x-0",
           isOpen ? "w-64" : "w-16",
           !isOpen && window.innerWidth < 1024 ? "-translate-x-full" : ""
         )}
@@ -113,7 +113,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
               !isOpen && "hidden"
             )}
           >
-            <img src="/logo.svg" alt="LinkedGenius" className="h-8" />
+            <img src="/logo.svg" alt="boostfury" className="h-9" />
           </Link>
           <Button
             variant="ghost"
@@ -123,11 +123,9 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
           >
             <ChevronRight
               className={cn(
-                "text-black font-extrabold transition-transform duration-200 w-4 h-4",
+                "text-gray-500 transition-transform duration-200 w-4 h-4",
                 !isOpen && "rotate-180"
               )}
-              strokeWidth={3}
-              size={16}
             />
           </Button>
         </div>

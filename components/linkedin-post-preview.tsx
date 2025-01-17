@@ -1,6 +1,20 @@
 import { Source_Sans_3 } from "next/font/google";
-import { Copy, ThumbsUp, Calendar, Clock, Send, Pencil } from "lucide-react";
+import {
+  Copy,
+  ThumbsUp,
+  Calendar,
+  Clock,
+  Send,
+  Sparkles,
+  ChevronDown,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { ScheduleModal } from "./schedule-modal";
@@ -14,6 +28,7 @@ interface LinkedInPostPreviewProps {
   onPostNow?: () => void;
   onQueue?: () => void;
   onSchedule?: (date: Date) => void;
+  onRewrite?: (type: string) => void;
 }
 
 export function LinkedInPostPreview({
@@ -21,6 +36,7 @@ export function LinkedInPostPreview({
   onPostNow,
   onQueue,
   onSchedule,
+  onRewrite,
 }: LinkedInPostPreviewProps) {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
 
@@ -126,12 +142,58 @@ export function LinkedInPostPreview({
               </div>
             </div>
 
-            <PostActionSheet
-              content={content}
-              onPostNow={onPostNow}
-              onQueue={onQueue}
-              onSchedule={() => setIsScheduleModalOpen(true)}
-            />
+            <div className="flex items-center gap-2">
+              <PostActionSheet
+                content={content}
+                onPostNow={onPostNow}
+                onQueue={onQueue}
+                onSchedule={() => setIsScheduleModalOpen(true)}
+              />
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-3 gap-1.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-0 hover:from-blue-600 hover:to-indigo-700 hover:shadow-md transition-all duration-200 rounded-full hover:text-white"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    AI Writing
+                    <ChevronDown className="w-3.5 h-3.5 ml-0.5 opacity-70" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 rounded-xl">
+                  <DropdownMenuItem
+                    onClick={() => onRewrite?.("grammar")}
+                    className="gap-2"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+                    <span className="text-sm">Enhance Grammar & Style</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => onRewrite?.("hook")}
+                    className="gap-2"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+                    <span className="text-sm">Improve Opening Hook</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => onRewrite?.("shorter")}
+                    className="gap-2"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+                    <span className="text-sm">Make More Concise</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => onRewrite?.("longer")}
+                    className="gap-2"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+                    <span className="text-sm">Expand Content</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
 
@@ -158,7 +220,7 @@ export function LinkedInPostPreview({
                       viewBox="0 0 16 16"
                       fill="currentColor"
                     >
-                      <path d="M8 0a8 8 0 100 16A8 8 0 008 0zM4.5 8a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8 13a5 5 0 01-4.11-2.15 1 1 0 011.61-1.17A3 3 0 008 11a3 3 0 002.5-1.32 1 1 0 011.61 1.17A5 5 0 018 13z" />
+                      <path d="M8 0a8 8 0 100 16A8 8 0 008 0zm0 15a7 7 0 110-14 7 7 0 010 14zM7 7H4v1h3v3h1V8h3V7H8V4H7v3z" />
                     </svg>
                   </div>
                 </div>

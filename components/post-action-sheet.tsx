@@ -1,4 +1,11 @@
-import { Calendar, Clock, Pencil, Send, ThumbsUp } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  Pencil,
+  Send,
+  ThumbsUp,
+  ChevronDown,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -81,9 +88,13 @@ export function PostActionSheet({
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <button className="flex items-center gap-2 p-1.5 bg-gradient-to-br from-blue-500 to-blue-600 text-sm px-4 hover:from-blue-600 hover:to-blue-700 text-white rounded-full transition-all duration-200 shadow-md hover:shadow-lg">
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-8 px-4 bg-blue-600 hover:bg-blue-700 text-white border-0 hover:shadow-md transition-all duration-200 rounded-full hover:text-white"
+        >
           Post
-        </button>
+        </Button>
       </SheetTrigger>
       <SheetContent className="w-[500px] sm:w-[540px] h-full p-0 flex flex-col bg-gray-50/80 backdrop-blur-sm">
         <SheetHeader className="p-5 border-b border-gray-100 bg-white/80 backdrop-blur-sm">

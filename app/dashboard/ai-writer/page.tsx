@@ -25,6 +25,7 @@ I'm already working on new features based on early user feedback. Stay tuned!
 #softwareengineering #entrepreneurship #saas #buildinpublic #techstartup`);
   const [tone, setTone] = useState("professional");
   const [length, setLength] = useState("medium");
+  const [generateImage, setGenerateImage] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,9 +65,11 @@ I'm already working on new features based on early user feedback. Stay tuned!
           prompt={prompt}
           tone={tone}
           length={length}
+          generateImage={generateImage}
           onPromptChange={setPrompt}
           onToneChange={setTone}
           onLengthChange={setLength}
+          onGenerateImageChange={setGenerateImage}
           onSubmit={handleSubmit}
         />
       </div>
