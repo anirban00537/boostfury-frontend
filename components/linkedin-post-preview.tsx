@@ -39,6 +39,12 @@ export function LinkedInPostPreview({
   onRewrite,
 }: LinkedInPostPreviewProps) {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [editableContent, setEditableContent] = useState(content);
+
+  const handleContentChange = (e: React.FormEvent<HTMLDivElement>) => {
+    const newContent = e.currentTarget.innerText;
+    setEditableContent(newContent);
+  };
 
   const formatContent = (text: string) => {
     return text.split("\n").map((line, i) => {
@@ -199,8 +205,12 @@ export function LinkedInPostPreview({
 
         {/* Content */}
         <div className="px-4 pt-3 pb-2">
-          <div className="text-[14px] text-gray-900 leading-[1.4] text-left">
-            {formatContent(content)}
+          <div
+            contentEditable
+            suppressContentEditableWarning
+            className="text-[14px] text-gray-900 leading-[1.4] text-left outline-none focus:outline-none min-h-[100px] whitespace-pre-wrap"
+          >
+            {content}
           </div>
         </div>
 
