@@ -12,8 +12,17 @@ import { useUser } from "@/hooks/use-user";
 import { useRouter } from "next/navigation";
 
 export function Navbar() {
-  const { user, signOut } = useUser();
+  const { user, isLoading, signOut } = useUser();
   const router = useRouter();
+
+  if (isLoading) {
+    return <div className="h-16 bg-white/50 animate-pulse" />;
+  }
+
+  if (!user) {
+    router.push("/sign-in");
+    return null;
+  }
 
   return (
     <nav className="fixed top-0 right-0 left-64 h-16 bg-transparent px-6 flex items-center justify-between z-50">
@@ -81,10 +90,10 @@ export function Navbar() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex items-center gap-2 p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
-              {user?.avatar_url ? (
+              {user.avatar_url ? (
                 <Image
                   src={user.avatar_url}
-                  alt={user.username || user.email}
+                  alt={user.full_name || user.email}
                   width={32}
                   height={32}
                   className="rounded-full"
@@ -92,7 +101,8 @@ export function Navbar() {
               ) : (
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
                   <span className="text-sm font-medium text-white">
-                    {user?.username?.[0].toUpperCase()}
+                    {user.full_name?.[0].toUpperCase() ||
+                      user.email?.[0].toUpperCase()}
                   </span>
                 </div>
               )}
@@ -101,10 +111,10 @@ export function Navbar() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-80">
             <div className="flex items-center gap-3 p-4">
-              {user?.avatar_url ? (
+              {user.avatar_url ? (
                 <Image
                   src={user.avatar_url}
-                  alt={user.username || user.email}
+                  alt={user.full_name || user.email}
                   width={48}
                   height={48}
                   className="rounded-full"
@@ -112,16 +122,17 @@ export function Navbar() {
               ) : (
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
                   <span className="text-lg font-medium text-white">
-                    {user?.email?.[0].toUpperCase()}
+                    {user.full_name?.[0].toUpperCase() ||
+                      user.email?.[0].toUpperCase()}
                   </span>
                 </div>
               )}
               <div className="flex flex-col">
                 <span className="font-medium">
-                  {user?.username || "Set your username"}
+                  {user.full_name || "Set your name"}
                 </span>
-                <span className="text-sm text-gray-500">{user?.email}</span>
-                {user?.job_title && (
+                <span className="text-sm text-gray-500">{user.email}</span>
+                {user.job_title && (
                   <span className="text-sm text-gray-600 mt-0.5">
                     {user.job_title} {user.company ? `at ${user.company}` : ""}
                   </span>

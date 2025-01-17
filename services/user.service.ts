@@ -3,6 +3,7 @@ import { createClient } from "@/utils/supabase/client";
 export interface UserProfile {
   id: string;
   email: string;
+  full_name?: string;
   username?: string;
   profile_url?: string;
   avatar_url?: string;
@@ -22,7 +23,7 @@ export const userService = {
     if (!authUser) return null;
 
     const { data: profile } = await supabase
-      .from("profiles")
+      .from("profile")
       .select("*")
       .eq("id", authUser.id)
       .single();
