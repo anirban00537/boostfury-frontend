@@ -1,5 +1,6 @@
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import { Providers } from "./providers";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -88,7 +89,9 @@ export default function RootLayout({
       className={`${poppins.variable} font-sans`}
       suppressHydrationWarning
     >
-      <body className="w-full antialiased">{children}</body>
+      <body className="w-full antialiased">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

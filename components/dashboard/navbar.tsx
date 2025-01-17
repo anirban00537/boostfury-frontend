@@ -7,12 +7,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Image from "next/image";
+import { useUser } from "@/hooks/use-user";
+import { useRouter } from "next/navigation";
 
-interface NavbarProps {
-  userEmail?: string;
-}
+export function Navbar() {
+  const { user, signOut } = useUser();
+  const router = useRouter();
 
-export function Navbar({ userEmail }: NavbarProps) {
   return (
     <nav className="fixed top-0 right-0 left-64 h-16 bg-transparent px-6 flex items-center justify-between z-50">
       {/* Left side */}
@@ -79,27 +81,71 @@ export function Navbar({ userEmail }: NavbarProps) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex items-center gap-2 p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
-                <span className="text-sm font-medium text-white">
-                  {userEmail?.[0].toUpperCase()}
-                </span>
-              </div>
+              {user?.avatar_url ? (
+                <Image
+                  src={user.avatar_url}
+                  alt={user.username || user.email}
+                  width={32}
+                  height={32}
+                  className="rounded-full"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+                  <span className="text-sm font-medium text-white">
+                    {user?.username?.[0].toUpperCase()}
+                  </span>
+                </div>
+              )}
               <ChevronDown className="w-4 h-4 text-gray-600" />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel className="flex flex-col">
-              <span className="font-normal text-xs text-gray-500">
-                Signed in as
-              </span>
-              <span className="truncate">{userEmail}</span>
-            </DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-80">
+            <div className="flex items-center gap-3 p-4">
+              {user?.avatar_url ? (
+                <Image
+                  src={user.avatar_url}
+                  alt={user.username || user.email}
+                  width={48}
+                  height={48}
+                  className="rounded-full"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+                  <span className="text-lg font-medium text-white">
+                    {user?.email?.[0].toUpperCase()}
+                  </span>
+                </div>
+              )}
+              <div className="flex flex-col">
+                <span className="font-medium">
+                  {user?.username || "Set your username"}
+                </span>
+                <span className="text-sm text-gray-500">{user?.email}</span>
+                {user?.job_title && (
+                  <span className="text-sm text-gray-600 mt-0.5">
+                    {user.job_title} {user.company ? `at ${user.company}` : ""}
+                  </span>
+                )}
+              </div>
+            </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
+            <DropdownMenuItem
+              className="focus:bg-gray-50"
+              onClick={() => router.push("/dashboard/profile")}
+            >
+              Edit Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem className="focus:bg-gray-50">
+              LinkedIn Settings
+            </DropdownMenuItem>
+            <DropdownMenuItem className="focus:bg-gray-50">
+              Account Settings
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-600">
+            <DropdownMenuItem
+              onClick={signOut}
+              className="text-red-600 focus:text-red-700 focus:bg-red-50"
+            >
               Sign out
             </DropdownMenuItem>
           </DropdownMenuContent>

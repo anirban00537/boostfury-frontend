@@ -140,7 +140,12 @@ export default function SavedPostsPage() {
                 </div>
               </div>
 
-              <LinkedInPostPreview content={post.content} />
+              <LinkedInPostPreview
+                content={post.content}
+                showActions={false}
+                showAIButton={false}
+                isEditable={false}
+              />
             </div>
           ))}
 

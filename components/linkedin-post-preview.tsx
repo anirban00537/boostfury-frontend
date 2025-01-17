@@ -29,6 +29,10 @@ interface LinkedInPostPreviewProps {
   onQueue?: () => void;
   onSchedule?: (date: Date) => void;
   onRewrite?: (type: string) => void;
+  onContentChange?: (content: string) => void;
+  showActions?: boolean;
+  showAIButton?: boolean;
+  isEditable?: boolean;
 }
 
 export function LinkedInPostPreview({
@@ -37,6 +41,10 @@ export function LinkedInPostPreview({
   onQueue,
   onSchedule,
   onRewrite,
+  onContentChange,
+  showActions = true,
+  showAIButton = true,
+  isEditable = false,
 }: LinkedInPostPreviewProps) {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [editableContent, setEditableContent] = useState(content);
@@ -44,6 +52,7 @@ export function LinkedInPostPreview({
   const handleContentChange = (e: React.FormEvent<HTMLDivElement>) => {
     const newContent = e.currentTarget.innerText;
     setEditableContent(newContent);
+    onContentChange?.(newContent);
   };
 
   const formatContent = (text: string) => {
@@ -149,56 +158,60 @@ export function LinkedInPostPreview({
             </div>
 
             <div className="flex items-center gap-2">
-              <PostActionSheet
-                content={content}
-                onPostNow={onPostNow}
-                onQueue={onQueue}
-                onSchedule={() => setIsScheduleModalOpen(true)}
-              />
+              {showActions && (
+                <PostActionSheet
+                  content={content}
+                  onPostNow={onPostNow}
+                  onQueue={onQueue}
+                  onSchedule={() => setIsScheduleModalOpen(true)}
+                />
+              )}
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-8 px-3 gap-1.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-0 hover:from-blue-600 hover:to-indigo-700 hover:shadow-md transition-all duration-200 rounded-full hover:text-white"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    AI Writing
-                    <ChevronDown className="w-3.5 h-3.5 ml-0.5 opacity-70" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 rounded-xl">
-                  <DropdownMenuItem
-                    onClick={() => onRewrite?.("grammar")}
-                    className="gap-2"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-                    <span className="text-sm">Enhance Grammar & Style</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => onRewrite?.("hook")}
-                    className="gap-2"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-                    <span className="text-sm">Improve Opening Hook</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => onRewrite?.("shorter")}
-                    className="gap-2"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-                    <span className="text-sm">Make More Concise</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => onRewrite?.("longer")}
-                    className="gap-2"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-                    <span className="text-sm">Expand Content</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {showAIButton && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 px-3 gap-1.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-0 hover:from-blue-600 hover:to-indigo-700 hover:shadow-md transition-all duration-200 rounded-full hover:text-white"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      AI Writing
+                      <ChevronDown className="w-3.5 h-3.5 ml-0.5 opacity-70" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 rounded-xl">
+                    <DropdownMenuItem
+                      onClick={() => onRewrite?.("grammar")}
+                      className="gap-2"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+                      <span className="text-sm">Enhance Grammar & Style</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onRewrite?.("hook")}
+                      className="gap-2"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+                      <span className="text-sm">Improve Opening Hook</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onRewrite?.("shorter")}
+                      className="gap-2"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+                      <span className="text-sm">Make More Concise</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onRewrite?.("longer")}
+                      className="gap-2"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+                      <span className="text-sm">Expand Content</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
           </div>
         </div>
@@ -206,8 +219,9 @@ export function LinkedInPostPreview({
         {/* Content */}
         <div className="px-4 pt-3 pb-2">
           <div
-            contentEditable
+            contentEditable={isEditable}
             suppressContentEditableWarning
+            onInput={handleContentChange}
             className="text-[14px] text-gray-900 leading-[1.4] text-left outline-none focus:outline-none min-h-[100px] whitespace-pre-wrap"
           >
             {content}
