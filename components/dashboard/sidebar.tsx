@@ -76,14 +76,14 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
     <>
       {/* Mobile Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm lg:hidden z-40" />
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm lg:hidden z-40" />
       )}
 
       {/* Toggle Button */}
       <Button
         variant="ghost"
         size="icon"
-        className="fixed top-3 left-4 z-50 lg:hidden"
+        className="fixed top-3 left-4 z-50 lg:hidden hover:bg-white/80"
         onClick={onToggle}
       >
         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -93,17 +93,17 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
       <aside
         id="sidebar"
         className={cn(
-          "fixed left-0 top-0 bottom-0 bg-zinc-50 border-r border-gray-200 flex flex-col z-40 transition-all duration-300 ease-in-out lg:translate-x-0",
-          isOpen ? "w-64" : "w-16",
+          "fixed left-0 top-0 bottom-0 bg-white/80 backdrop-blur-md border-r border-gray-100 flex flex-col z-40 transition-all duration-300 ease-in-out lg:translate-x-0 shadow-sm",
+          isOpen ? "w-72" : "w-20",
           !isOpen && window.innerWidth < 1024 ? "-translate-x-full" : ""
         )}
       >
         {/* Logo Section */}
-        <div className="h-16 px-4 flex items-center justify-between border-b border-gray-50">
+        <div className="h-16 px-4 flex items-center justify-between border-b border-gray-50/80 bg-white/50">
           <Link
             href="/dashboard"
             className={cn(
-              "flex items-center gap-2 transition-all duration-300",
+              "flex items-center gap-2 transition-all duration-300 hover:opacity-80",
               !isOpen && "hidden"
             )}
           >
@@ -112,59 +112,65 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 rounded-lg hover:bg-gray-100/80 transition-colors"
+            className="h-8 w-8 rounded-full hover:bg-gray-100/80 transition-all duration-200 hover:scale-105"
             onClick={onToggle}
           >
             <ChevronRight
               className={cn(
-                "text-gray-500 transition-transform duration-200 w-4 h-4",
+                "text-gray-500 transition-transform duration-300 w-4 h-4",
                 !isOpen && "rotate-180"
               )}
             />
           </Button>
         </div>
+
         {/* Create New Button */}
         <div className="p-4">
-          <Link href="/dashboard/ai-writer">
+          <Link href="/dashboard/ai-writer" className="block">
             <Button
               className={cn(
-                "w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 transition-all duration-200",
-                !isOpen && "p-0 w-12 h-12"
+                "w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-600/30 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-0.5",
+                !isOpen ? "p-0 w-12 h-12 rounded-xl" : "rounded-xl py-6",
+                "relative overflow-hidden group"
               )}
             >
+              <div className="absolute inset-0 bg-white/20 rotate-45 transform -translate-x-full group-hover:translate-x-full transition-transform duration-500" />
               <PlusCircle className={cn("h-5 w-5", isOpen && "mr-2")} />
-              {isOpen && "Create New"}
+              {isOpen && (
+                <span className="font-medium tracking-wide">Create New</span>
+              )}
             </Button>
           </Link>
         </div>
+
         {/* Main Navigation */}
         <div className="flex-1 py-4 px-3 space-y-6 overflow-y-auto scrollbar-none">
           {navigationItems.map((group, idx) => (
             <div key={idx} className="space-y-1">
-              <div className="space-y-0.5">
+              <div className="space-y-1">
                 {group.items.map((item, index) => {
                   const isActive = pathname === item.href;
                   return (
                     <Link
                       key={index}
                       href={item.href}
-                      className={`group relative flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                      className={`group relative flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-[1.02]
                         ${
                           isActive
-                            ? "bg-blue-500/10 border-l-4 border-blue-600/50 text-blue-600"
+                            ? "bg-gradient-to-r from-blue-50 to-indigo-50 border-l-[3px] border-blue-600 text-blue-700"
                             : "text-gray-600 hover:bg-gray-50/80"
                         }`}
                     >
                       <div className="flex items-center gap-3">
                         <div
                           className={cn(
-                            "w-7 h-7 flex items-center justify-center rounded-lg transition-all duration-200",
+                            "w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-200",
                             isActive
                               ? "bg-gradient-to-r from-blue-100/90 to-indigo-100/90 text-blue-600 shadow-sm"
-                              : "bg-gray-100/50 text-gray-500 group-hover:bg-gray-100 group-hover:text-gray-600"
+                              : "bg-gray-100/50 text-gray-500 group-hover:bg-white group-hover:text-gray-600 group-hover:shadow-sm"
                           )}
                         >
-                          <item.icon className="w-4 h-4" />
+                          <item.icon className="w-[18px] h-[18px]" />
                         </div>
                         {isOpen && (
                           <span
@@ -185,13 +191,13 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
           ))}
         </div>
 
-        {/* Pro Features Card */}
-        <div className={cn("p-3", !isOpen && "hidden")}>
-          <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 p-4">
+        {/* Credits Card */}
+        <div className={cn("p-4", !isOpen && "hidden")}>
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 p-5 shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 group">
             {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0 opacity-10 transition-opacity duration-300 group-hover:opacity-20">
               <svg
-                className="w-full h-full"
+                className="w-full h-full transform rotate-12 scale-150"
                 viewBox="0 0 100 100"
                 preserveAspectRatio="none"
               >
@@ -213,27 +219,62 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
             </div>
 
             <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-1">
-                <svg
-                  className="w-5 h-5 text-blue-200"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
-                  <path d="M19.622 10.395l-1.097-2.65L20 6l-2-2-1.745 1.475-2.65-1.097-.406-2.378L12 1l-1.199 1.399-.406 2.378-2.65 1.097L6 4.001 4 6l1.475 1.745-1.097 2.65L2 11.594 2 12.406l2.378.406 1.097 2.65L4 17l2 2 1.745-1.475 2.65 1.097.406 2.378L12 23l1.199-1.399.406-2.378 2.65-1.097L18 19.999l2-2-1.475-1.745 1.097-2.65L22 12.406v-.812l-2.378-.406z" />
-                </svg>
-                <span className="font-semibold text-white text-sm">
-                  Upgrade to Pro
-                </span>
+              {/* Credits Display */}
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-sm font-medium text-blue-100">
+                    AI CREDITS
+                  </h3>
+                  <div className="flex items-baseline gap-1.5 mt-1">
+                    <span className="text-3xl font-bold text-white">1,234</span>
+                    <span className="text-sm text-blue-200 font-medium">
+                      remaining
+                    </span>
+                  </div>
+                </div>
+                <div className="h-12 w-12 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center">
+                  <svg
+                    className="w-6 h-6 text-blue-200"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                  </svg>
+                </div>
               </div>
-              <p className="text-sm text-blue-100 mb-3 leading-snug">
-                Get unlimited AI posts and premium features
-              </p>
-              <button className="w-full bg-white/10 text-white backdrop-blur-sm text-sm font-medium py-2 px-3 rounded-lg hover:bg-white/20 transition-colors border border-white/25 shadow-sm">
-                Upgrade Now
-              </button>
+
+              {/* Usage Stats */}
+              <div className="space-y-3">
+                <div>
+                  <div className="flex items-center justify-between text-sm mb-1">
+                    <span className="text-blue-100">Monthly Usage</span>
+                    <span className="text-blue-200">766/2000</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-blue-200 to-blue-100 rounded-full transition-all duration-300"
+                      style={{ width: "38%" }}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between text-sm text-blue-100">
+                  <div className="flex items-center gap-1.5">
+                    <svg
+                      className="w-4 h-4 text-blue-200"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Renews in 18 days</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

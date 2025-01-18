@@ -7,6 +7,8 @@ import {
   Send,
   Sparkles,
   ChevronDown,
+  Image as ImageIcon,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,6 +35,9 @@ interface LinkedInPostPreviewProps {
   showActions?: boolean;
   showAIButton?: boolean;
   isEditable?: boolean;
+  image?: string;
+  onImageUpload?: (file: File) => void;
+  onImageRemove?: () => void;
 }
 
 export function LinkedInPostPreview({
@@ -45,9 +50,13 @@ export function LinkedInPostPreview({
   showActions = true,
   showAIButton = true,
   isEditable = false,
+  image,
+  onImageUpload,
+  onImageRemove,
 }: LinkedInPostPreviewProps) {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -99,6 +108,13 @@ export function LinkedInPostPreview({
   const handleSchedule = (date: Date) => {
     onSchedule?.(date);
     setIsScheduleModalOpen(false);
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && onImageUpload) {
+      onImageUpload(file);
+    }
   };
 
   return (
@@ -228,6 +244,46 @@ export function LinkedInPostPreview({
             <div className="text-[14px] text-gray-900 leading-[1.4] text-left min-h-[100px] whitespace-pre-wrap">
               {content}
             </div>
+          )}
+        </div>
+
+        {/* Image Upload Section */}
+        <div className="px-4 pb-3">
+          {image ? (
+            <div className="relative rounded-xl overflow-hidden group">
+              <img
+                src={image}
+                alt="Post attachment"
+                className="w-full h-auto rounded-xl"
+              />
+              {isEditable && (
+                <button
+                  onClick={onImageRemove}
+                  className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          ) : (
+            isEditable && (
+              <>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
+                  accept="image/*"
+                  className="hidden"
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-2 text-[#0a66c2] hover:bg-blue-50/50 px-3 py-2 rounded-lg transition-colors duration-200 text-sm font-medium"
+                >
+                  <ImageIcon className="w-4 h-4" />
+                  Add an image
+                </button>
+              </>
+            )
           )}
         </div>
 
