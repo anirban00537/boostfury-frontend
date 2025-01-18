@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   ChevronRight,
+  PlusCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -28,22 +29,15 @@ interface NavigationItem {
 }
 
 interface NavigationGroup {
-  label: string;
   items: NavigationItem[];
 }
 
 const navigationItems: NavigationGroup[] = [
   {
-    label: "Content Creation",
     items: [
-      { icon: Sparkles, label: "AI Writer", href: "/dashboard/ai-writer" },
+      { icon: FileText, label: "Drafts", href: "/dashboard/drafts" },
       { icon: ListTodo, label: "Schedule", href: "/dashboard/schedule" },
       { icon: FileText, label: "Saved Posts", href: "/dashboard/saved-posts" },
-    ],
-  },
-  {
-    label: "Settings",
-    items: [
       {
         icon: MessageSquare,
         label: "Topics & Instructions",
@@ -129,19 +123,24 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
             />
           </Button>
         </div>
-
+        {/* Create New Button */}
+        <div className="p-4">
+          <Link href="/dashboard/ai-writer">
+            <Button
+              className={cn(
+                "w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 transition-all duration-200",
+                !isOpen && "p-0 w-12 h-12"
+              )}
+            >
+              <PlusCircle className={cn("h-5 w-5", isOpen && "mr-2")} />
+              {isOpen && "Create New"}
+            </Button>
+          </Link>
+        </div>
         {/* Main Navigation */}
         <div className="flex-1 py-4 px-3 space-y-6 overflow-y-auto scrollbar-none">
           {navigationItems.map((group, idx) => (
             <div key={idx} className="space-y-1">
-              <h3
-                className={cn(
-                  "text-[11px] font-semibold text-gray-400 px-3 mb-2 tracking-wider",
-                  !isOpen && "hidden"
-                )}
-              >
-                {group.label}
-              </h3>
               <div className="space-y-0.5">
                 {group.items.map((item, index) => {
                   const isActive = pathname === item.href;
@@ -152,7 +151,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
                       className={`group relative flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
                         ${
                           isActive
-                            ? "bg-gradient-to-r from-blue-50 to-indigo-50/50 text-blue-600"
+                            ? "bg-blue-500/10 border-l-4 border-blue-600/50 text-blue-600"
                             : "text-gray-600 hover:bg-gray-50/80"
                         }`}
                     >
@@ -178,12 +177,6 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
                           </span>
                         )}
                       </div>
-                      {isOpen && isActive && (
-                        <>
-                          <div className="absolute right-2 w-1.5 h-1.5 rounded-full bg-blue-600" />
-                          <div className="absolute right-2 w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping opacity-75" />
-                        </>
-                      )}
                     </Link>
                   );
                 })}
