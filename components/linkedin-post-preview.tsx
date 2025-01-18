@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ScheduleModal } from "./schedule-modal";
 import { PostActionSheet } from "./post-action-sheet";
 
@@ -47,55 +47,53 @@ export function LinkedInPostPreview({
   isEditable = false,
 }: LinkedInPostPreviewProps) {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
-  const [editableContent, setEditableContent] = useState(content);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleContentChange = (e: React.FormEvent<HTMLDivElement>) => {
-    const newContent = e.currentTarget.innerText;
-    setEditableContent(newContent);
-    onContentChange?.(newContent);
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height =
+        textareaRef.current.scrollHeight + "px";
+    }
+  }, [content]);
+
+  const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (onContentChange) {
+      onContentChange(e.target.value);
+    }
+    // Auto-resize
+    e.target.style.height = "auto";
+    e.target.style.height = e.target.scrollHeight + "px";
   };
 
   const formatContent = (text: string) => {
-    return text.split("\n").map((line, i) => {
-      if (line.startsWith("•")) {
-        return (
-          <div key={i} className="flex items-start gap-1.5 mb-0.5 pl-0.5">
-            <span className="text-gray-600">•</span>
-            <span className={`flex-1 ${sourceSans.className}`}>
-              {line.slice(1).trim()}
-            </span>
-          </div>
-        );
-      }
-
-      if (line.trim() === "") {
-        return <div key={i} className="h-2" />;
-      }
-
-      const words = line.split(" ");
-      const formattedWords = words.map((word, j) => {
-        if (word.startsWith("#")) {
-          return (
-            <span
-              key={j}
-              className={`text-[#0a66c2] hover:underline cursor-pointer ${sourceSans.className}`}
-            >
-              {word}{" "}
-            </span>
-          );
+    return text
+      .split("\n")
+      .map((line) => {
+        if (line.startsWith("•")) {
+          return `<div class="flex items-start gap-1.5 mb-0.5 pl-0.5">
+            <span class="text-gray-600">•</span>
+            <span class="flex-1 ${sourceSans.className}">${line.slice(1).trim()}</span>
+          </div>`;
         }
-        return word + " ";
-      });
 
-      return (
-        <p
-          key={i}
-          className={`${line.trim() !== "" ? "mb-2 last:mb-0" : ""} ${sourceSans.className}`}
-        >
-          {formattedWords}
-        </p>
-      );
-    });
+        if (line.trim() === "") {
+          return '<div class="h-2"></div>';
+        }
+
+        const words = line.split(" ");
+        const formattedWords = words
+          .map((word) => {
+            if (word.startsWith("#")) {
+              return `<span class="text-[#0a66c2] hover:underline cursor-pointer ${sourceSans.className}">${word} </span>`;
+            }
+            return word + " ";
+          })
+          .join("");
+
+        return `<p class="${line.trim() !== "" ? "mb-2 last:mb-0" : ""} ${sourceSans.className}">${formattedWords}</p>`;
+      })
+      .join("");
   };
 
   const handleSchedule = (date: Date) => {
@@ -218,14 +216,19 @@ export function LinkedInPostPreview({
 
         {/* Content */}
         <div className="px-4 pt-3 pb-2">
-          <div
-            contentEditable={isEditable}
-            suppressContentEditableWarning
-            onInput={handleContentChange}
-            className="text-[14px] text-gray-900 leading-[1.4] text-left outline-none focus:outline-none min-h-[100px] whitespace-pre-wrap"
-          >
-            {content}
-          </div>
+          {isEditable ? (
+            <textarea
+              ref={textareaRef}
+              value={content}
+              onChange={handleTextAreaChange}
+              className="w-full text-[14px] text-gray-900 leading-[1.4] text-left outline-none focus:outline-none min-h-[100px] resize-none bg-transparent border-none p-0 overflow-hidden"
+              placeholder="Write your post..."
+            />
+          ) : (
+            <div className="text-[14px] text-gray-900 leading-[1.4] text-left min-h-[100px] whitespace-pre-wrap">
+              {content}
+            </div>
+          )}
         </div>
 
         {/* Footer */}

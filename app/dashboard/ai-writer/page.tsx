@@ -6,7 +6,7 @@ import { InputArea } from "@/components/ai-writer/input-area";
 
 export default function AIWriter() {
   const [prompt, setPrompt] = useState("");
-  const [generatedPost] =
+  const [postContent, setPostContent] =
     useState(`🚀 Just hit a major milestone in my journey as a software engineer!
 
 After 6 months of dedicated learning and building, I'm excited to share that I've successfully launched my first SaaS product that helps businesses automate their workflow.
@@ -47,16 +47,22 @@ I'm already working on new features based on early user feedback. Stay tuned!
     console.log("Scheduled for:", date);
   };
 
+  const handleContentChange = (content: string) => {
+    setPostContent(content);
+  };
+
   return (
     <div className="flex h-[calc(100vh-4rem)] relative">
       <div className="flex-1 flex flex-col max-w-4xl mx-auto">
         {/* Scrollable Content Area */}
         <div className="flex-1 px-6 py-6 mb-48">
           <LinkedInPostPreview
-            content={generatedPost}
+            content={postContent}
             onPostNow={handlePostNow}
             onQueue={handleQueue}
             onSchedule={handleSchedule}
+            isEditable={true}
+            onContentChange={handleContentChange}
           />
         </div>
 
