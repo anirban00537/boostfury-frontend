@@ -72,9 +72,10 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
         )}
       >
         {/* Header Section */}
-        <div className="flex-none px-6 pt-6 pb-4 bg-white">
-          <div className="flex items-start gap-2">
-            <Image
+        <Link href="/dashboard">
+          <div className="flex-none px-6 pt-6 pb-4 bg-white">
+            <div className="flex items-start gap-2">
+              <Image
               src="/single-logo.svg"
               alt="BoostFury Logo"
               width={32}
@@ -84,9 +85,10 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
             <div className="flex flex-col">
               <h1 className="text-2xl font-semibold text-gray-900">BoostFury</h1>
               <p className="text-[10px] font-medium text-gray-500">AI Studio</p>
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
 
         {/* LinkedIn Profile Section */}
         <div className="flex-none px-4 py-3">
