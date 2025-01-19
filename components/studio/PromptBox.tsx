@@ -30,7 +30,7 @@ const PromptBox: React.FC<PromptBoxProps> = ({
   onGenerate,
 }) => {
   return (
-    <div className="bg-gradient-to-br bg-gray-100  rounded-3xl shadow-[0_8px_40px_rgb(0,0,0,0.06)] border border-slate-200 overflow-hidden">
+    <div className="bg-gradient-to-br bg-gray-100  rounded-3xl  border border-slate-200 overflow-hidden">
       {/* Prompt Input Section */}
       <div className="flex items-end gap-3">
         <div className="flex-1 min-h-[20px] relative group">
@@ -67,7 +67,7 @@ const PromptBox: React.FC<PromptBoxProps> = ({
             onChange={(e) =>
               onPostLengthChange(e.target.value as "short" | "medium" | "long")
             }
-            className="h-8 appearance-none bg-white/60 hover:bg-white/80 backdrop-blur-sm border border-gray-200/60 rounded-xl pl-3 pr-8 text-xs font-medium text-gray-600 hover:border-gray-300/80 focus:border-primary/20 focus:ring-[2px] focus:ring-primary/10 transition-all duration-200 cursor-pointer w-[120px]"
+            className="h-8 appearance-none bg-gray-100 hover:bg-white/80 backdrop-blur-sm border rounded-xl pl-3 pr-8 text-xs font-medium text-gray-600 hover:border-gray-300/80 focus:border-primary/20 focus:ring-[2px] focus:ring-primary/10 transition-all duration-200 cursor-pointer w-[120px]"
           >
             <option value="short">Short Post</option>
             <option value="medium">Medium Post</option>
@@ -97,7 +97,7 @@ const PromptBox: React.FC<PromptBoxProps> = ({
           <select
             value={tone}
             onChange={(e) => onToneChange(e.target.value)}
-            className="h-8 appearance-none bg-white/60 hover:bg-white/80 backdrop-blur-sm border border-gray-200/60 rounded-xl pl-3 pr-8 text-xs font-medium text-gray-600 hover:border-gray-300/80 focus:border-primary/20 focus:ring-[2px] focus:ring-primary/10 transition-all duration-200 cursor-pointer w-[150px]"
+            className="h-8 appearance-none bg-gray-100 hover:bg-white/80 backdrop-blur-sm border  rounded-xl pl-3 pr-8 text-xs font-medium text-gray-600 hover:border-gray-300/80 focus:border-primary/20 focus:ring-[2px] focus:ring-primary/10 transition-all duration-200 cursor-pointer w-[150px]"
           >
             <option value="professional">💼 Professional</option>
             <option value="casual">😊 Casual</option>
