@@ -202,7 +202,6 @@ const ContentManager = () => {
     handlePageChange,
     handleDeletePost,
   } = useContentManagement();
-  const { handleCreateDraftFromGenerated } = useContentPosting();
 
   // Handle URL query params for active tab
   useEffect(() => {

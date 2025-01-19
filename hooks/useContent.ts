@@ -134,6 +134,7 @@ export const useContentPosting = () => {
   const router = useRouter();
   const draftId = searchParams?.get("draft_id");
   const { linkedinProfile } = useSelector((state: RootState) => state.user);
+  const queryClient = useQueryClient();
 
   // Core states
   const [content, setContent] = useState("");
@@ -410,6 +411,22 @@ export const useContentPosting = () => {
     [draftId, selectedProfile?.id, schedulePostMutation]
   );
 
+  const { mutateAsync: shuffleQueueMutation, isLoading: isShuffling } =
+    useMutation({
+      mutationFn: () => shuffleQueue(),
+      onSuccess: (response) => {
+        if (response.success) {
+        // Refetch the queue data to show updated order
+        queryClient.invalidateQueries(["scheduledQueue"]);
+      } else {
+        toast.error(response.message || "Failed to shuffle queue");
+      }
+    },
+    onError: (error: Error) => {
+      toast.error(`Error shuffling queue: ${error.message}`);
+      console.error("Shuffle error:", error);
+    },
+  });
   return {
     // States
     content,
@@ -427,6 +444,8 @@ export const useContentPosting = () => {
     handlePostNow,
     handleAddToQueue,
     handleSchedule,
+    shuffleQueue: () => shuffleQueueMutation(linkedinProfile?.id || ""),
+    isShuffling,
   };
 };
 

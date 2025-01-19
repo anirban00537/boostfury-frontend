@@ -130,14 +130,16 @@ const NavigationItem: React.FC<{
         "group relative flex items-center gap-x-2.5 rounded-md px-2 py-1.5",
         "transition-all duration-150",
         isActive
-          ? "bg-gray-900/5 text-gray-900"
-          : "hover:bg-gray-900/[0.03] text-gray-700"
+          ? "bg-neutral-100/80 text-neutral-800"
+          : "hover:bg-neutral-50 text-neutral-600"
       )}
     >
       <item.icon
         className={cn(
           "w-[18px] h-[18px] transition-colors duration-150",
-          isActive ? "text-gray-900" : "text-gray-600 group-hover:text-gray-800"
+          isActive
+            ? "text-neutral-800"
+            : "text-neutral-500 group-hover:text-neutral-700"
         )}
       />
 
@@ -146,8 +148,8 @@ const NavigationItem: React.FC<{
           className={cn(
             "text-sm font-medium",
             isActive
-              ? "text-gray-900"
-              : "text-gray-700 group-hover:text-gray-800"
+              ? "text-neutral-800"
+              : "text-neutral-600 group-hover:text-neutral-700"
           )}
         >
           {item.name}
@@ -157,7 +159,7 @@ const NavigationItem: React.FC<{
           <span
             className={cn(
               "px-1.5 py-0.5 text-[10px] font-medium rounded",
-              item.badgeColor || "bg-gray-100 text-gray-600"
+              item.badgeColor || "bg-neutral-100 text-neutral-600"
             )}
           >
             {item.badge}
@@ -342,7 +344,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
                   "h-full transition-all duration-300 ease-in-out bg-gradient-to-r",
                   wordUsage.percentage > 80
                     ? "from-red-500 to-red-600"
-                    : "from-primary to-primary-dark"
+                    : "from-primary to-primary/50"
                 )}
                 style={{ width: `${wordUsage.percentage}%` }}
               />
