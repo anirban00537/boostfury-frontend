@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import { PostPreviewNotRedux } from "@/components/content-create/PostPreviewNotRedux";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
@@ -10,12 +10,12 @@ import { useGenerateLinkedInPosts } from "@/hooks/useGenerateLinkedInPosts";
 import { useContentPosting } from "@/hooks/useContent";
 import { POST_STATUS } from "@/lib/core-constants";
 import { toast } from "react-hot-toast";
+import { cn } from "@/lib/utils";
 
 const ContentCreationTools: React.FC = () => {
   const { linkedinProfile, userinfo } = useSelector(
     (state: RootState) => state.user
   );
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [postLength, setPostLength] = useState<"short" | "medium" | "long">(
     "medium"
   );
@@ -36,6 +36,18 @@ const ContentCreationTools: React.FC = () => {
     handleSchedule,
     isScheduling,
   } = useContentPosting();
+
+  // Initialize sidebar state based on content or draft_id
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Update sidebar state when content or draft_id changes
+  useEffect(() => {
+    if (content || postDetails?.id) {
+      setIsSidebarOpen(true);
+    } else {
+      setIsSidebarOpen(false);
+    }
+  }, [content, postDetails?.id]);
 
   // AI Generation Hook
   const {
@@ -83,10 +95,20 @@ const ContentCreationTools: React.FC = () => {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Main Content */}
-      <div className="flex-1 relative lg:mr-[400px]">
+      <div
+        className={cn(
+          "flex-1 relative transition-all duration-300",
+          !isSidebarOpen ? "mr-0" : "lg:mr-[400px]"
+        )}
+      >
         <main className="h-screen overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen p-6">
-            <div className="w-[750px] space-y-10">
+            <div
+              className={cn(
+                "w-[750px] space-y-10 transition-all duration-300",
+                !isSidebarOpen && "translate-x-0"
+              )}
+            >
               {/* Title Section */}
               <div className="space-y-4">
                 <h1 className="text-[48px] font-bold text-center leading-tight bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">

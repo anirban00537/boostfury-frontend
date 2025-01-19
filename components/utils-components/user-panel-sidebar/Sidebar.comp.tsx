@@ -268,19 +268,23 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
         </Link>
 
         {/* Create Button - Updated to use GradientButton */}
-        <GradientButton
-          variant="primary"
-          fullWidth
-          className="shadow-sm hover:shadow-md transition-shadow"
-        >
-          <div className="flex items-center justify-center gap-2">
-            <Plus className="h-4 w-4" />
-            <span>Create New</span>
-            <kbd className="ml-auto text-xs bg-black/20 px-1.5 py-0.5 rounded">
-              Ctrl + N
-            </kbd>
-          </div>
-        </GradientButton>
+        <div className="w-full mt-4">
+        <Link href="/studio">
+          <GradientButton
+            variant="primary"
+            fullWidth
+            className="shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div className="flex items-center justify-center gap-2">
+              <Plus className="h-4 w-4" />
+              <span>Create New</span>
+              <kbd className="ml-auto text-xs bg-black/20 px-1.5 py-0.5 rounded">
+                Ctrl + N
+              </kbd>
+              </div>
+            </GradientButton>
+          </Link>
+        </div>
       </div>
 
       {/* Navigation Section */}
