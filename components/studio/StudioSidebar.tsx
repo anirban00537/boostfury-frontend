@@ -59,53 +59,48 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
   return (
     <motion.div
       className={cn(
-        "h-screen border-r border-gray-200/50 bg-gradient-to-b from-white via-gray-50/50 to-gray-100/50 relative backdrop-blur-xl transition-all duration-300",
-        isCollapsed ? "w-0" : "w-[400px]"
+        "h-screen border-r border-gray-200/50 bg-white relative backdrop-blur-xl transition-all duration-300 shadow-lg shadow-gray-100/50 z-50",
+        isCollapsed ? "w-0" : "w-[350px]"
       )}
+      animate={{ width: isCollapsed ? 0 : 350 }}
+      transition={{ duration: 0.3 }}
     >
       <div
         className={cn(
-          "flex-1 overflow-hidden h-full flex flex-col",
+          "flex-1 overflow-hidden h-full flex flex-col bg-gray-50/50",
           isCollapsed && "hidden"
         )}
       >
         {/* Header Section */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex-none p-6 border-b border-gray-200/50 bg-white/50 backdrop-blur-sm"
-        >
-          <Link href="/dashboard" className="group">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 via-violet-500/20 to-blue-500/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative w-10 h-10 bg-gradient-to-br from-blue-500 to-violet-600 rounded-xl flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-white" />
-                </div>
-              </div>
-              <div>
-                <h2 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-violet-600 to-blue-600 text-transparent bg-clip-text">
-                  AI Content Studio
-                </h2>
-                <p className="text-xs text-gray-500">Powered by Advanced AI</p>
-              </div>
+        <div className="flex-none px-6 pt-6 pb-4 bg-white">
+          <div className="flex items-start gap-2">
+            <Image
+              src="/single-logo.svg"
+              alt="BoostFury Logo"
+              width={32}
+              height={32}
+              className="object-contain"
+            />
+            <div className="flex flex-col">
+              <h1 className="text-2xl font-semibold text-gray-900">BoostFury</h1>
+              <p className="text-[10px] font-medium text-gray-500">AI Studio</p>
             </div>
-          </Link>
-        </motion.div>
+          </div>
+        </div>
 
         {/* LinkedIn Profile Section */}
-        <div className="flex-none p-4">
+        <div className="flex-none px-4 py-3">
           {linkedinProfile ? (
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-white via-white/95 to-gray-50 border border-gray-200/60 shadow-sm">
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-200/60 shadow-sm hover:shadow-md transition-all duration-200">
               <div className="relative">
                 <Image
                   src={linkedinProfile.avatarUrl}
                   alt={linkedinProfile.name}
-                  width={32}
-                  height={32}
-                  className="rounded-lg ring-2 ring-white"
+                  width={36}
+                  height={36}
+                  className="rounded-lg ring-2 ring-white shadow-sm"
                 />
-                <div className="absolute -bottom-1 -right-1 size-3 bg-green-500 rounded-full ring-2 ring-white" />
+                <div className="absolute -bottom-1 -right-1 size-3 bg-green-500 rounded-full ring-2 ring-white shadow-sm" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 truncate">
@@ -119,9 +114,9 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
             </div>
           ) : (
             <Link href="/account" className="block">
-              <div className="p-6 text-center rounded-xl border border-gray-200/60 bg-gradient-to-br from-white via-white/95 to-gray-50 shadow-sm">
-                <div className="size-12 rounded-xl bg-gradient-to-br from-blue-500/5 to-violet-500/5 flex items-center justify-center mx-auto mb-3">
-                  <Linkedin className="size-6 text-[#0A66C2]" />
+              <div className="p-4 text-center rounded-xl bg-white border border-gray-200/60 shadow-sm hover:shadow-md transition-all duration-200">
+                <div className="size-10 rounded-xl bg-gradient-to-br from-[#92C8FF]/5 to-[#0A66C2]/5 flex items-center justify-center mx-auto mb-2">
+                  <Linkedin className="size-5 text-[#0A66C2]" />
                 </div>
                 <h3 className="text-sm font-medium text-gray-900 mb-2">
                   No Profile Connected
@@ -131,6 +126,7 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
                   size="sm"
                   shadow="soft"
                   leftIcon={<Linkedin className="size-4" />}
+                  className="bg-white"
                 >
                   Connect LinkedIn
                 </GradientButton>
@@ -140,164 +136,139 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="p-4 space-y-6">
-            {/* Writing Section */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between px-2">
-                <h3 className="text-sm font-medium text-gray-900 flex items-center gap-2">
-                  <MessageSquare className="size-4" />
-                  Content Prompt
-                </h3>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <GradientButton
-                      variant="outline"
-                      size="sm"
-                      shadow="soft"
-                      className="size-8 p-0"
-                      leftIcon={<HelpCircle className="size-4 text-gray-500" />}
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Describe what you want to write about</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-
-              <div className="relative group">
-                <div className="absolute -inset-[1px] bg-gradient-to-r from-blue-500/10 via-violet-500/10 to-blue-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
-                <textarea
-                  value={prompt}
-                  onChange={onPromptChange}
-                  placeholder="What would you like to write about?"
-                  className="w-full h-32 p-3 text-sm bg-white/50 backdrop-blur-sm border border-gray-200/60 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
-                />
-              </div>
-
-              <GradientButton
-                variant="primary"
-                size="default"
-                shadow="default"
-                fullWidth
-                onClick={onGenerate}
-                disabled={isGenerating}
-                className="relative h-12 bg-gradient-to-r from-[#4F46E5] via-[#7C3AED] to-[#4F46E5] hover:from-[#4338CA] hover:via-[#6D28D9] hover:to-[#4338CA] border-0 shadow-lg hover:shadow-xl hover:shadow-indigo-500/20 transition-all duration-300"
-                leftIcon={
-                  isGenerating ? (
-                    <Loader2 className="size-5 animate-spin" />
-                  ) : (
-                    <Wand2 className="size-5" />
-                  )
-                }
-              >
-                {isGenerating ? "Generating..." : "Generate Content"}
-              </GradientButton>
-            </div>
-
+        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent hover:scrollbar-thumb-gray-300">
+          <div className="px-4 py-3 space-y-4">
             {/* Settings Section */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between px-2">
-                <h3 className="text-sm font-medium text-gray-900 flex items-center gap-2">
-                  <Zap className="size-4" />
-                  Content Settings
-                </h3>
+              {/* Post Length */}
+              <div className="space-y-2.5 bg-white p-4 rounded-xl border border-gray-200/60">
+                <label className="text-sm font-medium text-gray-700">
+                  Post Length
+                </label>
+                <Tabs
+                  value={postLength}
+                  onValueChange={(value: any) => onPostLengthChange(value)}
+                  className="w-full"
+                >
+                  <TabsList className="w-full h-10 bg-gray-100/80 border border-gray-200/60 rounded-lg p-1">
+                    <TabsTrigger
+                      value="short"
+                      className="flex-1 rounded-md text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm hover:bg-white/50 transition-colors"
+                    >
+                      Short
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="medium"
+                      className="flex-1 rounded-md text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm hover:bg-white/50 transition-colors"
+                    >
+                      Medium
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="long"
+                      className="flex-1 rounded-md text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm hover:bg-white/50 transition-colors"
+                    >
+                      Long
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
               </div>
 
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-gray-700 px-2">
-                    Tone of Voice
-                  </label>
-                  <Select value={tone} onValueChange={onToneChange}>
-                    <SelectTrigger className="w-full h-10 bg-white/50 backdrop-blur-sm border border-gray-200/60 rounded-xl">
-                      <SelectValue
-                        defaultValue="professional"
-                        placeholder="Professional"
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="professional">
-                        <div className="flex items-center gap-2">
-                          <span>💼</span> Professional
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="casual">
-                        <div className="flex items-center gap-2">
-                          <span>😊</span> Casual
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="friendly">
-                        <div className="flex items-center gap-2">
-                          <span>🤝</span> Friendly
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="humorous">
-                        <div className="flex items-center gap-2">
-                          <span>😄</span> Humorous
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="formal">
-                        <div className="flex items-center gap-2">
-                          <span>👔</span> Formal
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+              {/* Tone of Voice */}
+              <div className="space-y-2.5 bg-white p-4 rounded-xl border border-gray-200/60">
+                <label className="text-sm font-medium text-gray-700">
+                  Tone of Voice
+                </label>
+                <Select value={tone} onValueChange={onToneChange}>
+                  <SelectTrigger className="w-full h-10 bg-gray-100/80 border border-gray-200/60 rounded-lg hover:border-gray-300/80 transition-colors">
+                    <SelectValue
+                      defaultValue="professional"
+                      placeholder="Professional"
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="professional">
+                      <div className="flex items-center gap-2">
+                        <span>💼</span> Professional
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="casual">
+                      <div className="flex items-center gap-2">
+                        <span>😊</span> Casual
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="friendly">
+                      <div className="flex items-center gap-2">
+                        <span>🤝</span> Friendly
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="humorous">
+                      <div className="flex items-center gap-2">
+                        <span>😄</span> Humorous
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="formal">
+                      <div className="flex items-center gap-2">
+                        <span>👔</span> Formal
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Writing Section */}
+              <div className="space-y-2.5 bg-white p-4 rounded-xl border border-gray-200/60">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <MessageSquare className="size-4" />
+                    Content Prompt
+                  </h3>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button className="size-6 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors">
+                        <HelpCircle className="size-4 text-gray-400" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Describe what you want to write about</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-gray-700 px-2">
-                    Post Length
-                  </label>
-                  <Tabs
-                    value={postLength}
-                    onValueChange={(value: any) => onPostLengthChange(value)}
-                    className="w-full"
-                  >
-                    <TabsList className="w-full h-10 bg-white/50 backdrop-blur-sm border border-gray-200/60 rounded-xl p-1">
-                      <TabsTrigger
-                        value="short"
-                        className="flex-1 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/10 data-[state=active]:to-violet-500/10"
-                      >
-                        Short
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="medium"
-                        className="flex-1 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/10 data-[state=active]:to-violet-500/10"
-                      >
-                        Medium
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="long"
-                        className="flex-1 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/10 data-[state=active]:to-violet-500/10"
-                      >
-                        Long
-                      </TabsTrigger>
-                    </TabsList>
-                  </Tabs>
+                <div className="relative group">
+                  <textarea
+                    value={prompt}
+                    onChange={onPromptChange}
+                    placeholder="What would you like to write about?"
+                    className="w-full h-32 p-3 text-sm bg-gray-100/80 border border-gray-200/60 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/20 transition-all placeholder:text-gray-400"
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Collapse Button */}
-      <GradientButton
-        variant="outline"
-        size="sm"
-        shadow="soft"
-        className="absolute -right-4 top-6 size-8 p-0 rounded-full"
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        leftIcon={
-          <ChevronLeft
-            className={cn("size-4 text-gray-600 transition-transform", {
-              "rotate-180": isCollapsed,
-            })}
-          />
-        }
-      />
+        {/* Fixed Generate Button */}
+        <div className="flex-none p-4 bg-white border-t border-gray-200/60">
+          <GradientButton
+            variant="primary"
+            size="default"
+            shadow="default"
+            fullWidth
+            onClick={onGenerate}
+            disabled={isGenerating}
+            className="relative h-11 bg-[#7C3AED] hover:bg-[#6D28D9] border-0 shadow-lg hover:shadow-xl hover:shadow-indigo-500/20 transition-all duration-300"
+            leftIcon={
+              isGenerating ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <Wand2 className="size-4" />
+              )
+            }
+          >
+            {isGenerating ? "Generating..." : "Generate Content"}
+          </GradientButton>
+        </div>
+      </div>
     </motion.div>
   );
 };

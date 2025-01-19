@@ -113,6 +113,7 @@ const ContentCreationTools: React.FC = () => {
           isAddingToQueue={isAddingToQueue}
           isAutoSaving={isAutoSaving}
           isScheduling={isScheduling}
+          isCollapsed={!isSidebarOpen}
         />
         <main className="h-[calc(100vh-4rem)] overflow-y-auto">
           <div className="relative px-4 sm:px-6 lg:px-8 py-12">

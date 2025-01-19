@@ -1,6 +1,13 @@
 "use client";
 import React, { useState } from "react";
-import { Menu, Plus, Save, Calendar, ArrowLeft } from "lucide-react";
+import {
+  Menu,
+  Plus,
+  Save,
+  Calendar,
+  ArrowLeft,
+  ChevronLeft,
+} from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -10,6 +17,7 @@ import { motion } from "framer-motion";
 import { ScheduleModal } from "@/components/content-create/ScheduleModal";
 import Link from "next/link";
 import { GradientButton } from "@/components/ui/gradient-button";
+import { cn } from "@/lib/utils";
 
 interface StudioNavbarProps {
   onMenuClick: () => void;
@@ -20,6 +28,7 @@ interface StudioNavbarProps {
   isAddingToQueue: boolean;
   isAutoSaving: boolean;
   isScheduling: boolean;
+  isCollapsed: boolean;
 }
 
 const StudioNavbar: React.FC<StudioNavbarProps> = ({
@@ -31,6 +40,7 @@ const StudioNavbar: React.FC<StudioNavbarProps> = ({
   isAddingToQueue,
   isAutoSaving,
   isScheduling,
+  isCollapsed,
 }) => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
 
@@ -42,30 +52,22 @@ const StudioNavbar: React.FC<StudioNavbarProps> = ({
         className="h-16 border-b border-gray-200/50 bg-white backdrop-blur-sm flex items-center justify-between px-4 lg:px-6 sticky top-0 z-20"
       >
         {/* Left Section */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center">
           <GradientButton
             variant="outline"
             size="sm"
             shadow="soft"
-            className="lg:hidden"
             onClick={onMenuClick}
-            leftIcon={<Menu className="size-5" />}
+            className="size-9 rounded-xl"
+            leftIcon={
+              <ChevronLeft
+                className={cn(
+                  "size-5 transition-transform duration-200",
+                  isCollapsed ? "rotate-180" : "rotate-0"
+                )}
+              />
+            }
           />
-
-          <Link href="/dashboard" className="group flex items-center gap-2">
-            <GradientButton
-              variant="outline"
-              size="sm"
-              shadow="soft"
-              className="size-9 rounded-xl"
-              leftIcon={<ArrowLeft className="size-5" />}
-            />
-            <div className="hidden sm:block">
-              <p className="text-sm font-medium text-gray-700">
-                Back to Dashboard
-              </p>
-            </div>
-          </Link>
         </div>
 
         {/* Right Section */}
