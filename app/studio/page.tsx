@@ -21,17 +21,6 @@ const ContentCreationTools: React.FC = () => {
     "medium"
   );
 
-  // AI Generation Hook
-  const {
-    prompt,
-    generatedContent,
-    tone,
-    isGenerating,
-    handlePromptChange,
-    handleGenerate,
-    setTone,
-  } = useGenerateLinkedInPosts();
-
   // Content Management Hook
   const {
     content,
@@ -49,12 +38,19 @@ const ContentCreationTools: React.FC = () => {
     isScheduling,
   } = useContentPosting();
 
-  // Handle successful generation
-  const handleSuccessfulGeneration = async () => {
-    if (generatedContent) {
-      handleContentChange(generatedContent);
-    }
-  };
+  // AI Generation Hook
+  const {
+    prompt,
+    tone,
+    isGenerating,
+    // Actions
+    setPrompt,
+    handlePromptChange,
+    handleGenerate,
+    setTone,
+  } = useGenerateLinkedInPosts({
+    onContentGenerated: handleContentChange,
+  });
 
   const getStatusString = (
     status: number | undefined
@@ -95,7 +91,6 @@ const ContentCreationTools: React.FC = () => {
             return;
           }
           await handleGenerate();
-          await handleSuccessfulGeneration();
         }}
         isGenerating={isGenerating}
         tone={tone}
@@ -124,9 +119,7 @@ const ContentCreationTools: React.FC = () => {
             <div className="max-w-xl mx-auto">
               <PostPreviewNotRedux
                 content={
-                  content ||
-                  generatedContent ||
-                  "Your generated content will appear here..."
+                  content || "Your generated content will appear here..."
                 }
                 isGenerating={isGenerating}
                 status={getStatusString(postDetails?.status)}

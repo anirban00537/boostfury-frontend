@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "react-query";
 import { generateLinkedInPosts } from "@/services/ai-content";
-import { ApiError, GenerateLinkedInPostsDTO } from "@/types";
+import { GenerateLinkedInPostsDTO } from "@/types";
 import toast from "react-hot-toast";
 import { useState, useEffect } from "react";
 import { useAuth } from "./useAuth";
@@ -10,58 +10,49 @@ interface ContentIdea {
   idea: string;
 }
 
-interface ContentIdeasResponse {
-  ideas: ContentIdea[];
-  tokenUsage: {
-    wordCount: number;
-    remainingTokens: number;
-    totalTokens: number;
-  };
+interface UseGenerateLinkedInPostsProps {
+  onContentGenerated?: (content: string) => void;
 }
 
-export const useGenerateLinkedInPosts = () => {
+
+export const useGenerateLinkedInPosts = ({
+  onContentGenerated,
+}: UseGenerateLinkedInPostsProps = {}) => {
   const queryClient = useQueryClient();
   const { refetchSubscription } = useAuth();
 
-  // States with clear naming
+  // Core states - remove generatedContent state since we'll use the parent's content state
   const [prompt, setPrompt] = useState("");
-  const [generatedContent, setGeneratedContent] = useState("");
   const [tone, setTone] = useState("professional");
 
+  // Generate post mutation
   const { mutateAsync: generatePost, isLoading: isGenerating } = useMutation(
     (dto: GenerateLinkedInPostsDTO) => generateLinkedInPosts(dto),
     {
       onSuccess: async (response) => {
-        if (response.success) {
-          const post = response.data.post;
-          setGeneratedContent(post);
-          toast.success("Content generated successfully!");
-
-          // Refresh subscription data
-          try {
-            await Promise.all([
-              queryClient.invalidateQueries(["subscription"]),
-              refetchSubscription(),
-            ]);
-          } catch (error) {
-            console.error("Error refreshing subscription data:", error);
-          }
-        } else {
-          setGeneratedContent("");
+        if (!response.success) {
           toast.error(response.message || "Failed to generate content");
+          return;
         }
+
+        console.log("response", response);
+        const content = response.data?.post || "";
+
+        if (onContentGenerated) {
+          onContentGenerated(content);
+        }
+
+        toast.success("Content generated successfully!");
+
+        // Refresh subscription data
+        await queryClient.invalidateQueries(["subscription"]);
+        await refetchSubscription().catch(console.error);
       },
       onError: async (error: Error) => {
-        try {
-          console.error("Generation error:", error);
-          processApiResponse(error);
-          await Promise.all([
-            queryClient.invalidateQueries(["subscription"]),
-            refetchSubscription(),
-          ]);
-        } catch (refreshError) {
-          processApiResponse(refreshError as ApiError);
-        }
+        console.error("Generation error:", error);
+        processApiResponse(error);
+        await queryClient.invalidateQueries(["subscription"]);
+        await refetchSubscription().catch(console.error);
       },
     }
   );
@@ -81,7 +72,6 @@ export const useGenerateLinkedInPosts = () => {
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, [prompt, isGenerating]);
 
-  // Handler functions with clear purposes
   const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPrompt(e.target.value);
   };
@@ -107,7 +97,6 @@ export const useGenerateLinkedInPosts = () => {
       });
     } catch (error) {
       console.error("Error in handleGenerate:", error);
-      // Refresh subscription on error
       try {
         await Promise.all([
           queryClient.invalidateQueries(["subscription"]),
@@ -122,7 +111,6 @@ export const useGenerateLinkedInPosts = () => {
   return {
     // States
     prompt,
-    generatedContent,
     tone,
     isGenerating,
     // Actions
@@ -130,16 +118,5 @@ export const useGenerateLinkedInPosts = () => {
     handlePromptChange,
     handleGenerate,
     setTone,
-  };
-};
-
-export const useGenerateContentIdeas = () => {
-  const [loading, setLoading] = useState(false);
-  const [ideas, setIdeas] = useState<ContentIdeasResponse | null>(null);
-  const queryClient = useQueryClient();
-
-  return {
-    loading,
-    ideas: ideas?.ideas || [],
   };
 };
