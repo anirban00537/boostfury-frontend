@@ -212,32 +212,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   );
   const [isManageModalOpen, setIsManageModalOpen] = useState(false);
 
-  const { handleCreateDraftFromGenerated } = useContentPosting();
   const { logoutUser } = useAuth();
   const { linkedinProfile } = useSelector((state: RootState) => state.user);
-  const handleCreateNew = async () => {
-    try {
-      // Create a blank draft
-      const draftId = await handleCreateDraftFromGenerated({
-        content: "", // Blank content
-        postType: "text",
-        linkedInProfileId: linkedinProfile?.id,
-        videoUrl: "",
-        documentUrl: "",
-        hashtags: [],
-        mentions: [],
-      });
-
-      if (draftId) {
-        // Redirect to compose with the new draft ID
-        router.push(`/compose?draft_id=${draftId}`);
-      }
-    } catch (error) {
-      console.error("Error creating new draft:", error);
-      toast.error("Failed to create new draft");
-    }
-  };
-
   // Get word usage from the new subscription structure
   const wordUsage = {
     used: subscription.usage.words.used,
@@ -293,7 +269,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
 
         {/* Create Button - Updated to use GradientButton */}
         <GradientButton
-          onClick={handleCreateNew}
           variant="primary"
           fullWidth
           className="shadow-sm hover:shadow-md transition-shadow"
