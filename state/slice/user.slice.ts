@@ -1,4 +1,4 @@
-import { UserInfo, UserState, SubscriptionState, Workspace } from "@/types";
+import { UserInfo, UserState, SubscriptionState } from "@/types";
 import { LinkedInProfileUI } from "@/types/post";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
@@ -7,8 +7,7 @@ const initialState: UserState = {
   loggedin: false,
   loading: true,
   carouselDownloading: false,
-  currentWorkspace: null,
-  linkedinProfiles: [],
+  linkedinProfile: null,
   subscription: {
     isActive: true,
     subscription: null,
@@ -45,7 +44,7 @@ const userSlice = createSlice({
     logout: (state) => {
       state.userinfo = null;
       state.loggedin = false;
-      state.linkedinProfiles = [];
+      state.linkedinProfile = null;
       state.subscription = initialState.subscription;
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
@@ -54,22 +53,11 @@ const userSlice = createSlice({
     setCarouselDownloading: (state, action: PayloadAction<boolean>) => {
       state.carouselDownloading = action.payload;
     },
-    setCurrentWorkspace: (state, action: PayloadAction<Workspace>) => {
-      state.currentWorkspace = action.payload;
-    },
-    setLinkedInProfiles: (
-      state,
-      action: PayloadAction<LinkedInProfileUI[]>
-    ) => {
-      state.linkedinProfiles = action.payload;
+    setLinkedInProfile: (state, action: PayloadAction<LinkedInProfileUI>) => {
+      state.linkedinProfile = action.payload;
     },
     setSubscriptionData: (state, action: PayloadAction<SubscriptionState>) => {
       state.subscription = action.payload;
-    },
-    setPersonalAiVoice: (state, action: PayloadAction<string>) => {
-      if (state.currentWorkspace) {
-        state.currentWorkspace.personalAiVoice = action.payload;
-      }
     },
   },
 });
@@ -80,9 +68,8 @@ export const {
   logout,
   setLoading,
   setCarouselDownloading,
-  setCurrentWorkspace,
-  setLinkedInProfiles,
+  setLinkedInProfile,
   setSubscriptionData,
-  setPersonalAiVoice,
 } = userSlice.actions;
 export default userSlice.reducer;
+

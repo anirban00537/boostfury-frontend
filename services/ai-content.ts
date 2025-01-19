@@ -41,14 +41,6 @@ export const generateCarouselContent = async (
   });
   return response.data;
 };
-// generate-content-ideas-for-workspace
-export const generateContentIdeasForWorkspace = async (workspaceId: string) => {
-  const response = await request.post(
-    "/ai-content/generate-content-ideas-for-workspace",
-    { workspaceId }
-  );
-  return response.data;
-};
 
 export const contentRewrite = async (dto: {
   content: string;

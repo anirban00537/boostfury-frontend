@@ -82,34 +82,15 @@ const postConfigs: PostConfig[] = [
 interface TabHeaderProps {
   activeTab: PostTabId;
   onTabChange: (tabId: PostTabId) => void;
-  handleCreateDraftFromGenerated: any;
-  currentWorkspace: any;
 }
 
-const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange, handleCreateDraftFromGenerated, currentWorkspace }) => {
+const TabHeader: React.FC<TabHeaderProps> = ({
+  activeTab,
+  onTabChange,
+}) => {
   const router = useRouter();
 
-  const handleCreateNew = async () => {
-    try {
-      const draftId = await handleCreateDraftFromGenerated({
-        content: "",
-        postType: "text",
-        workspaceId: currentWorkspace?.id,
-        linkedInProfileId: null,
-        videoUrl: "",
-        documentUrl: "",
-        hashtags: [],
-        mentions: [],
-      });
 
-      if (draftId) {
-        router.push(`/compose?draft_id=${draftId}`);
-      }
-    } catch (error) {
-      console.error("Error creating new draft:", error);
-      toast.error("Failed to create new draft");
-    }
-  };
 
   return (
     <div className="relative border-b border-neutral-200/60 bg-white/50 backdrop-blur-sm sticky top-0 z-10">
@@ -134,25 +115,26 @@ const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange, handleCre
           </div>
 
           <div className="flex items-center gap-3">
-            <GradientButton
-              variant="primary"
-              onClick={handleCreateNew}
-              className="shadow-sm hover:shadow-md transition-shadow"
+            <Link href="/studio">
+              <GradientButton
+                variant="primary"
+                className="shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-center gap-2">
                 <Plus className="h-4 w-4" />
-                <span>Create New</span>
-              </div>
-            </GradientButton>
+                  <span>Create New</span>
+                </div>
+              </GradientButton>
+            </Link>
 
-            <Link href="/ai-writer">
+            <Link href="/dashboard">
               <GradientButton
                 variant="default"
                 className="shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-2">
                   <Wand2 className="h-4 w-4" />
-                  <span>AI Writer</span>
+                  <span>Dashboard</span>
                 </div>
               </GradientButton>
             </Link>
@@ -170,30 +152,36 @@ const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange, handleCre
               )}
             >
               <div className="relative flex items-center gap-2">
-                <div className={cn(
-                  "size-8 rounded-lg flex items-center justify-center transition-colors",
-                  activeTab === config.id
-                    ? "bg-gradient-to-br from-primary/10 to-primary/5 text-primary shadow-inner"
-                    : "text-neutral-500 group-hover:text-primary/80"
-                )}>
+                <div
+                  className={cn(
+                    "size-8 rounded-lg flex items-center justify-center transition-colors",
+                    activeTab === config.id
+                      ? "bg-gradient-to-br from-primary/10 to-primary/5 text-primary shadow-inner"
+                      : "text-neutral-500 group-hover:text-primary/80"
+                  )}
+                >
                   {config.icon}
                 </div>
-                <span className={cn(
-                  "text-sm font-medium",
-                  activeTab === config.id
-                    ? "text-neutral-900"
-                    : "text-neutral-600 group-hover:text-neutral-800"
-                )}>
+                <span
+                  className={cn(
+                    "text-sm font-medium",
+                    activeTab === config.id
+                      ? "text-neutral-900"
+                      : "text-neutral-600 group-hover:text-neutral-800"
+                  )}
+                >
                   {config.title}
                 </span>
               </div>
 
-              <div className={cn(
-                "absolute bottom-0 left-0 right-0 h-0.5 transition-all duration-200",
-                activeTab === config.id
-                  ? "bg-primary"
-                  : "bg-transparent group-hover:bg-neutral-200"
-              )} />
+              <div
+                className={cn(
+                  "absolute bottom-0 left-0 right-0 h-0.5 transition-all duration-200",
+                  activeTab === config.id
+                    ? "bg-primary"
+                    : "bg-transparent group-hover:bg-neutral-200"
+                )}
+              />
             </button>
           ))}
         </div>
@@ -215,7 +203,6 @@ const ContentManager = () => {
     handleDeletePost,
   } = useContentManagement();
   const { handleCreateDraftFromGenerated } = useContentPosting();
-  const { currentWorkspace } = useSelector((state: RootState) => state.user);
 
   // Handle URL query params for active tab
   useEffect(() => {
@@ -241,28 +228,6 @@ const ContentManager = () => {
     updateQueryParams(tabId);
   };
 
-  const handleCreateNew = async () => {
-    try {
-      const draftId = await handleCreateDraftFromGenerated({
-        content: "",
-        postType: "text",
-        workspaceId: currentWorkspace?.id,
-        linkedInProfileId: null,
-        videoUrl: "",
-        documentUrl: "",
-        hashtags: [],
-        mentions: [],
-      });
-
-      if (draftId) {
-        router.push(`/compose?draft_id=${draftId}`);
-      }
-    } catch (error) {
-      console.error("Error creating new draft:", error);
-      toast.error("Failed to create new draft");
-    }
-  };
-
   const handleDelete = async (postId: string) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this post?"
@@ -283,7 +248,7 @@ const ContentManager = () => {
       items.push({
         label: "Edit",
         icon: <Pencil className="h-4 w-4" />,
-        href: `/compose?draft_id=${post.id}`,
+        href: `/studio?draft_id=${post.id}`,
       });
     }
 
@@ -338,11 +303,9 @@ const ContentManager = () => {
 
   return (
     <div className="min-h-screen">
-      <TabHeader 
-        activeTab={activeTab} 
+      <TabHeader
+        activeTab={activeTab}
         onTabChange={handleTabClick}
-        handleCreateDraftFromGenerated={handleCreateDraftFromGenerated}
-        currentWorkspace={currentWorkspace}
       />
       <div className=" px-4 sm:px-6 py-8">
         <div className="p-6">
@@ -430,12 +393,24 @@ const ContentManager = () => {
               {/* Empty State */}
               {(!postsData[activeTab] || postsData[activeTab].length === 0) && (
                 <EmptyState
-                  icon={postConfigs.find((config) => config.id === activeTab)?.icon 
-                    ? (postConfigs.find((config) => config.id === activeTab)?.icon as any).type 
-                    : FileText}
-                  title={activeTab === "published" ? "Ready to share your story?" : postConfigs.find((config) => config.id === activeTab)?.title || ""}
-                  description={postConfigs.find((config) => config.id === activeTab)?.emptyStateMessage || ""}
-                 
+                  icon={
+                    postConfigs.find((config) => config.id === activeTab)?.icon
+                      ? (
+                          postConfigs.find((config) => config.id === activeTab)
+                            ?.icon as any
+                        ).type
+                      : FileText
+                  }
+                  title={
+                    activeTab === "published"
+                      ? "Ready to share your story?"
+                      : postConfigs.find((config) => config.id === activeTab)
+                          ?.title || ""
+                  }
+                  description={
+                    postConfigs.find((config) => config.id === activeTab)
+                      ?.emptyStateMessage || ""
+                  }
                 />
               )}
 

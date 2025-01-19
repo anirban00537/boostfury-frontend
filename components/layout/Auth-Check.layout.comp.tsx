@@ -3,8 +3,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
 import FullScreenLoading from "../utils-components/loading/Fullscreen.loading.comp";
-import useBranding from "@/hooks/useBranding";
-import { setBackground, setNewCarousel } from "@/state/slice/carousel.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { darkColorPresets, lightColorPresets } from "@/lib/color-presets";
 import useLinkedIn from "@/hooks/useLinkedIn";
@@ -22,30 +20,13 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
   const { isActive } = useSelector(
     (state: RootState) => state.user.subscription
   );
+  const { linkedinProfile } = useSelector((state: RootState) => state.user);
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
   const { handleCreateDraftFromGenerated } = useContentPosting();
-  const currentWorkspace = useSelector((state: RootState) => state.user.currentWorkspace);
 
-  useBranding();
   useLinkedIn();
-
-  const chooseColorFromColorPalette = useCallback(() => {
-    const lightPreset =
-      lightColorPresets[Math.floor(Math.random() * lightColorPresets.length)];
-    const darkPreset =
-      darkColorPresets[Math.floor(Math.random() * darkColorPresets.length)];
-    const randomPreset = Math.random() < 0.5 ? lightPreset : darkPreset;
-    dispatch(setBackground(randomPreset));
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (pathname) {
-      dispatch(setNewCarousel());
-      chooseColorFromColorPalette();
-    }
-  }, [pathname, dispatch, chooseColorFromColorPalette]);
 
   // Enhanced Auth check effect
   useEffect(() => {
@@ -58,14 +39,14 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
         router.push(`/login?from=${encodeURIComponent(pathname || "")}`);
       } else if (loggedin && pathname === "/login") {
         // Logged in and trying to access login page
-        router.push("/ai-writer");
+        router.push("/dashboard");
       } else if (loggedin && !isActive && !isPricingPage) {
         // Show subscription required toast
         toast.custom(
           (t) => (
             <div
               className={`${
-                t.visible ? 'animate-enter' : 'animate-leave'
+                t.visible ? "animate-enter" : "animate-leave"
               } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
             >
               <div className="flex-1 w-0 p-4">
@@ -103,7 +84,7 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
             position: "top-center",
           }
         );
-        
+
         // Redirect to pricing page
         router.push("/pricing");
       }
@@ -124,8 +105,7 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
           const draftId = await handleCreateDraftFromGenerated({
             content: "", // Blank content
             postType: "text",
-            workspaceId: currentWorkspace?.id,
-            linkedInProfileId: null,
+            linkedInProfileId: linkedinProfile?.id,
             videoUrl: "",
             documentUrl: "",
             hashtags: [],
@@ -145,7 +125,7 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [router, handleCreateDraftFromGenerated, currentWorkspace?.id]);
+  }, [router, handleCreateDraftFromGenerated, linkedinProfile?.id]);
 
   // Only show loading on initial auth check
   if (isLoading) {
@@ -155,7 +135,10 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
   // Enhanced route accessibility check
   const isPublicRoute = publicRoutes.includes(pathname || "");
   const isPricingPage = pathname === "/pricing";
-  if ((!loggedin && !isPublicRoute) || (loggedin && !isActive && !isPricingPage)) {
+  if (
+    (!loggedin && !isPublicRoute) ||
+    (loggedin && !isActive && !isPricingPage)
+  ) {
     return null; // Return null instead of loading screen to prevent flash
   }
 

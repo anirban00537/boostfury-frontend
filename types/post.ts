@@ -24,13 +24,11 @@ export interface Post {
   videoTitle: string | null;
   publishingErrorCode: string | null;
   userId: string;
-  workspaceId: string;
   linkedInProfileId: string;
   statusLabel: string;
   linkedInProfile: LinkedInProfile;
   user: PostUser;
   postLogs: PostLog[];
-  workspace: Workspace;
   images: LinkedInPostImage[];
 }
 
@@ -40,7 +38,7 @@ export interface PostGroup<T extends Post = Post> {
 }
 
 // Post Status Types
-export type PostType = typeof POST_STATUS[keyof typeof POST_STATUS];
+export type PostType = (typeof POST_STATUS)[keyof typeof POST_STATUS];
 
 export enum PostTypeEnum {
   SCHEDULED = "scheduled",
@@ -67,7 +65,7 @@ export type GetPostsType = {
   page: number;
   pageSize: number;
   status: PostType;
-  workspace_id: string;
+  linkedInProfileId: string;
 };
 
 // Draft Creation Types
@@ -84,10 +82,14 @@ export interface CreateDraftParams {
   mentions?: string[] | null;
 }
 
-export interface CreateDraftPostType extends Required<Omit<CreateDraftParams, 'postType'>> {
+export interface CreateDraftPostType {
+  content: string;
   postType: PostContentType;
-  carouselTitle?: string;
-  videoTitle?: string;
+  linkedInProfileId: string | null;
+  videoUrl?: string | null;
+  documentUrl?: string | null;
+  hashtags?: string[] | null;
+  mentions?: string[] | null;
   id?: string;
 }
 
@@ -113,8 +115,8 @@ export interface LinkedInProfileUI {
   id: string;
   name: string;
   avatarUrl: string;
-  type: 'linkedin';
-  status: 'connected' | 'disconnected';
+  type: "linkedin";
+  status: "connected" | "disconnected";
 }
 
 // Full LinkedIn Profile for API/backend interactions
@@ -149,15 +151,6 @@ export interface PostLog {
   updatedAt: string;
 }
 
-export interface Workspace {
-  id: string;
-  name: string;
-  description: string | null;
-  isDefault: boolean;
-  createdAt: string;
-  updatedAt: string;
-  userId: string;
-}
 
 export interface SchedulePostType {
   scheduledTime: string;

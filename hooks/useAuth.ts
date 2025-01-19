@@ -6,7 +6,6 @@ import {
   setUser,
   logout,
   setLoading,
-  setCurrentWorkspace,
   setSubscriptionData,
 } from "@/state/slice/user.slice";
 import { useCallback, useEffect } from "react";
@@ -16,14 +15,11 @@ import { checkSubscription } from "@/services/subscription.service";
 import Cookies from "js-cookie";
 import { RootState } from "@/state/store";
 import { ResponseData, UserInfo } from "@/types";
-import { getMyWorkspaces } from "@/services/workspace.service";
-import { useWorkspaces } from "./useWorkspace";
 
 export const useAuth = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
-  useWorkspaces();
   const { userinfo, loggedin, loading } = useSelector(
     (state: RootState) => state.user
   );
@@ -70,18 +66,6 @@ export const useAuth = () => {
     },
   });
 
-  useQuery<ResponseData, Error>(["workspaceAuth"], getMyWorkspaces, {
-    enabled: loggedin,
-    onSuccess: (data: ResponseData) => {
-      if (data.data.length > 0) {
-        const defaultWorkspace = data.data.find(
-          (workspace: any) => workspace.isDefault
-        );
-        dispatch(setCurrentWorkspace(defaultWorkspace));
-      }
-    },
-  });
-
   const loginMutation = useMutation(
     (idToken: string) => googleSignIn(idToken),
     {
@@ -95,7 +79,7 @@ export const useAuth = () => {
           Cookies.set("user", JSON.stringify(user), { expires: 7 });
 
           toast.success("Logged in successfully");
-          router.push("/dashboard/ai-writer");
+          router.push("/dashboard/dashboard");
         } else {
           toast.error(`Failed to log in: ${result.message}`);
         }

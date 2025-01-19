@@ -23,7 +23,6 @@ import {
   TimeOption,
 } from "@/lib/constants/times";
 import { TimeSelect } from "@/components/ui/time-select";
-import { useWorkspaces } from "@/hooks/useWorkspace";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { getTimeSlots, updateTimeSlots } from "@/services/content-posting";
 import toast from "react-hot-toast";
@@ -74,7 +73,7 @@ export const QueueModal = ({
   onSave,
 }: QueueModalProps) => {
   const queryClient = useQueryClient();
-  const { currentWorkspace } = useSelector((state: RootState) => state.user);
+  const { linkedinProfile } = useSelector((state: RootState) => state.user);
   const [selectedSlots, setSelectedSlots] = React.useState<{
     [key: string]: boolean;
   }>({});
@@ -90,10 +89,10 @@ export const QueueModal = ({
 
   // Fetch existing time slots
   const { data: timeSlotsData, isLoading } = useQuery<TimeSlotResponse>(
-    ["timeSlots", currentWorkspace?.id],
-    () => getTimeSlots(currentWorkspace?.id || ""),
+    ["timeSlots", linkedinProfile?.id],
+    () => getTimeSlots(linkedinProfile?.id || ""),
     {
-      enabled: !!currentWorkspace?.id,
+      enabled: !!linkedinProfile?.id,
       onSuccess: (response) => {
         // Ensure data exists
         if (!response?.data?.timeSlots) {
@@ -123,11 +122,11 @@ export const QueueModal = ({
   // Update time slots mutation
   const { mutate: updateTimeSlotsMutation } = useMutation(
     (data: UpdateTimeSlotsRequest) => 
-      updateTimeSlots(currentWorkspace?.id || '', data),
+      updateTimeSlots(linkedinProfile?.id || '', data),
     {
       onSuccess: () => {
         toast.success('Schedule updated successfully');
-        queryClient.invalidateQueries(['timeSlots', currentWorkspace?.id]);
+        queryClient.invalidateQueries(['timeSlots', linkedinProfile?.id]);
         onClose();
       },
       onError: () => {
@@ -170,8 +169,8 @@ export const QueueModal = ({
   };
 
   const handleSave = () => {
-    if (!currentWorkspace?.id) {
-      toast.error('No workspace selected');
+      if (!linkedinProfile?.id) {
+      toast.error("No LinkedIn profile selected");
       return;
     }
 

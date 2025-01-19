@@ -77,27 +77,7 @@ export const PostPreviewNotRedux = ({
   scheduledTime,
   imageUrls,
 }: PostPreviewNotReduxProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [hasMoreContent, setHasMoreContent] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
-
-  // Check if content needs "show more" button
-  useEffect(() => {
-    const checkLineCount = () => {
-      const element = contentRef.current;
-      if (!element) return;
-
-      const lineHeight = parseInt(window.getComputedStyle(element).lineHeight);
-      const totalHeight = element.scrollHeight;
-      const lines = Math.floor(totalHeight / lineHeight);
-
-      setHasMoreContent(lines > 3);
-    };
-
-    checkLineCount();
-    window.addEventListener("resize", checkLineCount);
-    return () => window.removeEventListener("resize", checkLineCount);
-  }, [content]);
 
   const getStatusConfig = (status: string | undefined) => {
     switch (status) {
@@ -239,9 +219,7 @@ export const PostPreviewNotRedux = ({
             <div className="relative">
               <div
                 ref={contentRef}
-                className={`whitespace-pre-wrap break-words relative ${
-                  !isExpanded && hasMoreContent ? "line-clamp-3" : ""
-                }`}
+                className="whitespace-pre-wrap break-words relative"
                 style={{
                   wordBreak: "break-word",
                   overflowWrap: "break-word",
@@ -250,15 +228,6 @@ export const PostPreviewNotRedux = ({
               >
                 {content}
               </div>
-
-              {hasMoreContent && (
-                <button
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium mt-1"
-                >
-                  {isExpanded ? "...see less" : "...see more"}
-                </button>
-              )}
             </div>
           )}
         </div>
@@ -269,14 +238,14 @@ export const PostPreviewNotRedux = ({
             <div
               className={`grid gap-1 w-full ${
                 imageUrls.length === 1
-                  ? 'grid-cols-1'
+                  ? "grid-cols-1"
                   : imageUrls.length === 2
-                  ? 'grid-cols-2'
+                  ? "grid-cols-2"
                   : imageUrls.length === 3
-                  ? 'grid-cols-2'
+                  ? "grid-cols-2"
                   : imageUrls.length === 4
-                  ? 'grid-cols-2'
-                  : 'grid-cols-3'
+                  ? "grid-cols-2"
+                  : "grid-cols-3"
               }`}
             >
               {imageUrls.map((url, index) => (
@@ -284,25 +253,32 @@ export const PostPreviewNotRedux = ({
                   key={index}
                   className={`relative ${
                     imageUrls.length === 3 && index === 0
-                      ? 'row-span-2'
+                      ? "row-span-2"
                       : imageUrls.length > 4 && index >= 4
-                      ? 'hidden md:block'
-                      : ''
+                      ? "hidden md:block"
+                      : ""
                   }`}
                 >
                   <div
                     className={`relative ${
-                      imageUrls.length === 1 ? 'pt-[52%]' : 'pt-[100%]'
+                      imageUrls.length === 1 ? "pt-[52%]" : "pt-[100%]"
                     }`}
                   >
                     <img
                       src={url}
                       alt={`Post image ${index + 1}`}
                       className={`absolute inset-0 w-full h-full object-cover ${
-                        imageUrls.length === 1 ? 'rounded-lg' : index === 0 ? 'rounded-tl-lg' :
-                        index === 1 && imageUrls.length === 2 ? 'rounded-tr-lg' :
-                        index === imageUrls.length - 1 && index % 3 === 0 ? 'rounded-bl-lg' :
-                        index === imageUrls.length - 1 ? 'rounded-br-lg' : ''
+                        imageUrls.length === 1
+                          ? "rounded-lg"
+                          : index === 0
+                          ? "rounded-tl-lg"
+                          : index === 1 && imageUrls.length === 2
+                          ? "rounded-tr-lg"
+                          : index === imageUrls.length - 1 && index % 3 === 0
+                          ? "rounded-bl-lg"
+                          : index === imageUrls.length - 1
+                          ? "rounded-br-lg"
+                          : ""
                       }`}
                     />
                     {/* Overlay for images beyond the 4th one */}

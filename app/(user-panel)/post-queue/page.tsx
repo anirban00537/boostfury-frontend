@@ -52,7 +52,7 @@ interface GroupedPosts {
 }
 
 export default function PostQueuePage() {
-  const { currentWorkspace } = useSelector((state: RootState) => state.user);
+  const { linkedinProfile } = useSelector((state: RootState) => state.user);
   const { queueData, isLoadingQueue, refetchQueue } = useScheduledQueue();
   const { shuffleQueue, isShuffling } = useContentPosting();
   const { refetchPosts } = useContentManagement();
@@ -96,13 +96,13 @@ export default function PostQueuePage() {
   };
 
   const handleShuffleQueue = async () => {
-    if (!currentWorkspace?.id) {
-      toast.error("No workspace selected");
+    if (!linkedinProfile?.id) {
+      toast.error("No LinkedIn profile selected");
       return;
     }
 
     try {
-      await shuffleQueue(currentWorkspace.id);
+      await shuffleQueue();
       // Refetch both queue and scheduled posts
       await Promise.all([refetchQueue(), refetchPosts()]);
     } catch (error) {
@@ -176,10 +176,16 @@ export default function PostQueuePage() {
                   <Calendar className="size-5 text-primary" />
                 </div>
                 <p className="text-sm text-neutral-600">
-                  You have <span className="font-medium text-neutral-900">{totalPosts} posts</span>{" "}
+                  You have{" "}
+                  <span className="font-medium text-neutral-900">
+                    {totalPosts} posts
+                  </span>{" "}
                   scheduled. The last one will be published on{" "}
                   <span className="font-medium text-neutral-900">
-                    {format(new Date(posts[posts.length - 1].scheduledTime), "EEEE MMMM do")}
+                    {format(
+                      new Date(posts[posts.length - 1].scheduledTime),
+                      "EEEE MMMM do"
+                    )}
                   </span>
                 </p>
               </div>
@@ -190,68 +196,70 @@ export default function PostQueuePage() {
         {/* Posts List */}
         {totalPosts > 0 ? (
           <div className="space-y-12">
-            {Object.entries(groupPostsByDate(posts)).map(([date, datePosts]) => (
-              <div key={date}>
-                {/* Date Header */}
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="relative size-8 rounded-lg bg-neutral-100/80 flex items-center justify-center">
-                    <Calendar className="size-4 text-neutral-600" />
+            {Object.entries(groupPostsByDate(posts)).map(
+              ([date, datePosts]) => (
+                <div key={date}>
+                  {/* Date Header */}
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="relative size-8 rounded-lg bg-neutral-100/80 flex items-center justify-center">
+                      <Calendar className="size-4 text-neutral-600" />
+                    </div>
+                    <h3 className="text-sm font-medium text-neutral-900">
+                      {date}
+                    </h3>
                   </div>
-                  <h3 className="text-sm font-medium text-neutral-900">
-                    {date}
-                  </h3>
-                </div>
 
-                {/* Posts Grid */}
-                <div className="space-y-3">
-                  {datePosts.map((post: Post) => (
-                    <motion.div
-                      key={post.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="group relative"
-                    >
-                      <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
-                      <div className="relative flex items-center gap-4 p-4 rounded-xl bg-white/50 backdrop-blur-sm border border-neutral-200/60">
-                        {/* Time */}
-                        <div className="min-w-[100px]">
-                          <div className="text-sm font-medium text-neutral-900">
-                            {format(new Date(post.scheduledTime), "hh:mm a")}
+                  {/* Posts Grid */}
+                  <div className="space-y-3">
+                    {datePosts.map((post: Post) => (
+                      <motion.div
+                        key={post.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="group relative"
+                      >
+                        <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+                        <div className="relative flex items-center gap-4 p-4 rounded-xl bg-white/50 backdrop-blur-sm border border-neutral-200/60">
+                          {/* Time */}
+                          <div className="min-w-[100px]">
+                            <div className="text-sm font-medium text-neutral-900">
+                              {format(new Date(post.scheduledTime), "hh:mm a")}
+                            </div>
+                            <div className="text-xs text-neutral-500 mt-0.5">
+                              {post.timeUntilPublishing}
+                            </div>
                           </div>
-                          <div className="text-xs text-neutral-500 mt-0.5">
-                            {post.timeUntilPublishing}
+
+                          {/* Platform Icon */}
+                          <div className="relative size-10 rounded-lg bg-[#0077b5]/10 flex items-center justify-center">
+                            <Linkedin className="size-5 text-[#0077b5]" />
                           </div>
-                        </div>
 
-                        {/* Platform Icon */}
-                        <div className="relative size-10 rounded-lg bg-[#0077b5]/10 flex items-center justify-center">
-                          <Linkedin className="size-5 text-[#0077b5]" />
-                        </div>
+                          {/* Content */}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-neutral-700 truncate">
+                              {post.content}
+                            </p>
+                          </div>
 
-                        {/* Content */}
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm text-neutral-700 truncate">
-                            {post.content}
-                          </p>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
-                          <Link href={`/compose?draft_id=${post.id}`}>
+                          {/* Actions */}
+                          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
+                            <Link href={`/studio?draft_id=${post.id}`}>
+                              <button className="relative size-8 rounded-lg flex items-center justify-center hover:bg-neutral-100/80 transition-colors">
+                                <PenSquare className="size-4 text-neutral-500" />
+                              </button>
+                            </Link>
                             <button className="relative size-8 rounded-lg flex items-center justify-center hover:bg-neutral-100/80 transition-colors">
-                              <PenSquare className="size-4 text-neutral-500" />
+                              <Eye className="size-4 text-neutral-500" />
                             </button>
-                          </Link>
-                          <button className="relative size-8 rounded-lg flex items-center justify-center hover:bg-neutral-100/80 transition-colors">
-                            <Eye className="size-4 text-neutral-500" />
-                          </button>
+                          </div>
                         </div>
-                      </div>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            )}
           </div>
         ) : (
           <EmptyState

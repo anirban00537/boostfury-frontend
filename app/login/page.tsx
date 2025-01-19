@@ -23,7 +23,7 @@ const LoginPage = () => {
     (credentialResponse: CredentialResponse) => {
       handleGoogleLogin(credentialResponse)
         .then(() => {
-          router.push("/ai-writer");
+          router.push("/dashboard");
         })
         .catch((error) => {
           console.error("Login failed:", error);
@@ -44,9 +44,9 @@ const LoginPage = () => {
             transition={{ duration: 0.8 }}
             className="max-w-md text-center"
           >
-            <div 
+            <div
               className="relative mb-8 mx-auto w-20 h-20 cursor-pointer group"
-              onClick={() => router.push('/')}
+              onClick={() => router.push("/")}
             >
               <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/20 to-primary/0 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative size-20 rounded-xl bg-primary/5 flex items-center justify-center">
@@ -64,7 +64,8 @@ const LoginPage = () => {
               Create Professional LinkedIn Content
             </h1>
             <p className="text-lg text-gray-600 mb-12">
-              Transform your LinkedIn presence with AI-powered content creation tools
+              Transform your LinkedIn presence with AI-powered content creation
+              tools
             </p>
 
             <div className="space-y-3">
@@ -83,7 +84,9 @@ const LoginPage = () => {
                       <feature.icon className="size-4 text-primary" />
                     </div>
                   </div>
-                  <span className="text-gray-700 font-medium">{feature.text}</span>
+                  <span className="text-gray-700 font-medium">
+                    {feature.text}
+                  </span>
                 </motion.div>
               ))}
             </div>

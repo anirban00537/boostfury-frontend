@@ -5,14 +5,14 @@ import { RootState } from "@/state/store";
 import {
   getLinkedInAuthUrl,
   handleLinkedInCallback,
-  getLinkedInProfiles,
+  getLinkedInProfile,
   disconnectLinkedInProfile,
 } from "@/services/linkedin.service";
 import { processApiResponse } from "@/lib/functions";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { setLinkedInProfiles } from "@/state/slice/user.slice";
+import { setLinkedInProfile } from "@/state/slice/user.slice";
 import { LinkedInProfileUI } from "@/types/post";
 
 interface LinkedInProfile {
@@ -80,7 +80,7 @@ export const useLinkedInCallback = (
       },
       onSettled: () => {
         sessionStorage.removeItem("linkedin_state");
-        router.push("/accounts");
+        router.push("/account");
       },
     }
   );
@@ -88,31 +88,27 @@ export const useLinkedInCallback = (
 
 const useLinkedIn = () => {
   const dispatch = useDispatch();
-  const { loggedin, linkedinProfiles } = useSelector(
+  const { loggedin, linkedinProfile } = useSelector(
     (state: RootState) => state.user
   );
   const [isConnecting, setIsConnecting] = useState(false);
 
   const { isLoading: isLoadingProfiles, refetch: refetchProfiles } = useQuery<
-    LinkedInProfile[],
+    LinkedInProfile,
     Error
   >(
     ["linkedinProfiles"],
     async () => {
-      const response = await getLinkedInProfiles();
-      if (!response.success) {
-        throw new Error(
-          response.message || "Failed to fetch LinkedIn profiles"
-        );
-      }
-      return response.data.profiles;
+      const response = await getLinkedInProfile();
+      processApiResponse(response);
+      return response.data.profile;
     },
     {
       enabled: loggedin,
       staleTime: 5 * 60 * 1000,
       retry: 2,
-      onSuccess: (profiles) => {
-        dispatch(setLinkedInProfiles(profiles as unknown as LinkedInProfileUI[]));
+      onSuccess: (profile) => {
+        dispatch(setLinkedInProfile(profile as unknown as LinkedInProfileUI));
       },
     }
   );
@@ -163,7 +159,7 @@ const useLinkedIn = () => {
   );
 
   return {
-    profiles: linkedinProfiles,
+    profile: linkedinProfile,
     isLoadingProfiles,
     isConnecting,
     connectLinkedIn,

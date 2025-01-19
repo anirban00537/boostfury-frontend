@@ -1,6 +1,5 @@
 import {
   generateCarouselContent,
-  generateContentIdeasForWorkspace,
 } from "@/services/ai-content";
 import { addAllSlides, setBackground } from "@/state/slice/carousel.slice";
 import { useState } from "react";

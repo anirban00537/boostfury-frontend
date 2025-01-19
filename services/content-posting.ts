@@ -19,7 +19,7 @@ export const createDraft = async (data: CreateDraftPostType) => {
 
 export const getPosts = async (data: GetPostsType) => {
   const response = await request.get(
-    `/content-posting/get-posts?workspace_id=${data.workspace_id}&status=${data.status}&page=${data.page}&pageSize=${data.pageSize}`
+    `/content-posting/get-posts?linkedInProfileId=${data.linkedInProfileId}&status=${data.status}&page=${data.page}&pageSize=${data.pageSize}`
   );
   return response.data;
 };
@@ -86,24 +86,24 @@ export const reorderImages = async (postId: string, imageIds: string[]) => {
 
 export const getScheduledQueue = async (data: GetPostsType) => {
   const response = await request.get(
-    `/content-posting/scheduled-queue?workspace_id=${data.workspace_id}&page=${data.page}&pageSize=${data.pageSize}`
+    `/content-posting/scheduled-queue?linkedInProfileId=${data.linkedInProfileId}&page=${data.page}&pageSize=${data.pageSize}`
   );
   return response.data;
 };
 
-export const getTimeSlots = async (workspaceId: string) => {
+export const getTimeSlots = async (linkedInProfileId: string) => {
   const response = await request.get(
-    `/content-posting/workspaces/${workspaceId}/time-slots`
+    `/content-posting/workspaces/${linkedInProfileId}/time-slots`
   );
   return response.data;
 };
 
 export const updateTimeSlots = async (
-  workspaceId: string,
+  linkedInProfileId: string,
   data: { timeSlots: TimeSlotGroup[] }
 ) => {
   const response = await request.post(
-    `/content-posting/workspaces/${workspaceId}/time-slots`,
+    `/content-posting/workspaces/${linkedInProfileId}/time-slots`,
     data
   );
   return response.data;
@@ -119,9 +119,7 @@ export const addToQueue = async (postId: string, timeZone: string) => {
   return response.data;
 };
 
-export const shuffleQueue = async (workspaceId: string) => {
-  const response = await request.post("/content-posting/shuffle-queue", {
-    workspaceId,
-  });
+export const shuffleQueue = async () => {
+  const response = await request.post("/content-posting/shuffle-queue");
   return response.data;
 };

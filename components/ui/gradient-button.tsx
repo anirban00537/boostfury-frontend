@@ -4,81 +4,89 @@ import { VariantProps, cva } from "class-variance-authority";
 import { Loader2 } from "lucide-react";
 
 const buttonVariants = cva(
-  // Enhanced base styles
-  "inline-flex items-center justify-between transition-all duration-200 rounded-lg border relative focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-70 disabled:cursor-not-allowed font-medium",
+  "inline-flex items-center justify-center transition-all duration-300 rounded-xl border relative focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-70 disabled:cursor-not-allowed font-medium",
   {
     variants: {
       variant: {
         default: `
-          bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 
-          hover:from-gray-100 hover:via-gray-200 hover:to-gray-300 
-          text-gray-700 
-          border-t-gray-200/60 border-l-gray-200/60 border-r-gray-300/60 border-b-gray-400/60 
-          focus:ring-blue-500/20 
-          relative 
-          before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/60 before:to-transparent before:pointer-events-none before:rounded-lg 
-          after:absolute after:inset-0 after:rounded-lg after:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.4)] after:pointer-events-none
-          disabled:before:from-white/40 disabled:hover:from-gray-50 disabled:hover:via-gray-100 disabled:hover:to-gray-200
+          bg-gradient-to-r from-gray-50 via-white to-gray-50
+          hover:from-gray-100 hover:via-white hover:to-gray-100
+          text-gray-700
+          border-gray-200/60
+          focus:ring-blue-500/20
+          relative
+          before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/60 before:to-transparent before:pointer-events-none before:rounded-xl
+          after:absolute after:inset-0 after:rounded-xl after:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.4)] after:pointer-events-none
+          disabled:before:from-white/40 disabled:hover:from-gray-50 disabled:hover:via-white disabled:hover:to-gray-50
         `,
         primary: `
-          bg-gradient-to-br from-primary via-secondary to-primary/90 
-          hover:from-primary/90 hover:via-secondary/90 hover:to-primary/95
-          active:from-primary/95 active:via-secondary/95 active:to-primary 
-          text-primary-foreground 
-          border-t-primary/40 border-l-primary/40 border-r-primary/60 border-b-primary/70
-          focus:ring-primary/30
-          relative 
-          before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none before:rounded-lg 
-          after:absolute after:inset-0 after:rounded-lg after:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.2)] after:pointer-events-none
+          bg-gradient-to-r from-[#4F46E5] via-[#7C3AED] to-[#4F46E5]
+          hover:from-[#4338CA] hover:via-[#6D28D9] hover:to-[#4338CA]
+          active:from-[#3730A3] active:via-[#5B21B6] active:to-[#3730A3]
+          text-white
+          border-0
+          focus:ring-indigo-500/30
+          relative
+          before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none before:rounded-xl
+          after:absolute after:inset-0 after:rounded-xl after:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.2)] after:pointer-events-none
           disabled:before:from-white/10
+          group-hover:shadow-lg group-hover:shadow-indigo-500/20
+          transition-all duration-300
         `,
         success: `
-          bg-gradient-to-br from-green-500 via-green-600 to-green-700 
-          hover:from-green-600 hover:via-green-700 hover:to-green-800 
-          active:from-green-700 active:via-green-800 active:to-green-900
-          text-white 
-          border-t-green-400/40 border-l-green-400/40 border-r-green-600/60 border-b-green-700/60 
-          focus:ring-green-500/30
-          relative 
-          before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none before:rounded-lg 
-          after:absolute after:inset-0 after:rounded-lg after:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.2)] after:pointer-events-none
+          bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-500
+          hover:from-emerald-600 hover:via-green-600 hover:to-emerald-600
+          active:from-emerald-700 active:via-green-700 active:to-emerald-700
+          text-white
+          border-emerald-500/20
+          focus:ring-emerald-500/30
+          relative
+          before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none before:rounded-xl
+          after:absolute after:inset-0 after:rounded-xl after:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.2)] after:pointer-events-none
           disabled:before:from-white/10
+          group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]
+          transition-shadow duration-300
         `,
         danger: `
-          bg-gradient-to-br from-red-500 via-red-600 to-red-700 
-          hover:from-red-600 hover:via-red-700 hover:to-red-800 
-          active:from-red-700 active:via-red-800 active:to-red-900
-          text-white 
-          border-t-red-400/40 border-l-red-400/40 border-r-red-600/60 border-b-red-700/60 
+          bg-gradient-to-r from-red-500 via-rose-500 to-red-500
+          hover:from-red-600 hover:via-rose-600 hover:to-red-600
+          active:from-red-700 active:via-rose-700 active:to-red-700
+          text-white
+          border-red-500/20
           focus:ring-red-500/30
-          relative 
-          before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none before:rounded-lg 
-          after:absolute after:inset-0 after:rounded-lg after:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.2)] after:pointer-events-none
+          relative
+          before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none before:rounded-xl
+          after:absolute after:inset-0 after:rounded-xl after:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.2)] after:pointer-events-none
           disabled:before:from-white/10
+          group-hover:shadow-[0_0_20px_rgba(239,68,68,0.2)]
+          transition-shadow duration-300
         `,
         warning: `
-          bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 
-          hover:from-amber-600 hover:via-amber-700 hover:to-amber-800 
-          active:from-amber-700 active:via-amber-800 active:to-amber-900
-          text-white 
-          border-t-amber-400/40 border-l-amber-400/40 border-r-amber-600/60 border-b-amber-700/60 
+          bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500
+          hover:from-amber-600 hover:via-orange-600 hover:to-amber-600
+          active:from-amber-700 active:via-orange-700 active:to-amber-700
+          text-white
+          border-amber-500/20
           focus:ring-amber-500/30
-          relative 
-          before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none before:rounded-lg 
-          after:absolute after:inset-0 after:rounded-lg after:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.2)] after:pointer-events-none
+          relative
+          before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none before:rounded-xl
+          after:absolute after:inset-0 after:rounded-xl after:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.2)] after:pointer-events-none
           disabled:before:from-white/10
+          group-hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]
+          transition-shadow duration-300
         `,
         outline: `
-          bg-gradient-to-br from-gray-50 via-gray-50 to-gray-100/80
-          hover:from-gray-100 hover:via-gray-100 hover:to-gray-200/80 
-          active:from-gray-200 active:via-gray-100 active:to-gray-50
-          text-gray-700 
-          border-t-gray-200/60 border-l-gray-200/60 border-r-gray-300/60 border-b-gray-400/60
-          focus:ring-gray-500/20 
-          relative 
-          before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/60 before:to-transparent before:pointer-events-none before:rounded-lg 
-          after:absolute after:inset-0 after:rounded-lg after:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.4)] after:pointer-events-none
+          bg-gradient-to-r from-gray-50/50 via-white/50 to-gray-50/50
+          hover:from-gray-100/50 hover:via-white/50 hover:to-gray-100/50
+          active:from-gray-200/50 active:via-white/50 active:to-gray-200/50
+          text-gray-700
+          border-gray-200/60
+          focus:ring-gray-500/20
+          relative
+          before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/60 before:to-transparent before:pointer-events-none before:rounded-xl
+          after:absolute after:inset-0 after:rounded-xl after:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.4)] after:pointer-events-none
           disabled:before:from-white/40
+          backdrop-blur-sm
         `,
       },
       size: {
@@ -89,17 +97,17 @@ const buttonVariants = cva(
       shadow: {
         none: "",
         default: `
-          shadow-[0_2px_4px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.1)] 
-          hover:shadow-[0_3px_6px_rgba(0,0,0,0.05),0_2px_4px_rgba(0,0,0,0.1)] 
-          active:shadow-[0_1px_2px_rgba(0,0,0,0.05)] 
+          shadow-[0_2px_8px_rgba(0,0,0,0.08)]
+          hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]
+          active:shadow-[0_1px_4px_rgba(0,0,0,0.05)]
           active:translate-y-[0.5px]
-          transition-shadow duration-200
+          transition-all duration-200
         `,
         soft: `
-          shadow-[0_2px_4px_rgba(0,0,0,0.02),0_1px_2px_rgba(0,0,0,0.04)] 
-          hover:shadow-[0_4px_8px_rgba(0,0,0,0.02),0_2px_4px_rgba(0,0,0,0.04)] 
+          shadow-[0_2px_4px_rgba(0,0,0,0.02),0_1px_2px_rgba(0,0,0,0.04)]
+          hover:shadow-[0_4px_8px_rgba(0,0,0,0.04),0_2px_4px_rgba(0,0,0,0.06)]
           active:shadow-[0_1px_2px_rgba(0,0,0,0.02)]
-          transition-shadow duration-200
+          transition-all duration-200
         `,
       },
       fullWidth: {
@@ -146,28 +154,31 @@ const GradientButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         className={cn(
+          "group",
           buttonVariants({ variant, size, shadow, fullWidth, className })
         )}
         ref={ref}
         disabled={disabled || isLoading}
         {...props}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center gap-2 w-full">
           {isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="size-4 animate-spin" />
           ) : (
-            leftIcon && <span className="h-4 w-4">{leftIcon}</span>
+            leftIcon && <span className="size-4 flex-shrink-0">{leftIcon}</span>
           )}
           <span className="font-medium">{children}</span>
-          {rightIcon && <span className="h-4 w-4">{rightIcon}</span>}
+          {rightIcon && (
+            <span className="size-4 flex-shrink-0">{rightIcon}</span>
+          )}
         </div>
         {kbd && (
           <kbd
             className={cn(
-              "text-xs px-1.5 py-0.5 rounded-md border shadow-sm ml-2 font-medium",
+              "text-xs px-1.5 py-0.5 rounded-lg border shadow-sm ml-2 font-medium transition-colors duration-200",
               variant === "default"
-                ? "bg-gray-100/80 border-gray-200/40 text-gray-600"
-                : "bg-white/10 border-white/20 text-white/90"
+                ? "bg-gray-100/80 border-gray-200/40 text-gray-600 group-hover:bg-gray-200/80"
+                : "bg-white/10 border-white/20 text-white/90 group-hover:bg-white/20"
             )}
           >
             {kbd}

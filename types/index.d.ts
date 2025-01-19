@@ -135,16 +135,6 @@ export interface UserInfo {
   login_provider: string;
 }
 
-export interface Workspace {
-  id: string;
-  name: string;
-  description: string | null;
-  isDefault: boolean;
-  createdAt: string;
-  updatedAt: string;
-  userId: string;
-  personalAiVoice: string | null;
-}
 
 export interface LinkedInProfile {
   id: number;
@@ -158,7 +148,6 @@ export interface SubscriptionLimits {
   aiWordsPerMonth: number;
   postsPerMonth: number;
   imageUploads: number;
-  workspaces: number;
   linkedInProfiles: number;
   carousels: number;
 }
@@ -212,8 +201,7 @@ export interface UserState {
   loggedin: boolean;
   loading: boolean;
   carouselDownloading: boolean;
-  currentWorkspace: Workspace | null;
-  linkedinProfiles: LinkedInProfileUI[];
+  linkedinProfile: LinkedInProfileUI | null;
   subscription: SubscriptionState;
 }
 
@@ -224,9 +212,3 @@ export interface GenerateLinkedInPostsDTO {
   writingStyle?: string;
 }
 
-export interface UpdateWorkspacePayload {
-  id: string;
-  name: string;
-  description: string;
-  personalAiVoice: string;
-}

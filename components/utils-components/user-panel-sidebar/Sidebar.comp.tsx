@@ -34,7 +34,6 @@ import { RootState } from "@/state/store";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import SubscriptionInfo from "@/components/subscription/Status.comp";
-import ManageWorkspacesModal from "../../workspace/Manage-Workspaces-Modal.comp";
 import { LucideIcon } from "lucide-react";
 
 import { GradientButton } from "@/components/ui/gradient-button";
@@ -88,10 +87,10 @@ type NavigationItem = BaseNavigationItem & {
 // Then combine the navigation items
 const navigationItems: NavigationItem[] = [
   {
-    id: "ai-writer",
-    name: "AI Writer",
+    id: "dashboard",
+    name: "Dashboard",
     icon: Wand2,
-    href: "/ai-writer",
+    href: "/dashboard",
     badge: "AI",
     badgeColor: "bg-gradient-to-r from-indigo-500 to-blue-500 text-white",
   },
@@ -110,10 +109,10 @@ const navigationItems: NavigationItem[] = [
     badgeColor: "bg-gradient-to-r from-green-500 to-emerald-500 text-white",
   },
   {
-    id: "accounts",
+    id: "account",
     name: "Manage Accounts",
     icon: Linkedin,
-    href: "/accounts",
+    href: "/account",
     badge: "LinkedIn",
     badgeColor: "bg-gradient-to-r from-blue-500 to-blue-700 text-white",
   },
@@ -208,22 +207,21 @@ interface SidebarProps {
 // Update the Sidebar component
 const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   const router = useRouter();
-  const { userinfo, currentWorkspace, subscription } = useSelector(
+  const { userinfo, subscription } = useSelector(
     (state: RootState) => state.user
   );
   const [isManageModalOpen, setIsManageModalOpen] = useState(false);
 
   const { handleCreateDraftFromGenerated } = useContentPosting();
   const { logoutUser } = useAuth();
-
+  const { linkedinProfile } = useSelector((state: RootState) => state.user);
   const handleCreateNew = async () => {
     try {
       // Create a blank draft
       const draftId = await handleCreateDraftFromGenerated({
         content: "", // Blank content
         postType: "text",
-        workspaceId: currentWorkspace?.id,
-        linkedInProfileId: null,
+        linkedInProfileId: linkedinProfile?.id,
         videoUrl: "",
         documentUrl: "",
         hashtags: [],
@@ -292,24 +290,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
             className="w-auto"
           />
         </Link>
-
-        {/* Workspace Selector */}
-        <button
-          onClick={() => setIsManageModalOpen(true)}
-          className="group relative w-full px-3 py-2.5 rounded-xl
-            bg-slate-50/80 hover:bg-blue-50/50 
-            transition-all duration-200"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-slate-500 group-hover:text-blue-500" />
-              <span className="text-sm font-medium text-slate-700 group-hover:text-blue-600">
-                {currentWorkspace?.name || "Select workspace..."}
-              </span>
-            </div>
-            <ChevronDown className="h-4 w-4 text-slate-400 group-hover:text-blue-500" />
-          </div>
-        </button>
 
         {/* Create Button - Updated to use GradientButton */}
         <GradientButton
@@ -442,12 +422,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
-      {/* Modals */}
-      <ManageWorkspacesModal
-        isOpen={isManageModalOpen}
-        onClose={() => setIsManageModalOpen(false)}
-      />
     </div>
   );
 };

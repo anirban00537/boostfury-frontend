@@ -99,12 +99,7 @@ const UserMenu: React.FC = () => {
               <Crown className="w-3 h-3 mr-1" />
               Pro Member
             </Badge>
-            <Badge
-              variant="secondary"
-              className="bg-amber-100 text-amber-700 hover:bg-amber-200"
-            >
-              5 Workspaces
-            </Badge>
+           
           </div>
         </div>
 

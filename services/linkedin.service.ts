@@ -17,8 +17,8 @@ interface LinkedInCallbackResponse {
       id: string;
       name: string;
       profileImage: string;
-      type: 'linkedin';
-      status: 'connected';
+      type: "linkedin";
+      status: "connected";
     };
   };
 }
@@ -28,22 +28,25 @@ export const getLinkedInAuthUrl = async (): Promise<LinkedInAuthResponse> => {
   return response.data;
 };
 
-export const handleLinkedInCallback = async (code: string, state: string): Promise<LinkedInCallbackResponse> => {
+export const handleLinkedInCallback = async (
+  code: string,
+  state: string
+): Promise<LinkedInCallbackResponse> => {
   const response = await request.get(`/linkedin/callback`, {
-    params: { 
+    params: {
       code,
       state,
-    }
+    },
   });
   return response.data;
 };
 
-export const getLinkedInProfiles = async () => {
-  const response = await request.get("/linkedin/profiles");
+export const getLinkedInProfile = async () => {
+  const response = await request.get("/linkedin/profile");
   return response.data;
 };
 
 export const disconnectLinkedInProfile = async (profileId: string) => {
   const response = await request.delete(`/linkedin/disconnect/${profileId}`);
   return response.data;
-}; 
+};

@@ -40,7 +40,6 @@ import { X } from "lucide-react";
 import { ImageUploadModal } from "./ImageUploadModal";
 import { useContentPosting } from "@/hooks/useContent";
 import Image from "next/image";
-import { AIAssistantModal } from "./AIAssistantModal";
 import { GradientButton } from "../ui/gradient-button";
 import { formatDistanceToNow } from "date-fns";
 import { POST_STATUS } from "@/lib/core-constants";
@@ -509,15 +508,7 @@ export const ComposeSection = ({
         handleImageUpload={handleImageUploadWithPostId}
         isUploading={isUploading}
       />
-      <AIAssistantModal
-        isOpen={isAIModalOpen}
-        onClose={() => {
-          setIsAIModalOpen(false);
-          setSelectedText("");
-        }}
-        selectedText={selectedText}
-        onContentUpdate={handleAIContentUpdate}
-      />
+     
     </div>
   );
 };

@@ -35,7 +35,6 @@ import { POST_STATUS } from "@/lib/core-constants";
 import { useRouter, useSearchParams } from "next/navigation";
 import { processApiResponse } from "@/lib/functions";
 import debounce from "lodash/debounce";
-import { generateContentIdeasForWorkspace } from "@/services/ai-content";
 import { AxiosResponse } from "axios";
 
 interface DraftResponse {
@@ -45,6 +44,7 @@ interface DraftResponse {
     post: {
       id: string;
       content: string;
+      linkedInProfileId: string;
     };
   };
 }
@@ -100,33 +100,17 @@ type ReorderImagesVariables = {
   imageIds: string[];
 };
 
-interface GetScheduledQueueParams {
-  workspace_id: string;
-  page: number;
-  pageSize: number;
-}
-
-// Add new interface for queue response
-interface AddToQueueResponse {
-  success: boolean;
-  message: string;
-  data: {
-    success: boolean;
-  };
-}
-
 export const useContentPosting = () => {
   const searchParams = useSearchParams();
-  const draftId = searchParams?.get("draft_id");
   const router = useRouter();
+  const draftId = searchParams?.get("draft_id");
+  const { linkedinProfile } = useSelector((state: RootState) => state.user);
 
-  const { currentWorkspace } = useSelector((state: RootState) => state.user);
   const [content, setContent] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [scheduledDate, setScheduledDate] = useState<Date | null>(null);
   const [postDetails, setPostDetails] = useState<Post | null>(null);
-  const { linkedinProfiles } = useSelector((state: RootState) => state.user);
   const [selectedProfile, setSelectedProfile] =
     useState<LinkedInProfileUI | null>(null);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
@@ -140,6 +124,9 @@ export const useContentPosting = () => {
   const [imageOrder, setImageOrder] = useState<string[]>([]);
   const [images, setImages] = useState<LinkedInPostImage[]>([]);
 
+  // Add new state for prompt
+  const [prompt, setPrompt] = useState("");
+
   const queryClient = useQueryClient();
 
   // First, declare the mutation
@@ -150,15 +137,15 @@ export const useContentPosting = () => {
 
   // Single declaration of debouncedSaveDraft
   const debouncedSaveDraft = useCallback(
-    debounce(async (draftData: Omit<CreateDraftPostType, "workspaceId">) => {
+    debounce(async (draftData: Omit<CreateDraftPostType, "id">) => {
       console.log("debouncedSaveDraft called with:", draftData);
 
-      if (!currentWorkspace?.id) {
-        console.log("Aborting save: No workspace");
+      if (!linkedinProfile?.id) {
+        console.log("Aborting save: No linkedin profile");
         return;
       }
       if (!draftData.linkedInProfileId) {
-        console.log("Aborting save: No LinkedIn profile");
+        console.log("Aborting save: No linkedin profile");
         return;
       }
       if (!draftId) {
@@ -172,13 +159,13 @@ export const useContentPosting = () => {
 
         const saveData = {
           ...draftData,
-          workspaceId: currentWorkspace.id,
+          linkedInProfileId: linkedinProfile.id,
           id: draftId,
         };
         console.log("Saving draft with data:", saveData);
 
         const response = await createUpdateDraftMutation(saveData);
-        console.log("Save response:", response);
+        processApiResponse(response);
       } catch (error) {
         console.error("Auto-save error:", error);
       } finally {
@@ -186,44 +173,14 @@ export const useContentPosting = () => {
         console.log("Auto-save complete");
       }
     }, 1500),
-    [currentWorkspace?.id, createUpdateDraftMutation, draftId]
-  );
-
-  // Create the profile selection handler
-  const handleProfileSelection = useCallback(
-    (profile: LinkedInProfileUI | null) => {
-      console.log("Setting profile:", profile);
-      setSelectedProfile(profile);
-
-      if (profile && draftId) {
-        console.log("Triggering save after profile selection");
-        debouncedSaveDraft({
-          content: content || "",
-          postType: "text",
-          linkedInProfileId: profile.id,
-          videoUrl: videoUrl || "",
-          documentUrl: documentUrl || "",
-          hashtags: hashtags || [],
-          mentions: mentions || [],
-        });
-      }
-    },
-    [
-      draftId,
-      content,
-      videoUrl,
-      documentUrl,
-      hashtags,
-      mentions,
-      debouncedSaveDraft,
-    ]
+    [linkedinProfile?.id, createUpdateDraftMutation, draftId]
   );
 
   const { isLoading: isLoadingDraft } = useQuery(
     ["draftDetails", draftId],
     () => getDraftPostDetails(draftId || ""),
     {
-      enabled: !!draftId && !!currentWorkspace?.id,
+      enabled: !!draftId && !!linkedinProfile?.id,
       onSuccess: (response) => {
         if (response.success && response.data.post) {
           const post = response.data.post;
@@ -240,25 +197,21 @@ export const useContentPosting = () => {
           setScheduledDate(
             post.scheduledTime ? new Date(post.scheduledTime) : null
           );
-
-          // Handle profile selection
-          if (post.linkedInProfile?.id) {
-            const linkedProfile = linkedinProfiles.find(
-              (profile) => profile.id === post.linkedInProfile?.id
-            );
-            
-            if (linkedProfile) {
-              handleProfileSelection(linkedProfile);
-            } else if (linkedinProfiles.length > 0) {
-              handleProfileSelection(linkedinProfiles[0]);
-            }
-          } else if (linkedinProfiles.length > 0) {
-            handleProfileSelection(linkedinProfiles[0]);
+          // Set the selected profile from the draft
+          if (post.linkedInProfile) {
+            setSelectedProfile({
+              id: post.linkedInProfile.id,
+              name: post.linkedInProfile.name,
+              avatarUrl: post.linkedInProfile.avatarUrl,
+              type: "linkedin",
+              status: "connected",
+            });
           }
         }
       },
       onError: (error) => {
         toast.error("Failed to fetch draft details");
+        console.error("Error fetching draft:", error);
       },
     }
   );
@@ -398,13 +351,8 @@ export const useContentPosting = () => {
       if (isCreatingDraft) return;
 
       try {
-        if (!currentWorkspace?.id) {
-          toast.error("Please select a workspace first");
-          return null;
-        }
-
-        if (!content.trim()) {
-          toast.error("Content cannot be empty");
+        if (!linkedinProfile?.id) {
+          toast.error("Please select a LinkedIn profile first");
           return null;
         }
 
@@ -412,7 +360,6 @@ export const useContentPosting = () => {
           ...(draftId && { id: String(draftId) }),
           content: content.trim(),
           postType: "text" as const,
-          workspaceId: currentWorkspace.id,
           linkedInProfileId: linkedinProfileId,
           videoUrl: "",
           documentUrl: "",
@@ -422,13 +369,6 @@ export const useContentPosting = () => {
 
         const response = await createUpdateDraftMutation(draftData);
         processApiResponse(response);
-
-        if (!draftId && response.data?.post?.id) {
-          const newUrl = new URL(window.location.href);
-          newUrl.searchParams.set("draft_id", response.data.post.id.toString());
-          window.history.replaceState({}, "", newUrl.toString());
-        }
-
         return response;
       } catch (error) {
         toast.error("Failed to save draft");
@@ -438,7 +378,7 @@ export const useContentPosting = () => {
     },
     [
       content,
-      currentWorkspace?.id,
+      linkedinProfile?.id,
       createUpdateDraftMutation,
       draftId,
       isCreatingDraft,
@@ -453,34 +393,75 @@ export const useContentPosting = () => {
     };
   }, [debouncedSaveDraft]);
 
-  // Handle content change
+  // Handle content changes with automatic draft creation
   const handleContentChange = useCallback(
-    (newContent: string) => {
+    async (newContent: string) => {
       setContent(newContent);
 
-      // Only trigger debounced save if we have a draftId
-      if (draftId) {
+      // If we have a draft_id, use debounced save
+      if (draftId && linkedinProfile?.id) {
         debouncedSaveDraft({
           content: newContent,
           postType: "text",
-          linkedInProfileId: selectedProfile?.id || "",
-          videoUrl,
-          documentUrl,
-          hashtags,
-          mentions,
+          linkedInProfileId: linkedinProfile.id,
         });
+      }
+      // If no draft_id, create a new draft
+      else if (!draftId && linkedinProfile?.id && newContent.trim()) {
+        try {
+          const response = await createUpdateDraftMutation({
+            content: newContent,
+            postType: "text",
+            linkedInProfileId: linkedinProfile.id,
+          });
+
+          if (response.success && response.data?.post?.id) {
+            router.push(`/studio?draft_id=${response.data.post.id}`);
+          }
+        } catch (error) {
+          console.error("Failed to create draft:", error);
+        }
       }
     },
     [
-      debouncedSaveDraft,
-      selectedProfile?.id,
       draftId,
-      imageUrls,
-      videoUrl,
-      documentUrl,
-      hashtags,
-      mentions,
+      linkedinProfile?.id,
+      createUpdateDraftMutation,
+      router,
+      debouncedSaveDraft,
     ]
+  );
+
+  // Handle prompt change
+  const handlePromptChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setPrompt(e.target.value);
+    },
+    []
+  );
+
+  // Handle generated content with automatic draft creation
+  const handleGenerateContent = useCallback(
+    async (generatedContent: string) => {
+      setContent(generatedContent);
+
+      if (linkedinProfile?.id) {
+        try {
+          const response = await createUpdateDraftMutation({
+            content: generatedContent,
+            postType: "text",
+            linkedInProfileId: linkedinProfile.id,
+          });
+
+          if (response.success && response.data?.post?.id) {
+            router.push(`/studio?draft_id=${response.data.post.id}`);
+          }
+        } catch (error) {
+          console.error("Failed to create draft:", error);
+        }
+      }
+    },
+    [linkedinProfile?.id, createUpdateDraftMutation, router]
   );
 
   // Add handlers for other fields
@@ -550,23 +531,16 @@ export const useContentPosting = () => {
     async ({
       content,
       postType = "text",
-      workspaceId = currentWorkspace?.id,
       linkedInProfileId,
       videoUrl = "",
       documentUrl = "",
       hashtags = [],
       mentions = [],
     }: CreateDraftParams) => {
-      if (!workspaceId) {
-        toast.error("Please select a workspace first");
-        return null;
-      }
-
       try {
         const response = await createUpdateDraftMutation({
           content,
           postType,
-          workspaceId,
           linkedInProfileId: linkedInProfileId || null,
           videoUrl,
           documentUrl,
@@ -584,7 +558,7 @@ export const useContentPosting = () => {
         return null;
       }
     },
-    [currentWorkspace?.id, createUpdateDraftMutation]
+    [createUpdateDraftMutation]
   );
 
   const handlePostNow = useCallback(
@@ -720,35 +694,28 @@ export const useContentPosting = () => {
 
   // Add new handler for adding to queue
   const handleAddToQueue = useCallback(
-    async (linkedinProfileId: string) => {
+    async (linkedInProfileId: string) => {
       try {
         if (!draftId) {
           toast.error("No draft found to add to queue");
           return;
         }
 
-        if (!selectedProfile?.id) {
-          toast.error("Please select a LinkedIn profile");
-          return;
-        }
-
-        // Show queue feedback
         toast.loading("Adding post to queue...", { id: "queueing" });
-
         await addToQueueMutation(draftId);
-
         toast.dismiss("queueing");
+        router.push("/my-posts?tab=scheduled");
       } catch (error) {
         console.error("Error in handleAddToQueue:", error);
         toast.error("Failed to add post to queue");
       }
     },
-    [draftId, selectedProfile?.id, addToQueueMutation]
+    [draftId, addToQueueMutation, router]
   );
 
   const { mutateAsync: shuffleQueueMutation, isLoading: isShuffling } =
     useMutation({
-      mutationFn: (workspaceId: string) => shuffleQueue(workspaceId),
+      mutationFn: () => shuffleQueue(),
       onSuccess: (response) => {
         if (response.success) {
           // Refetch the queue data to show updated order
@@ -776,7 +743,7 @@ export const useContentPosting = () => {
     isLoadingDraft,
     isEditing: !!draftId,
     selectedProfile,
-    linkedinProfiles,
+    linkedinProfile,
     isAutoSaving,
     isScheduling,
     // Actions
@@ -785,7 +752,6 @@ export const useContentPosting = () => {
     handleCreateDraftFromGenerated,
     handlePostNow,
     isPosting,
-    setSelectedProfile: handleProfileSelection,
     clearSelectedProfile,
     handleCreateUpdateDraft,
     // Add new state and handlers
@@ -807,13 +773,18 @@ export const useContentPosting = () => {
     images,
     handleAddToQueue,
     isAddingToQueue,
-    shuffleQueue: (workspaceId: string) => shuffleQueueMutation(workspaceId),
+    shuffleQueue: () => shuffleQueueMutation(linkedinProfile?.id || ""),
     isShuffling,
+    // New content handling functions
+    handleContentChange,
+    handleGenerateContent,
+    prompt,
+    handlePromptChange,
   };
 };
 
 export const useContentManagement = () => {
-  const { currentWorkspace } = useSelector((state: RootState) => state.user);
+  const { linkedinProfile } = useSelector((state: RootState) => state.user);
   const [activeTab, setActiveTab] = useState<PostTabId>("scheduled");
   const [postsData, setPostsData] = useState<Record<PostTabId, PostGroup[]>>({
     scheduled: [],
@@ -845,16 +816,16 @@ export const useContentManagement = () => {
     isLoading: isLoadingPosts,
     refetch: refetchPosts,
   } = useQuery<PostsResponse>(
-    ["posts", currentWorkspace?.id, activeTab, pagination.currentPage],
+    ["posts", linkedinProfile?.id, activeTab, pagination.currentPage],
     () =>
       getPosts({
-        workspace_id: currentWorkspace?.id || "",
+        linkedInProfileId: linkedinProfile?.id || "",
         status: getStatusFromTab(activeTab),
         page: pagination.currentPage,
         pageSize: pagination.pageSize,
       }),
     {
-      enabled: !!currentWorkspace?.id,
+      enabled: !!linkedinProfile?.id,
       onSuccess: (response) => {
         setPostsData((prev) => ({
           ...prev,
@@ -948,7 +919,7 @@ export const useContentManagement = () => {
 };
 
 export const useScheduledQueue = () => {
-  const { currentWorkspace } = useSelector((state: RootState) => state.user);
+  const { linkedinProfile } = useSelector((state: RootState) => state.user);
   const [pagination, setPagination] = useState<PaginationState>({
     currentPage: 1,
     pageSize: 10,
@@ -961,21 +932,21 @@ export const useScheduledQueue = () => {
     isLoading: isLoadingQueue,
     refetch: refetchQueue,
   } = useQuery(
-    ["scheduledQueue", currentWorkspace?.id, pagination.currentPage],
+    ["scheduledQueue", linkedinProfile?.id, pagination.currentPage],
     () => {
-      if (!currentWorkspace?.id) {
-        throw new Error("No workspace selected");
+      if (!linkedinProfile?.id) {
+        throw new Error("No linkedin profile selected");
       }
 
       return getScheduledQueue({
-        workspace_id: currentWorkspace.id,
+        linkedInProfileId: linkedinProfile.id,
         status: POST_STATUS.SCHEDULED,
         page: pagination.currentPage,
         pageSize: pagination.pageSize,
       });
     },
     {
-      enabled: !!currentWorkspace?.id,
+      enabled: !!linkedinProfile?.id,
       onError: (error) => {
         toast.error("Failed to fetch scheduled queue");
         console.error("Error fetching scheduled queue:", error);

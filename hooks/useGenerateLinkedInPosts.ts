@@ -1,8 +1,5 @@
 import { useMutation, useQueryClient } from "react-query";
-import {
-  generateContentIdeasForWorkspace,
-  generateLinkedInPosts,
-} from "@/services/ai-content";
+import { generateLinkedInPosts } from "@/services/ai-content";
 import { ApiError, GenerateLinkedInPostsDTO } from "@/types";
 import toast from "react-hot-toast";
 import { useState, useEffect } from "react";
@@ -27,7 +24,7 @@ export const useGenerateLinkedInPosts = () => {
   const { refetchSubscription } = useAuth();
   const [content, setContent] = useState("");
   const [generatedPost, setGeneratedPost] = useState<string>("");
-  const [postTone, setPostTone] = useState("Professional");
+  const [postTone, setPostTone] = useState<string>("professional");
   const {
     mutateAsync: generateLinkedinPosts,
     isLoading: isGeneratingLinkedinPosts,
@@ -140,20 +137,7 @@ export const useGenerateContentIdeas = () => {
   const [ideas, setIdeas] = useState<ContentIdeasResponse | null>(null);
   const queryClient = useQueryClient();
 
-  const generateContentIdeas = async (id: string) => {
-    setLoading(true);
-    const result = await generateContentIdeasForWorkspace(id);
-    queryClient.invalidateQueries(["subscription"]);
-    setLoading(false);
-    if (result.success) {
-      setIdeas(result.data);
-    }
-    processApiResponse(result);
-    return result;
-  };
-
   return {
-    generateContentIdeas,
     loading,
     ideas: ideas?.ideas || [],
   };
