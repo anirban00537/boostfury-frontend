@@ -20,7 +20,6 @@ import {
 import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import { ScheduleModal } from "./schedule-modal";
-import { PostActionSheet } from "./post-action-sheet";
 
 // Initialize the font
 const sourceSans = Source_Sans_3({ subsets: ["latin"] });
@@ -172,14 +171,7 @@ export function LinkedInPostPreview({
             </div>
 
             <div className="flex items-center gap-2">
-              {showActions && (
-                <PostActionSheet
-                  content={content}
-                  onPostNow={onPostNow}
-                  onQueue={onQueue}
-                  onSchedule={() => setIsScheduleModalOpen(true)}
-                />
-              )}
+            
 
               {showAIButton && (
                 <DropdownMenu>

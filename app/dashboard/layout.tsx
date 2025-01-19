@@ -59,8 +59,6 @@ export default function DashboardLayout({
           )}
         </Button>
 
-        {/* Navbar */}
-        <Navbar />
         {/* Page Content */}
         <main className="pt-16 px-4 sm:px-6 lg:px-8">{children}</main>
       </div>
