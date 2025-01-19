@@ -21,19 +21,21 @@ const ContentCreationTools: React.FC = () => {
     "medium"
   );
 
+  // AI Generation Hook
   const {
-    generatedPost,
-    isGeneratingLinkedinPosts,
-    handleGenerateLinkedIn,
-    handleLinkedInTextChange,
-    postTone,
-    setPostTone,
+    prompt,
+    generatedContent,
+    tone,
+    isGenerating,
+    handlePromptChange,
+    handleGenerate,
+    setTone,
   } = useGenerateLinkedInPosts();
 
+  // Content Management Hook
   const {
     content,
     handleContentChange,
-    handleGenerateContent,
     isCreatingDraft,
     isAutoSaving,
     postDetails,
@@ -41,13 +43,18 @@ const ContentCreationTools: React.FC = () => {
     isPosting,
     selectedProfile,
     isLoadingDraft,
-    prompt,
-    handlePromptChange,
     handleAddToQueue,
     isAddingToQueue,
     handleSchedule,
     isScheduling,
   } = useContentPosting();
+
+  // Handle successful generation
+  const handleSuccessfulGeneration = async () => {
+    if (generatedContent) {
+      handleContentChange(generatedContent);
+    }
+  };
 
   const getStatusString = (
     status: number | undefined
@@ -78,24 +85,21 @@ const ContentCreationTools: React.FC = () => {
       <StudioSidebar
         isCollapsed={!isSidebarOpen}
         setIsCollapsed={(collapsed) => setIsSidebarOpen(!collapsed)}
-        content={prompt}
-        onContentChange={(e) => {
+        prompt={prompt}
+        onPromptChange={(e) => {
           handlePromptChange(e);
-          handleLinkedInTextChange(e);
         }}
         onGenerate={async () => {
           if (!linkedinProfile) {
             toast.error("Please connect your LinkedIn account first");
             return;
           }
-          await handleGenerateLinkedIn();
-          if (generatedPost) {
-            handleGenerateContent(generatedPost);
-          }
+          await handleGenerate();
+          await handleSuccessfulGeneration();
         }}
-        isGenerating={isGeneratingLinkedinPosts}
-        tone={postTone}
-        onToneChange={setPostTone}
+        isGenerating={isGenerating}
+        tone={tone}
+        onToneChange={setTone}
         postLength={postLength}
         onPostLengthChange={setPostLength}
         linkedinProfile={linkedinProfile}
@@ -120,9 +124,11 @@ const ContentCreationTools: React.FC = () => {
             <div className="max-w-xl mx-auto">
               <PostPreviewNotRedux
                 content={
-                  content || "Your generated content will appear here..."
+                  content ||
+                  generatedContent ||
+                  "Your generated content will appear here..."
                 }
-                isGenerating={isGeneratingLinkedinPosts}
+                isGenerating={isGenerating}
                 status={getStatusString(postDetails?.status)}
                 linkedInProfile={selectedProfile || linkedinProfile}
                 user={{
@@ -142,6 +148,8 @@ const ContentCreationTools: React.FC = () => {
                       linkedinProfile?.id && handlePostNow(linkedinProfile.id),
                   },
                 ]}
+                publishedAt={postDetails?.publishedAt}
+                scheduledTime={postDetails?.scheduledTime}
               />
             </div>
           </div>

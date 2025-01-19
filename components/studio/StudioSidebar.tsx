@@ -32,8 +32,8 @@ import { GradientButton } from "@/components/ui/gradient-button";
 interface StudioSidebarProps {
   isCollapsed: boolean;
   setIsCollapsed: (collapsed: boolean) => void;
-  content: string;
-  onContentChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  prompt: string;
+  onPromptChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onGenerate: () => void;
   isGenerating: boolean;
   tone: string;
@@ -46,8 +46,8 @@ interface StudioSidebarProps {
 const StudioSidebar: React.FC<StudioSidebarProps> = ({
   isCollapsed,
   setIsCollapsed,
-  content,
-  onContentChange,
+  prompt,
+  onPromptChange,
   onGenerate,
   isGenerating,
   tone,
@@ -168,8 +168,8 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
               <div className="relative group">
                 <div className="absolute -inset-[1px] bg-gradient-to-r from-blue-500/10 via-violet-500/10 to-blue-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
                 <textarea
-                  value={content}
-                  onChange={onContentChange}
+                  value={prompt}
+                  onChange={onPromptChange}
                   placeholder="What would you like to write about?"
                   className="w-full h-32 p-3 text-sm bg-white/50 backdrop-blur-sm border border-gray-200/60 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
                 />
@@ -209,10 +209,7 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
                   <label className="text-xs font-medium text-gray-700 px-2">
                     Tone of Voice
                   </label>
-                  <Select
-                    value={tone || "professional"}
-                    onValueChange={onToneChange}
-                  >
+                  <Select value={tone} onValueChange={onToneChange}>
                     <SelectTrigger className="w-full h-10 bg-white/50 backdrop-blur-sm border border-gray-200/60 rounded-xl">
                       <SelectValue
                         defaultValue="professional"

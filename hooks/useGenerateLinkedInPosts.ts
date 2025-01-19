@@ -22,23 +22,22 @@ interface ContentIdeasResponse {
 export const useGenerateLinkedInPosts = () => {
   const queryClient = useQueryClient();
   const { refetchSubscription } = useAuth();
-  const [content, setContent] = useState("");
-  const [generatedPost, setGeneratedPost] = useState<string>("");
-  const [postTone, setPostTone] = useState<string>("professional");
-  const {
-    mutateAsync: generateLinkedinPosts,
-    isLoading: isGeneratingLinkedinPosts,
-  } = useMutation(
+
+  // States with clear naming
+  const [prompt, setPrompt] = useState("");
+  const [generatedContent, setGeneratedContent] = useState("");
+  const [tone, setTone] = useState("professional");
+
+  const { mutateAsync: generatePost, isLoading: isGenerating } = useMutation(
     (dto: GenerateLinkedInPostsDTO) => generateLinkedInPosts(dto),
     {
       onSuccess: async (response) => {
         if (response.success) {
           const post = response.data.post;
-          console.log(post, "generated post from useGenerateLinkedInPosts");
-          setGeneratedPost(post);
+          setGeneratedContent(post);
           toast.success("Content generated successfully!");
 
-          // Update both subscription data and refetch
+          // Refresh subscription data
           try {
             await Promise.all([
               queryClient.invalidateQueries(["subscription"]),
@@ -48,13 +47,13 @@ export const useGenerateLinkedInPosts = () => {
             console.error("Error refreshing subscription data:", error);
           }
         } else {
-          setGeneratedPost("");
+          setGeneratedContent("");
           toast.error(response.message || "Failed to generate content");
         }
       },
       onError: async (error: Error) => {
         try {
-          console.log("error in useGenerateLinkedInPosts", error);
+          console.error("Generation error:", error);
           processApiResponse(error);
           await Promise.all([
             queryClient.invalidateQueries(["subscription"]),
@@ -67,33 +66,33 @@ export const useGenerateLinkedInPosts = () => {
     }
   );
 
+  // Keyboard shortcut for generation
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
         event.preventDefault();
-        if (!isGeneratingLinkedinPosts) {
-          handleGenerateLinkedIn();
+        if (!isGenerating) {
+          handleGenerate();
         }
       }
     };
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [content, isGeneratingLinkedinPosts]);
+  }, [prompt, isGenerating]);
 
-  const handleLinkedInTextChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setContent(e.target.value);
+  // Handler functions with clear purposes
+  const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setPrompt(e.target.value);
   };
 
-  const handleGenerateLinkedIn = async () => {
-    if (!content.trim()) {
+  const handleGenerate = async () => {
+    if (!prompt.trim()) {
       toast.error("Please enter a topic or prompt");
       return;
     }
 
-    if (content.length < 10) {
+    if (prompt.length < 10) {
       toast.error(
         "Please enter a more detailed prompt (minimum 10 characters)"
       );
@@ -101,14 +100,14 @@ export const useGenerateLinkedInPosts = () => {
     }
 
     try {
-      await generateLinkedinPosts({
-        prompt: content.trim(),
+      await generatePost({
+        prompt: prompt.trim(),
         language: "en",
-        tone: postTone,
+        tone,
       });
     } catch (error) {
       console.error("Error in handleGenerate:", error);
-      // Ensure subscription data is refreshed even on error
+      // Refresh subscription on error
       try {
         await Promise.all([
           queryClient.invalidateQueries(["subscription"]),
@@ -121,14 +120,16 @@ export const useGenerateLinkedInPosts = () => {
   };
 
   return {
-    content,
-    setContent,
-    generatedPost,
-    isGeneratingLinkedinPosts,
-    handleGenerateLinkedIn,
-    handleLinkedInTextChange,
-    postTone,
-    setPostTone,
+    // States
+    prompt,
+    generatedContent,
+    tone,
+    isGenerating,
+    // Actions
+    setPrompt,
+    handlePromptChange,
+    handleGenerate,
+    setTone,
   };
 };
 

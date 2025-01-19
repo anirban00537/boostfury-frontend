@@ -447,21 +447,29 @@ export const useContentPosting = () => {
 
       if (linkedinProfile?.id) {
         try {
-          const response = await createUpdateDraftMutation({
+          const draftData: CreateDraftPostType = {
             content: generatedContent,
-            postType: "text",
+            postType: "text" as const,
             linkedInProfileId: linkedinProfile.id,
-          });
+            ...(draftId ? { id: draftId } : {}),
+          };
 
-          if (response.success && response.data?.post?.id) {
-            router.push(`/studio?draft_id=${response.data.post.id}`);
+          const response = await createUpdateDraftMutation(draftData);
+
+          if (response.success && response.data?.post) {
+            setPostDetails(response.data.post as Post);
+
+            if (!draftId) {
+              router.push(`/studio?draft_id=${response.data.post.id}`);
+            }
           }
         } catch (error) {
-          console.error("Failed to create draft:", error);
+          console.error("Failed to save generated content:", error);
+          toast.error("Failed to save generated content");
         }
       }
     },
-    [linkedinProfile?.id, createUpdateDraftMutation, router]
+    [linkedinProfile?.id, createUpdateDraftMutation, router, draftId]
   );
 
   // Add handlers for other fields
