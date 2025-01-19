@@ -135,7 +135,7 @@ const ContentCreationTools: React.FC = () => {
         isPosting={isPosting}
         isAddingToQueue={isAddingToQueue}
         isScheduling={isScheduling}
-        content={content || "Your generated content will appear here..."}
+        content={content}
         isGenerating={isGenerating}
         status={getStatusString(postDetails?.status)}
         user={{
