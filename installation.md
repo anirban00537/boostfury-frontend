@@ -9,6 +9,10 @@ sudo apt update
 sudo apt install nginx
 ```
 
+
+
+
+
 2. Verify the installation:
 
 ```bash
