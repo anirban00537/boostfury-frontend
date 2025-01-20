@@ -93,7 +93,7 @@ const ContentCreationTools: React.FC = () => {
   }
 
   return (
-    <div className="flex h-screen ">
+    <div className="flex h-screen">
       {/* Main Content */}
       <div
         className={cn(
@@ -101,7 +101,7 @@ const ContentCreationTools: React.FC = () => {
           !isSidebarOpen ? "mr-0" : "lg:mr-[400px]"
         )}
       >
-        <main className="h-screen overflow-y-auto">
+        <main className="h-screen overflow-y-auto hide-scrollbar">
           <div className="flex items-center justify-center min-h-screen p-6">
             <div
               className={cn(
@@ -110,14 +110,14 @@ const ContentCreationTools: React.FC = () => {
               )}
             >
               {/* Title Section */}
-              <div className="relative space-y-4">
+              <div className="relative space-y-6">
                 {/* AI Badge */}
-                <div className="flex justify-center mb-6">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-primary/10 via-primary/5 to-white/10 border border-primary/10 shadow-sm">
-                    <div className="w-4 h-4 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center">
+                <div className="flex justify-center mb-2">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 border border-indigo-500/20 shadow-sm group cursor-default">
+                    <div className="w-4 h-4 rounded-full bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                       <Sparkles className="w-2.5 h-2.5 text-white" />
                     </div>
-                    <span className="text-xs font-medium bg-gradient-to-br from-primary to-primary bg-clip-text text-transparent">
+                    <span className="text-xs font-medium bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
                       AI-Powered Content Creation
                     </span>
                   </div>
@@ -125,29 +125,42 @@ const ContentCreationTools: React.FC = () => {
 
                 {/* Main Title */}
                 <div className="relative">
-                  <div className="absolute inset-0 -top-10 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 blur-3xl rounded-full" />
-                  <h1 className="relative text-[38px] font-bold text-center leading-tight">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/5 via-indigo-500/10 to-purple-500/5 blur-3xl rounded-full opacity-80" />
+                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/10 via-indigo-500/20 to-purple-500/10 blur-2xl rounded-full opacity-50 animate-pulse" />
+                  <h1 className="relative text-[38px] font-bold text-center leading-tight tracking-tight">
                     <span className="inline-block bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
-                      What{" "}
-                      <span className="inline-block bg-gradient-to-br from-primary via-primary to-primary-dark bg-clip-text text-transparent">
+                      Create your next{" "}
+                      <span className="inline-block bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent relative group">
                         viral post
+                        <div className="absolute -bottom-1 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </span>{" "}
-                      do you
-                      <br />
-                      want to create?
+                      with AI
                     </span>
                   </h1>
                 </div>
 
                 {/* Subtitle */}
-                <p className="relative text-gray-500 text-center text-lg">
-                  Create engaging LinkedIn content that resonates with your
-                  audience
+                <p className="relative text-neutral-500 text-center text-lg max-w-2xl mx-auto">
+                  Transform your ideas into engaging LinkedIn content that
+                  resonates with your audience
                 </p>
 
                 {/* Decorative Elements */}
-                <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-primary/20 to-primary-dark/20 rounded-full blur-3xl opacity-20" />
-                <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-to-br from-primary/20 to-primary-dark/20 rounded-full blur-3xl opacity-20" />
+                <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-blue-500/20 via-indigo-500/20 to-purple-500/20 rounded-full blur-3xl opacity-20 animate-pulse" />
+                <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-to-br from-purple-500/20 via-indigo-500/20 to-blue-500/20 rounded-full blur-3xl opacity-20 animate-pulse delay-150" />
+
+                {/* Feature Pills */}
+                <div className="flex justify-center gap-3 mt-4">
+                  <div className="px-3 py-1 rounded-full bg-blue-50/50 border border-blue-100/50 text-xs font-medium text-blue-600">
+                    Smart Writing
+                  </div>
+                  <div className="px-3 py-1 rounded-full bg-indigo-50/50 border border-indigo-100/50 text-xs font-medium text-indigo-600">
+                    Auto Scheduling
+                  </div>
+                  <div className="px-3 py-1 rounded-full bg-purple-50/50 border border-purple-100/50 text-xs font-medium text-purple-600">
+                    Analytics
+                  </div>
+                </div>
               </div>
 
               {/* PromptBox */}

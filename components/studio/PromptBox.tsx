@@ -30,7 +30,7 @@ const PromptBox: React.FC<PromptBoxProps> = ({
   onGenerate,
 }) => {
   return (
-    <div className="bg-gradient-to-br bg-gray-100  rounded-3xl  border border-slate-200 overflow-hidden">
+    <div className="bg-gradient-to-br from-white/80 to-white/50 rounded-3xl border border-neutral-200/60 overflow-hidden shadow-sm">
       {/* Prompt Input Section */}
       <div className="flex items-end gap-3">
         <div className="flex-1 min-h-[20px] relative group">
@@ -38,28 +38,41 @@ const PromptBox: React.FC<PromptBoxProps> = ({
             value={prompt}
             onChange={onPromptChange}
             placeholder="What would you like to write about?"
-            className="w-full h-[72px] p-3.5 text-[15px] leading-relaxed bg-gray-100 border-none focus:outline-none hover:bg-transparent placeholder:text-gray-400/80"
+            className="w-full h-[52px] p-4 text-[15px] leading-relaxed bg-transparent border-none focus:outline-none resize-none placeholder:text-neutral-400/80 text-neutral-600 scrollbar-none"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           />
+          <style jsx global>{`
+            textarea::-webkit-scrollbar {
+              display: none;
+            }
+          `}</style>
+          <div className="absolute inset-0 bg-gradient-to-r from-neutral-500/[0.01] to-neutral-500/[0.02] opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300" />
         </div>
         <button
           onClick={onGenerate}
           disabled={isGenerating}
-          className="p-3.5 bg-gradient-to-r from-primary mr-2 to-primary/90 text-white rounded-2xl hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-50 disabled:hover:translate-y-0 disabled:cursor-not-allowed disabled:hover:shadow-none group relative overflow-hidden"
+          className="p-3.5 bg-gradient-to-r from-[#2563eb] via-[#4f46e5] to-[#7c3aed] text-white rounded-2xl hover:shadow-xl hover:shadow-blue-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-90 disabled:hover:translate-y-0 disabled:cursor-not-allowed disabled:hover:shadow-none group relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500" />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="w-5 h-5 transition-transform duration-200 group-hover:scale-110 relative z-10"
-          >
-            <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
-          </svg>
+          {isGenerating ? (
+            <div className="w-5 h-5 relative">
+              <div className="absolute inset-0 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+            </div>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-5 h-5 transition-transform duration-200 group-hover:scale-110 relative z-10"
+            >
+              <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
+            </svg>
+          )}
         </button>
       </div>
 
       {/* Controls Section */}
-      <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-3 bg-gradient-to-b from-transparent via-gray-50/30 to-gray-100/40">
+      <div className="px-5 py-3 flex items-center gap-3 bg-gradient-to-b from-transparent via-neutral-50/30 to-neutral-100/40">
         {/* Post Length Select */}
         <div className="relative group">
           <select
@@ -67,13 +80,13 @@ const PromptBox: React.FC<PromptBoxProps> = ({
             onChange={(e) =>
               onPostLengthChange(e.target.value as "short" | "medium" | "long")
             }
-            className="h-8 appearance-none bg-gray-100 hover:bg-white/80 backdrop-blur-sm border rounded-xl pl-3 pr-8 text-xs font-medium text-gray-600 hover:border-gray-300/80 focus:border-primary/20 focus:ring-[2px] focus:ring-primary/10 transition-all duration-200 cursor-pointer w-[120px]"
+            className="h-8 appearance-none bg-white/50 backdrop-blur-sm border border-neutral-200/60 rounded-xl pl-3 pr-8 text-xs font-medium text-neutral-600 hover:bg-white/80 hover:border-neutral-300/80 focus:outline-none transition-all duration-200 cursor-pointer w-[120px]"
           >
             <option value="short">Short Post</option>
             <option value="medium">Medium Post</option>
             <option value="long">Long Post</option>
           </select>
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-hover:text-gray-600 transition-colors duration-200">
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-400 group-hover:text-neutral-600 transition-colors duration-200">
             <svg
               width="14"
               height="14"
@@ -97,14 +110,14 @@ const PromptBox: React.FC<PromptBoxProps> = ({
           <select
             value={tone}
             onChange={(e) => onToneChange(e.target.value)}
-            className="h-8 appearance-none bg-gray-100 hover:bg-white/80 backdrop-blur-sm border  rounded-xl pl-3 pr-8 text-xs font-medium text-gray-600 hover:border-gray-300/80 focus:border-primary/20 focus:ring-[2px] focus:ring-primary/10 transition-all duration-200 cursor-pointer w-[150px]"
+            className="h-8 appearance-none bg-white/50 backdrop-blur-sm border border-neutral-200/60 rounded-xl pl-3 pr-8 text-xs font-medium text-neutral-600 hover:bg-white/80 hover:border-neutral-300/80 focus:outline-none transition-all duration-200 cursor-pointer w-[150px]"
           >
             <option value="professional">💼 Professional</option>
             <option value="casual">😊 Casual</option>
             <option value="friendly">🤝 Friendly</option>
             <option value="humorous">😄 Humorous</option>
           </select>
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-hover:text-gray-600 transition-colors duration-200">
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-400 group-hover:text-neutral-600 transition-colors duration-200">
             <svg
               width="14"
               height="14"

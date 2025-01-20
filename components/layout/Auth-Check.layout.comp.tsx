@@ -24,7 +24,6 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
-  const { handleCreateDraftFromGenerated } = useContentPosting();
 
   useLinkedIn();
 
@@ -39,7 +38,7 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
         router.push(`/login?from=${encodeURIComponent(pathname || "")}`);
       } else if (loggedin && pathname === "/login") {
         // Logged in and trying to access login page
-        router.push("/dashboard");
+        router.push("/studio");
       } else if (loggedin && !isActive && !isPricingPage) {
         // Show subscription required toast
         toast.custom(
@@ -90,42 +89,6 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
       }
     }
   }, [loggedin, isActive, isLoading, pathname, router]);
-
-  // Updated Keyboard shortcut effect
-  useEffect(() => {
-    const handleKeyPress = async (event: KeyboardEvent) => {
-      if (
-        (event.ctrlKey || event.metaKey) &&
-        event.altKey &&
-        event.key.toLowerCase() === "n"
-      ) {
-        event.preventDefault();
-        try {
-          // Create a blank draft
-          const draftId = await handleCreateDraftFromGenerated({
-            content: "", // Blank content
-            postType: "text",
-            linkedInProfileId: linkedinProfile?.id,
-            videoUrl: "",
-            documentUrl: "",
-            hashtags: [],
-            mentions: [],
-          });
-
-          if (draftId) {
-            // Redirect to compose with the new draft ID
-            router.push(`/compose?draft_id=${draftId}`);
-          }
-        } catch (error) {
-          console.error("Error creating new draft:", error);
-          toast.error("Failed to create new draft");
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [router, handleCreateDraftFromGenerated, linkedinProfile?.id]);
 
   // Only show loading on initial auth check
   if (isLoading) {

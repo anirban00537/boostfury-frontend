@@ -85,7 +85,7 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
   return (
     <motion.div
       className={cn(
-        "fixed top-0 right-0 h-screen border-l border-gray-200/50 bg-white backdrop-blur-xl shadow-lg shadow-gray-100/50 z-40",
+        "fixed top-0 right-0 h-screen border-l border-neutral-200/50 bg-white backdrop-blur-xl shadow-lg shadow-neutral-100/50 z-40",
         isCollapsed ? "w-0" : "w-[400px]"
       )}
       animate={{ width: isCollapsed ? 0 : 400 }}
@@ -94,11 +94,16 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
         className={cn(
-          "absolute top-6 -left-3 size-6 bg-white rounded-full border border-gray-200/50 shadow-sm flex items-center justify-center hover:bg-gray-50 transition-colors",
-          isCollapsed && "hidden"
+          "absolute top-6 -left-3 size-6 bg-white rounded-full border border-neutral-200/50 shadow-sm flex items-center justify-center hover:bg-neutral-50 transition-colors z-50",
+          isCollapsed ? "-left-10 shadow-md" : "-left-3"
         )}
       >
-        <ChevronLeft className="size-4 text-gray-500" />
+        <ChevronLeft
+          className={cn(
+            "size-4 text-neutral-500 transition-transform",
+            isCollapsed && "rotate-180"
+          )}
+        />
       </button>
 
       <div
