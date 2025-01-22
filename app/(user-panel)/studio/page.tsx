@@ -93,7 +93,7 @@ const ContentCreationTools: React.FC = () => {
   }
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-hidden">
       {/* Main Content */}
       <div
         className={cn(
@@ -105,7 +105,7 @@ const ContentCreationTools: React.FC = () => {
           <div className="flex items-center justify-center min-h-screen p-6">
             <div
               className={cn(
-                "w-[750px] space-y-10 transition-all duration-300",
+                "max-w-[750px] w-full space-y-10 transition-all duration-300",
                 !isSidebarOpen && "translate-x-0"
               )}
             >
