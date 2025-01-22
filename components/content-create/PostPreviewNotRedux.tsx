@@ -62,6 +62,7 @@ interface PostPreviewNotReduxProps {
   publishedAt?: string | null;
   scheduledTime?: string | null;
   imageUrls?: string[];
+  onContentChange?: (content: string) => void;
 }
 
 export const PostPreviewNotRedux = ({
@@ -76,8 +77,9 @@ export const PostPreviewNotRedux = ({
   publishedAt,
   scheduledTime,
   imageUrls,
+  onContentChange,
 }: PostPreviewNotReduxProps) => {
-  const contentRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const getStatusConfig = (status: string | undefined) => {
     switch (status) {
@@ -217,17 +219,19 @@ export const PostPreviewNotRedux = ({
             </div>
           ) : (
             <div className="relative">
-              <div
+              <textarea
                 ref={contentRef}
-                className="whitespace-pre-wrap break-words relative"
+                value={content}
+                onChange={(e) => onContentChange?.(e.target.value)}
+                readOnly={!onContentChange}
+                className="w-full whitespace-pre-wrap break-words relative min-h-[300px] p-4 bg-gray-50 rounded-lg border border-gray-200 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none font-[inherit]"
                 style={{
                   wordBreak: "break-word",
                   overflowWrap: "break-word",
-                  lineHeight: "1.5",
+                  lineHeight: "1.6",
+                  fontFamily: "inherit",
                 }}
-              >
-                {content}
-              </div>
+              />
             </div>
           )}
         </div>
@@ -298,7 +302,7 @@ export const PostPreviewNotRedux = ({
 
         {/* Post Logs */}
         <div className="flex items-center gap-2">
-          {status && statusConfig && (
+          {status && statusConfig && status !== "draft" && (
             <div
               className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${statusConfig.className}`}
             >

@@ -60,6 +60,7 @@ interface StudioSidebarProps {
   imageUrls?: string[];
   publishedAt?: string;
   scheduledTime?: string;
+  onContentChange?: (content: string) => void;
 }
 
 const StudioSidebar: React.FC<StudioSidebarProps> = ({
@@ -79,6 +80,7 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
   imageUrls,
   publishedAt,
   scheduledTime,
+  onContentChange,
 }) => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
 
@@ -131,6 +133,7 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
               ]}
               publishedAt={publishedAt}
               scheduledTime={scheduledTime}
+              onContentChange={onContentChange}
             />
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-center px-4 py-8">
@@ -149,9 +152,9 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
         </div>
 
         {/* Fixed Bottom Section with Publishing Controls */}
-        <div className="mt-auto p-4 bg-white border-t border-gray-200/60 space-y-3">
+        <div className="mt-auto p-4 bg-white border-t border-gray-200/60">
           {/* Publishing Controls */}
-          <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
             <GradientButton
               variant="outline"
               size="sm"
@@ -159,7 +162,7 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
               onClick={() => setIsScheduleModalOpen(true)}
               disabled={isScheduling}
               leftIcon={<Calendar className="size-4" />}
-              fullWidth
+              className="flex-1"
             >
               {isScheduling ? "Scheduling..." : "Schedule"}
             </GradientButton>
@@ -171,25 +174,23 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
               onClick={onAddToQueue}
               disabled={isAddingToQueue}
               leftIcon={<Plus className="size-4" />}
-              fullWidth
+              className="flex-1"
             >
-              {isAddingToQueue ? "Adding to queue..." : "Add to queue"}
+              {isAddingToQueue ? "Adding..." : "Queue"}
+            </GradientButton>
+
+            <GradientButton
+              variant="primary"
+              size="sm"
+              shadow="default"
+              onClick={onPostNow}
+              disabled={isPosting}
+              className="flex-1 relative h-9 bg-[#0A66C2] hover:bg-[#004182] border-0 shadow-lg hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-300"
+              leftIcon={<Save className="size-4" />}
+            >
+              {isPosting ? "Publishing..." : "Publish"}
             </GradientButton>
           </div>
-
-          {/* Publish Now Button */}
-          <GradientButton
-            variant="primary"
-            size="default"
-            shadow="default"
-            fullWidth
-            onClick={onPostNow}
-            disabled={isPosting}
-            className="relative h-11 bg-[#0A66C2] hover:bg-[#004182] border-0 shadow-lg hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-300"
-            leftIcon={<Save className="size-4" />}
-          >
-            {isPosting ? "Publishing..." : "Publish Now"}
-          </GradientButton>
         </div>
       </div>
 

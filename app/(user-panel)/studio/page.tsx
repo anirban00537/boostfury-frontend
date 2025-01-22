@@ -212,6 +212,7 @@ const ContentCreationTools: React.FC = () => {
         imageUrls={postDetails?.imageUrls}
         publishedAt={postDetails?.publishedAt || undefined}
         scheduledTime={postDetails?.scheduledTime || undefined}
+        onContentChange={handleContentChange}
       />
     </div>
   );
