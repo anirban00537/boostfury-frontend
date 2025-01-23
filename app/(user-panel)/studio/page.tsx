@@ -33,27 +33,22 @@ const ContentCreationTools: React.FC = () => {
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Main Content */}
-      <div
-        className={cn(
-          "flex-1 relative transition-all duration-300",
-          !isEditorOpen ? "mr-0" : "lg:mr-[400px]"
-        )}
-      >
+      <div className={cn("flex-1 relative transition-all duration-300")}>
         <main className="h-screen overflow-y-auto hide-scrollbar">
-          <div className="flex items-center justify-center min-h-screen p-6">
+          <div className="flex items-center justify-center min-h-screen p-4 sm:p-6">
             <div
               className={cn(
-                "max-w-[750px] w-full space-y-10 transition-all duration-300",
+                "w-full max-w-[750px] space-y-6 sm:space-y-10 transition-all duration-300",
                 !isEditorOpen && "translate-x-0"
               )}
             >
               {/* Title Section */}
-              <div className="relative space-y-6">
+              <div className="relative space-y-4 sm:space-y-6">
                 {/* Main Title */}
-                <div className="relative">
+                <div className="relative px-4 sm:px-0">
                   <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/5 via-indigo-500/10 to-purple-500/5 blur-3xl rounded-full opacity-80" />
                   <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/10 via-indigo-500/20 to-purple-500/10 blur-2xl rounded-full opacity-50 animate-pulse" />
-                  <h1 className="relative text-[38px] font-bold text-center leading-tight tracking-tight">
+                  <h1 className="relative text-[28px] sm:text-[38px] font-bold text-center leading-tight tracking-tight">
                     <span className="inline-block bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
                       Create your viral{" "}
                       <span className="inline-block bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent relative group">
@@ -65,13 +60,13 @@ const ContentCreationTools: React.FC = () => {
                   </h1>
                 </div>
 
-                {/* Decorative Elements */}
-                <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-blue-500/20 via-indigo-500/20 to-purple-500/20 rounded-full blur-3xl opacity-20 animate-pulse" />
-                <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-to-br from-purple-500/20 via-indigo-500/20 to-blue-500/20 rounded-full blur-3xl opacity-20 animate-pulse delay-150" />
+                {/* Decorative Elements - Hidden on mobile */}
+                <div className="hidden sm:block absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-blue-500/20 via-indigo-500/20 to-purple-500/20 rounded-full blur-3xl opacity-20 animate-pulse" />
+                <div className="hidden sm:block absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-to-br from-purple-500/20 via-indigo-500/20 to-blue-500/20 rounded-full blur-3xl opacity-20 animate-pulse delay-150" />
               </div>
 
               {/* PromptBox */}
-              <div className="relative">
+              <div className="relative px-4 sm:px-0">
                 <div className="absolute inset-0 -m-2 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-[32px] blur-2xl" />
                 <div className="relative">
                   <PromptBox

@@ -4,7 +4,8 @@ import StudioSidebar from "@/components/studio/StudioSidebar";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/state/store";
 
 export default function DashboardLayout({
   children,
@@ -12,8 +13,9 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const pathname = usePathname();
-  const isStudioPage = pathname === "/studio";
+  const isEditorOpen = useSelector(
+    (state: RootState) => state.content.isEditorOpen
+  );
 
   return (
     <div className="flex h-screen">
@@ -48,7 +50,11 @@ export default function DashboardLayout({
         <Sidebar onClose={() => setIsSidebarOpen(false)} />
       </div>
 
-      <div className="flex-1 w-full">
+      <div
+        className={`flex-1 w-full transition-all duration-300 ${
+          isEditorOpen ? "mr-[400px]" : ""
+        }`}
+      >
         <main className="h-screen overflow-y-auto">
           <div className="">{children}</div>
         </main>

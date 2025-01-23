@@ -159,7 +159,7 @@ const StudioSidebar = () => {
   return (
     <motion.div
       className={cn(
-        "fixed top-0 right-0 h-screen bg-white z-40",
+        "fixed top-0 right-0 h-screen bg-white",
         "border-l border-neutral-200/50",
         "transition-all duration-300 ease-in-out",
         !isEditorOpen ? "w-0" : "w-[400px]",

@@ -84,13 +84,8 @@ interface TabHeaderProps {
   onTabChange: (tabId: PostTabId) => void;
 }
 
-const TabHeader: React.FC<TabHeaderProps> = ({
-  activeTab,
-  onTabChange,
-}) => {
+const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange }) => {
   const router = useRouter();
-
-
 
   return (
     <div className="relative border-b border-neutral-200/60 bg-white/50 backdrop-blur-sm sticky top-0 z-10">
@@ -119,9 +114,9 @@ const TabHeader: React.FC<TabHeaderProps> = ({
               <GradientButton
                 variant="primary"
                 className="shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center gap-2">
-                <Plus className="h-4 w-4" />
+              >
+                <div className="flex items-center gap-2">
+                  <Plus className="h-4 w-4" />
                   <span>Create New</span>
                 </div>
               </GradientButton>
@@ -302,10 +297,7 @@ const ContentManager = () => {
 
   return (
     <div className="min-h-screen">
-      <TabHeader
-        activeTab={activeTab}
-        onTabChange={handleTabClick}
-      />
+      <TabHeader activeTab={activeTab} onTabChange={handleTabClick} />
       <div className=" px-4 sm:px-6 py-8">
         <div className="p-6">
           {isLoadingPosts ? (
@@ -358,12 +350,17 @@ const ContentManager = () => {
                   {/* Grid Container */}
                   <div
                     className={`
-                    grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 
+                    grid gap-4 sm:gap-6
+                    grid-cols-1 
+                    sm:grid-cols-1 
+                    md:grid-cols-2 
+                    lg:grid-cols-2 
+                    xl:grid-cols-3 
                     ${activeTab === "draft" ? "gap-6" : "gap-4"}
                   `}
                   >
                     {group.posts.map((post: Post, postIndex) => (
-                      <div key={postIndex} className="flex">
+                      <div key={postIndex} className="flex w-full">
                         <PostPreviewNotRedux
                           content={post.content}
                           isGenerating={false}
