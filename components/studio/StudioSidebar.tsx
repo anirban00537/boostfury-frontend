@@ -61,6 +61,9 @@ interface StudioSidebarProps {
   publishedAt?: string;
   scheduledTime?: string;
   onContentChange?: (content: string) => void;
+  onEmojiSelect?: (emoji: string) => void;
+  onAIRewrite?: () => void;
+  onImageUpload?: () => void;
 }
 
 const StudioSidebar: React.FC<StudioSidebarProps> = ({
@@ -81,6 +84,9 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
   publishedAt,
   scheduledTime,
   onContentChange,
+  onEmojiSelect,
+  onAIRewrite,
+  onImageUpload,
 }) => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
 
@@ -116,39 +122,27 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
       >
         {/* Post Preview Section */}
         <div className="flex-1 overflow-y-auto px-4 py-3">
-          {content ? (
-            <PostPreviewNotRedux
-              content={content}
-              isGenerating={isGenerating}
-              status={status}
-              linkedInProfile={linkedinProfile}
-              user={user}
-              imageUrls={imageUrls}
-              dropdownItems={[
-                {
-                  label: "Post Now",
-                  icon: <Pencil className="h-4 w-4" />,
-                  onClick: onPostNow,
-                },
-              ]}
-              publishedAt={publishedAt}
-              scheduledTime={scheduledTime}
-              onContentChange={onContentChange}
-            />
-          ) : (
-            <div className="flex flex-col items-center justify-center h-full text-center px-4 py-8">
-              <div className="w-16 h-16 bg-white/60 rounded-2xl flex items-center justify-center mb-4 border border-gray-200/60">
-                <FileText className="w-8 h-8 text-gray-400" />
-              </div>
-              <h3 className="text-sm font-medium text-gray-900 mb-2">
-                No Content Yet
-              </h3>
-              <p className="text-xs text-gray-500 max-w-[200px]">
-                Start by typing your prompt above and generate your first
-                LinkedIn post
-              </p>
-            </div>
-          )}
+          <PostPreviewNotRedux
+            content={content}
+            isGenerating={isGenerating}
+            status={status}
+            linkedInProfile={linkedinProfile}
+            user={user}
+            imageUrls={imageUrls}
+            dropdownItems={[
+              {
+                label: "Post Now",
+                icon: <Pencil className="h-4 w-4" />,
+                onClick: onPostNow,
+              },
+            ]}
+            publishedAt={publishedAt}
+            scheduledTime={scheduledTime}
+            onContentChange={onContentChange}
+            onEmojiSelect={onEmojiSelect}
+            onAIRewrite={onAIRewrite}
+            onImageUpload={onImageUpload}
+          />
         </div>
 
         {/* Fixed Bottom Section with Publishing Controls */}
