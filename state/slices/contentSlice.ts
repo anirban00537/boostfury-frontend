@@ -4,7 +4,6 @@ import { LinkedInPostImage, Post, LinkedInProfileUI } from "@/types/post";
 interface ContentState {
   content: string;
   postDetails: Post | null;
-  selectedProfile: LinkedInProfileUI | null;
   isAutoSaving: boolean;
   isLoadingDraft: boolean;
   isCreatingDraft: boolean;
@@ -20,7 +19,6 @@ interface ContentState {
 const initialState: ContentState = {
   content: "",
   postDetails: null,
-  selectedProfile: null,
   isAutoSaving: false,
   isLoadingDraft: false,
   isCreatingDraft: false,
@@ -42,12 +40,6 @@ const contentSlice = createSlice({
     },
     setPostDetails: (state, action: PayloadAction<Post | null>) => {
       state.postDetails = action.payload;
-    },
-    setSelectedProfile: (
-      state,
-      action: PayloadAction<LinkedInProfileUI | null>
-    ) => {
-      state.selectedProfile = action.payload;
     },
     setIsAutoSaving: (state, action: PayloadAction<boolean>) => {
       state.isAutoSaving = action.payload;
@@ -103,7 +95,6 @@ const contentSlice = createSlice({
 export const {
   setContent,
   setPostDetails,
-  setSelectedProfile,
   setIsAutoSaving,
   setIsLoadingDraft,
   setIsCreatingDraft,

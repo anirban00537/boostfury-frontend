@@ -39,7 +39,6 @@ import { AxiosResponse } from "axios";
 import {
   setContent,
   setPostDetails,
-  setSelectedProfile,
   setIsAutoSaving,
   setIsLoadingDraft,
   setIsCreatingDraft,
@@ -155,7 +154,6 @@ export const useContentPosting = () => {
   const {
     content,
     postDetails,
-    selectedProfile,
     isAutoSaving,
     isLoadingDraft,
     isCreatingDraft,
@@ -395,18 +393,6 @@ export const useContentPosting = () => {
             content: content || post.content,
           } as Post)
         );
-
-        if (post.linkedInProfile) {
-          dispatch(
-            setSelectedProfile({
-              id: post.linkedInProfile.id,
-              name: post.linkedInProfile.name,
-              avatarUrl: post.linkedInProfile.avatarUrl,
-              type: "linkedin",
-              status: "connected",
-            })
-          );
-        }
       },
       onError: (error) => {
         toast.error("Failed to fetch draft details");
@@ -499,7 +485,7 @@ export const useContentPosting = () => {
 
   const handleSchedule = useCallback(
     async (date: Date) => {
-      if (!draftId || !selectedProfile?.id) {
+      if (!draftId || !linkedinProfile?.id) {
         toast.error("Missing draft or profile");
         return;
       }
@@ -512,7 +498,7 @@ export const useContentPosting = () => {
         },
       });
     },
-    [draftId, selectedProfile?.id, schedulePostMutation]
+    [draftId, linkedinProfile?.id, schedulePostMutation]
   );
 
   const { mutateAsync: shuffleQueueMutation, isLoading: isShuffling } =
@@ -536,7 +522,6 @@ export const useContentPosting = () => {
     // States
     content,
     postDetails,
-    selectedProfile,
     isAutoSaving,
     isLoadingDraft,
     isCreatingDraft,

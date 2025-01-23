@@ -31,7 +31,6 @@ const ContentCreationTools: React.FC = () => {
     postDetails,
     handlePostNow,
     isPosting,
-    selectedProfile,
     isLoadingDraft,
     handleAddToQueue,
     isAddingToQueue,
@@ -73,14 +72,14 @@ const ContentCreationTools: React.FC = () => {
     }
   };
 
-  // Create user object from selected profile
+  // Create user object from linkedinProfile
   const user = {
-    id: selectedProfile?.id || "",
+    id: linkedinProfile?.id || "",
     email: "",
-    first_name: selectedProfile?.name?.split(" ")[0] || "",
-    last_name: selectedProfile?.name?.split(" ")[1] || "",
-    user_name: selectedProfile?.name || "",
-    photo: selectedProfile?.avatarUrl || null,
+    first_name: linkedinProfile?.name?.split(" ")[0] || "",
+    last_name: linkedinProfile?.name?.split(" ")[1] || "",
+    user_name: linkedinProfile?.name || "",
+    photo: linkedinProfile?.avatarUrl || null,
   };
 
   return (
@@ -148,24 +147,24 @@ const ContentCreationTools: React.FC = () => {
         isCollapsed={!isEditorOpen}
         setIsCollapsed={(collapsed) => dispatch(setIsEditorOpen(!collapsed))}
         linkedinProfile={{
-          id: selectedProfile?.id || "",
-          name: selectedProfile?.name || "",
+          id: linkedinProfile?.id || "",
+          name: linkedinProfile?.name || "",
           email: "user@example.com",
-          avatarUrl: selectedProfile?.avatarUrl || "",
+          avatarUrl: linkedinProfile?.avatarUrl || "",
           linkedInProfileUrl: null,
         }}
         onPostNow={() =>
-          selectedProfile?.id && handlePostNow(selectedProfile.id)
+          linkedinProfile?.id && handlePostNow(linkedinProfile.id)
         }
         onAddToQueue={() =>
-          selectedProfile?.id && handleAddToQueue(selectedProfile.id)
+          linkedinProfile?.id && handleAddToQueue(linkedinProfile.id)
         }
         onSchedule={(date) => handleSchedule(date)}
         isPosting={isPosting}
         isAddingToQueue={isAddingToQueue}
         isScheduling={isScheduling}
         content={content}
-        isGenerating={false}
+        isGenerating={isGenerating}
         status="draft"
         user={user}
         images={postDetails?.images}
