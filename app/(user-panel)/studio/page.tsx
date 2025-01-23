@@ -175,6 +175,7 @@ const ContentCreationTools: React.FC = () => {
         publishedAt={postDetails?.publishedAt || undefined}
         scheduledTime={postDetails?.scheduledTime || undefined}
         onContentChange={handleContentChange}
+        postId={postDetails?.id || ""}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import {
   HelpCircle,
@@ -96,7 +96,10 @@ interface StudioSidebarProps {
   onContentChange?: (content: string) => void;
   onEmojiSelect?: (emoji: string) => void;
   onAIRewrite?: () => void;
-  onImageUpload?: () => void;
+  onImageUpload?: (file: File) => Promise<boolean>;
+  onImageUrlsChange?: (urls: string[]) => void;
+  isUploading?: boolean;
+  postId: string;
 }
 
 const StudioSidebar: React.FC<StudioSidebarProps> = ({
@@ -120,6 +123,9 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
   onEmojiSelect,
   onAIRewrite,
   onImageUpload,
+  onImageUrlsChange,
+  isUploading,
+  postId,
 }) => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -178,6 +184,21 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
     onContentChange?.(updatedContent);
     setShowEmojiPicker(false);
   };
+
+  // Create a memoized handler that includes postId
+  const handleImageUploadWithPostId = useCallback(
+    async (file: File) => {
+      if (onImageUpload) {
+        const success = await onImageUpload(file);
+        if (success) {
+          setIsImageModalOpen(false);
+        }
+        return success;
+      }
+      return false;
+    },
+    [onImageUpload]
+  );
 
   return (
     <motion.div
@@ -380,77 +401,31 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
 
           {/* Image Grid */}
           {imageUrls && imageUrls.length > 0 && (
-            <motion.div
-              className="mt-6"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <div
-                className={cn(
-                  "grid gap-3",
-                  "w-full rounded-lg overflow-hidden",
-                  imageUrls.length === 1
-                    ? "grid-cols-1"
-                    : imageUrls.length === 2
-                    ? "grid-cols-2"
-                    : imageUrls.length === 3
-                    ? "grid-cols-2"
-                    : imageUrls.length === 4
-                    ? "grid-cols-2"
-                    : "grid-cols-3"
-                )}
-              >
+            <div className="mt-6">
+              <div className="flex flex-wrap gap-3">
                 {imageUrls.map((url, index) => (
-                  <motion.div
-                    key={index}
-                    className={cn(
-                      "relative",
-                      "group cursor-pointer",
-                      "overflow-hidden rounded-lg",
-                      imageUrls.length === 3 && index === 0
-                        ? "row-span-2"
-                        : imageUrls.length > 4 && index >= 4
-                        ? "hidden md:block"
-                        : ""
-                    )}
-                    whileHover={{ scale: 1.02 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <div
-                      className={cn(
-                        "relative",
-                        imageUrls.length === 1 ? "pt-[52%]" : "pt-[100%]"
-                      )}
-                    >
-                      <img
+                  <div key={`new-${index}`} className="relative group">
+                    <div className="relative w-24 h-24 rounded-xl overflow-hidden border-2 border-gray-200/50 bg-white/90 group-hover:border-primary/20 transition-all">
+                      <Image
                         src={url}
-                        alt={`Post image ${index + 1}`}
-                        className={cn(
-                          "absolute inset-0 w-full h-full",
-                          "object-cover transition-transform duration-300",
-                          "group-hover:scale-105"
-                        )}
+                        alt={`Upload ${index + 1}`}
+                        fill
+                        className="object-cover"
                       />
-                      {imageUrls.length > 4 && index === 4 && (
-                        <div
-                          className={cn(
-                            "absolute inset-0",
-                            "bg-black/50 backdrop-blur-sm",
-                            "flex items-center justify-center",
-                            "transition-opacity duration-200"
-                          )}
-                        >
-                          <span className="text-white text-lg font-medium">
-                            +{imageUrls.length - 4}
-                          </span>
-                        </div>
-                      )}
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
+
+                {isUploading && (
+                  <div className="relative w-24 h-24 rounded-xl border-2 border-gray-200/50 bg-white/90">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    </div>
+                  </div>
+                )}
               </div>
-            </motion.div>
+            </div>
           )}
         </div>
 
@@ -549,8 +524,8 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
         isOpen={isImageModalOpen}
         onClose={() => setIsImageModalOpen(false)}
         onUploadSuccess={() => {}}
-        handleImageUpload={(file) => Promise.resolve(true)}
-        isUploading={false}
+        handleImageUpload={handleImageUploadWithPostId}
+        isUploading={isUploading || false}
       />
     </motion.div>
   );
