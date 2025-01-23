@@ -67,12 +67,28 @@ const Picker = dynamic(() => import("@emoji-mart/react"), {
   ),
 });
 
-const StudioSidebar = () => {
+const postLengthOptions = [
+  { value: "short", label: "Short", description: "~100 words" },
+  { value: "medium", label: "Medium", description: "~200 words" },
+  { value: "long", label: "Long", description: "~300 words" },
+] as const;
+
+const toneOptions = [
+  { value: "professional", label: "Professional", emoji: "💼" },
+  { value: "casual", label: "Casual", emoji: "😊" },
+  { value: "friendly", label: "Friendly", emoji: "🤝" },
+  { value: "humorous", label: "Humorous", emoji: "😄" },
+] as const;
+
+export const StudioSidebar = () => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useDispatch();
+  const [postLength, setPostLength] = useState<"short" | "medium" | "long">(
+    "medium"
+  );
 
   // Get states from Redux
   const isEditorOpen = useSelector(
@@ -96,14 +112,14 @@ const StudioSidebar = () => {
     handleImageDelete,
   } = useContentPosting();
 
-  console.log("StudioSidebar hook values:", {
-    hasContent: !!content,
-    hasPostDetails: !!postDetails,
-    hasContentChangeHandler: !!handleContentChange,
-    contentLength: content?.length || 0,
-  });
-
-  const { isGenerating } = useGenerateLinkedInPosts({
+  const {
+    prompt,
+    tone,
+    handlePromptChange,
+    handleGenerate,
+    setTone,
+    isGenerating,
+  } = useGenerateLinkedInPosts({
     onContentGenerated: handleContentChange,
   });
 
@@ -158,305 +174,143 @@ const StudioSidebar = () => {
 
   return (
     <motion.div
-      className={cn(
-        "fixed top-0 right-0 h-screen bg-white",
-        "border-l border-neutral-200/50",
-        "transition-all duration-300 ease-in-out",
-        !isEditorOpen ? "w-0" : "w-[400px]",
-        isEditorOpen ? "translate-x-0" : "translate-x-full"
-      )}
-      animate={{
-        width: !isEditorOpen ? 0 : 400,
-        opacity: !isEditorOpen ? 0 : 1,
-        x: !isEditorOpen ? 20 : 0,
-      }}
-      transition={{
-        duration: 0.3,
-        type: "spring",
-        stiffness: 150,
-        damping: 20,
-      }}
+      initial={{ x: 400 }}
+      animate={{ x: isEditorOpen ? 0 : 400 }}
+      transition={{ type: "spring", damping: 20 }}
+      className="fixed top-0 right-0 h-screen w-[400px] bg-white shadow-xl border-l border-[#e0dfdd] flex flex-col"
     >
-      <motion.button
+      {/* Toggle Button */}
+      <button
         onClick={handleToggle}
-        className={cn(
-          "absolute top-6 -left-3 size-6 bg-white rounded-full",
-          "border border-neutral-200/50 shadow-sm",
-          "flex items-center justify-center",
-          "hover:bg-neutral-50 hover:scale-110",
-          "transition-all duration-200",
-          "focus:outline-none focus:ring-2 focus:ring-blue-500/20",
-          !isEditorOpen ? "-left-10 shadow-md" : "-left-3"
-        )}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
+        className="absolute -left-12 top-4 p-2.5 bg-white hover:bg-[#f3f2ef] rounded-l-xl border border-r-0 border-[#e0dfdd] group transition-colors"
       >
-        <ChevronLeft
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           className={cn(
-            "size-4 text-neutral-500 transition-transform duration-200",
-            !isEditorOpen && "rotate-180"
+            "transition-transform duration-300",
+            isEditorOpen ? "rotate-0" : "rotate-180"
           )}
-        />
-      </motion.button>
-
-      <div className={cn("h-full flex flex-col", !isEditorOpen && "hidden")}>
-        {/* Header Section */}
-        <div className="px-6 py-4 border-b border-neutral-200/50">
-          <div className="flex items-center justify-between">
-            <motion.div
-              className="flex gap-3 items-center"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 }}
-            >
-              <div className="relative">
-                <Avatar className="h-9 w-9 rounded-full ring-2 ring-white">
-                  <img
-                    src={linkedinProfile?.avatarUrl || "/linkedin-logo.webp"}
-                    alt={linkedinProfile?.name || ""}
-                    className="h-full w-full object-cover rounded-full"
-                  />
-                </Avatar>
-                <div className="absolute -bottom-1 -right-1 size-3.5 bg-blue-500 rounded-full border-2 border-white" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-gray-900">
-                  {linkedinProfile?.name || "LinkedIn Profile"}
-                </span>
-                <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
-                  {postDetails?.publishedAt && (
-                    <span>{formatDate(postDetails.publishedAt)}</span>
-                  )}
-                  {postDetails?.scheduledTime && (
-                    <span>
-                      Scheduled for {formatDate(postDetails.scheduledTime)}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Content Section */}
-        <div className="flex-1 overflow-y-auto px-6 py-4 custom-scrollbar">
-          {isGenerating ? (
-            <div className="space-y-3 animate-pulse">
-              <div className="h-4 bg-gray-200 rounded-full w-3/4" />
-              <div className="h-4 bg-gray-200 rounded-full w-1/2" />
-              <div className="h-4 bg-gray-200 rounded-full w-5/6" />
-            </div>
-          ) : (
-            <motion.div
-              className="space-y-0"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <textarea
-                ref={contentRef}
-                value={content}
-                placeholder="Write your post here..."
-                onChange={(e) => {
-                  console.log("Textarea onChange triggered:", {
-                    value: e.target.value.slice(0, 50) + "...",
-                    contentLength: e.target.value.length,
-                  });
-                  handleContentChange?.(e.target.value);
-                }}
-                className={cn(
-                  "w-full whitespace-pre-wrap break-words",
-                  "min-h-[300px] p-4",
-                  "bg-gray-50/50 rounded-xl",
-                  "border border-gray-200",
-                  "text-[15px] leading-relaxed",
-                  "focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-300",
-                  "transition-all duration-200",
-                  "resize-none font-[inherit]",
-                  "placeholder:text-gray-400"
-                )}
-                style={{
-                  wordBreak: "break-word",
-                  overflowWrap: "break-word",
-                  lineHeight: "1.6",
-                  fontFamily: "inherit",
-                }}
-              />
-
-              {/* Editor Controls */}
-              <div className="flex items-center justify-end gap-1.5 -mt-10 mr-2 relative z-10">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                      className={cn(
-                        "p-2 rounded-lg text-gray-600 bg-white",
-                        "hover:bg-gray-100/80 hover:text-gray-900",
-                        "transition-colors duration-150",
-                        "active:scale-95"
-                      )}
-                    >
-                      <Smile className="size-[18px]" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>Add emoji</TooltipContent>
-                </Tooltip>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => setIsImageModalOpen(true)}
-                      className={cn(
-                        "p-2 rounded-lg text-gray-600 bg-white",
-                        "hover:bg-gray-100/80 hover:text-gray-900",
-                        "transition-colors duration-150",
-                        "active:scale-95"
-                      )}
-                    >
-                      <ImageIcon className="size-[18px]" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>Add images</TooltipContent>
-                </Tooltip>
-              </div>
-
-              {/* Image Grid */}
-              {postDetails?.images && postDetails.images.length > 0 && (
-                <div className="mt-6">
-                  <div className="flex flex-wrap gap-3">
-                    {postDetails.images.map(
-                      (image: LinkedInPostImage, index: number) => (
-                        <div key={`image-${index}`} className="relative group">
-                          <div className="relative w-24 h-24 rounded-xl overflow-hidden border-2 border-gray-200/50 bg-white/90 group-hover:border-primary/20 transition-all">
-                            <Image
-                              src={image.imageUrl}
-                              alt={`Upload ${index + 1}`}
-                              fill
-                              className="object-cover"
-                            />
-                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity" />
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleImageDelete?.(image.id);
-                              }}
-                              className="absolute top-1 right-1 p-1 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 hover:bg-red-600 transition-all"
-                            >
-                              <XCircle className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
-            </motion.div>
-          )}
-        </div>
-
-        {/* Actions Footer */}
-        <motion.div
-          className="px-6 py-4 bg-white border-t border-neutral-200/50"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
         >
-          <div className="flex items-center gap-3">
-            <GradientButton
-              variant="outline"
-              size="sm"
-              shadow="soft"
-              onClick={() => setIsScheduleModalOpen(true)}
-              disabled={isScheduling}
-              leftIcon={<Calendar className="size-4" />}
-              className={cn(
-                "flex-1 transition-all duration-200",
-                "hover:border-blue-200 hover:bg-blue-50/50",
-                "active:scale-[0.98]"
-              )}
-            >
-              {isScheduling ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 className="size-4 animate-spin" />
-                  Scheduling...
-                </span>
-              ) : (
-                "Schedule"
-              )}
-            </GradientButton>
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      </button>
 
-            <GradientButton
-              variant="outline"
-              size="sm"
-              shadow="soft"
-              onClick={() =>
-                linkedinProfile?.id && handleAddToQueue(linkedinProfile.id)
-              }
-              disabled={isAddingToQueue}
-              leftIcon={<Plus className="size-4" />}
-              className={cn(
-                "flex-1 transition-all duration-200",
-                "hover:border-purple-200 hover:bg-purple-50/50",
-                "active:scale-[0.98]"
-              )}
-            >
-              {isAddingToQueue ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 className="size-4 animate-spin" />
-                  Adding...
-                </span>
-              ) : (
-                "Queue"
-              )}
-            </GradientButton>
-
-            <GradientButton
-              variant="primary"
-              size="sm"
-              shadow="default"
-              onClick={() =>
-                linkedinProfile?.id && handlePostNow(linkedinProfile.id)
-              }
-              disabled={isPosting}
-              className={cn(
-                "flex-1 relative h-9",
-                "bg-gradient-to-r from-[#0A66C2] via-[#2C8EFF] to-[#0A66C2]",
-                "hover:from-[#004182] hover:via-[#0A66C2] hover:to-[#004182]",
-                "border-0 shadow-lg hover:shadow-xl",
-                "hover:shadow-blue-500/20",
-                "transition-all duration-300",
-                "active:scale-[0.98]"
-              )}
-              leftIcon={<Save className="size-4" />}
-            >
-              {isPosting ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 className="size-4 animate-spin" />
-                  Publishing...
-                </span>
-              ) : (
-                "Publish"
-              )}
-            </GradientButton>
-          </div>
-        </motion.div>
+      {/* Header */}
+      <div className="flex-none px-6 py-4 border-b border-[#e0dfdd]">
+        <h2 className="text-lg font-semibold text-[#191919]">
+          AI Post Generator
+        </h2>
+        <p className="text-sm text-[#666666] mt-1">
+          Generate engaging LinkedIn posts with AI
+        </p>
       </div>
 
-      <ScheduleModal
-        isOpen={isScheduleModalOpen}
-        onClose={() => setIsScheduleModalOpen(false)}
-        onSchedule={handleSchedule}
-        isScheduling={isScheduling}
-      />
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-6">
+          <div className="space-y-6">
+            {/* Prompt Input */}
+            <div>
+              <label className="block text-sm font-medium text-[#191919] mb-2">
+                What would you like to write about?
+              </label>
+              <div className="relative">
+                <textarea
+                  value={prompt}
+                  onChange={handlePromptChange}
+                  placeholder="Enter your topic or idea..."
+                  className="w-full h-[120px] px-4 py-3 text-[15px] leading-relaxed bg-[#f3f2ef] rounded-xl border-0 placeholder:text-[#666666] text-[#191919] focus:outline-none focus:ring-2 focus:ring-[#0a66c2] resize-none"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#f3f2ef]/[0.01] to-[#f3f2ef]/[0.02] pointer-events-none rounded-xl" />
+              </div>
+            </div>
 
-      <ImageUploadModal
-        isOpen={isImageModalOpen}
-        onClose={() => setIsImageModalOpen(false)}
-        onUploadSuccess={() => {}}
-        handleImageUpload={handleImageUploadWithPostId}
-        isUploading={isUploading}
-      />
+            {/* Post Length Selection */}
+            <div>
+              <label className="block text-sm font-medium text-[#191919] mb-3">
+                Select post length
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {postLengthOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => setPostLength(option.value)}
+                    className={cn(
+                      "flex flex-col items-center p-3 rounded-xl transition-all border",
+                      postLength === option.value
+                        ? "bg-white border-[#0a66c2] shadow-sm text-[#0a66c2]"
+                        : "border-transparent bg-[#f3f2ef] hover:bg-white/80"
+                    )}
+                  >
+                    <span className="text-sm font-medium">{option.label}</span>
+                    <span className="text-xs text-[#666666] mt-1">
+                      {option.description}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Tone Selection */}
+            <div>
+              <label className="block text-sm font-medium text-[#191919] mb-3">
+                Choose the tone
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {toneOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => setTone(option.value)}
+                    className={cn(
+                      "flex items-center gap-2 p-3 rounded-xl transition-all border",
+                      tone === option.value
+                        ? "bg-white border-[#0a66c2] shadow-sm text-[#0a66c2]"
+                        : "border-transparent bg-[#f3f2ef] hover:bg-white/80"
+                    )}
+                  >
+                    <span className="text-xl">{option.emoji}</span>
+                    <span className="text-sm font-medium">{option.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Generate Button */}
+      <div className="flex-none p-6 bg-gradient-to-t from-white/80 to-white border-t border-[#e0dfdd]">
+        <GradientButton
+          onClick={handleGenerate}
+          disabled={isGenerating}
+          className="w-full h-11 shadow-xl hover:shadow-blue-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+          variant="primary"
+        >
+          <div className="relative flex items-center justify-center gap-2">
+            {isGenerating ? (
+              <>
+                <div className="w-4 h-4 relative">
+                  <div className="absolute inset-0 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                </div>
+                <span className="font-medium">Generating...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
+                <span className="font-medium">Generate Post</span>
+              </>
+            )}
+          </div>
+        </GradientButton>
+      </div>
     </motion.div>
   );
 };

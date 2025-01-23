@@ -15,18 +15,16 @@ import { cn } from "@/lib/utils";
 interface ImageUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onUploadSuccess: () => void;
-  handleImageUpload: (file: File) => Promise<boolean>;
+  onUpload: (file: File) => Promise<boolean>;
   isUploading: boolean;
 }
 
-export const ImageUploadModal = ({
+export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
   isOpen,
   onClose,
-  onUploadSuccess,
-  handleImageUpload,
+  onUpload,
   isUploading,
-}: ImageUploadModalProps) => {
+}) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -46,7 +44,7 @@ export const ImageUploadModal = ({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.png', '.jpg', '.jpeg', '.gif']
+      "image/*": [".png", ".jpg", ".jpeg", ".gif"],
     },
     maxSize: 5 * 1024 * 1024, // 5MB
     multiple: false,
@@ -55,9 +53,8 @@ export const ImageUploadModal = ({
   const handleUpload = async () => {
     if (!selectedFile) return;
 
-    const success = await handleImageUpload(selectedFile);
+    const success = await onUpload(selectedFile);
     if (success) {
-      onUploadSuccess();
       onClose();
     }
   };
@@ -79,8 +76,8 @@ export const ImageUploadModal = ({
   }, [previewUrl]);
 
   return (
-    <Dialog 
-      open={isOpen} 
+    <Dialog
+      open={isOpen}
       onOpenChange={() => {
         clearSelection();
         onClose();
@@ -93,7 +90,7 @@ export const ImageUploadModal = ({
 
         <div className="space-y-4">
           {/* Upload Area */}
-          <div 
+          <div
             {...getRootProps()}
             className={cn(
               "border-2 border-dashed rounded-lg transition-all duration-200",
@@ -103,7 +100,7 @@ export const ImageUploadModal = ({
             )}
           >
             <input {...getInputProps()} />
-            
+
             {previewUrl ? (
               <div className="relative">
                 <Image
@@ -131,11 +128,9 @@ export const ImageUploadModal = ({
                 </div>
                 <div className="space-y-2">
                   <div className="text-base font-medium text-gray-700">
-                    {isDragActive ? (
-                      "Drop the image here"
-                    ) : (
-                      "Drag & drop an image here"
-                    )}
+                    {isDragActive
+                      ? "Drop the image here"
+                      : "Drag & drop an image here"}
                   </div>
                   <div className="text-sm text-gray-500">
                     or click to select a file
