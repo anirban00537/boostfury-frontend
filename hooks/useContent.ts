@@ -13,7 +13,7 @@ import {
   addToQueue,
   shuffleQueue,
 } from "@/services/content-posting";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/state/store";
 import {
   Post,
@@ -36,6 +36,20 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { processApiResponse } from "@/lib/functions";
 import debounce from "lodash/debounce";
 import { AxiosResponse } from "axios";
+import {
+  setContent,
+  setPostDetails,
+  setSelectedProfile,
+  setIsAutoSaving,
+  setIsLoadingDraft,
+  setIsCreatingDraft,
+  setIsPosting,
+  setIsAddingToQueue,
+  setIsScheduling,
+  setIsUploading,
+  removeImage,
+  reorderImages as dispatchReorderImages,
+} from "../state/slices/contentSlice";
 
 interface DraftResponse {
   success: boolean;
@@ -134,18 +148,27 @@ export const useContentPosting = () => {
   const router = useRouter();
   const draftId = searchParams?.get("draft_id");
   const { linkedinProfile } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
   const queryClient = useQueryClient();
 
-  // Core states
-  const [content, setContent] = useState("");
-  const [isAutoSaving, setIsAutoSaving] = useState(false);
-  const [postDetails, setPostDetails] = useState<Post | null>(null);
-  const [selectedProfile, setSelectedProfile] =
-    useState<LinkedInProfileUI | null>(null);
-  const [images, setImages] = useState<LinkedInPostImage[]>([]);
+  // Get content state from Redux
+  const {
+    content,
+    postDetails,
+    selectedProfile,
+    isAutoSaving,
+    isLoadingDraft,
+    isCreatingDraft,
+    isPosting: isPostingState,
+    isAddingToQueue: isAddingToQueueState,
+    isScheduling: isSchedulingState,
+    isUploading,
+    images,
+    isGenerating,
+  } = useSelector((state: RootState) => state.content);
 
   // Save draft mutation
-  const { mutateAsync: saveDraft, isLoading: isCreatingDraft } = useMutation<
+  const { mutateAsync: saveDraft } = useMutation<
     DraftResponse,
     Error,
     CreateDraftPostType
@@ -155,7 +178,7 @@ export const useContentPosting = () => {
         toast.error(response.message || "Failed to save draft");
         return;
       }
-      setPostDetails(response.data.post as Post);
+      dispatch(setPostDetails(response.data.post as Post));
     },
     onError: (error) => {
       toast.error("Failed to save draft");
@@ -167,20 +190,20 @@ export const useContentPosting = () => {
     debounce(async (draftData: CreateDraftPostType) => {
       if (!linkedinProfile?.id) return;
 
-      setIsAutoSaving(true);
+      dispatch(setIsAutoSaving(true));
       try {
         await saveDraft(draftData);
       } finally {
-        setIsAutoSaving(false);
+        dispatch(setIsAutoSaving(false));
       }
     }, 1500),
-    [linkedinProfile?.id, saveDraft]
+    [linkedinProfile?.id, saveDraft, dispatch]
   );
 
   // Content change handler
   const handleContentChange = useCallback(
     async (newContent: string) => {
-      setContent(newContent);
+      dispatch(setContent(newContent));
 
       if (!linkedinProfile?.id) return;
 
@@ -200,7 +223,14 @@ export const useContentPosting = () => {
         }
       }
     },
-    [draftId, linkedinProfile?.id, saveDraft, router, debouncedSaveDraft]
+    [
+      draftId,
+      linkedinProfile?.id,
+      saveDraft,
+      router,
+      debouncedSaveDraft,
+      dispatch,
+    ]
   );
 
   // Generated content handler
@@ -212,7 +242,7 @@ export const useContentPosting = () => {
       }
 
       // Update content state immediately for the preview
-      setContent(generatedContent);
+      dispatch(setContent(generatedContent));
 
       // If we have a draft, update it
       if (draftId) {
@@ -227,13 +257,12 @@ export const useContentPosting = () => {
           const response = await saveDraft(draftData);
           if (response.success && response.data?.post) {
             // Update post details while preserving existing data
-            setPostDetails(
-              (prev) =>
-                ({
-                  ...prev,
-                  ...response.data.post,
-                  content: generatedContent, // Ensure we keep the generated content
-                } as Post)
+            dispatch(
+              setPostDetails({
+                ...postDetails,
+                ...response.data.post,
+                content: generatedContent,
+              } as Post)
             );
           }
         } catch (error) {
@@ -254,7 +283,7 @@ export const useContentPosting = () => {
         try {
           const response = await saveDraft(draftData);
           if (response.success && response.data?.post) {
-            setPostDetails(response.data.post as Post);
+            dispatch(setPostDetails(response.data.post as Post));
             router.push(`/studio?draft_id=${response.data.post.id}`);
           }
         } catch (error) {
@@ -266,28 +295,29 @@ export const useContentPosting = () => {
         }
       }
     },
-    [linkedinProfile?.id, draftId, saveDraft, router]
+    [linkedinProfile?.id, draftId, saveDraft, router, dispatch]
   );
+
   // Update upload mutation with correct types
-  const { mutateAsync: uploadImageMutation, isLoading: isUploading } =
-    useMutation<UploadImageResponse, Error, UploadImageVariables>(
-      ({ file, postId }) => uploadImage(postId, file),
-      {
-        onSuccess: async (response) => {
-          if (response.success) {
-            // Refetch post details to get updated image list
-            if (draftId) {
-              await queryClient.invalidateQueries(["draftDetails", draftId]);
-            }
-            toast.success("Image uploaded successfully");
-          }
-        },
-        onError: (error) => {
-          toast.error(error.message || "Failed to upload image");
-          console.error("Upload error:", error);
-        },
+  const { mutateAsync: uploadImageMutation } = useMutation<
+    UploadImageResponse,
+    Error,
+    UploadImageVariables
+  >(({ file, postId }) => uploadImage(postId, file), {
+    onSuccess: async (response) => {
+      if (response.success) {
+        // Refetch post details to get updated image list
+        if (draftId) {
+          await queryClient.invalidateQueries(["draftDetails", draftId]);
+        }
+        toast.success("Image uploaded successfully");
       }
-    );
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to upload image");
+      console.error("Upload error:", error);
+    },
+  });
 
   // Update delete mutation with proper typing
   const { mutateAsync: deleteImageMutation } = useMutation<
@@ -303,16 +333,11 @@ export const useContentPosting = () => {
     {
       onSuccess: async (response, variables) => {
         if (response.success) {
-          // Remove image from local state
-          setImages((prev) =>
-            prev.filter((img) => img.id !== variables.imageId)
-          );
-
+          dispatch(removeImage(variables.imageId));
           // Refetch post details to get updated image list
           if (draftId) {
             await queryClient.invalidateQueries(["draftDetails", draftId]);
           }
-
           toast.success("Image deleted successfully");
         }
       },
@@ -330,20 +355,14 @@ export const useContentPosting = () => {
     ReorderImagesVariables,
     unknown
   >(
-    // First argument is the mutation function
     async ({ postId, imageIds }) => {
       const response = await reorderImages(postId, imageIds);
-      return response.data; // Extract the data from Axios response
+      return response.data;
     },
-    // Second argument is the options object
     {
       onSuccess: (response, variables) => {
         if (response.success) {
-          const { imageIds } = variables;
-          const newImages = imageIds.map(
-            (id) => images.find((img) => img.id === id)!
-          );
-          setImages(newImages);
+          dispatch(dispatchReorderImages(variables.imageIds));
         }
       },
       onError: (error) => {
@@ -353,8 +372,8 @@ export const useContentPosting = () => {
     }
   );
 
-  // Load draft details - update to preserve generated content
-  const { isLoading: isLoadingDraft } = useQuery(
+  // Load draft details query
+  useQuery(
     ["draftDetails", draftId],
     () => getDraftPostDetails(draftId || ""),
     {
@@ -366,27 +385,27 @@ export const useContentPosting = () => {
 
         // Only update content if we don't have any content yet
         if (!content) {
-          setContent(post.content || "");
+          dispatch(setContent(post.content || ""));
         }
 
         // Update post details while preserving content
-        setPostDetails(
-          (prev) =>
-            ({
-              ...prev,
-              ...post,
-              content: content || post.content, // Keep current content if it exists
-            } as Post)
+        dispatch(
+          setPostDetails({
+            ...post,
+            content: content || post.content,
+          } as Post)
         );
 
         if (post.linkedInProfile) {
-          setSelectedProfile({
-            id: post.linkedInProfile.id,
-            name: post.linkedInProfile.name,
-            avatarUrl: post.linkedInProfile.avatarUrl,
-            type: "linkedin",
-            status: "connected",
-          });
+          dispatch(
+            setSelectedProfile({
+              id: post.linkedInProfile.id,
+              name: post.linkedInProfile.name,
+              avatarUrl: post.linkedInProfile.avatarUrl,
+              type: "linkedin",
+              status: "connected",
+            })
+          );
         }
       },
       onError: (error) => {
@@ -512,6 +531,7 @@ export const useContentPosting = () => {
         console.error("Shuffle error:", error);
       },
     });
+
   return {
     // States
     content,
@@ -537,19 +557,20 @@ export const useContentPosting = () => {
     handleImageUpload: async (file: File) => {
       if (!postDetails?.id) return false;
       try {
+        dispatch(setIsUploading(true));
         await uploadImageMutation({ file, postId: postDetails.id });
-        // Refetch post details after successful upload
         await queryClient.invalidateQueries(["draftDetails", draftId]);
         return true;
       } catch (error) {
         return false;
+      } finally {
+        dispatch(setIsUploading(false));
       }
     },
     handleImageDelete: async (imageId: string) => {
       if (!postDetails?.id) return;
       try {
         await deleteImageMutation({ postId: postDetails.id, imageId });
-        // Ensure we refetch post details after deletion
         await queryClient.invalidateQueries(["draftDetails", draftId]);
       } catch (error) {
         console.error("Error deleting image:", error);

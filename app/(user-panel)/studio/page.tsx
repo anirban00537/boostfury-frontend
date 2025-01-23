@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, ChangeEvent, useEffect } from "react";
 import { PostPreviewNotRedux } from "@/components/content-create/PostPreviewNotRedux";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/state/store";
 import { Pencil, Sparkles } from "lucide-react";
 import StudioSidebar from "@/components/studio/StudioSidebar";
@@ -11,8 +11,10 @@ import { useContentPosting } from "@/hooks/useContent";
 import { POST_STATUS } from "@/lib/core-constants";
 import { toast } from "react-hot-toast";
 import { cn } from "@/lib/utils";
+import { setIsEditorOpen } from "@/state/slices/contentSlice";
 
 const ContentCreationTools: React.FC = () => {
+  const dispatch = useDispatch();
   const { linkedinProfile, userinfo } = useSelector(
     (state: RootState) => state.user
   );
@@ -41,16 +43,16 @@ const ContentCreationTools: React.FC = () => {
   } = useContentPosting();
 
   // Initialize sidebar state based on content or draft_id
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const isEditorOpen = useSelector(
+    (state: RootState) => state.content.isEditorOpen
+  );
   const {
     prompt,
     tone,
-    isGenerating,
-    // Actions
-    setPrompt,
     handlePromptChange,
     handleGenerate,
     setTone,
+    isGenerating,
   } = useGenerateLinkedInPosts({
     onContentGenerated: handleContentChange,
   });
@@ -71,13 +73,23 @@ const ContentCreationTools: React.FC = () => {
     }
   };
 
+  // Create user object from selected profile
+  const user = {
+    id: selectedProfile?.id || "",
+    email: "",
+    first_name: selectedProfile?.name?.split(" ")[0] || "",
+    last_name: selectedProfile?.name?.split(" ")[1] || "",
+    user_name: selectedProfile?.name || "",
+    photo: selectedProfile?.avatarUrl || null,
+  };
+
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Main Content */}
       <div
         className={cn(
           "flex-1 relative transition-all duration-300",
-          !isSidebarOpen ? "mr-0" : "lg:mr-[400px]"
+          !isEditorOpen ? "mr-0" : "lg:mr-[400px]"
         )}
       >
         <main className="h-screen overflow-y-auto hide-scrollbar">
@@ -85,7 +97,7 @@ const ContentCreationTools: React.FC = () => {
             <div
               className={cn(
                 "max-w-[750px] w-full space-y-10 transition-all duration-300",
-                !isSidebarOpen && "translate-x-0"
+                !isEditorOpen && "translate-x-0"
               )}
             >
               {/* Title Section */}
@@ -133,38 +145,37 @@ const ContentCreationTools: React.FC = () => {
       </div>
 
       <StudioSidebar
-        isCollapsed={!isSidebarOpen}
-        setIsCollapsed={(collapsed) => setIsSidebarOpen(!collapsed)}
-        linkedinProfile={linkedinProfile}
+        isCollapsed={!isEditorOpen}
+        setIsCollapsed={(collapsed) => dispatch(setIsEditorOpen(!collapsed))}
+        linkedinProfile={{
+          id: selectedProfile?.id || "",
+          name: selectedProfile?.name || "",
+          email: "user@example.com",
+          avatarUrl: selectedProfile?.avatarUrl || "",
+          linkedInProfileUrl: null,
+        }}
         onPostNow={() =>
-          linkedinProfile?.id && handlePostNow(linkedinProfile.id)
+          selectedProfile?.id && handlePostNow(selectedProfile.id)
         }
         onAddToQueue={() =>
-          linkedinProfile?.id && handleAddToQueue(linkedinProfile.id)
+          selectedProfile?.id && handleAddToQueue(selectedProfile.id)
         }
-        onSchedule={(date) => linkedinProfile?.id && handleSchedule(date)}
+        onSchedule={(date) => handleSchedule(date)}
         isPosting={isPosting}
         isAddingToQueue={isAddingToQueue}
         isScheduling={isScheduling}
         content={content}
-        isGenerating={isGenerating}
-        status={getStatusString(postDetails?.status)}
-        user={{
-          id: String(userinfo?.id || ""),
-          email: userinfo?.email || "",
-          first_name: userinfo?.first_name || "",
-          last_name: userinfo?.last_name || "",
-          user_name: userinfo?.user_name || "",
-          photo: userinfo?.photo || null,
-        }}
+        isGenerating={false}
+        status="draft"
+        user={user}
         images={postDetails?.images}
         imageUrls={postDetails?.images?.map((img) => img.imageUrl) || []}
         publishedAt={postDetails?.publishedAt || undefined}
         scheduledTime={postDetails?.scheduledTime || undefined}
         onContentChange={handleContentChange}
-        postId={postDetails?.id || ""}
         onImageUpload={handleImageUpload}
         isUploading={isUploading}
+        postId={postDetails?.id || ""}
         handleImageDelete={handleImageDelete}
       />
     </div>

@@ -7,7 +7,7 @@ import {
   logout,
   setLoading,
   setSubscriptionData,
-} from "@/state/slice/user.slice";
+} from "@/state/slices/user.slice";
 import { useCallback, useEffect } from "react";
 import { CredentialResponse } from "@react-oauth/google";
 import { googleSignIn, profile } from "@/services/auth";

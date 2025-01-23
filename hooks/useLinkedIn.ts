@@ -12,7 +12,7 @@ import { processApiResponse } from "@/lib/functions";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { setLinkedInProfile } from "@/state/slice/user.slice";
+import { setLinkedInProfile } from "@/state/slices/user.slice";
 import { LinkedInProfileUI } from "@/types/post";
 
 interface LinkedInProfile {

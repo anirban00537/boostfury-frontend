@@ -53,6 +53,9 @@ import { ImageUploadModal } from "@/components/content-create/ImageUploadModal";
 import dynamic from "next/dynamic";
 import data from "@emoji-mart/data";
 import { LinkedInPostImage } from "@/types/post";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "@/state/store";
+import { toggleEditor } from "@/state/slices/contentSlice";
 
 // Dynamic import of EmojiPicker to avoid SSR issues
 const Picker = dynamic(() => import("@emoji-mart/react"), {
@@ -136,7 +139,11 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const contentRef = useRef<HTMLTextAreaElement>(null);
-  console.log(images, "images");
+  const dispatch = useDispatch();
+  const isEditorOpen = useSelector(
+    (state: RootState) => state.content.isEditorOpen
+  );
+
   const getStatusConfig = (status: string | undefined) => {
     switch (status) {
       case "scheduled":
@@ -205,13 +212,18 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
     [onImageUpload]
   );
 
+  const handleToggle = () => {
+    dispatch(toggleEditor());
+  };
+
   return (
     <motion.div
       className={cn(
         "fixed top-0 right-0 h-screen bg-white z-40",
         "border-l border-neutral-200/50",
         "transition-all duration-300 ease-in-out",
-        isCollapsed ? "w-0" : "w-[400px]"
+        isCollapsed ? "w-0" : "w-[400px]",
+        isEditorOpen ? "translate-x-0" : "translate-x-full"
       )}
       animate={{
         width: isCollapsed ? 0 : 400,
@@ -226,7 +238,7 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
       }}
     >
       <motion.button
-        onClick={() => setIsCollapsed(!isCollapsed)}
+        onClick={handleToggle}
         className={cn(
           "absolute top-6 -left-3 size-6 bg-white rounded-full",
           "border border-neutral-200/50 shadow-sm",
