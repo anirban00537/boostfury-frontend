@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "react-query";
 import { generateLinkedInPosts } from "@/services/ai-content";
 import { GenerateLinkedInPostsDTO } from "@/types";
 import toast from "react-hot-toast";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "./useAuth";
 import { processApiResponse } from "@/lib/functions";
 
@@ -14,19 +14,19 @@ interface UseGenerateLinkedInPostsProps {
   onContentGenerated?: (content: string) => void;
 }
 
-
 export const useGenerateLinkedInPosts = ({
   onContentGenerated,
-}: UseGenerateLinkedInPostsProps = {}) => {
+}: UseGenerateLinkedInPostsProps) => {
   const queryClient = useQueryClient();
   const { refetchSubscription } = useAuth();
 
   // Core states - remove generatedContent state since we'll use the parent's content state
   const [prompt, setPrompt] = useState("");
   const [tone, setTone] = useState("professional");
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // Generate post mutation
-  const { mutateAsync: generatePost, isLoading: isGenerating } = useMutation(
+  const { mutateAsync: generatePost } = useMutation(
     (dto: GenerateLinkedInPostsDTO) => generateLinkedInPosts(dto),
     {
       onSuccess: async (response) => {
@@ -90,6 +90,7 @@ export const useGenerateLinkedInPosts = ({
     }
 
     try {
+      setIsGenerating(true);
       await generatePost({
         prompt: prompt.trim(),
         language: "en",
@@ -105,8 +106,24 @@ export const useGenerateLinkedInPosts = ({
       } catch (refreshError) {
         console.error("Error refreshing subscription data:", refreshError);
       }
+    } finally {
+      setIsGenerating(false);
     }
   };
+
+  const generateContent = useCallback(async () => {
+    try {
+      setIsGenerating(true);
+      // TODO: Implement AI content generation
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulated API call
+      const generatedContent = "This is a sample AI-generated post content.";
+      onContentGenerated?.(generatedContent);
+      setIsGenerating(false);
+    } catch (error) {
+      console.error("Error generating content:", error);
+      setIsGenerating(false);
+    }
+  }, [onContentGenerated]);
 
   return {
     // States
@@ -118,5 +135,6 @@ export const useGenerateLinkedInPosts = ({
     handlePromptChange,
     handleGenerate,
     setTone,
+    generateContent,
   };
 };

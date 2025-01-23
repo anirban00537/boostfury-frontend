@@ -1,8 +1,10 @@
 "use client";
 import Sidebar from "@/components/utils-components/user-panel-sidebar/Sidebar.comp";
+import StudioSidebar from "@/components/studio/StudioSidebar";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function DashboardLayout({
   children,
@@ -10,6 +12,8 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const pathname = usePathname();
+  const isStudioPage = pathname === "/studio";
 
   return (
     <div className="flex h-screen">
@@ -44,11 +48,13 @@ export default function DashboardLayout({
         <Sidebar onClose={() => setIsSidebarOpen(false)} />
       </div>
 
-      <div className="flex-1  w-full">
+      <div className="flex-1 w-full">
         <main className="h-screen overflow-y-auto">
           <div className="">{children}</div>
         </main>
       </div>
+
+      {isStudioPage && <StudioSidebar />}
     </div>
   );
 }

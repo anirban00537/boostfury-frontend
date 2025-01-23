@@ -56,6 +56,8 @@ import { LinkedInPostImage } from "@/types/post";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/state/store";
 import { toggleEditor } from "@/state/slices/contentSlice";
+import { useContentPosting } from "@/hooks/useContentPosting";
+import { useGenerateLinkedInPosts } from "@/hooks/useGenerateLinkedInPosts";
 
 // Dynamic import of EmojiPicker to avoid SSR issues
 const Picker = dynamic(() => import("@emoji-mart/react"), {
@@ -65,117 +67,77 @@ const Picker = dynamic(() => import("@emoji-mart/react"), {
   ),
 });
 
-interface LinkedInProfile {
-  id: string;
-  name: string;
-  email: string;
-  avatarUrl: string;
-  linkedInProfileUrl?: string | null;
-}
-
-interface StudioSidebarProps {
-  isCollapsed: boolean;
-  setIsCollapsed: (collapsed: boolean) => void;
-  linkedinProfile: LinkedInProfile;
-  onPostNow: () => void;
-  onAddToQueue: () => void;
-  onSchedule: (date: Date) => void;
-  isPosting: boolean;
-  isAddingToQueue: boolean;
-  isScheduling: boolean;
-  content: string;
-  isGenerating: boolean;
-  status: "scheduled" | "draft" | "published" | "failed";
-  user: {
-    id: string;
-    email: string;
-    first_name: string;
-    last_name: string;
-    user_name: string;
-    photo: string | null;
-  };
-  images?: LinkedInPostImage[];
-  imageUrls?: string[];
-  publishedAt?: string;
-  scheduledTime?: string;
-  onContentChange?: (content: string) => void;
-  onEmojiSelect?: (emoji: string) => void;
-  onAIRewrite?: () => void;
-  onImageUpload?: (file: File) => Promise<boolean>;
-  onImageUrlsChange?: (urls: string[]) => void;
-  isUploading?: boolean;
-  postId: string;
-  handleImageDelete?: (imageId: string) => void;
-}
-
-const StudioSidebar: React.FC<StudioSidebarProps> = ({
-  isCollapsed,
-  setIsCollapsed,
-  linkedinProfile,
-  onPostNow,
-  onAddToQueue,
-  onSchedule,
-  isPosting,
-  isAddingToQueue,
-  isScheduling,
-  content,
-  isGenerating,
-  status,
-  user,
-  images,
-  imageUrls,
-  publishedAt,
-  scheduledTime,
-  onContentChange,
-  onEmojiSelect,
-  onAIRewrite,
-  onImageUpload,
-  onImageUrlsChange,
-  isUploading,
-  postId,
-  handleImageDelete,
-}) => {
+const StudioSidebar = () => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useDispatch();
+
+  // Get states from Redux
   const isEditorOpen = useSelector(
     (state: RootState) => state.content.isEditorOpen
   );
+  const { linkedinProfile } = useSelector((state: RootState) => state.user);
 
-  const getStatusConfig = (status: string | undefined) => {
-    switch (status) {
-      case "scheduled":
-        return {
-          icon: <Calendar className="h-3.5 w-3.5" />,
-          text: "Scheduled",
-          className: "text-blue-600 bg-blue-50 border border-blue-200",
-        };
-      case "draft":
-        return {
-          icon: <FileText className="h-3.5 w-3.5" />,
-          text: "Draft",
-          className: "text-gray-600 bg-gray-50 border border-gray-200",
-        };
-      case "published":
-        return {
-          icon: <CheckCircle2 className="h-3.5 w-3.5" />,
-          text: "Published",
-          className: "text-green-600 bg-green-50 border border-green-200",
-        };
-      case "failed":
-        return {
-          icon: <XCircle className="h-3.5 w-3.5" />,
-          text: "Failed",
-          className: "text-red-600 bg-red-50 border border-red-200",
-        };
-      default:
-        return null;
-    }
+  // Get states and handlers from hooks
+  const {
+    content,
+    postDetails,
+    isPosting,
+    isAddingToQueue,
+    isScheduling,
+    handlePostNow,
+    handleAddToQueue,
+    handleSchedule,
+    handleContentChange,
+    handleImageUpload,
+    isUploading,
+    handleImageDelete,
+  } = useContentPosting();
+
+  const { isGenerating } = useGenerateLinkedInPosts({
+    onContentGenerated: handleContentChange,
+  });
+
+  // Create user object from linkedinProfile
+  const user = {
+    id: linkedinProfile?.id || "",
+    email: "",
+    first_name: linkedinProfile?.name?.split(" ")[0] || "",
+    last_name: linkedinProfile?.name?.split(" ")[1] || "",
+    user_name: linkedinProfile?.name || "",
+    photo: linkedinProfile?.avatarUrl || null,
   };
 
-  const statusConfig = getStatusConfig(status);
+  const handleToggle = () => {
+    dispatch(toggleEditor());
+  };
+
+  const handleEmojiSelect = (emoji: any) => {
+    const cursorPosition = contentRef.current?.selectionStart || 0;
+    const updatedContent =
+      content.slice(0, cursorPosition) +
+      emoji.native +
+      content.slice(cursorPosition);
+    handleContentChange?.(updatedContent);
+    setShowEmojiPicker(false);
+  };
+
+  // Create a memoized handler that includes postId
+  const handleImageUploadWithPostId = useCallback(
+    async (file: File) => {
+      if (handleImageUpload) {
+        const success = await handleImageUpload(file);
+        if (success) {
+          setIsImageModalOpen(false);
+        }
+        return success;
+      }
+      return false;
+    },
+    [handleImageUpload]
+  );
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("en-US", {
@@ -187,48 +149,19 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
     });
   };
 
-  const handleEmojiSelect = (emoji: any) => {
-    const cursorPosition = contentRef.current?.selectionStart || 0;
-    const updatedContent =
-      content.slice(0, cursorPosition) +
-      emoji.native +
-      content.slice(cursorPosition);
-    onContentChange?.(updatedContent);
-    setShowEmojiPicker(false);
-  };
-
-  // Create a memoized handler that includes postId
-  const handleImageUploadWithPostId = useCallback(
-    async (file: File) => {
-      if (onImageUpload) {
-        const success = await onImageUpload(file);
-        if (success) {
-          setIsImageModalOpen(false);
-        }
-        return success;
-      }
-      return false;
-    },
-    [onImageUpload]
-  );
-
-  const handleToggle = () => {
-    dispatch(toggleEditor());
-  };
-
   return (
     <motion.div
       className={cn(
         "fixed top-0 right-0 h-screen bg-white z-40",
         "border-l border-neutral-200/50",
         "transition-all duration-300 ease-in-out",
-        isCollapsed ? "w-0" : "w-[400px]",
+        !isEditorOpen ? "w-0" : "w-[400px]",
         isEditorOpen ? "translate-x-0" : "translate-x-full"
       )}
       animate={{
-        width: isCollapsed ? 0 : 400,
-        opacity: isCollapsed ? 0 : 1,
-        x: isCollapsed ? 20 : 0,
+        width: !isEditorOpen ? 0 : 400,
+        opacity: !isEditorOpen ? 0 : 1,
+        x: !isEditorOpen ? 20 : 0,
       }}
       transition={{
         duration: 0.3,
@@ -246,7 +179,7 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
           "hover:bg-neutral-50 hover:scale-110",
           "transition-all duration-200",
           "focus:outline-none focus:ring-2 focus:ring-blue-500/20",
-          isCollapsed ? "-left-10 shadow-md" : "-left-3"
+          !isEditorOpen ? "-left-10 shadow-md" : "-left-3"
         )}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
@@ -254,12 +187,12 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
         <ChevronLeft
           className={cn(
             "size-4 text-neutral-500 transition-transform duration-200",
-            isCollapsed && "rotate-180"
+            !isEditorOpen && "rotate-180"
           )}
         />
       </motion.button>
 
-      <div className={cn("h-full flex flex-col", isCollapsed && "hidden")}>
+      <div className={cn("h-full flex flex-col", !isEditorOpen && "hidden")}>
         {/* Header Section */}
         <div className="px-6 py-4 border-b border-neutral-200/50">
           <div className="flex items-center justify-between">
@@ -284,28 +217,17 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
                   {linkedinProfile?.name || "LinkedIn Profile"}
                 </span>
                 <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
-                  {publishedAt && <span>{formatDate(publishedAt)}</span>}
-                  {scheduledTime && (
-                    <span>Scheduled for {formatDate(scheduledTime)}</span>
+                  {postDetails?.publishedAt && (
+                    <span>{formatDate(postDetails.publishedAt)}</span>
+                  )}
+                  {postDetails?.scheduledTime && (
+                    <span>
+                      Scheduled for {formatDate(postDetails.scheduledTime)}
+                    </span>
                   )}
                 </div>
               </div>
             </motion.div>
-
-            {/* Status Badge */}
-            {statusConfig && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className={cn(
-                  "flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium",
-                  statusConfig.className
-                )}
-              >
-                {statusConfig.icon}
-                <span>{statusConfig.text}</span>
-              </motion.div>
-            )}
           </div>
         </div>
 
@@ -328,8 +250,7 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
                 ref={contentRef}
                 value={content}
                 placeholder="Write your post here..."
-                onChange={(e) => onContentChange?.(e.target.value)}
-                readOnly={!onContentChange}
+                onChange={(e) => handleContentChange?.(e.target.value)}
                 className={cn(
                   "w-full whitespace-pre-wrap break-words",
                   "min-h-[300px] p-4",
@@ -384,77 +305,40 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
                   </TooltipTrigger>
                   <TooltipContent>Add images</TooltipContent>
                 </Tooltip>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={onAIRewrite}
-                      className={cn(
-                        "p-2 rounded-lg text-blue-600 bg-white",
-                        "hover:bg-blue-50/80 hover:text-blue-700",
-                        "transition-colors duration-150",
-                        "active:scale-95"
-                      )}
-                    >
-                      <Wand className="size-[18px]" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>AI rewrite</TooltipContent>
-                </Tooltip>
-
-                {/* Emoji Picker Popover */}
-                {showEmojiPicker && (
-                  <div className="absolute bottom-12 right-0">
-                    <Picker
-                      data={data}
-                      onEmojiSelect={handleEmojiSelect}
-                      theme="light"
-                    />
-                  </div>
-                )}
               </div>
+
+              {/* Image Grid */}
+              {postDetails?.images && postDetails.images.length > 0 && (
+                <div className="mt-6">
+                  <div className="flex flex-wrap gap-3">
+                    {postDetails.images.map(
+                      (image: LinkedInPostImage, index: number) => (
+                        <div key={`image-${index}`} className="relative group">
+                          <div className="relative w-24 h-24 rounded-xl overflow-hidden border-2 border-gray-200/50 bg-white/90 group-hover:border-primary/20 transition-all">
+                            <Image
+                              src={image.imageUrl}
+                              alt={`Upload ${index + 1}`}
+                              fill
+                              className="object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleImageDelete?.(image.id);
+                              }}
+                              className="absolute top-1 right-1 p-1 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 hover:bg-red-600 transition-all"
+                            >
+                              <XCircle className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
             </motion.div>
-          )}
-
-          {/* Image Grid */}
-          {imageUrls && imageUrls.length > 0 && (
-            <div className="mt-6">
-              <div className="flex flex-wrap gap-3">
-                {imageUrls.map((url: string, index: number) => (
-                  <div key={`image-${index}`} className="relative group">
-                    <div className="relative w-24 h-24 rounded-xl overflow-hidden border-2 border-gray-200/50 bg-white/90 group-hover:border-primary/20 transition-all">
-                      <Image
-                        src={url}
-                        alt={`Upload ${index + 1}`}
-                        fill
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      {/* Delete Button */}
-                      {images && images[index] && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleImageDelete?.(images[index].id);
-                          }}
-                          className="absolute top-1 right-1 p-1 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 hover:bg-red-600 transition-all"
-                        >
-                          <XCircle className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-
-                {isUploading && (
-                  <div className="relative w-24 h-24 rounded-xl border-2 border-gray-200/50 bg-white/90">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
           )}
         </div>
 
@@ -493,7 +377,9 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
               variant="outline"
               size="sm"
               shadow="soft"
-              onClick={onAddToQueue}
+              onClick={() =>
+                linkedinProfile?.id && handleAddToQueue(linkedinProfile.id)
+              }
               disabled={isAddingToQueue}
               leftIcon={<Plus className="size-4" />}
               className={cn(
@@ -516,7 +402,9 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
               variant="primary"
               size="sm"
               shadow="default"
-              onClick={onPostNow}
+              onClick={() =>
+                linkedinProfile?.id && handlePostNow(linkedinProfile.id)
+              }
               disabled={isPosting}
               className={cn(
                 "flex-1 relative h-9",
@@ -545,7 +433,7 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
       <ScheduleModal
         isOpen={isScheduleModalOpen}
         onClose={() => setIsScheduleModalOpen(false)}
-        onSchedule={onSchedule}
+        onSchedule={handleSchedule}
         isScheduling={isScheduling}
       />
 
@@ -554,7 +442,7 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
         onClose={() => setIsImageModalOpen(false)}
         onUploadSuccess={() => {}}
         handleImageUpload={handleImageUploadWithPostId}
-        isUploading={isUploading || false}
+        isUploading={isUploading}
       />
     </motion.div>
   );

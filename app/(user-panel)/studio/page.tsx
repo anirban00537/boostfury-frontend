@@ -1,50 +1,24 @@
 "use client";
-import React, { useState, ChangeEvent, useEffect } from "react";
+import React, { useState } from "react";
 import { PostPreviewNotRedux } from "@/components/content-create/PostPreviewNotRedux";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
 import { Pencil, Sparkles } from "lucide-react";
-import StudioSidebar from "@/components/studio/StudioSidebar";
 import PromptBox from "@/components/studio/PromptBox";
 import { useGenerateLinkedInPosts } from "@/hooks/useGenerateLinkedInPosts";
 import { useContentPosting } from "@/hooks/useContent";
-import { POST_STATUS } from "@/lib/core-constants";
-import { toast } from "react-hot-toast";
 import { cn } from "@/lib/utils";
-import { setIsEditorOpen } from "@/state/slices/contentSlice";
 
 const ContentCreationTools: React.FC = () => {
-  const dispatch = useDispatch();
-  const { linkedinProfile, userinfo } = useSelector(
-    (state: RootState) => state.user
+  const isEditorOpen = useSelector(
+    (state: RootState) => state.content.isEditorOpen
   );
   const [postLength, setPostLength] = useState<"short" | "medium" | "long">(
     "medium"
   );
 
-  // Content Management Hook
-  const {
-    content,
-    handleContentChange,
-    isCreatingDraft,
-    isAutoSaving,
-    postDetails,
-    handlePostNow,
-    isPosting,
-    isLoadingDraft,
-    handleAddToQueue,
-    isAddingToQueue,
-    handleSchedule,
-    isScheduling,
-    handleImageUpload,
-    isUploading,
-    handleImageDelete,
-  } = useContentPosting();
+  const { content, handleContentChange } = useContentPosting();
 
-  // Initialize sidebar state based on content or draft_id
-  const isEditorOpen = useSelector(
-    (state: RootState) => state.content.isEditorOpen
-  );
   const {
     prompt,
     tone,
@@ -55,32 +29,6 @@ const ContentCreationTools: React.FC = () => {
   } = useGenerateLinkedInPosts({
     onContentGenerated: handleContentChange,
   });
-
-  const getStatusString = (
-    status: number | undefined
-  ): "scheduled" | "draft" | "published" | "failed" => {
-    switch (status) {
-      case POST_STATUS.SCHEDULED:
-        return "scheduled";
-      case POST_STATUS.PUBLISHED:
-        return "published";
-      case POST_STATUS.FAILED:
-        return "failed";
-      case POST_STATUS.DRAFT:
-      default:
-        return "draft";
-    }
-  };
-
-  // Create user object from linkedinProfile
-  const user = {
-    id: linkedinProfile?.id || "",
-    email: "",
-    first_name: linkedinProfile?.name?.split(" ")[0] || "",
-    last_name: linkedinProfile?.name?.split(" ")[1] || "",
-    user_name: linkedinProfile?.name || "",
-    photo: linkedinProfile?.avatarUrl || null,
-  };
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -142,41 +90,6 @@ const ContentCreationTools: React.FC = () => {
           </div>
         </main>
       </div>
-
-      <StudioSidebar
-        isCollapsed={!isEditorOpen}
-        setIsCollapsed={(collapsed) => dispatch(setIsEditorOpen(!collapsed))}
-        linkedinProfile={{
-          id: linkedinProfile?.id || "",
-          name: linkedinProfile?.name || "",
-          email: "user@example.com",
-          avatarUrl: linkedinProfile?.avatarUrl || "",
-          linkedInProfileUrl: null,
-        }}
-        onPostNow={() =>
-          linkedinProfile?.id && handlePostNow(linkedinProfile.id)
-        }
-        onAddToQueue={() =>
-          linkedinProfile?.id && handleAddToQueue(linkedinProfile.id)
-        }
-        onSchedule={(date) => handleSchedule(date)}
-        isPosting={isPosting}
-        isAddingToQueue={isAddingToQueue}
-        isScheduling={isScheduling}
-        content={content}
-        isGenerating={isGenerating}
-        status="draft"
-        user={user}
-        images={postDetails?.images}
-        imageUrls={postDetails?.images?.map((img) => img.imageUrl) || []}
-        publishedAt={postDetails?.publishedAt || undefined}
-        scheduledTime={postDetails?.scheduledTime || undefined}
-        onContentChange={handleContentChange}
-        onImageUpload={handleImageUpload}
-        isUploading={isUploading}
-        postId={postDetails?.id || ""}
-        handleImageDelete={handleImageDelete}
-      />
     </div>
   );
 };
