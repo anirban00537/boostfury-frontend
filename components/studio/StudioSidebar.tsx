@@ -56,7 +56,7 @@ import { LinkedInPostImage } from "@/types/post";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/state/store";
 import { toggleEditor } from "@/state/slices/contentSlice";
-import { useContentPosting } from "@/hooks/useContentPosting";
+import { useContentPosting } from "@/hooks/useContent";
 import { useGenerateLinkedInPosts } from "@/hooks/useGenerateLinkedInPosts";
 
 // Dynamic import of EmojiPicker to avoid SSR issues
@@ -95,6 +95,13 @@ const StudioSidebar = () => {
     isUploading,
     handleImageDelete,
   } = useContentPosting();
+
+  console.log("StudioSidebar hook values:", {
+    hasContent: !!content,
+    hasPostDetails: !!postDetails,
+    hasContentChangeHandler: !!handleContentChange,
+    contentLength: content?.length || 0,
+  });
 
   const { isGenerating } = useGenerateLinkedInPosts({
     onContentGenerated: handleContentChange,
@@ -250,7 +257,13 @@ const StudioSidebar = () => {
                 ref={contentRef}
                 value={content}
                 placeholder="Write your post here..."
-                onChange={(e) => handleContentChange?.(e.target.value)}
+                onChange={(e) => {
+                  console.log("Textarea onChange triggered:", {
+                    value: e.target.value.slice(0, 50) + "...",
+                    contentLength: e.target.value.length,
+                  });
+                  handleContentChange?.(e.target.value);
+                }}
                 className={cn(
                   "w-full whitespace-pre-wrap break-words",
                   "min-h-[300px] p-4",

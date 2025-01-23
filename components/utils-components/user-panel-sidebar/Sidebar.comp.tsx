@@ -29,7 +29,7 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/state/store";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -48,6 +48,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
+import { setIsEditorOpen } from "@/state/slices/contentSlice";
 
 // Define base interface for navigation items
 interface BaseNavigationItem {
@@ -87,10 +88,10 @@ type NavigationItem = BaseNavigationItem & {
 // Then combine the navigation items
 const navigationItems: NavigationItem[] = [
   {
-    id: "dashboard",
-    name: "Dashboard",
+    id: "studio",
+    name: "Studio",
     icon: Wand2,
-    href: "/dashboard",
+    href: "/studio",
     badge: "AI",
     badgeColor: "bg-gradient-to-r from-indigo-500 to-blue-500 text-white",
   },
@@ -197,6 +198,7 @@ interface SidebarProps {
 // Update the Sidebar component
 const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const { userinfo, subscription } = useSelector(
     (state: RootState) => state.user
   );
@@ -227,12 +229,17 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "n") {
         e.preventDefault();
-        router.push("/compose");
+        dispatch(setIsEditorOpen(true));
       }
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [router]);
+  }, [dispatch]);
+
+  const handleCreateNew = (e: React.MouseEvent) => {
+    e.preventDefault();
+    dispatch(setIsEditorOpen(true));
+  };
 
   return (
     <div className="relative w-[240px] h-screen flex flex-col bg-gradient-to-b from-white via-gray-50/20 to-white border-r border-gray-200/80">
@@ -262,23 +269,22 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
 
         {/* Create Button */}
         <div className="w-full">
-          <Link href="/studio">
-            <GradientButton
-              variant="primary"
-              fullWidth
-              className="shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
-            >
-              <div className="flex items-center justify-between w-full">
-                <div className="flex items-center gap-2">
-                  <Plus className="h-4 w-4" />
-                  <span>Create New</span>
-                </div>
-                <kbd className="text-xs bg-black/20 px-1.5 py-0.5 rounded backdrop-blur-sm">
-                  ⌘N
-                </kbd>
+          <GradientButton
+            variant="primary"
+            fullWidth
+            onClick={handleCreateNew}
+            className="shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
+          >
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                <span>Create New</span>
               </div>
-            </GradientButton>
-          </Link>
+              <kbd className="text-xs bg-black/20 px-1.5 py-0.5 rounded backdrop-blur-sm">
+                ⌘N
+              </kbd>
+            </div>
+          </GradientButton>
         </div>
       </div>
 

@@ -171,39 +171,100 @@ export const useContentPosting = () => {
     Error,
     CreateDraftPostType
   >(createDraft, {
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
+      console.log("Save draft mutation success response:", response);
       if (!response.success) {
+        console.error("Save draft failed:", response.message);
         toast.error(response.message || "Failed to save draft");
         return;
       }
+
+      console.log("Updating post details in Redux:", response.data.post);
       dispatch(setPostDetails(response.data.post as Post));
+
+      if (response.data.post.id) {
+        console.log("Refetching draft details for ID:", response.data.post.id);
+        await queryClient.invalidateQueries([
+          "draftDetails",
+          response.data.post.id,
+        ]);
+      }
     },
     onError: (error) => {
+      console.error("Save draft mutation error:", error);
       toast.error("Failed to save draft");
     },
   });
 
-  // Debounced save draft
+  // Debounced save draft with proper cleanup
   const debouncedSaveDraft = useCallback(
     debounce(async (draftData: CreateDraftPostType) => {
-      if (!linkedinProfile?.id) return;
+      console.log("Debounced save draft called with data:", draftData);
 
-      dispatch(setIsAutoSaving(true));
+      if (!linkedinProfile?.id) {
+        console.error("No LinkedIn profile selected for draft save");
+        return;
+      }
+
       try {
-        await saveDraft(draftData);
+        console.log("Starting auto-save process");
+        dispatch(setIsAutoSaving(true));
+        const response = await saveDraft(draftData);
+        console.log("Auto-save response:", response);
+
+        if (response.success && response.data?.post) {
+          console.log(
+            "Auto-save successful, updating post details:",
+            response.data.post
+          );
+          dispatch(setPostDetails(response.data.post as Post));
+
+          console.log("Refetching draft details");
+          await queryClient.invalidateQueries([
+            "draftDetails",
+            response.data.post.id,
+          ]);
+          toast.success("Draft saved", { id: "draft-save" });
+        } else {
+          console.error("Auto-save failed:", response);
+          toast.error("Failed to save draft", { id: "draft-save-error" });
+        }
+      } catch (error) {
+        console.error("Auto-save error:", error);
+        toast.error("Failed to save draft", { id: "draft-save-error" });
       } finally {
+        console.log("Auto-save process completed");
         dispatch(setIsAutoSaving(false));
       }
     }, 1500),
-    [linkedinProfile?.id, saveDraft, dispatch]
+    [linkedinProfile?.id, saveDraft, dispatch, queryClient]
   );
+
+  // Cleanup debounced function on unmount
+  useEffect(() => {
+    return () => {
+      debouncedSaveDraft.cancel();
+    };
+  }, [debouncedSaveDraft]);
 
   // Content change handler
   const handleContentChange = useCallback(
     async (newContent: string) => {
+      console.log("Content change triggered:", {
+        newContent: newContent.slice(0, 50) + "...",
+        draftId,
+        hasLinkedInProfile: !!linkedinProfile?.id,
+      });
+
+      // Update Redux state immediately for UI responsiveness
       dispatch(setContent(newContent));
 
-      if (!linkedinProfile?.id) return;
+      // Don't proceed if no LinkedIn profile is selected
+      if (!linkedinProfile?.id) {
+        console.error("No LinkedIn profile selected for content change");
+        toast.error("Please select a LinkedIn profile");
+        return;
+      }
 
       const draftData: CreateDraftPostType = {
         content: newContent.trim(),
@@ -211,24 +272,36 @@ export const useContentPosting = () => {
         linkedInProfileId: linkedinProfile.id,
         ...(draftId ? { id: draftId } : {}),
       };
+      console.log("Prepared draft data:", draftData);
 
-      if (draftId) {
-        debouncedSaveDraft(draftData);
-      } else if (newContent.trim()) {
-        const response = await saveDraft(draftData);
-        if (response.success && response.data?.post?.id) {
-          router.push(`/studio?draft_id=${response.data.post.id}`);
+      try {
+        if (draftId) {
+          console.log("Existing draft, using debounced save for ID:", draftId);
+          debouncedSaveDraft(draftData);
+        } else if (newContent.trim()) {
+          console.log("New content, creating draft immediately");
+          dispatch(setIsCreatingDraft(true));
+          const response = await saveDraft(draftData);
+          console.log("Create draft response:", response);
+
+          if (response.success && response.data?.post?.id) {
+            const newUrl = `/studio?draft_id=${response.data.post.id}`;
+            console.log("Updating URL to:", newUrl);
+            window.history.pushState({}, "", newUrl);
+
+            console.log("Updating post details in Redux:", response.data.post);
+            dispatch(setPostDetails(response.data.post as Post));
+            toast.success("Draft created successfully");
+          }
         }
+      } catch (error) {
+        console.error("Content change error:", error);
+        toast.error("Failed to save draft");
+      } finally {
+        dispatch(setIsCreatingDraft(false));
       }
     },
-    [
-      draftId,
-      linkedinProfile?.id,
-      saveDraft,
-      router,
-      debouncedSaveDraft,
-      dispatch,
-    ]
+    [draftId, linkedinProfile?.id, saveDraft, debouncedSaveDraft, dispatch]
   );
 
   // Generated content handler
