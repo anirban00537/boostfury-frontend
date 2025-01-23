@@ -10,6 +10,8 @@ import Picker from "@emoji-mart/react";
 import { ScheduleModal } from "@/components/content-create/ScheduleModal";
 import { LinkedInEditor } from "@/components/studio/LinkedInEditor";
 import { StudioSidebar } from "@/components/studio/StudioSidebar";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 const ContentCreationTools: React.FC = () => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
@@ -66,39 +68,57 @@ const ContentCreationTools: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#f3f2ef]">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="relative min-h-screen bg-neutral-50/30"
+    >
       <div
-        className={`w-full h-full flex justify-center transition-all duration-300 ${
+        className={cn(
+          "w-full min-h-screen flex justify-center transition-all duration-300",
           isEditorOpen ? "pr-[400px]" : ""
-        }`}
+        )}
       >
         <div className="w-[550px] py-8">
-          <LinkedInEditor
-            content={content}
-            linkedinProfile={linkedinProfile}
-            postDetails={postDetails}
-            isPosting={isPosting}
-            isAddingToQueue={isAddingToQueue}
-            isScheduling={isScheduling}
-            onContentChange={handleContentChange}
-            onImageUpload={() => setIsImageModalOpen(true)}
-            onEmojiPickerToggle={() => setShowEmojiPicker(!showEmojiPicker)}
-            onSchedule={() => setIsScheduleModalOpen(true)}
-            onAddToQueue={() =>
-              linkedinProfile?.id && handleAddToQueue(linkedinProfile.id)
-            }
-            onPostNow={() =>
-              linkedinProfile?.id && handlePostNow(linkedinProfile.id)
-            }
-            onImageDelete={handleImageDelete}
-          />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <LinkedInEditor
+              content={content}
+              linkedinProfile={linkedinProfile}
+              postDetails={postDetails}
+              isPosting={isPosting}
+              isAddingToQueue={isAddingToQueue}
+              isScheduling={isScheduling}
+              onContentChange={handleContentChange}
+              onImageUpload={() => setIsImageModalOpen(true)}
+              onEmojiPickerToggle={() => setShowEmojiPicker(!showEmojiPicker)}
+              onSchedule={() => setIsScheduleModalOpen(true)}
+              onAddToQueue={() =>
+                linkedinProfile?.id && handleAddToQueue(linkedinProfile.id)
+              }
+              onPostNow={() =>
+                linkedinProfile?.id && handlePostNow(linkedinProfile.id)
+              }
+              onImageDelete={handleImageDelete}
+            />
+          </motion.div>
 
           {/* Emoji Picker */}
-          {showEmojiPicker && (
-            <div className="absolute top-20 right-20 z-50">
-              <Picker data={data} onEmojiSelect={handleEmojiSelect} />
-            </div>
-          )}
+          <AnimatePresence>
+            {showEmojiPicker && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="absolute top-20 right-20 z-50 shadow-xl rounded-xl overflow-hidden border border-neutral-200/60 bg-white"
+              >
+                <Picker data={data} onEmojiSelect={handleEmojiSelect} />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Modals */}
           <ImageUploadModal
@@ -124,7 +144,7 @@ const ContentCreationTools: React.FC = () => {
         handleGenerate={handleGenerate}
         setTone={setTone}
       />
-    </div>
+    </motion.div>
   );
 };
 

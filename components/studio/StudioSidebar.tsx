@@ -1,24 +1,94 @@
 "use client";
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
+import { Sparkles, Info, ChevronDown, Lightbulb, Wand2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/state/store";
 import { toggleEditor } from "@/state/slices/contentSlice";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const postLengthOptions = [
-  { value: "short", label: "Short", description: "~100 words" },
-  { value: "medium", label: "Medium", description: "~200 words" },
-  { value: "long", label: "Long", description: "~300 words" },
+  {
+    value: "short",
+    label: "Short",
+    description: "~100 words",
+    tooltip: "Best for quick updates and engagement posts",
+  },
+  {
+    value: "medium",
+    label: "Medium",
+    description: "~200 words",
+    tooltip: "Ideal for sharing insights and experiences",
+  },
+  {
+    value: "long",
+    label: "Long",
+    description: "~300 words",
+    tooltip: "Perfect for in-depth analysis and thought leadership",
+  },
 ] as const;
 
 const toneOptions = [
-  { value: "professional", label: "Professional", emoji: "💼" },
-  { value: "casual", label: "Casual", emoji: "😊" },
-  { value: "friendly", label: "Friendly", emoji: "🤝" },
-  { value: "humorous", label: "Humorous", emoji: "😄" },
+  {
+    value: "professional",
+    label: "Professional",
+    emoji: "💼",
+    tooltip: "Formal and business-oriented tone",
+  },
+  {
+    value: "casual",
+    label: "Casual",
+    emoji: "😊",
+    tooltip: "Relaxed and conversational style",
+  },
+  {
+    value: "friendly",
+    label: "Friendly",
+    emoji: "🤝",
+    tooltip: "Warm and approachable tone",
+  },
+  {
+    value: "humorous",
+    label: "Humorous",
+    emoji: "😄",
+    tooltip: "Light and entertaining style",
+  },
+  {
+    value: "inspirational",
+    label: "Inspirational",
+    emoji: "✨",
+    tooltip: "Motivational and uplifting content",
+  },
+  {
+    value: "educational",
+    label: "Educational",
+    emoji: "📚",
+    tooltip: "Informative and teaching-focused",
+  },
+  {
+    value: "storytelling",
+    label: "Storytelling",
+    emoji: "📖",
+    tooltip: "Narrative and engaging style",
+  },
+  {
+    value: "analytical",
+    label: "Analytical",
+    emoji: "📊",
+    tooltip: "Data-driven and logical approach",
+  },
+  {
+    value: "persuasive",
+    label: "Persuasive",
+    emoji: "🎯",
+    tooltip: "Convincing and compelling tone",
+  },
 ] as const;
 
 interface StudioSidebarProps {
@@ -42,6 +112,7 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({
   const [postLength, setPostLength] = useState<"short" | "medium" | "long">(
     "medium"
   );
+  const [showTips, setShowTips] = useState(true);
   const dispatch = useDispatch();
 
   // Get states from Redux
@@ -58,128 +129,190 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({
       initial={{ x: 400 }}
       animate={{ x: isEditorOpen ? 0 : 400 }}
       transition={{ type: "spring", damping: 20 }}
-      className="fixed top-0 right-0 h-screen w-[400px] bg-white shadow-xl border-l border-[#e0dfdd] flex flex-col"
+      className="fixed top-0 right-0 h-screen w-[400px] bg-white border-l border-[#e0dfdd] flex flex-col"
     >
-      {/* Toggle Button */}
+      {/* Toggle Button with improved hover effect */}
       <button
         onClick={handleToggle}
-        className="absolute -left-12 top-4 p-2.5 bg-white hover:bg-[#f3f2ef] rounded-l-xl border border-r-0 border-[#e0dfdd] group transition-colors"
+        className="absolute -left-12 top-4 p-2.5 bg-white hover:bg-[#f3f2ef] rounded-l-xl border border-r-0 border-[#e0dfdd] group transition-all duration-300 hover:shadow-md"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={cn(
-            "transition-transform duration-300",
-            isEditorOpen ? "rotate-0" : "rotate-180"
-          )}
+        <motion.div
+          animate={{ rotate: isEditorOpen ? 0 : 180 }}
+          transition={{ duration: 0.3 }}
         >
-          <path d="m9 18 6-6-6-6" />
-        </svg>
+          <ChevronDown className="w-5 h-5 text-neutral-600 group-hover:text-neutral-900" />
+        </motion.div>
       </button>
 
-      {/* Header */}
+      {/* Header with AI indicator */}
       <div className="flex-none px-6 py-4 border-b border-[#e0dfdd]">
-        <h2 className="text-lg font-semibold text-[#191919]">
-          AI Post Generator
-        </h2>
-        <p className="text-sm text-[#666666] mt-1">
-          Generate engaging LinkedIn posts with AI
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+            <Wand2 className="w-4 h-4 text-primary" />
+          </div>
+          <h2 className="text-lg font-semibold bg-gradient-to-b from-neutral-900 to-neutral-600 bg-clip-text text-transparent">
+            AI Post Generator
+          </h2>
+        </div>
+        <p className="text-sm text-neutral-600">
+          Generate engaging LinkedIn posts with AI assistance
         </p>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="p-6">
-          <div className="space-y-6">
-            {/* Prompt Input */}
-            <div>
-              <label className="block text-sm font-medium text-[#191919] mb-2">
+      {/* Content with smooth scrolling */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-200 scrollbar-track-transparent">
+        <div className="p-6 space-y-8">
+          {/* Writing Tips Section */}
+          <AnimatePresence>
+            {showTips && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="relative p-4 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/10"
+              >
+                <button
+                  onClick={() => setShowTips(false)}
+                  className="absolute top-2 right-2 p-1 rounded-md hover:bg-primary/10 text-primary/60 hover:text-primary"
+                >
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                <div className="flex items-start gap-3">
+                  <Lightbulb className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  <div>
+                    <h3 className="text-sm font-medium text-primary mb-2">
+                      Writing Tips
+                    </h3>
+                    <ul className="text-xs text-neutral-600 space-y-1.5">
+                      <li>• Start with a hook to grab attention</li>
+                      <li>• Include relevant hashtags for better reach</li>
+                      <li>• End with a clear call-to-action</li>
+                    </ul>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Prompt Input with character count */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-neutral-900">
                 What would you like to write about?
               </label>
-              <div className="relative">
-                <textarea
-                  value={prompt}
-                  onChange={handlePromptChange}
-                  placeholder="Enter your topic or idea..."
-                  className="w-full h-[120px] px-4 py-3 text-[15px] leading-relaxed bg-[#f3f2ef] rounded-xl border-0 placeholder:text-[#666666] text-[#191919] focus:outline-none focus:ring-2 focus:ring-[#0a66c2] resize-none"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#f3f2ef]/[0.01] to-[#f3f2ef]/[0.02] pointer-events-none rounded-xl" />
-              </div>
+              <span className="text-xs text-neutral-500">
+                {prompt.length}/500 characters
+              </span>
             </div>
-
-            {/* Post Length Selection */}
-            <div>
-              <label className="block text-sm font-medium text-[#191919] mb-3">
-                Select post length
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {postLengthOptions.map((option) => (
-                  <button
-                    key={option.value}
-                    onClick={() => setPostLength(option.value)}
-                    className={cn(
-                      "flex flex-col items-center p-3 rounded-xl transition-all border",
-                      postLength === option.value
-                        ? "bg-white border-[#0a66c2] shadow-sm text-[#0a66c2]"
-                        : "border-transparent bg-[#f3f2ef] hover:bg-white/80"
-                    )}
-                  >
-                    <span className="text-sm font-medium">{option.label}</span>
-                    <span className="text-xs text-[#666666] mt-1">
-                      {option.description}
-                    </span>
+            <div className="relative group">
+              <textarea
+                value={prompt}
+                onChange={handlePromptChange}
+                placeholder="Enter your topic or idea..."
+                maxLength={500}
+                className="w-full h-[120px] px-4 py-3 text-[15px] leading-relaxed bg-blue-50/30 rounded-xl border border-blue-100/60 placeholder:text-gray-400 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 resize-none transition-all duration-200"
+              />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className="absolute top-2 right-2 p-1.5 rounded-md hover:bg-blue-100/50 text-blue-400 hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Info className="w-4 h-4" />
                   </button>
-                ))}
-              </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs">
+                    Be specific about your topic and target audience
+                  </p>
+                </TooltipContent>
+              </Tooltip>
             </div>
+          </div>
 
-            {/* Tone Selection */}
-            <div>
-              <label className="block text-sm font-medium text-[#191919] mb-3">
-                Choose the tone
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                {toneOptions.map((option) => (
-                  <button
-                    key={option.value}
-                    onClick={() => setTone(option.value)}
-                    className={cn(
-                      "flex items-center gap-2 p-3 rounded-xl transition-all border",
-                      tone === option.value
-                        ? "bg-white border-[#0a66c2] shadow-sm text-[#0a66c2]"
-                        : "border-transparent bg-[#f3f2ef] hover:bg-white/80"
-                    )}
-                  >
-                    <span className="text-xl">{option.emoji}</span>
-                    <span className="text-sm font-medium">{option.label}</span>
-                  </button>
-                ))}
-              </div>
+          {/* Post Length Selection with tooltips */}
+          <div className="space-y-3">
+            <label className="text-sm font-medium text-neutral-900">
+              Select post length
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {postLengthOptions.map((option) => (
+                <Tooltip key={option.value}>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setPostLength(option.value)}
+                      className={cn(
+                        "flex flex-col items-center p-3 rounded-xl transition-all duration-200 border",
+                        postLength === option.value
+                          ? "bg-white border-primary shadow-sm text-primary ring-1 ring-primary/20"
+                          : "border-transparent bg-blue-50/80 hover:bg-white hover:shadow-sm hover:border-blue-200/60"
+                      )}
+                    >
+                      <span className="text-sm font-medium">
+                        {option.label}
+                      </span>
+                      <span className="text-xs text-neutral-500 mt-1">
+                        {option.description}
+                      </span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">{option.tooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
+              ))}
+            </div>
+          </div>
+
+          {/* Tone Selection with tooltips */}
+          <div className="space-y-3">
+            <label className="text-sm font-medium text-neutral-900">
+              Choose the tone
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {toneOptions.map((option) => (
+                <Tooltip key={option.value}>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setTone(option.value)}
+                      className={cn(
+                        "flex items-center gap-2 p-2 rounded-xl transition-all duration-200 border h-[42px]",
+                        tone === option.value
+                          ? "bg-white border-primary shadow-sm text-primary ring-1 ring-primary/20"
+                          : "border-transparent bg-blue-50/80 hover:bg-white hover:shadow-sm hover:border-blue-200/60"
+                      )}
+                    >
+                      <span className="text-lg shrink-0">{option.emoji}</span>
+                      <span className="text-xs font-medium truncate">
+                        {option.label}
+                      </span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">{option.tooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
+              ))}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Generate Button */}
-      <div className="flex-none p-6 bg-gradient-to-t from-white/80 to-white border-t border-[#e0dfdd]">
+      {/* Generate Button with loading state */}
+      <div className="flex-none p-6 bg-gradient-to-t from-white via-white to-transparent border-t border-neutral-200/60">
         <GradientButton
           onClick={handleGenerate}
-          disabled={isGenerating}
-          className="w-full h-11 shadow-xl hover:shadow-blue-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+          disabled={isGenerating || !prompt.trim()}
+          className={cn(
+            "w-full h-12 shadow-lg transition-all duration-300",
+            !prompt.trim()
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:shadow-primary/25 hover:-translate-y-0.5"
+          )}
           variant="primary"
         >
           <div className="relative flex items-center justify-center gap-2">
             {isGenerating ? (
               <>
-                <div className="w-4 h-4 relative">
-                  <div className="absolute inset-0 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                <div className="w-4 h-4 relative animate-spin">
+                  <div className="absolute inset-0 rounded-full border-2 border-white/30 border-t-white" />
                 </div>
                 <span className="font-medium">Generating...</span>
               </>
