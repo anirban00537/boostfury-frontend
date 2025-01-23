@@ -62,10 +62,6 @@ interface PostPreviewNotReduxProps {
   publishedAt?: string | null;
   scheduledTime?: string | null;
   imageUrls?: string[];
-  onContentChange?: (content: string) => void;
-  onEmojiSelect?: (emoji: string) => void;
-  onAIRewrite?: () => void;
-  onImageUpload?: () => void;
 }
 
 export const PostPreviewNotRedux = ({
@@ -80,12 +76,8 @@ export const PostPreviewNotRedux = ({
   publishedAt,
   scheduledTime,
   imageUrls,
-  onContentChange,
-  onEmojiSelect,
-  onAIRewrite,
-  onImageUpload,
 }: PostPreviewNotReduxProps) => {
-  const contentRef = useRef<HTMLTextAreaElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const getStatusConfig = (status: string | undefined) => {
     switch (status) {
@@ -224,65 +216,17 @@ export const PostPreviewNotRedux = ({
               <div className="h-4 bg-gray-200 rounded w-5/6" />
             </div>
           ) : (
-            <div className="space-y-2">
-              <textarea
+            <div className="relative">
+              <div
                 ref={contentRef}
-                value={content}
-                placeholder="Write your post here..."
-                onChange={(e) => onContentChange?.(e.target.value)}
-                readOnly={!onContentChange}
-                className="w-full whitespace-pre-wrap break-words relative min-h-[300px] p-4 bg-gray-50 rounded-lg border border-blue-400 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none font-[inherit]"
+                className="whitespace-pre-wrap break-words relative"
                 style={{
                   wordBreak: "break-word",
                   overflowWrap: "break-word",
-                  lineHeight: "1.6",
-                  fontFamily: "inherit",
+                  lineHeight: "1.5",
                 }}
-              />
-              {/* Editor Controls */}
-              <div className="flex items-center justify-end gap-2 px-1">
-                <button
-                  onClick={() => onEmojiSelect?.("😊")}
-                  className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
-                >
-                  <span className="text-lg">😊</span>
-                </button>
-                <button
-                  onClick={onImageUpload}
-                  className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
-                    <circle cx="9" cy="9" r="2" />
-                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
-                  </svg>
-                </button>
-                <button
-                  onClick={onAIRewrite}
-                  className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
-                    <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2" />
-                    <path d="M19 11h2m-1 -1v2" />
-                  </svg>
-                </button>
+              >
+                {content}
               </div>
             </div>
           )}
@@ -354,7 +298,7 @@ export const PostPreviewNotRedux = ({
 
         {/* Post Logs */}
         <div className="flex items-center gap-2">
-          {status && statusConfig && status !== "draft" && (
+          {status && statusConfig && (
             <div
               className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${statusConfig.className}`}
             >
