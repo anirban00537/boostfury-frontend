@@ -20,9 +20,12 @@ export const useGenerateLinkedInPosts = ({
   const queryClient = useQueryClient();
   const { refetchSubscription } = useAuth();
 
-  // Core states - remove generatedContent state since we'll use the parent's content state
+  // Core states
   const [prompt, setPrompt] = useState("");
   const [tone, setTone] = useState("professional");
+  const [postLength, setPostLength] = useState<"short" | "medium" | "long">(
+    "medium"
+  );
   const [isGenerating, setIsGenerating] = useState(false);
 
   // Generate post mutation
@@ -95,6 +98,7 @@ export const useGenerateLinkedInPosts = ({
         prompt: prompt.trim(),
         language: "en",
         tone,
+        postLength: postLength,
       });
     } catch (error) {
       console.error("Error in handleGenerate:", error);
@@ -129,12 +133,14 @@ export const useGenerateLinkedInPosts = ({
     // States
     prompt,
     tone,
+    postLength,
     isGenerating,
     // Actions
     setPrompt,
     handlePromptChange,
     handleGenerate,
     setTone,
+    setPostLength,
     generateContent,
   };
 };

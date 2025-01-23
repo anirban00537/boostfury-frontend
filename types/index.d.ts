@@ -135,7 +135,6 @@ export interface UserInfo {
   login_provider: string;
 }
 
-
 export interface LinkedInProfile {
   id: number;
   name: string;
@@ -210,5 +209,5 @@ export interface GenerateLinkedInPostsDTO {
   language?: string;
   tone?: string;
   writingStyle?: string;
+  postLength?: "short" | "medium" | "long";
 }
-

@@ -49,6 +49,8 @@ const ContentCreationTools: React.FC = () => {
     handleGenerate,
     setTone,
     isGenerating,
+    postLength,
+    setPostLength,
   } = useGenerateLinkedInPosts({
     onContentGenerated: handleContentChange,
   });
@@ -181,6 +183,8 @@ const ContentCreationTools: React.FC = () => {
         handlePromptChange={handlePromptChange}
         handleGenerate={handleGenerate}
         setTone={setTone}
+        postLength={postLength}
+        setPostLength={setPostLength}
       />
     </motion.div>
   );

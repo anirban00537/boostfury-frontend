@@ -99,6 +99,8 @@ interface StudioSidebarProps {
   handlePromptChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   handleGenerate: () => Promise<void>;
   setTone: (tone: string) => void;
+  postLength: "short" | "medium" | "long";
+  setPostLength: (length: "short" | "medium" | "long") => void;
 }
 
 export const StudioSidebar: React.FC<StudioSidebarProps> = ({
@@ -108,10 +110,9 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({
   handlePromptChange,
   handleGenerate,
   setTone,
+  postLength,
+  setPostLength,
 }) => {
-  const [postLength, setPostLength] = useState<"short" | "medium" | "long">(
-    "medium"
-  );
   const [showTips, setShowTips] = useState(true);
   const dispatch = useDispatch();
 
