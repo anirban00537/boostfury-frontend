@@ -1,45 +1,26 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
-  FileText,
-  Layers,
   Calendar,
-  LayoutTemplate,
-  Zap,
-  Plus,
-  Users,
-  ChevronDown,
-  ImageIcon,
+  Clock,
   Linkedin,
-  Pen,
   Wand2,
-  Settings,
-  User,
-  BarChart2,
-  CreditCard,
-  Bell,
-  Shield,
-  HelpCircle,
-  Key,
-  Sparkles,
+  Plus,
+  ChevronDown,
   X,
   LogOut,
-  Clock,
+  User,
+  CreditCard,
+  Sparkles,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import SubscriptionInfo from "@/components/subscription/Status.comp";
 import { LucideIcon } from "lucide-react";
-
 import { GradientButton } from "@/components/ui/gradient-button";
-import { motion } from "framer-motion";
-import { useContentPosting } from "@/hooks/useContent";
-import { toast } from "react-hot-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,7 +29,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
-import { setIsEditorOpen } from "@/state/slices/contentSlice";
 
 // Define base interface for navigation items
 interface BaseNavigationItem {
@@ -58,35 +38,10 @@ interface BaseNavigationItem {
   href: string;
   badge?: string;
   badgeColor?: string;
-  counter?: number;
-  shortcut?: string;
-  description?: string;
 }
 
-type ToolItem = BaseNavigationItem & {
-  shortcut: string;
-};
-
-type FeatureItem = BaseNavigationItem & {
-  badge?: string;
-  badgeColor?: string;
-};
-
-type SettingsItem = BaseNavigationItem & {
-  badgeColor?: string;
-};
-
-// First, combine the interfaces
-type NavigationItem = BaseNavigationItem & {
-  shortcut?: string;
-  badge?: string;
-  badgeColor?: string;
-  counter?: number;
-  subItems?: SettingsItem[];
-};
-
 // Then combine the navigation items
-const navigationItems: NavigationItem[] = [
+const navigationItems: BaseNavigationItem[] = [
   {
     id: "studio",
     name: "Studio",
@@ -120,10 +75,9 @@ const navigationItems: NavigationItem[] = [
 ];
 
 const NavigationItem: React.FC<{
-  item: NavigationItem;
+  item: BaseNavigationItem;
   isActive: boolean;
-  hasSubItems?: boolean;
-}> = ({ item, isActive, hasSubItems }) => {
+}> = ({ item, isActive }) => {
   return (
     <Link
       href={item.href}
@@ -182,7 +136,6 @@ const Navigation = () => {
             key={item.id}
             item={item}
             isActive={pathname === item.href}
-            hasSubItems={item.id === "settings"}
           />
         ))}
       </div>
@@ -198,15 +151,12 @@ interface SidebarProps {
 // Update the Sidebar component
 const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const { userinfo, subscription } = useSelector(
     (state: RootState) => state.user
   );
-  const [isManageModalOpen, setIsManageModalOpen] = useState(false);
-
   const { logoutUser } = useAuth();
-  const { linkedinProfile } = useSelector((state: RootState) => state.user);
-  // Get word usage from the new subscription structure
+
+  // Get word usage from the subscription structure
   const wordUsage = {
     used: subscription.usage.words.used,
     limit: subscription.usage.words.limit,
@@ -225,20 +175,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
     }
   };
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "n") {
-        e.preventDefault();
-        dispatch(setIsEditorOpen(true));
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [dispatch]);
-
   const handleCreateNew = (e: React.MouseEvent) => {
     e.preventDefault();
-    dispatch(setIsEditorOpen(true));
+    router.push("/studio");
   };
 
   return (

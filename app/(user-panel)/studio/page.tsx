@@ -117,25 +117,12 @@ const ContentCreationTools: React.FC = () => {
       </div>
 
       <StudioSidebar
-        content={content}
-        postDetails={postDetails}
-        isPosting={isPosting}
-        isAddingToQueue={isAddingToQueue}
-        isScheduling={isScheduling}
-        isUploading={isUploading}
-        handlePostNow={handlePostNow}
-        handleAddToQueue={handleAddToQueue}
-        handleSchedule={handleSchedule}
-        handleContentChange={handleContentChange}
-        handleImageUpload={handleImageUpload}
-        handleImageDelete={handleImageDelete}
         prompt={prompt}
         tone={tone}
         isGenerating={isGenerating}
         handlePromptChange={handlePromptChange}
         handleGenerate={handleGenerate}
         setTone={setTone}
-        linkedinProfile={linkedinProfile}
       />
     </div>
   );

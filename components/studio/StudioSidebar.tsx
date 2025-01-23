@@ -1,71 +1,12 @@
 "use client";
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import {
-  HelpCircle,
-  Sparkles,
-  Wand2,
-  Loader2,
-  ChevronLeft,
-  MessageSquare,
-  Zap,
-  Linkedin,
-  Plus,
-  Save,
-  Calendar,
-  Pencil,
-  FileText,
-  MoreHorizontal,
-  CheckCircle2,
-  XCircle,
-  SmilePlus,
-  ImagePlus,
-  Wand,
-  Smile,
-  Image as ImageIcon,
-} from "lucide-react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import Link from "next/link";
-import Image from "next/image";
 import { GradientButton } from "@/components/ui/gradient-button";
-import { ScheduleModal } from "@/components/content-create/ScheduleModal";
-import { Avatar } from "@/components/ui/avatar";
-import { ImageUploadModal } from "@/components/content-create/ImageUploadModal";
-import dynamic from "next/dynamic";
-import data from "@emoji-mart/data";
-import { LinkedInPostImage, Post, LinkedInProfileUI } from "@/types/post";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/state/store";
 import { toggleEditor } from "@/state/slices/contentSlice";
-import { useContentPosting } from "@/hooks/useContent";
-import { useGenerateLinkedInPosts } from "@/hooks/useGenerateLinkedInPosts";
-
-// Dynamic import of EmojiPicker to avoid SSR issues
-const Picker = dynamic(() => import("@emoji-mart/react"), {
-  ssr: false,
-  loading: () => (
-    <div className="h-[400px] w-[320px] bg-white animate-pulse rounded-lg" />
-  ),
-});
 
 const postLengthOptions = [
   { value: "short", label: "Short", description: "~100 words" },
@@ -81,19 +22,6 @@ const toneOptions = [
 ] as const;
 
 interface StudioSidebarProps {
-  // Content states and handlers
-  content: string;
-  postDetails: Post | null;
-  isPosting: boolean;
-  isAddingToQueue: boolean;
-  isScheduling: boolean;
-  isUploading: boolean;
-  handlePostNow: (linkedinProfileId: string) => Promise<void>;
-  handleAddToQueue: (linkedinProfileId: string) => Promise<void>;
-  handleSchedule: (date: Date) => Promise<void>;
-  handleContentChange: (content: string) => void;
-  handleImageUpload: (file: File) => Promise<boolean>;
-  handleImageDelete: (imageId: string) => Promise<void>;
   // Generation states and handlers
   prompt: string;
   tone: string;
@@ -101,92 +29,28 @@ interface StudioSidebarProps {
   handlePromptChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   handleGenerate: () => Promise<void>;
   setTone: (tone: string) => void;
-  // Other props
-  linkedinProfile: LinkedInProfileUI | null;
 }
 
 export const StudioSidebar: React.FC<StudioSidebarProps> = ({
-  content,
-  postDetails,
-  isPosting,
-  isAddingToQueue,
-  isScheduling,
-  isUploading,
-  handlePostNow,
-  handleAddToQueue,
-  handleSchedule,
-  handleContentChange,
-  handleImageUpload,
-  handleImageDelete,
   prompt,
   tone,
   isGenerating,
   handlePromptChange,
   handleGenerate,
   setTone,
-  linkedinProfile,
 }) => {
-  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const contentRef = useRef<HTMLTextAreaElement>(null);
-  const dispatch = useDispatch();
   const [postLength, setPostLength] = useState<"short" | "medium" | "long">(
     "medium"
   );
+  const dispatch = useDispatch();
 
   // Get states from Redux
   const isEditorOpen = useSelector(
     (state: RootState) => state.content.isEditorOpen
   );
 
-  // Create user object from linkedinProfile
-  const user = {
-    id: linkedinProfile?.id || "",
-    email: "",
-    first_name: linkedinProfile?.name?.split(" ")[0] || "",
-    last_name: linkedinProfile?.name?.split(" ")[1] || "",
-    user_name: linkedinProfile?.name || "",
-    photo: linkedinProfile?.avatarUrl || null,
-  };
-
   const handleToggle = () => {
     dispatch(toggleEditor());
-  };
-
-  const handleEmojiSelect = (emoji: any) => {
-    const cursorPosition = contentRef.current?.selectionStart || 0;
-    const updatedContent =
-      content.slice(0, cursorPosition) +
-      emoji.native +
-      content.slice(cursorPosition);
-    handleContentChange?.(updatedContent);
-    setShowEmojiPicker(false);
-  };
-
-  // Create a memoized handler that includes postId
-  const handleImageUploadWithPostId = useCallback(
-    async (file: File) => {
-      if (handleImageUpload) {
-        const success = await handleImageUpload(file);
-        if (success) {
-          setIsImageModalOpen(false);
-        }
-        return success;
-      }
-      return false;
-    },
-    [handleImageUpload]
-  );
-
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
   };
 
   return (
