@@ -21,6 +21,8 @@ import {
   SmilePlus,
   ImagePlus,
   Wand,
+  Smile,
+  Image as ImageIcon,
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -47,6 +49,17 @@ import Image from "next/image";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { ScheduleModal } from "@/components/content-create/ScheduleModal";
 import { Avatar } from "@/components/ui/avatar";
+import { ImageUploadModal } from "@/components/content-create/ImageUploadModal";
+import dynamic from "next/dynamic";
+import data from "@emoji-mart/data";
+
+// Dynamic import of EmojiPicker to avoid SSR issues
+const Picker = dynamic(() => import("@emoji-mart/react"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[400px] w-[320px] bg-white animate-pulse rounded-lg" />
+  ),
+});
 
 interface LinkedInProfile {
   id: string;
@@ -109,6 +122,8 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
   onImageUpload,
 }) => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const getStatusConfig = (status: string | undefined) => {
@@ -152,6 +167,16 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  const handleEmojiSelect = (emoji: any) => {
+    const cursorPosition = contentRef.current?.selectionStart || 0;
+    const updatedContent =
+      content.slice(0, cursorPosition) +
+      emoji.native +
+      content.slice(cursorPosition);
+    onContentChange?.(updatedContent);
+    setShowEmojiPicker(false);
   };
 
   return (
@@ -288,39 +313,67 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
 
               {/* Editor Controls */}
               <div className="flex items-center justify-end gap-1.5 -mt-10 mr-2 relative z-10">
-                <button
-                  onClick={() => onEmojiSelect?.("😊")}
-                  className={cn(
-                    "p-2 rounded-lg text-gray-600 bg-white",
-                    "hover:bg-gray-100/80 hover:text-gray-900",
-                    "transition-colors duration-150",
-                    "active:scale-95"
-                  )}
-                >
-                  <SmilePlus className="size-[18px]" />
-                </button>
-                <button
-                  onClick={onImageUpload}
-                  className={cn(
-                    "p-2 rounded-lg text-gray-600 bg-white",
-                    "hover:bg-gray-100/80 hover:text-gray-900",
-                    "transition-colors duration-150",
-                    "active:scale-95"
-                  )}
-                >
-                  <ImagePlus className="size-[18px]" />
-                </button>
-                <button
-                  onClick={onAIRewrite}
-                  className={cn(
-                    "p-2 rounded-lg text-blue-600 bg-white",
-                    "hover:bg-blue-50/80 hover:text-blue-700",
-                    "transition-colors duration-150",
-                    "active:scale-95"
-                  )}
-                >
-                  <Wand className="size-[18px]" />
-                </button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                      className={cn(
+                        "p-2 rounded-lg text-gray-600 bg-white",
+                        "hover:bg-gray-100/80 hover:text-gray-900",
+                        "transition-colors duration-150",
+                        "active:scale-95"
+                      )}
+                    >
+                      <Smile className="size-[18px]" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Add emoji</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setIsImageModalOpen(true)}
+                      className={cn(
+                        "p-2 rounded-lg text-gray-600 bg-white",
+                        "hover:bg-gray-100/80 hover:text-gray-900",
+                        "transition-colors duration-150",
+                        "active:scale-95"
+                      )}
+                    >
+                      <ImageIcon className="size-[18px]" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Add images</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={onAIRewrite}
+                      className={cn(
+                        "p-2 rounded-lg text-blue-600 bg-white",
+                        "hover:bg-blue-50/80 hover:text-blue-700",
+                        "transition-colors duration-150",
+                        "active:scale-95"
+                      )}
+                    >
+                      <Wand className="size-[18px]" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>AI rewrite</TooltipContent>
+                </Tooltip>
+
+                {/* Emoji Picker Popover */}
+                {showEmojiPicker && (
+                  <div className="absolute bottom-12 right-0">
+                    <Picker
+                      data={data}
+                      onEmojiSelect={handleEmojiSelect}
+                      theme="light"
+                    />
+                  </div>
+                )}
               </div>
             </motion.div>
           )}
@@ -490,6 +543,14 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
         onClose={() => setIsScheduleModalOpen(false)}
         onSchedule={onSchedule}
         isScheduling={isScheduling}
+      />
+
+      <ImageUploadModal
+        isOpen={isImageModalOpen}
+        onClose={() => setIsImageModalOpen(false)}
+        onUploadSuccess={() => {}}
+        handleImageUpload={(file) => Promise.resolve(true)}
+        isUploading={false}
       />
     </motion.div>
   );
