@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
 import { useContentPosting } from "@/hooks/useContent";
+import { useGenerateLinkedInPosts } from "@/hooks/useGenerateLinkedInPosts";
 import { ImageUploadModal } from "@/components/content-create/ImageUploadModal";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
@@ -36,6 +37,17 @@ const ContentCreationTools: React.FC = () => {
     isUploading,
     handleImageDelete,
   } = useContentPosting();
+
+  const {
+    prompt,
+    tone,
+    handlePromptChange,
+    handleGenerate,
+    setTone,
+    isGenerating,
+  } = useGenerateLinkedInPosts({
+    onContentGenerated: handleContentChange,
+  });
 
   const handleEmojiSelect = (emoji: any) => {
     handleContentChange?.(content.slice(0, content.length) + emoji.native);
@@ -104,7 +116,27 @@ const ContentCreationTools: React.FC = () => {
         </div>
       </div>
 
-      <StudioSidebar />
+      <StudioSidebar
+        content={content}
+        postDetails={postDetails}
+        isPosting={isPosting}
+        isAddingToQueue={isAddingToQueue}
+        isScheduling={isScheduling}
+        isUploading={isUploading}
+        handlePostNow={handlePostNow}
+        handleAddToQueue={handleAddToQueue}
+        handleSchedule={handleSchedule}
+        handleContentChange={handleContentChange}
+        handleImageUpload={handleImageUpload}
+        handleImageDelete={handleImageDelete}
+        prompt={prompt}
+        tone={tone}
+        isGenerating={isGenerating}
+        handlePromptChange={handlePromptChange}
+        handleGenerate={handleGenerate}
+        setTone={setTone}
+        linkedinProfile={linkedinProfile}
+      />
     </div>
   );
 };

@@ -52,7 +52,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { ImageUploadModal } from "@/components/content-create/ImageUploadModal";
 import dynamic from "next/dynamic";
 import data from "@emoji-mart/data";
-import { LinkedInPostImage } from "@/types/post";
+import { LinkedInPostImage, Post, LinkedInProfileUI } from "@/types/post";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/state/store";
 import { toggleEditor } from "@/state/slices/contentSlice";
@@ -80,7 +80,52 @@ const toneOptions = [
   { value: "humorous", label: "Humorous", emoji: "😄" },
 ] as const;
 
-export const StudioSidebar = () => {
+interface StudioSidebarProps {
+  // Content states and handlers
+  content: string;
+  postDetails: Post | null;
+  isPosting: boolean;
+  isAddingToQueue: boolean;
+  isScheduling: boolean;
+  isUploading: boolean;
+  handlePostNow: (linkedinProfileId: string) => Promise<void>;
+  handleAddToQueue: (linkedinProfileId: string) => Promise<void>;
+  handleSchedule: (date: Date) => Promise<void>;
+  handleContentChange: (content: string) => void;
+  handleImageUpload: (file: File) => Promise<boolean>;
+  handleImageDelete: (imageId: string) => Promise<void>;
+  // Generation states and handlers
+  prompt: string;
+  tone: string;
+  isGenerating: boolean;
+  handlePromptChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handleGenerate: () => Promise<void>;
+  setTone: (tone: string) => void;
+  // Other props
+  linkedinProfile: LinkedInProfileUI | null;
+}
+
+export const StudioSidebar: React.FC<StudioSidebarProps> = ({
+  content,
+  postDetails,
+  isPosting,
+  isAddingToQueue,
+  isScheduling,
+  isUploading,
+  handlePostNow,
+  handleAddToQueue,
+  handleSchedule,
+  handleContentChange,
+  handleImageUpload,
+  handleImageDelete,
+  prompt,
+  tone,
+  isGenerating,
+  handlePromptChange,
+  handleGenerate,
+  setTone,
+  linkedinProfile,
+}) => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
@@ -94,34 +139,6 @@ export const StudioSidebar = () => {
   const isEditorOpen = useSelector(
     (state: RootState) => state.content.isEditorOpen
   );
-  const { linkedinProfile } = useSelector((state: RootState) => state.user);
-
-  // Get states and handlers from hooks
-  const {
-    content,
-    postDetails,
-    isPosting,
-    isAddingToQueue,
-    isScheduling,
-    handlePostNow,
-    handleAddToQueue,
-    handleSchedule,
-    handleContentChange,
-    handleImageUpload,
-    isUploading,
-    handleImageDelete,
-  } = useContentPosting();
-
-  const {
-    prompt,
-    tone,
-    handlePromptChange,
-    handleGenerate,
-    setTone,
-    isGenerating,
-  } = useGenerateLinkedInPosts({
-    onContentGenerated: handleContentChange,
-  });
 
   // Create user object from linkedinProfile
   const user = {

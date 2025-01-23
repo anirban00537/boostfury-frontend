@@ -147,23 +147,20 @@ export const useContentPosting = () => {
   const router = useRouter();
   const draftId = searchParams?.get("draft_id");
   const { linkedinProfile } = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch();
   const queryClient = useQueryClient();
 
-  // Get content state from Redux
-  const {
-    content,
-    postDetails,
-    isAutoSaving,
-    isLoadingDraft,
-    isCreatingDraft,
-    isPosting: isPostingState,
-    isAddingToQueue: isAddingToQueueState,
-    isScheduling: isSchedulingState,
-    isUploading,
-    images,
-    isGenerating,
-  } = useSelector((state: RootState) => state.content);
+  // Convert Redux state to local state
+  const [content, setContent] = useState("");
+  const [postDetails, setPostDetails] = useState<Post | null>(null);
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
+  const [isLoadingDraft, setIsLoadingDraft] = useState(false);
+  const [isCreatingDraft, setIsCreatingDraft] = useState(false);
+  const [isPosting, setIsPosting] = useState(false);
+  const [isAddingToQueue, setIsAddingToQueue] = useState(false);
+  const [isScheduling, setIsScheduling] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [images, setImages] = useState<LinkedInPostImage[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // Save draft mutation
   const { mutateAsync: saveDraft } = useMutation<
@@ -179,8 +176,8 @@ export const useContentPosting = () => {
         return;
       }
 
-      console.log("Updating post details in Redux:", response.data.post);
-      dispatch(setPostDetails(response.data.post as Post));
+      console.log("Updating post details:", response.data.post);
+      setPostDetails(response.data.post as Post);
 
       if (response.data.post.id) {
         console.log("Refetching draft details for ID:", response.data.post.id);
@@ -208,7 +205,7 @@ export const useContentPosting = () => {
 
       try {
         console.log("Starting auto-save process");
-        dispatch(setIsAutoSaving(true));
+        setIsAutoSaving(true);
         const response = await saveDraft(draftData);
         console.log("Auto-save response:", response);
 
@@ -217,7 +214,7 @@ export const useContentPosting = () => {
             "Auto-save successful, updating post details:",
             response.data.post
           );
-          dispatch(setPostDetails(response.data.post as Post));
+          setPostDetails(response.data.post as Post);
 
           console.log("Refetching draft details");
           await queryClient.invalidateQueries([
@@ -234,10 +231,10 @@ export const useContentPosting = () => {
         toast.error("Failed to save draft", { id: "draft-save-error" });
       } finally {
         console.log("Auto-save process completed");
-        dispatch(setIsAutoSaving(false));
+        setIsAutoSaving(false);
       }
     }, 1500),
-    [linkedinProfile?.id, saveDraft, dispatch, queryClient]
+    [linkedinProfile?.id, saveDraft]
   );
 
   // Cleanup debounced function on unmount
@@ -256,8 +253,8 @@ export const useContentPosting = () => {
         hasLinkedInProfile: !!linkedinProfile?.id,
       });
 
-      // Update Redux state immediately for UI responsiveness
-      dispatch(setContent(newContent));
+      // Update local state immediately for UI responsiveness
+      setContent(newContent);
 
       // Don't proceed if no LinkedIn profile is selected
       if (!linkedinProfile?.id) {
@@ -280,7 +277,7 @@ export const useContentPosting = () => {
           debouncedSaveDraft(draftData);
         } else if (newContent.trim()) {
           console.log("New content, creating draft immediately");
-          dispatch(setIsCreatingDraft(true));
+          setIsCreatingDraft(true);
           const response = await saveDraft(draftData);
           console.log("Create draft response:", response);
 
@@ -289,8 +286,8 @@ export const useContentPosting = () => {
             console.log("Updating URL to:", newUrl);
             window.history.pushState({}, "", newUrl);
 
-            console.log("Updating post details in Redux:", response.data.post);
-            dispatch(setPostDetails(response.data.post as Post));
+            console.log("Updating post details:", response.data.post);
+            setPostDetails(response.data.post as Post);
             toast.success("Draft created successfully");
           }
         }
@@ -298,10 +295,10 @@ export const useContentPosting = () => {
         console.error("Content change error:", error);
         toast.error("Failed to save draft");
       } finally {
-        dispatch(setIsCreatingDraft(false));
+        setIsCreatingDraft(false);
       }
     },
-    [draftId, linkedinProfile?.id, saveDraft, debouncedSaveDraft, dispatch]
+    [draftId, linkedinProfile?.id, saveDraft, debouncedSaveDraft]
   );
 
   // Generated content handler
@@ -313,7 +310,7 @@ export const useContentPosting = () => {
       }
 
       // Update content state immediately for the preview
-      dispatch(setContent(generatedContent));
+      setContent(generatedContent);
 
       // If we have a draft, update it
       if (draftId) {
@@ -328,13 +325,11 @@ export const useContentPosting = () => {
           const response = await saveDraft(draftData);
           if (response.success && response.data?.post) {
             // Update post details while preserving existing data
-            dispatch(
-              setPostDetails({
-                ...postDetails,
-                ...response.data.post,
-                content: generatedContent,
-              } as Post)
-            );
+            setPostDetails({
+              ...postDetails,
+              ...response.data.post,
+              content: generatedContent,
+            } as Post);
           }
         } catch (error) {
           console.error(
@@ -354,7 +349,7 @@ export const useContentPosting = () => {
         try {
           const response = await saveDraft(draftData);
           if (response.success && response.data?.post) {
-            dispatch(setPostDetails(response.data.post as Post));
+            setPostDetails(response.data.post as Post);
             router.push(`/studio?draft_id=${response.data.post.id}`);
           }
         } catch (error) {
@@ -366,7 +361,7 @@ export const useContentPosting = () => {
         }
       }
     },
-    [linkedinProfile?.id, draftId, saveDraft, router, dispatch]
+    [linkedinProfile?.id, draftId, saveDraft, router]
   );
 
   // Update upload mutation with correct types
@@ -404,7 +399,9 @@ export const useContentPosting = () => {
     {
       onSuccess: async (response, variables) => {
         if (response.success) {
-          dispatch(removeImage(variables.imageId));
+          setImages((prevImages) =>
+            prevImages.filter((img) => img.id !== variables.imageId)
+          );
           // Refetch post details to get updated image list
           if (draftId) {
             await queryClient.invalidateQueries(["draftDetails", draftId]);
@@ -433,7 +430,10 @@ export const useContentPosting = () => {
     {
       onSuccess: (response, variables) => {
         if (response.success) {
-          dispatch(dispatchReorderImages(variables.imageIds));
+          const newImages = variables.imageIds.map(
+            (id) => images.find((img) => img.id === id)!
+          );
+          setImages(newImages);
         }
       },
       onError: (error) => {
@@ -456,16 +456,14 @@ export const useContentPosting = () => {
 
         // Only update content if we don't have any content yet
         if (!content) {
-          dispatch(setContent(post.content || ""));
+          setContent(post.content || "");
         }
 
         // Update post details while preserving content
-        dispatch(
-          setPostDetails({
-            ...post,
-            content: content || post.content,
-          } as Post)
-        );
+        setPostDetails({
+          ...post,
+          content: content || post.content,
+        } as Post);
       },
       onError: (error) => {
         toast.error("Failed to fetch draft details");
@@ -475,7 +473,7 @@ export const useContentPosting = () => {
   );
 
   // Post actions
-  const { mutateAsync: postNowMutation, isLoading: isPosting } = useMutation<
+  const { mutateAsync: postNowMutation } = useMutation<
     PostResponse,
     Error,
     string
@@ -495,43 +493,45 @@ export const useContentPosting = () => {
     }
   );
 
-  const { mutateAsync: addToQueueMutation, isLoading: isAddingToQueue } =
-    useMutation<PostResponse, Error, string>(
-      async (postId) => {
-        return await addToQueueApi(postId, "Asia/Dhaka");
+  const { mutateAsync: addToQueueMutation } = useMutation<
+    PostResponse,
+    Error,
+    string
+  >(
+    async (postId) => {
+      return await addToQueueApi(postId, "Asia/Dhaka");
+    },
+    {
+      onSuccess: (response) => {
+        if (response.success) {
+          toast.success("Post added to queue successfully!");
+          router.push("/my-posts?tab=scheduled");
+        } else {
+          toast.error(response.message || "Failed to add post to queue");
+        }
       },
-      {
-        onSuccess: (response) => {
-          if (response.success) {
-            toast.success("Post added to queue successfully!");
-            router.push("/my-posts?tab=scheduled");
-          } else {
-            toast.error(response.message || "Failed to add post to queue");
-          }
-        },
-      }
-    );
+    }
+  );
 
-  const { mutateAsync: schedulePostMutation, isLoading: isScheduling } =
-    useMutation<
-      SchedulePostResponse,
-      Error,
-      { postId: string; scheduleData: SchedulePostType }
-    >(
-      async ({ postId, scheduleData }) => {
-        return await schedulePostApi(postId, scheduleData);
+  const { mutateAsync: schedulePostMutation } = useMutation<
+    SchedulePostResponse,
+    Error,
+    { postId: string; scheduleData: SchedulePostType }
+  >(
+    async ({ postId, scheduleData }) => {
+      return await schedulePostApi(postId, scheduleData);
+    },
+    {
+      onSuccess: (response) => {
+        if (response.success) {
+          toast.success("Post scheduled successfully!");
+          router.push("/my-posts?tab=scheduled");
+        } else {
+          toast.error(response.message || "Failed to schedule post");
+        }
       },
-      {
-        onSuccess: (response) => {
-          if (response.success) {
-            toast.success("Post scheduled successfully!");
-            router.push("/my-posts?tab=scheduled");
-          } else {
-            toast.error(response.message || "Failed to schedule post");
-          }
-        },
-      }
-    );
+    }
+  );
 
   // Action handlers
   const handlePostNow = useCallback(
@@ -615,14 +615,14 @@ export const useContentPosting = () => {
     handleImageUpload: async (file: File) => {
       if (!postDetails?.id) return false;
       try {
-        dispatch(setIsUploading(true));
+        setIsUploading(true);
         await uploadImageMutation({ file, postId: postDetails.id });
         await queryClient.invalidateQueries(["draftDetails", draftId]);
         return true;
       } catch (error) {
         return false;
       } finally {
-        dispatch(setIsUploading(false));
+        setIsUploading(false);
       }
     },
     handleImageDelete: async (imageId: string) => {
