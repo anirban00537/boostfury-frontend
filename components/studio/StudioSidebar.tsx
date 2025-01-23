@@ -52,6 +52,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { ImageUploadModal } from "@/components/content-create/ImageUploadModal";
 import dynamic from "next/dynamic";
 import data from "@emoji-mart/data";
+import { LinkedInPostImage } from "@/types/post";
 
 // Dynamic import of EmojiPicker to avoid SSR issues
 const Picker = dynamic(() => import("@emoji-mart/react"), {
@@ -90,6 +91,7 @@ interface StudioSidebarProps {
     user_name: string;
     photo: string | null;
   };
+  images?: LinkedInPostImage[];
   imageUrls?: string[];
   publishedAt?: string;
   scheduledTime?: string;
@@ -100,6 +102,7 @@ interface StudioSidebarProps {
   onImageUrlsChange?: (urls: string[]) => void;
   isUploading?: boolean;
   postId: string;
+  handleImageDelete?: (imageId: string) => void;
 }
 
 const StudioSidebar: React.FC<StudioSidebarProps> = ({
@@ -116,6 +119,7 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
   isGenerating,
   status,
   user,
+  images,
   imageUrls,
   publishedAt,
   scheduledTime,
@@ -126,12 +130,13 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
   onImageUrlsChange,
   isUploading,
   postId,
+  handleImageDelete,
 }) => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const contentRef = useRef<HTMLTextAreaElement>(null);
-
+  console.log(images, "images");
   const getStatusConfig = (status: string | undefined) => {
     switch (status) {
       case "scheduled":
@@ -403,8 +408,8 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
           {imageUrls && imageUrls.length > 0 && (
             <div className="mt-6">
               <div className="flex flex-wrap gap-3">
-                {imageUrls.map((url, index) => (
-                  <div key={`new-${index}`} className="relative group">
+                {imageUrls.map((url: string, index: number) => (
+                  <div key={`image-${index}`} className="relative group">
                     <div className="relative w-24 h-24 rounded-xl overflow-hidden border-2 border-gray-200/50 bg-white/90 group-hover:border-primary/20 transition-all">
                       <Image
                         src={url}
@@ -413,6 +418,18 @@ const StudioSidebar: React.FC<StudioSidebarProps> = ({
                         className="object-cover"
                       />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      {/* Delete Button */}
+                      {images && images[index] && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleImageDelete?.(images[index].id);
+                          }}
+                          className="absolute top-1 right-1 p-1 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 hover:bg-red-600 transition-all"
+                        >
+                          <XCircle className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}

@@ -142,6 +142,7 @@ export const useContentPosting = () => {
   const [postDetails, setPostDetails] = useState<Post | null>(null);
   const [selectedProfile, setSelectedProfile] =
     useState<LinkedInProfileUI | null>(null);
+  const [images, setImages] = useState<LinkedInPostImage[]>([]);
 
   // Save draft mutation
   const { mutateAsync: saveDraft, isLoading: isCreatingDraft } = useMutation<
@@ -266,6 +267,90 @@ export const useContentPosting = () => {
       }
     },
     [linkedinProfile?.id, draftId, saveDraft, router]
+  );
+  // Update upload mutation with correct types
+  const { mutateAsync: uploadImageMutation, isLoading: isUploading } =
+    useMutation<UploadImageResponse, Error, UploadImageVariables>(
+      ({ file, postId }) => uploadImage(postId, file),
+      {
+        onSuccess: async (response) => {
+          if (response.success) {
+            // Refetch post details to get updated image list
+            if (draftId) {
+              await queryClient.invalidateQueries(["draftDetails", draftId]);
+            }
+            toast.success("Image uploaded successfully");
+          }
+        },
+        onError: (error) => {
+          toast.error(error.message || "Failed to upload image");
+          console.error("Upload error:", error);
+        },
+      }
+    );
+
+  // Update delete mutation with proper typing
+  const { mutateAsync: deleteImageMutation } = useMutation<
+    DeleteImageResponse,
+    Error,
+    DeleteImageVariables,
+    unknown
+  >(
+    async ({ postId, imageId }) => {
+      const response = await deleteImage(postId, imageId);
+      return response.data;
+    },
+    {
+      onSuccess: async (response, variables) => {
+        if (response.success) {
+          // Remove image from local state
+          setImages((prev) =>
+            prev.filter((img) => img.id !== variables.imageId)
+          );
+
+          // Refetch post details to get updated image list
+          if (draftId) {
+            await queryClient.invalidateQueries(["draftDetails", draftId]);
+          }
+
+          toast.success("Image deleted successfully");
+        }
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to delete image");
+        console.error("Delete error:", error);
+      },
+    }
+  );
+
+  // Update reorder mutation with proper typing
+  const { mutateAsync: reorderImagesMutation } = useMutation<
+    ReorderImagesResponse,
+    Error,
+    ReorderImagesVariables,
+    unknown
+  >(
+    // First argument is the mutation function
+    async ({ postId, imageIds }) => {
+      const response = await reorderImages(postId, imageIds);
+      return response.data; // Extract the data from Axios response
+    },
+    // Second argument is the options object
+    {
+      onSuccess: (response, variables) => {
+        if (response.success) {
+          const { imageIds } = variables;
+          const newImages = imageIds.map(
+            (id) => images.find((img) => img.id === id)!
+          );
+          setImages(newImages);
+        }
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to reorder images");
+        console.error("Reorder error:", error);
+      },
+    }
   );
 
   // Load draft details - update to preserve generated content
@@ -416,17 +501,17 @@ export const useContentPosting = () => {
       mutationFn: () => shuffleQueue(),
       onSuccess: (response) => {
         if (response.success) {
-        // Refetch the queue data to show updated order
-        queryClient.invalidateQueries(["scheduledQueue"]);
-      } else {
-        toast.error(response.message || "Failed to shuffle queue");
-      }
-    },
-    onError: (error: Error) => {
-      toast.error(`Error shuffling queue: ${error.message}`);
-      console.error("Shuffle error:", error);
-    },
-  });
+          // Refetch the queue data to show updated order
+          queryClient.invalidateQueries(["scheduledQueue"]);
+        } else {
+          toast.error(response.message || "Failed to shuffle queue");
+        }
+      },
+      onError: (error: Error) => {
+        toast.error(`Error shuffling queue: ${error.message}`);
+        console.error("Shuffle error:", error);
+      },
+    });
   return {
     // States
     content,
@@ -446,6 +531,35 @@ export const useContentPosting = () => {
     handleSchedule,
     shuffleQueue: () => shuffleQueueMutation(linkedinProfile?.id || ""),
     isShuffling,
+    // Image related states and actions
+    images,
+    isUploading,
+    handleImageUpload: async (file: File) => {
+      if (!postDetails?.id) return false;
+      try {
+        await uploadImageMutation({ file, postId: postDetails.id });
+        // Refetch post details after successful upload
+        await queryClient.invalidateQueries(["draftDetails", draftId]);
+        return true;
+      } catch (error) {
+        return false;
+      }
+    },
+    handleImageDelete: async (imageId: string) => {
+      if (!postDetails?.id) return;
+      try {
+        await deleteImageMutation({ postId: postDetails.id, imageId });
+        // Ensure we refetch post details after deletion
+        await queryClient.invalidateQueries(["draftDetails", draftId]);
+      } catch (error) {
+        console.error("Error deleting image:", error);
+        toast.error("Failed to delete image");
+      }
+    },
+    handleImageReorder: async (imageIds: string[]) => {
+      if (!postDetails?.id) return;
+      await reorderImagesMutation({ postId: postDetails.id, imageIds });
+    },
   };
 };
 

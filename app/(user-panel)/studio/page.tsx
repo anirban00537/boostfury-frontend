@@ -35,14 +35,13 @@ const ContentCreationTools: React.FC = () => {
     isAddingToQueue,
     handleSchedule,
     isScheduling,
+    handleImageUpload,
+    isUploading,
+    handleImageDelete,
   } = useContentPosting();
 
   // Initialize sidebar state based on content or draft_id
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
-  // Update sidebar state when content or draft_id changes
-
-  // AI Generation Hook
   const {
     prompt,
     tone,
@@ -71,19 +70,6 @@ const ContentCreationTools: React.FC = () => {
         return "draft";
     }
   };
-
-  // Create a new handler for input change
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPrompt(e.target.value);
-  };
-
-  if (isLoadingDraft) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="animate-pulse text-gray-500">Loading draft...</div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -171,11 +157,15 @@ const ContentCreationTools: React.FC = () => {
           user_name: userinfo?.user_name || "",
           photo: userinfo?.photo || null,
         }}
-        imageUrls={postDetails?.imageUrls}
+        images={postDetails?.images}
+        imageUrls={postDetails?.images?.map((img) => img.imageUrl) || []}
         publishedAt={postDetails?.publishedAt || undefined}
         scheduledTime={postDetails?.scheduledTime || undefined}
         onContentChange={handleContentChange}
         postId={postDetails?.id || ""}
+        onImageUpload={handleImageUpload}
+        isUploading={isUploading}
+        handleImageDelete={handleImageDelete}
       />
     </div>
   );
