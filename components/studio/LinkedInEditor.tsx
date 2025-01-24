@@ -9,6 +9,8 @@ import {
   Hash,
   Link2,
   Info,
+  ChevronDown,
+  Linkedin,
 } from "lucide-react";
 import { LinkedInPostImage } from "@/types/post";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,6 +20,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface LinkedInEditorProps {
   content: string;
@@ -95,9 +103,68 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
             </Tooltip>
           </div>
         </div>
-        <button className="p-2 text-[#666666] hover:bg-neutral-100 rounded-full transition-all">
-          <MoreHorizontal className="w-5 h-5" />
-        </button>
+        <div className="flex items-center">
+          <motion.button
+            onClick={onAddToQueue}
+            disabled={isAddingToQueue}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className={cn(
+              "h-9 px-4 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700",
+              "hover:from-blue-700 hover:to-blue-800 rounded-l-xl transition-all shadow-md",
+              "flex items-center gap-2 border border-blue-500/20 border-r-0",
+              "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-blue-600 disabled:hover:to-blue-700"
+            )}
+          >
+            <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
+              <Linkedin className="w-3.5 h-3.5" />
+            </div>
+            {isAddingToQueue ? "Adding..." : "Add to Queue"}
+          </motion.button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="h-9 w-9 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 
+                rounded-r-xl transition-all shadow-md border border-blue-500/20 border-l-white/20 flex items-center justify-center"
+              >
+                <ChevronDown className="h-4 w-4 text-white" />
+              </motion.button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[180px] p-1">
+              <DropdownMenuItem
+                onClick={onSchedule}
+                disabled={isScheduling}
+                className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600"
+              >
+                <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                  <Clock className="h-3.5 w-3.5 text-blue-600" />
+                </div>
+                <span>Schedule</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={onPostNow}
+                disabled={isPosting}
+                className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-green-50 data-[highlighted]:text-green-600"
+              >
+                {isPosting ? (
+                  <div className="w-6 h-6 rounded-full bg-neutral-50 flex items-center justify-center">
+                    <div className="h-3.5 w-3.5 relative animate-spin">
+                      <div className="absolute inset-0 rounded-full border-2 border-neutral-200 border-t-neutral-600" />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-6 h-6 rounded-full bg-green-50 flex items-center justify-center">
+                    <div className="h-2 w-2 rounded-full bg-green-500 ring-4 ring-green-500/20" />
+                  </div>
+                )}
+                <span>{isPosting ? "Posting..." : "Post Now"}</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       {/* Content Area */}
@@ -166,116 +233,56 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
 
       {/* Action Buttons */}
       <div className="flex-none border-t border-neutral-200/60 bg-white">
-        <div className="p-4 flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={onImageUpload}
-                  className="p-2 text-[#666666] hover:bg-neutral-100 rounded-full transition-all group"
-                >
-                  <ImageIcon className="w-5 h-5 group-hover:text-blue-600 transition-colors" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="text-xs">Add media to your post</p>
-              </TooltipContent>
-            </Tooltip>
+        <div className="p-4 flex items-center gap-1">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={onImageUpload}
+                className="p-2 text-[#666666] hover:bg-neutral-100 rounded-full transition-all group"
+              >
+                <ImageIcon className="w-5 h-5 group-hover:text-blue-600 transition-colors" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="text-xs">Add media to your post</p>
+            </TooltipContent>
+          </Tooltip>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={onEmojiPickerToggle}
-                  className="p-2 text-[#666666] hover:bg-neutral-100 rounded-full transition-all group"
-                >
-                  <Smile className="w-5 h-5 group-hover:text-blue-600 transition-colors" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="text-xs">Add emoji</p>
-              </TooltipContent>
-            </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={onEmojiPickerToggle}
+                className="p-2 text-[#666666] hover:bg-neutral-100 rounded-full transition-all group"
+              >
+                <Smile className="w-5 h-5 group-hover:text-blue-600 transition-colors" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="text-xs">Add emoji</p>
+            </TooltipContent>
+          </Tooltip>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button className="p-2 text-[#666666] hover:bg-neutral-100 rounded-full transition-all group">
-                  <Hash className="w-5 h-5 group-hover:text-blue-600 transition-colors" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="text-xs">Add hashtag</p>
-              </TooltipContent>
-            </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button className="p-2 text-[#666666] hover:bg-neutral-100 rounded-full transition-all group">
+                <Hash className="w-5 h-5 group-hover:text-blue-600 transition-colors" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="text-xs">Add hashtag</p>
+            </TooltipContent>
+          </Tooltip>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button className="p-2 text-[#666666] hover:bg-neutral-100 rounded-full transition-all group">
-                  <Link2 className="w-5 h-5 group-hover:text-blue-600 transition-colors" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="text-xs">Add link</p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={onSchedule}
-                  disabled={isScheduling}
-                  className={cn(
-                    "h-8 px-3 text-sm font-medium text-[#666666] hover:bg-neutral-100 rounded-full transition-all flex items-center gap-2",
-                    "disabled:opacity-50 disabled:cursor-not-allowed"
-                  )}
-                >
-                  <Clock className="w-4 h-4" />
-                  <span>Schedule</span>
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="text-xs">Schedule your post for later</p>
-              </TooltipContent>
-            </Tooltip>
-
-            <motion.button
-              onClick={onAddToQueue}
-              disabled={isAddingToQueue}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className={cn(
-                "h-8 px-4 text-sm font-medium text-[#666666] bg-neutral-100 hover:bg-neutral-200 rounded-full transition-all",
-                "disabled:opacity-50 disabled:cursor-not-allowed"
-              )}
-            >
-              {isAddingToQueue ? "Adding..." : "Add to Queue"}
-            </motion.button>
-
-            <motion.button
-              onClick={onPostNow}
-              disabled={isPosting}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className={cn(
-                "h-8 px-6 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-full transition-all shadow-sm",
-                "disabled:opacity-50 disabled:cursor-not-allowed"
-              )}
-            >
-              <div className="flex items-center gap-2">
-                {isPosting ? (
-                  <>
-                    <div className="w-4 h-4 relative animate-spin">
-                      <div className="absolute inset-0 rounded-full border-2 border-white/30 border-t-white" />
-                    </div>
-                    <span>Posting...</span>
-                  </>
-                ) : (
-                  <span>Post</span>
-                )}
-              </div>
-            </motion.button>
-          </div>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button className="p-2 text-[#666666] hover:bg-neutral-100 rounded-full transition-all group">
+                <Link2 className="w-5 h-5 group-hover:text-blue-600 transition-colors" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="text-xs">Add link</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </motion.div>

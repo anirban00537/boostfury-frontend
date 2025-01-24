@@ -107,7 +107,7 @@ export const QueueModal = ({
           const timeSlotId = (index + 1).toString();
           uniqueTimes.push({ id: timeSlotId, time: group.time });
 
-          group.slots.forEach(slot => {
+          group.slots.forEach((slot) => {
             const day = weekDays[slot.dayOfWeek];
             convertedSlots[`${day}-${timeSlotId}`] = slot.isActive;
           });
@@ -121,16 +121,16 @@ export const QueueModal = ({
 
   // Update time slots mutation
   const { mutate: updateTimeSlotsMutation } = useMutation(
-    (data: UpdateTimeSlotsRequest) => 
-      updateTimeSlots(linkedinProfile?.id || '', data),
+    (data: UpdateTimeSlotsRequest) =>
+      updateTimeSlots(linkedinProfile?.id || "", data),
     {
       onSuccess: () => {
-        toast.success('Schedule updated successfully');
-        queryClient.invalidateQueries(['timeSlots', linkedinProfile?.id]);
+        toast.success("Schedule updated successfully");
+        queryClient.invalidateQueries(["timeSlots", linkedinProfile?.id]);
         onClose();
       },
       onError: () => {
-        toast.error('Failed to update schedule');
+        toast.error("Failed to update schedule");
       },
     }
   );
@@ -169,18 +169,22 @@ export const QueueModal = ({
   };
 
   const handleSave = () => {
-      if (!linkedinProfile?.id) {
+    if (!linkedinProfile?.id) {
       toast.error("No LinkedIn profile selected");
       return;
     }
 
-    const formattedTimeSlots: TimeSlotGroup[] = timeSlots.map(timeSlot => ({
-      time: timeSlot.time,
-      slots: weekDays.map((day, index) => ({
-        dayOfWeek: index,
-        isActive: !!selectedSlots[`${day}-${timeSlot.id}`]
-      })).filter(slot => slot.isActive)
-    })).filter(group => group.slots.length > 0);
+    const formattedTimeSlots: TimeSlotGroup[] = timeSlots
+      .map((timeSlot) => ({
+        time: timeSlot.time,
+        slots: weekDays
+          .map((day, index) => ({
+            dayOfWeek: index,
+            isActive: !!selectedSlots[`${day}-${timeSlot.id}`],
+          }))
+          .filter((slot) => slot.isActive),
+      }))
+      .filter((group) => group.slots.length > 0);
 
     updateTimeSlotsMutation({ timeSlots: formattedTimeSlots });
   };
@@ -197,15 +201,29 @@ export const QueueModal = ({
             <DialogTitle className="text-base font-medium">
               Edit your post schedule
             </DialogTitle>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={addNewTimeSlot}
-              className="text-xs gap-1 h-7 px-2 border-dashed hover:border-primary hover:text-white"
-            >
-              <Plus className="h-3 w-3" />
-              Add Time Slot
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSelectedSlots({});
+                  setTimeSlots([{ id: "1", time: "09:00" }]);
+                }}
+                className="text-xs gap-1 h-7 px-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+              >
+                <Trash2 className="h-3 w-3" />
+                Clear All
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={addNewTimeSlot}
+                className="text-xs gap-1 h-7 px-2 border-dashed hover:border-primary hover:text-white"
+              >
+                <Plus className="h-3 w-3" />
+                Add Time Slot
+              </Button>
+            </div>
           </div>
 
           {/* Help Text */}
@@ -274,7 +292,7 @@ export const QueueModal = ({
                   key={slot.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="grid grid-cols-[140px,repeat(7,1fr)] gap-1 items-center group hover:bg-gray-50 p-1 rounded-lg transition-colors"
+                  className="grid grid-cols-[140px,repeat(7,1fr)] gap-1 items-center group hover:bg-gray-50 p-1 rounded-lg transition-colors relative"
                 >
                   <div className="pr-2 flex items-center gap-2">
                     <TimeSelect
@@ -282,16 +300,14 @@ export const QueueModal = ({
                       onChange={(newTime) => handleTimeChange(slot.id, newTime)}
                       className="w-[120px] h-8"
                     />
-                    {timeSlots.length > 1 && (
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => removeTimeSlot(slot.id)}
-                        className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-full hover:bg-red-50"
-                      >
-                        <Trash2 className="h-3 w-3 text-red-500" />
-                      </motion.button>
-                    )}
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => removeTimeSlot(slot.id)}
+                      className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-md hover:bg-red-50 flex items-center justify-center"
+                    >
+                      <Trash2 className="h-3.5 w-3.5 text-red-500" />
+                    </motion.button>
                   </div>
                   {weekDays.map((day) => {
                     const key = `${day}-${slot.id}`;

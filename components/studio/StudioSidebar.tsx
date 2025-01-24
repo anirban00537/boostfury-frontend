@@ -17,19 +17,16 @@ const postLengthOptions = [
   {
     value: "short",
     label: "Short",
-    description: "~100 words",
     tooltip: "Best for quick updates and engagement posts",
   },
   {
     value: "medium",
     label: "Medium",
-    description: "~200 words",
     tooltip: "Ideal for sharing insights and experiences",
   },
   {
     value: "long",
     label: "Long",
-    description: "~300 words",
     tooltip: "Perfect for in-depth analysis and thought leadership",
   },
 ] as const;
@@ -174,38 +171,6 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({
       {/* Content with smooth scrolling */}
       <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-200 scrollbar-track-transparent">
         <div className="p-6 space-y-8">
-          {/* Writing Tips Section */}
-          <AnimatePresence>
-            {showTips && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="relative p-4 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/10"
-              >
-                <button
-                  onClick={() => setShowTips(false)}
-                  className="absolute top-2 right-2 p-1 rounded-md hover:bg-primary/10 text-primary/60 hover:text-primary"
-                >
-                  <ChevronDown className="w-4 h-4" />
-                </button>
-                <div className="flex items-start gap-3">
-                  <Lightbulb className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                  <div>
-                    <h3 className="text-sm font-medium text-primary mb-2">
-                      Writing Tips
-                    </h3>
-                    <ul className="text-xs text-neutral-600 space-y-1.5">
-                      <li>• Start with a hook to grab attention</li>
-                      <li>• Include relevant hashtags for better reach</li>
-                      <li>• End with a clear call-to-action</li>
-                    </ul>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
           {/* Prompt Input with character count */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -259,9 +224,6 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({
                     >
                       <span className="text-sm font-medium">
                         {option.label}
-                      </span>
-                      <span className="text-xs text-neutral-500 mt-1">
-                        {option.description}
                       </span>
                     </button>
                   </TooltipTrigger>

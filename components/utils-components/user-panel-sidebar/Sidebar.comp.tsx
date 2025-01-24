@@ -256,10 +256,20 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
             </Link>
             <Link
               href="/settings/ai-style"
-              className="group flex items-center gap-x-2.5 rounded-md px-2 py-1.5 hover:bg-gray-900/[0.03] text-gray-700 transition-colors"
+              className="group flex items-center justify-between rounded-md px-2 py-1.5 hover:bg-blue-50/50 text-gray-700 transition-all duration-200"
             >
-              <Wand2 className="w-[18px] h-[18px] text-gray-600 group-hover:text-gray-800" />
-              <span className="text-sm font-medium">AI Voice & Style</span>
+              <div className="flex items-center gap-x-2.5">
+                <div className="relative">
+                  <div className="absolute -inset-1 bg-blue-500 opacity-20 blur-lg rounded-full" />
+                  <Wand2 className="relative w-[18px] h-[18px] text-blue-600 group-hover:text-blue-700" />
+                </div>
+                <span className="text-sm font-medium group-hover:text-blue-700">
+                  AI Voice & Style
+                </span>
+              </div>
+              <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm">
+                New
+              </span>
             </Link>
           </div>
         </div>

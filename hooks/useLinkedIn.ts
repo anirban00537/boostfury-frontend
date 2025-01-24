@@ -100,7 +100,6 @@ const useLinkedIn = () => {
     ["linkedinProfiles"],
     async () => {
       const response = await getLinkedInProfile();
-      processApiResponse(response);
       return response.data.profile;
     },
     {
