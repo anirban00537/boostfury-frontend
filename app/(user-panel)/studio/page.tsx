@@ -77,42 +77,7 @@ const ContentCreationTools: React.FC = () => {
       animate={{ opacity: 1 }}
       className="relative min-h-screen bg-white"
     >
-      {/* Modern Header */}
-      <div className="relative border-b border-neutral-200/60 bg-gradient-to-b from-blue-50/50 to-white">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.1),rgba(255,255,255,0))]" />
-        <div className="mx-auto px-8 py-8 relative">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-5">
-              <div className="relative">
-                <div className="absolute -inset-3 bg-blue-500 opacity-20 blur-lg rounded-full" />
-                <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-xl shadow-blue-500/20 ring-1 ring-blue-400/30">
-                  <Wand2 className="w-7 h-7 text-white" />
-                </div>
-              </div>
-              <div>
-                <div className="flex items-center gap-3 mb-1">
-                  <h1 className="text-3xl font-bold bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-600 bg-clip-text text-transparent">
-                    AI Post Studio
-                  </h1>
-                  <div className="w-2 h-2 rounded-full bg-neutral-200 mt-2" />
-                  <span className="text-neutral-400 mt-2">v1.0</span>
-                </div>
-                <p className="text-[15px] text-neutral-500 font-medium">
-                  Create engaging LinkedIn posts with AI-powered content
-                  generation
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-600/5 rounded-full border border-blue-100">
-              <div className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
-              <span className="text-xs font-medium text-blue-700">
-                AI Powered
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
+  
       <div
         className={cn(
           "w-full min-h-[calc(100vh-148px)] flex justify-center transition-all duration-300",
