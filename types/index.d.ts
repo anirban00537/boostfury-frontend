@@ -211,3 +211,9 @@ export interface GenerateLinkedInPostsDTO {
   writingStyle?: string;
   postLength?: "short" | "medium" | "long";
 }
+
+export interface GeneratePersonalizedPostDto {
+  linkedInProfileId: string;
+  language?: string;
+  postLength?: "short" | "medium" | "long";
+}

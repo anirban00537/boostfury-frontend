@@ -47,6 +47,7 @@ const ContentCreationTools: React.FC = () => {
     tone,
     handlePromptChange,
     handleGenerate,
+    handleGeneratePersonalized,
     setTone,
     isGenerating,
     postLength,
@@ -77,7 +78,6 @@ const ContentCreationTools: React.FC = () => {
       animate={{ opacity: 1 }}
       className="relative min-h-screen bg-white"
     >
-  
       <div
         className={cn(
           "w-full min-h-[calc(100vh-148px)] flex justify-center transition-all duration-300",
@@ -147,6 +147,7 @@ const ContentCreationTools: React.FC = () => {
         isGenerating={isGenerating}
         handlePromptChange={handlePromptChange}
         handleGenerate={handleGenerate}
+        handleGeneratePersonalized={handleGeneratePersonalized}
         setTone={setTone}
         postLength={postLength}
         setPostLength={setPostLength}

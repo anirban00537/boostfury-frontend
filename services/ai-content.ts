@@ -11,6 +11,13 @@ export interface AiStyle {
   contentTopics: string[];
 }
 
+// Types for personalized post generation
+export interface GeneratePersonalizedPostDto {
+  linkedInProfileId: string;
+  language?: string;
+  postLength?: "short" | "medium" | "long";
+}
+
 // AI Style Management
 export const updateAiStyle = async (
   linkedInProfileId: string,
@@ -41,6 +48,16 @@ export const generateLinkedInPosts = async (dto: {
 }) => {
   const response = await request.post(
     "/ai-content/generate-linkedin-posts",
+    dto
+  );
+  return response.data;
+};
+
+export const generatePersonalizedPost = async (
+  dto: GeneratePersonalizedPostDto
+) => {
+  const response = await request.post(
+    "/ai-content/generate-personalized-post",
     dto
   );
   return response.data;

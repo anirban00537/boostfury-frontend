@@ -92,24 +92,29 @@ interface StudioSidebarProps {
   // Generation states and handlers
   prompt: string;
   tone: string;
-  isGenerating: boolean;
-  handlePromptChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  handleGenerate: () => Promise<void>;
-  setTone: (tone: string) => void;
   postLength: "short" | "medium" | "long";
+  isGenerating: boolean;
+  handleGenerate: () => void;
+  handleGeneratePersonalized: () => void;
+  handlePromptChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  setTone: (tone: string) => void;
   setPostLength: (length: "short" | "medium" | "long") => void;
 }
 
-export const StudioSidebar: React.FC<StudioSidebarProps> = ({
+export const StudioSidebar = ({
   prompt,
   tone,
-  isGenerating,
-  handlePromptChange,
-  handleGenerate,
-  setTone,
   postLength,
+  isGenerating,
+  handleGenerate,
+  handleGeneratePersonalized,
+  handlePromptChange,
+  setTone,
   setPostLength,
-}) => {
+}: StudioSidebarProps) => {
+  const [isRegularGenerating, setIsRegularGenerating] = useState(false);
+  const [isPersonalizedGenerating, setIsPersonalizedGenerating] =
+    useState(false);
   const [showTips, setShowTips] = useState(true);
   const dispatch = useDispatch();
 
@@ -120,6 +125,18 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({
 
   const handleToggle = () => {
     dispatch(toggleEditor());
+  };
+
+  const handleRegularGenerate = async () => {
+    setIsRegularGenerating(true);
+    await handleGenerate();
+    setIsRegularGenerating(false);
+  };
+
+  const handlePersonalizedGenerate = async () => {
+    setIsPersonalizedGenerating(true);
+    await handleGeneratePersonalized();
+    setIsPersonalizedGenerating(false);
   };
 
   return (
@@ -269,34 +286,40 @@ export const StudioSidebar: React.FC<StudioSidebarProps> = ({
         </div>
       </div>
 
-      {/* Generate Button with loading state */}
-      <div className="flex-none p-6 bg-gradient-to-t from-white via-white to-transparent border-t border-neutral-200/60">
+      {/* Generate Buttons */}
+      <div className="space-y-3 px-6 pb-6">
         <GradientButton
-          onClick={handleGenerate}
-          disabled={isGenerating || !prompt.trim()}
-          className={cn(
-            "w-full h-12 shadow-lg transition-all duration-300",
-            !prompt.trim()
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:shadow-primary/25 hover:-translate-y-0.5"
-          )}
+          onClick={handlePersonalizedGenerate}
+          disabled={isPersonalizedGenerating}
+          className="w-full"
           variant="primary"
-        >
-          <div className="relative flex items-center justify-center gap-2">
-            {isGenerating ? (
-              <>
-                <div className="w-4 h-4 relative animate-spin">
-                  <div className="absolute inset-0 rounded-full border-2 border-white/30 border-t-white" />
-                </div>
-                <span className="font-medium">Generating...</span>
-              </>
+          leftIcon={
+            isPersonalizedGenerating ? (
+              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
             ) : (
-              <>
-                <Sparkles className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
-                <span className="font-medium">Generate Post</span>
-              </>
-            )}
-          </div>
+              <Sparkles className="w-4 h-4" />
+            )
+          }
+        >
+          {isPersonalizedGenerating
+            ? "Generating..."
+            : "Generate Personalized Post"}
+        </GradientButton>
+
+        <GradientButton
+          onClick={handleRegularGenerate}
+          disabled={!prompt.trim() || prompt.length < 10 || isRegularGenerating}
+          variant="primary"
+          className="w-full"
+          leftIcon={
+            isRegularGenerating ? (
+              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Wand2 className="w-4 h-4" />
+            )
+          }
+        >
+          {isRegularGenerating ? "Generating..." : "Generate Post"}
         </GradientButton>
       </div>
     </motion.div>

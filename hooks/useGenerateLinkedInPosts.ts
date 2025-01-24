@@ -1,10 +1,15 @@
 import { useMutation, useQueryClient } from "react-query";
-import { generateLinkedInPosts } from "@/services/ai-content";
-import { GenerateLinkedInPostsDTO } from "@/types";
+import {
+  generateLinkedInPosts,
+  generatePersonalizedPost,
+} from "@/services/ai-content";
+import { GenerateLinkedInPostsDTO, GeneratePersonalizedPostDto } from "@/types";
 import toast from "react-hot-toast";
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "./useAuth";
 import { processApiResponse } from "@/lib/functions";
+import { useSelector } from "react-redux";
+import { RootState } from "@/state/store";
 
 interface ContentIdea {
   idea: string;
@@ -19,6 +24,7 @@ export const useGenerateLinkedInPosts = ({
 }: UseGenerateLinkedInPostsProps) => {
   const queryClient = useQueryClient();
   const { refetchSubscription } = useAuth();
+  const { linkedinProfile } = useSelector((state: RootState) => state.user);
 
   // Core states
   const [prompt, setPrompt] = useState("");
@@ -28,7 +34,38 @@ export const useGenerateLinkedInPosts = ({
   );
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // Generate post mutation
+  // Generate personalized post mutation
+  const { mutateAsync: generatePersonalized } = useMutation(
+    (dto: GeneratePersonalizedPostDto) => generatePersonalizedPost(dto),
+    {
+      onSuccess: async (response) => {
+        if (!response.success) {
+          toast.error(
+            response.message || "Failed to generate personalized content"
+          );
+          return;
+        }
+
+        const content = response.data?.post || "";
+
+        if (onContentGenerated) {
+          onContentGenerated(content);
+        }
+
+        // Refresh subscription data
+        await queryClient.invalidateQueries(["subscription"]);
+        await refetchSubscription().catch(console.error);
+      },
+      onError: async (error: Error) => {
+        console.error("Personalized generation error:", error);
+        processApiResponse(error);
+        await queryClient.invalidateQueries(["subscription"]);
+        await refetchSubscription().catch(console.error);
+      },
+    }
+  );
+
+  // Generate regular post mutation
   const { mutateAsync: generatePost } = useMutation(
     (dto: GenerateLinkedInPostsDTO) => generateLinkedInPosts(dto),
     {
@@ -38,14 +75,11 @@ export const useGenerateLinkedInPosts = ({
           return;
         }
 
-        console.log("response", response);
         const content = response.data?.post || "";
 
         if (onContentGenerated) {
           onContentGenerated(content);
         }
-
-        toast.success("Content generated successfully!");
 
         // Refresh subscription data
         await queryClient.invalidateQueries(["subscription"]);
@@ -98,7 +132,7 @@ export const useGenerateLinkedInPosts = ({
         prompt: prompt.trim(),
         language: "en",
         tone,
-        postLength: postLength,
+        postLength,
       });
     } catch (error) {
       console.error("Error in handleGenerate:", error);
@@ -115,19 +149,33 @@ export const useGenerateLinkedInPosts = ({
     }
   };
 
-  const generateContent = useCallback(async () => {
+  const handleGeneratePersonalized = async () => {
+    if (!linkedinProfile?.id) {
+      toast.error("Please connect your LinkedIn account first");
+      return;
+    }
+
     try {
       setIsGenerating(true);
-      // TODO: Implement AI content generation
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulated API call
-      const generatedContent = "This is a sample AI-generated post content.";
-      onContentGenerated?.(generatedContent);
-      setIsGenerating(false);
+      await generatePersonalized({
+        linkedInProfileId: linkedinProfile.id,
+        language: "en",
+        postLength: "medium",
+      });
     } catch (error) {
-      console.error("Error generating content:", error);
+      console.error("Error in handleGeneratePersonalized:", error);
+      try {
+        await Promise.all([
+          queryClient.invalidateQueries(["subscription"]),
+          refetchSubscription(),
+        ]);
+      } catch (refreshError) {
+        console.error("Error refreshing subscription data:", refreshError);
+      }
+    } finally {
       setIsGenerating(false);
     }
-  }, [onContentGenerated]);
+  };
 
   return {
     // States
@@ -139,8 +187,8 @@ export const useGenerateLinkedInPosts = ({
     setPrompt,
     handlePromptChange,
     handleGenerate,
+    handleGeneratePersonalized,
     setTone,
     setPostLength,
-    generateContent,
   };
 };
