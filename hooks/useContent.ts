@@ -172,7 +172,6 @@ export const useContentPosting = () => {
       console.log("Save draft mutation success response:", response);
       if (!response.success) {
         console.error("Save draft failed:", response.message);
-        toast.error(response.message || "Failed to save draft");
         return;
       }
 
@@ -189,7 +188,6 @@ export const useContentPosting = () => {
     },
     onError: (error) => {
       console.error("Save draft mutation error:", error);
-      toast.error("Failed to save draft");
     },
   });
 
@@ -221,14 +219,11 @@ export const useContentPosting = () => {
             "draftDetails",
             response.data.post.id,
           ]);
-          toast.success("Draft saved", { id: "draft-save" });
         } else {
           console.error("Auto-save failed:", response);
-          toast.error("Failed to save draft", { id: "draft-save-error" });
         }
       } catch (error) {
         console.error("Auto-save error:", error);
-        toast.error("Failed to save draft", { id: "draft-save-error" });
       } finally {
         console.log("Auto-save process completed");
         setIsAutoSaving(false);
@@ -259,7 +254,6 @@ export const useContentPosting = () => {
       // Don't proceed if no LinkedIn profile is selected
       if (!linkedinProfile?.id) {
         console.error("No LinkedIn profile selected for content change");
-        toast.error("Please select a LinkedIn profile");
         return;
       }
 
@@ -288,12 +282,10 @@ export const useContentPosting = () => {
 
             console.log("Updating post details:", response.data.post);
             setPostDetails(response.data.post as Post);
-            toast.success("Draft created successfully");
           }
         }
       } catch (error) {
         console.error("Content change error:", error);
-        toast.error("Failed to save draft");
       } finally {
         setIsCreatingDraft(false);
       }
@@ -305,7 +297,6 @@ export const useContentPosting = () => {
   const handleGenerateContent = useCallback(
     async (generatedContent: string) => {
       if (!linkedinProfile?.id) {
-        toast.error("Please select a LinkedIn profile");
         return;
       }
 
@@ -336,7 +327,6 @@ export const useContentPosting = () => {
             "Failed to update draft with generated content:",
             error
           );
-          toast.error("Failed to save generated content");
         }
       } else {
         // Create new draft with generated content
@@ -357,7 +347,6 @@ export const useContentPosting = () => {
             "Failed to create draft with generated content:",
             error
           );
-          toast.error("Failed to save generated content");
         }
       }
     },
@@ -372,15 +361,12 @@ export const useContentPosting = () => {
   >(({ file, postId }) => uploadImage(postId, file), {
     onSuccess: async (response) => {
       if (response.success) {
-        // Refetch post details to get updated image list
         if (draftId) {
           await queryClient.invalidateQueries(["draftDetails", draftId]);
         }
-        toast.success("Image uploaded successfully");
       }
     },
     onError: (error) => {
-      toast.error(error.message || "Failed to upload image");
       console.error("Upload error:", error);
     },
   });
@@ -402,15 +388,12 @@ export const useContentPosting = () => {
           setImages((prevImages) =>
             prevImages.filter((img) => img.id !== variables.imageId)
           );
-          // Refetch post details to get updated image list
           if (draftId) {
             await queryClient.invalidateQueries(["draftDetails", draftId]);
           }
-          toast.success("Image deleted successfully");
         }
       },
       onError: (error) => {
-        toast.error(error.message || "Failed to delete image");
         console.error("Delete error:", error);
       },
     }
@@ -437,7 +420,6 @@ export const useContentPosting = () => {
         }
       },
       onError: (error) => {
-        toast.error(error.message || "Failed to reorder images");
         console.error("Reorder error:", error);
       },
     }
@@ -466,7 +448,6 @@ export const useContentPosting = () => {
         } as Post);
       },
       onError: (error) => {
-        toast.error("Failed to fetch draft details");
         console.error("Error fetching draft:", error);
       },
     }
@@ -484,10 +465,7 @@ export const useContentPosting = () => {
     {
       onSuccess: (response) => {
         if (response.success) {
-          toast.success("Post published successfully!");
           router.push("/my-posts?tab=published");
-        } else {
-          toast.error(response.message || "Failed to publish post");
         }
       },
     }
@@ -504,10 +482,7 @@ export const useContentPosting = () => {
     {
       onSuccess: (response) => {
         if (response.success) {
-          toast.success("Post added to queue successfully!");
           router.push("/my-posts?tab=scheduled");
-        } else {
-          toast.error(response.message || "Failed to add post to queue");
         }
       },
     }
@@ -524,10 +499,7 @@ export const useContentPosting = () => {
     {
       onSuccess: (response) => {
         if (response.success) {
-          toast.success("Post scheduled successfully!");
           router.push("/my-posts?tab=scheduled");
-        } else {
-          toast.error(response.message || "Failed to schedule post");
         }
       },
     }
@@ -537,7 +509,6 @@ export const useContentPosting = () => {
   const handlePostNow = useCallback(
     async (linkedinProfileId: string) => {
       if (!draftId) {
-        toast.error("No draft found to publish");
         return;
       }
       await postNowMutation(draftId);
@@ -548,7 +519,6 @@ export const useContentPosting = () => {
   const handleAddToQueue = useCallback(
     async (linkedinProfileId: string) => {
       if (!draftId) {
-        toast.error("No draft found to add to queue");
         return;
       }
       await addToQueueMutation(draftId);
@@ -559,7 +529,6 @@ export const useContentPosting = () => {
   const handleSchedule = useCallback(
     async (date: Date) => {
       if (!draftId || !linkedinProfile?.id) {
-        toast.error("Missing draft or profile");
         return;
       }
 
@@ -579,14 +548,10 @@ export const useContentPosting = () => {
       mutationFn: () => shuffleQueue(),
       onSuccess: (response) => {
         if (response.success) {
-          // Refetch the queue data to show updated order
           queryClient.invalidateQueries(["scheduledQueue"]);
-        } else {
-          toast.error(response.message || "Failed to shuffle queue");
         }
       },
       onError: (error: Error) => {
-        toast.error(`Error shuffling queue: ${error.message}`);
         console.error("Shuffle error:", error);
       },
     });
@@ -632,7 +597,6 @@ export const useContentPosting = () => {
         await queryClient.invalidateQueries(["draftDetails", draftId]);
       } catch (error) {
         console.error("Error deleting image:", error);
-        toast.error("Failed to delete image");
       }
     },
     handleImageReorder: async (imageIds: string[]) => {
@@ -693,7 +657,6 @@ export const useContentManagement = () => {
         setPagination(response.data.pagination);
       },
       onError: (error) => {
-        toast.error("Failed to fetch posts");
         console.error("Error fetching posts:", error);
       },
     }
@@ -705,7 +668,6 @@ export const useContentManagement = () => {
         processApiResponse(response);
       },
       onError: (error: Error) => {
-        toast.error(`Error deleting post`);
         console.error("Deleting error:", error);
       },
     });
@@ -807,7 +769,6 @@ export const useScheduledQueue = () => {
     {
       enabled: !!linkedinProfile?.id,
       onError: (error) => {
-        toast.error("Failed to fetch scheduled queue");
         console.error("Error fetching scheduled queue:", error);
       },
     }
