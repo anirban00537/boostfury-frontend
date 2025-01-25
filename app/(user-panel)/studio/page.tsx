@@ -81,7 +81,7 @@ const ContentCreationTools: React.FC = () => {
       <div
         className={cn(
           "w-full min-h-[calc(100vh-148px)] flex justify-center transition-all duration-300",
-          isEditorOpen ? "pr-[400px]" : ""
+          isEditorOpen ? "pr-[400px]" : "pr-0"
         )}
       >
         <div className="w-[550px] py-8">

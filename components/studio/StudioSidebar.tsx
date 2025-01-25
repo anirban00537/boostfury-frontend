@@ -151,22 +151,17 @@ export const StudioSidebar = ({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="fixed top-0 right-0 h-screen w-[400px] bg-gradient-to-b from-violet-50/50 via-white to-white flex flex-col"
-    >
-      {/* Beautiful Background Pattern */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(#e9e4ff_1px,transparent_1px)] [background-size:16px_16px] opacity-40" />
-        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-violet-100/20 to-transparent" />
-      </div>
-
+    <>
       {/* Toggle Button */}
-      <button
+      <motion.button
         onClick={handleToggle}
-        className="absolute -left-12 top-4 p-2.5 bg-white hover:bg-neutral-50 rounded-l-xl border border-r-0 border-neutral-200/60 group transition-all duration-300 hover:shadow-lg"
+        initial={{ opacity: 0 }}
+        animate={{ 
+          opacity: 1,
+          right: isEditorOpen ? "400px" : "0px",
+        }}
+        transition={{ duration: 0.3 }}
+        className="fixed top-4 p-2.5 bg-white hover:bg-neutral-50 rounded-l-xl border border-r-0 border-neutral-200/60 group transition-all duration-300 hover:shadow-lg z-50"
       >
         <motion.div
           animate={{ rotate: isEditorOpen ? 0 : 180 }}
@@ -174,213 +169,232 @@ export const StudioSidebar = ({
         >
           <ChevronDown className="w-5 h-5 text-neutral-600 group-hover:text-neutral-900" />
         </motion.div>
-      </button>
+      </motion.button>
 
-      {/* Beautiful Header */}
-      <div className="relative border-b border-violet-100">
-        <div className="absolute inset-0 bg-gradient-to-b from-violet-100/20 via-violet-50/10 to-transparent" />
-        <div className="mx-auto px-6 py-5 relative">
-          <div className="flex items-center gap-4">
-            <div className="relative group">
-              <div className="absolute -inset-1 rounded-xl bg-violet-100 blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
-              <div className="relative flex items-center justify-center w-12 h-12 rounded-xl bg-white shadow-sm border border-violet-100 group-hover:border-violet-200 transition-all duration-300">
-                <div className="absolute inset-0 rounded-xl bg-violet-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <Wand2 className="w-6 h-6 text-violet-600 relative" />
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center gap-3 mb-0.5">
-                <h1 className="text-xl font-semibold text-violet-950">
-                  AI Studio
-                </h1>
-                <div className="relative">
-                  <div className="absolute inset-0 bg-violet-100 blur opacity-25" />
-                  <div className="px-2 py-1 rounded-md bg-white/80 border border-violet-200 backdrop-blur-sm relative">
-                    <span className="text-[11px] font-semibold text-violet-600">
-                      BETA
-                    </span>
-                  </div>
+      <motion.div
+        initial={{ opacity: 0, x: 400 }}
+        animate={{
+          opacity: isEditorOpen ? 1 : 0,
+          x: isEditorOpen ? 0 : 400,
+        }}
+        transition={{ duration: 0.3 }}
+        className={cn(
+          "fixed top-0 right-0 h-screen w-[400px] bg-gradient-to-b from-violet-50/50 via-white to-white flex flex-col",
+          !isEditorOpen && "pointer-events-none"
+        )}
+      >
+        {/* Beautiful Background Pattern */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 bg-[radial-gradient(#e9e4ff_1px,transparent_1px)] [background-size:16px_16px] opacity-40" />
+          <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-violet-100/20 to-transparent" />
+        </div>
+
+        {/* Beautiful Header */}
+        <div className="relative border-b border-violet-100">
+          <div className="absolute inset-0 bg-gradient-to-b from-violet-100/20 via-violet-50/10 to-transparent" />
+          <div className="mx-auto px-6 py-5 relative">
+            <div className="flex items-center gap-4">
+              <div className="relative group">
+                <div className="absolute -inset-1 rounded-xl bg-violet-100 blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
+                <div className="relative flex items-center justify-center w-12 h-12 rounded-xl bg-white shadow-sm border border-violet-100 group-hover:border-violet-200 transition-all duration-300">
+                  <div className="absolute inset-0 rounded-xl bg-violet-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <Wand2 className="w-6 h-6 text-violet-600 relative" />
                 </div>
               </div>
-              <p className="text-sm text-violet-600/80">
-                Powered by Advanced AI
-              </p>
+              <div>
+                <div className="flex items-center gap-3 mb-0.5">
+                  <h1 className="text-xl font-semibold text-violet-950">
+                    AI Studio
+                  </h1>
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-violet-100 blur opacity-25" />
+                    <div className="px-2 py-1 rounded-md bg-white/80 border border-violet-200 backdrop-blur-sm relative">
+                      <span className="text-[11px] font-semibold text-violet-600">
+                        BETA
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-sm text-violet-600/80">
+                  Powered by Advanced AI
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Content Area */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-violet-200 scrollbar-track-transparent">
-        <div className="p-6 space-y-8">
-          {/* Prompt Input */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-3"
-          >
-            <div className="flex items-center justify-between">
+        {/* Content Area */}
+        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-violet-200 scrollbar-track-transparent">
+          <div className="p-6 space-y-8">
+            {/* Prompt Input */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="space-y-3"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-violet-600" />
+                  <label className="text-sm font-medium text-neutral-900">
+                    What would you like to write about?
+                  </label>
+                </div>
+                <span className="text-xs text-neutral-500">
+                  {prompt.length}/500
+                </span>
+              </div>
+              <div className="relative group">
+                <textarea
+                  value={prompt}
+                  onChange={handlePromptChange}
+                  placeholder="Enter your topic or idea..."
+                  maxLength={500}
+                  className="w-full h-[120px] px-4 py-3 text-[15px] leading-relaxed bg-white rounded-xl border border-neutral-200 placeholder:text-neutral-400 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/30 resize-none transition-all duration-200"
+                />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button className="absolute top-2 right-2 p-1.5 rounded-md hover:bg-violet-50 text-violet-400 hover:text-violet-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Info className="w-4 h-4" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">
+                      Be specific about your topic and target audience
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </motion.div>
+
+            {/* Post Length Selection */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="space-y-3"
+            >
+              <div className="flex items-center gap-2">
+                <Brain className="w-4 h-4 text-violet-600" />
+                <label className="text-sm font-medium text-neutral-900">
+                  Select post length
+                </label>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {postLengthOptions.map((option) => (
+                  <Tooltip key={option.value}>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => setPostLength(option.value)}
+                        className={cn(
+                          "flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200",
+                          postLength === option.value
+                            ? "bg-violet-50 border border-violet-200 shadow-sm"
+                            : "bg-white border border-neutral-200 hover:border-violet-200 hover:shadow-sm"
+                        )}
+                      >
+                        <div
+                          className={cn(
+                            "w-8 h-8 rounded-full flex items-center justify-center mb-2",
+                            postLength === option.value
+                              ? "bg-violet-100 text-violet-600"
+                              : "bg-neutral-100 text-neutral-500"
+                          )}
+                        >
+                          {option.icon}
+                        </div>
+                        <span className={cn(
+                          "text-sm font-medium",
+                          postLength === option.value
+                            ? "text-violet-600"
+                            : "text-neutral-600"
+                        )}>
+                          {option.label}
+                        </span>
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">{option.tooltip}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Tone Selection */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="space-y-3"
+            >
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-violet-600" />
                 <label className="text-sm font-medium text-neutral-900">
-                  What would you like to write about?
+                  Choose the tone
                 </label>
               </div>
-              <span className="text-xs text-neutral-500">
-                {prompt.length}/500
-              </span>
-            </div>
-            <div className="relative group">
-              <textarea
-                value={prompt}
-                onChange={handlePromptChange}
-                placeholder="Enter your topic or idea..."
-                maxLength={500}
-                className="w-full h-[120px] px-4 py-3 text-[15px] leading-relaxed bg-white rounded-xl border border-neutral-200 placeholder:text-neutral-400 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/30 resize-none transition-all duration-200"
-              />
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button className="absolute top-2 right-2 p-1.5 rounded-md hover:bg-violet-50 text-violet-400 hover:text-violet-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Info className="w-4 h-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-xs">
-                    Be specific about your topic and target audience
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          </motion.div>
-
-          {/* Post Length Selection */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="space-y-3"
-          >
-            <div className="flex items-center gap-2">
-              <Brain className="w-4 h-4 text-violet-600" />
-              <label className="text-sm font-medium text-neutral-900">
-                Select post length
-              </label>
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              {postLengthOptions.map((option) => (
-                <Tooltip key={option.value}>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => setPostLength(option.value)}
-                      className={cn(
-                        "flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200",
-                        postLength === option.value
-                          ? "bg-violet-50 border border-violet-200 shadow-sm"
-                          : "bg-white border border-neutral-200 hover:border-violet-200 hover:shadow-sm"
-                      )}
-                    >
-                      <div
+              <div className="grid grid-cols-3 gap-2">
+                {toneOptions.map((option) => (
+                  <Tooltip key={option.value}>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => setTone(option.value)}
                         className={cn(
-                          "w-8 h-8 rounded-full flex items-center justify-center mb-2",
-                          postLength === option.value
-                            ? "bg-violet-100 text-violet-600"
-                            : "bg-neutral-100 text-neutral-500"
+                          "relative group flex items-center gap-2 p-2 rounded-xl transition-all duration-200 border h-[42px]",
+                          tone === option.value
+                            ? "bg-violet-50 border-violet-200 shadow-sm"
+                            : "bg-white border-neutral-200 hover:border-violet-200 hover:shadow-sm"
                         )}
                       >
-                        {option.icon}
-                      </div>
-                      <span className={cn(
-                        "text-sm font-medium",
-                        postLength === option.value
-                          ? "text-violet-600"
-                          : "text-neutral-600"
-                      )}>
-                        {option.label}
-                      </span>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="text-xs">{option.tooltip}</p>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Tone Selection */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-3"
-          >
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-violet-600" />
-              <label className="text-sm font-medium text-neutral-900">
-                Choose the tone
-              </label>
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              {toneOptions.map((option) => (
-                <Tooltip key={option.value}>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => setTone(option.value)}
-                      className={cn(
-                        "relative group flex items-center gap-2 p-2 rounded-xl transition-all duration-200 border h-[42px]",
-                        tone === option.value
-                          ? "bg-violet-50 border-violet-200 shadow-sm"
-                          : "bg-white border-neutral-200 hover:border-violet-200 hover:shadow-sm"
-                      )}
-                    >
-                      <span className="text-lg shrink-0 relative">{option.emoji}</span>
-                      <span className={cn(
-                        "text-xs font-medium truncate relative",
-                        tone === option.value
-                          ? "text-violet-600"
-                          : "text-neutral-600"
-                      )}>
-                        {option.label}
-                      </span>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="text-xs">{option.tooltip}</p>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
-            </div>
-          </motion.div>
+                        <span className="text-lg shrink-0 relative">{option.emoji}</span>
+                        <span className={cn(
+                          "text-xs font-medium truncate relative",
+                          tone === option.value
+                            ? "text-violet-600"
+                            : "text-neutral-600"
+                        )}>
+                          {option.label}
+                        </span>
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">{option.tooltip}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                ))}
+              </div>
+            </motion.div>
+          </div>
         </div>
-      </div>
 
-      {/* Generate Button */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="relative p-6 bg-gradient-to-t from-white via-white to-transparent"
-      >
-        <GradientButton
-          onClick={handleRegularGenerate}
-          disabled={!prompt.trim() || prompt.length < 10 || isRegularGenerating}
-          variant="primary"
-          className="w-full relative group shadow-lg shadow-violet-100/50"
-          leftIcon={
-            isRegularGenerating ? (
-              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <Wand2 className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-            )
-          }
+        {/* Generate Button */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="relative p-6 bg-gradient-to-t from-white via-white to-transparent"
         >
-          <span className="relative">
-            {isRegularGenerating ? "Generating..." : "Generate Post"}
-          </span>
-        </GradientButton>
+          <GradientButton
+            onClick={handleRegularGenerate}
+            disabled={!prompt.trim() || prompt.length < 10 || isRegularGenerating}
+            variant="primary"
+            className="w-full relative group shadow-lg shadow-violet-100/50"
+            leftIcon={
+              isRegularGenerating ? (
+                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Wand2 className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+              )
+            }
+          >
+            <span className="relative">
+              {isRegularGenerating ? "Generating..." : "Generate Post"}
+            </span>
+          </GradientButton>
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </>
   );
 };
 
