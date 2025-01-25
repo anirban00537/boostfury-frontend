@@ -2,6 +2,9 @@ import { useMutation, useQueryClient } from "react-query";
 import {
   generateLinkedInPosts,
   generatePersonalizedPost,
+  rewriteContent,
+  LINKEDIN_REWRITE_INSTRUCTIONS,
+  RewriteInstructionType
 } from "@/services/ai-content";
 import { GenerateLinkedInPostsDTO, GeneratePersonalizedPostDto } from "@/types";
 import toast from "react-hot-toast";
@@ -18,10 +21,12 @@ interface ContentIdea {
 
 interface UseGenerateLinkedInPostsProps {
   onContentGenerated?: (content: string) => void;
+  currentPostId?: string;
 }
 
 export const useGenerateLinkedInPosts = ({
   onContentGenerated,
+  currentPostId
 }: UseGenerateLinkedInPostsProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -31,13 +36,10 @@ export const useGenerateLinkedInPosts = ({
   // Core states
   const [prompt, setPrompt] = useState("");
   const [tone, setTone] = useState("professional");
-  const [postLength, setPostLength] = useState<"short" | "medium" | "long">(
-    "medium"
-  );
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [postLength, setPostLength] = useState<"short" | "medium" | "long">("medium");
 
   // Generate personalized post mutation
-  const { mutateAsync: generatePersonalized } = useMutation(
+  const { mutateAsync: generatePersonalized, isLoading: isGeneratingPersonalized } = useMutation(
     (dto: GeneratePersonalizedPostDto) => generatePersonalizedPost(dto),
     {
       onSuccess: async (response) => {
@@ -68,7 +70,7 @@ export const useGenerateLinkedInPosts = ({
   );
 
   // Generate regular post mutation
-  const { mutateAsync: generatePost } = useMutation(
+  const { mutateAsync: generatePost, isLoading: isGeneratingPost } = useMutation(
     (dto: GenerateLinkedInPostsDTO) => generateLinkedInPosts(dto),
     {
       onSuccess: async (response) => {
@@ -96,12 +98,45 @@ export const useGenerateLinkedInPosts = ({
     }
   );
 
+  // Rewrite content mutation
+  const { mutateAsync: rewritePost, isLoading: isRewriting } = useMutation(
+    (instructionType: RewriteInstructionType) =>
+      rewriteContent({
+        linkedInPostId: currentPostId!,
+        instructionType,
+      }),
+    {
+      onSuccess: async (response) => {
+        if (!response.success) {
+          toast.error(response.message || "Failed to rewrite content");
+          return;
+        }
+
+        const content = response.data?.content || "";
+
+        if (onContentGenerated) {
+          onContentGenerated(content);
+        }
+
+        // Refresh subscription data
+        await queryClient.invalidateQueries(["subscription"]);
+        await refetchSubscription().catch(console.error);
+      },
+      onError: async (error: Error) => {
+        console.error("Rewrite error:", error);
+        processApiResponse(error);
+        await queryClient.invalidateQueries(["subscription"]);
+        await refetchSubscription().catch(console.error);
+      },
+    }
+  );
+
   // Keyboard shortcut for generation
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
         event.preventDefault();
-        if (!isGenerating) {
+        if (!isGeneratingPost) {
           handleGenerate();
         }
       }
@@ -109,7 +144,7 @@ export const useGenerateLinkedInPosts = ({
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [prompt, isGenerating]);
+  }, [prompt, isGeneratingPost]);
 
   const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPrompt(e.target.value);
@@ -129,7 +164,6 @@ export const useGenerateLinkedInPosts = ({
     }
 
     try {
-      setIsGenerating(true);
       await generatePost({
         prompt: prompt.trim(),
         language: "en",
@@ -146,8 +180,6 @@ export const useGenerateLinkedInPosts = ({
       } catch (refreshError) {
         console.error("Error refreshing subscription data:", refreshError);
       }
-    } finally {
-      setIsGenerating(false);
     }
   };
 
@@ -162,7 +194,6 @@ export const useGenerateLinkedInPosts = ({
       return;
     }
     try {
-      setIsGenerating(true);
       await generatePersonalized({
         linkedInProfileId: linkedinProfile.id,
         language: "en",
@@ -178,8 +209,19 @@ export const useGenerateLinkedInPosts = ({
       } catch (refreshError) {
         console.error("Error refreshing subscription data:", refreshError);
       }
-    } finally {
-      setIsGenerating(false);
+    }
+  };
+
+  const handleRewriteContent = async (type: RewriteInstructionType) => {
+    if (!currentPostId) {
+      toast.error("No post selected for rewriting");
+      return;
+    }
+
+    try {
+      await rewritePost(type);
+    } catch (error) {
+      console.error("Error in handleRewriteContent:", error);
     }
   };
 
@@ -188,12 +230,15 @@ export const useGenerateLinkedInPosts = ({
     prompt,
     tone,
     postLength,
-    isGenerating,
+    isGenerating: isGeneratingPost,
+    isGeneratingPersonalized,
+    isRewriting,
     // Actions
     setPrompt,
     handlePromptChange,
     handleGenerate,
     handleGeneratePersonalized,
+    handleRewriteContent,
     setTone,
     setPostLength,
   };

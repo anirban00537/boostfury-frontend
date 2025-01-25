@@ -14,6 +14,7 @@ import {
   Linkedin,
   Sparkles,
   Wand2,
+  Loader2,
 } from "lucide-react";
 import { LinkedInPostImage } from "@/types/post";
 import { motion, AnimatePresence } from "framer-motion";
@@ -23,6 +24,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { GradientButton } from "@/components/ui/gradient-button";
+import { LINKEDIN_REWRITE_INSTRUCTIONS, RewriteInstructionType } from "@/services/ai-content";
 
 interface LinkedInEditorProps {
   content: string;
@@ -38,7 +41,9 @@ interface LinkedInEditorProps {
   isPosting: boolean;
   isAddingToQueue: boolean;
   isScheduling: boolean;
+  isGenerating: boolean;
   isGeneratingPersonalized: boolean;
+  isRewriting: boolean;
   onContentChange: (content: string) => void;
   onImageUpload: () => void;
   onEmojiPickerToggle: () => void;
@@ -47,7 +52,7 @@ interface LinkedInEditorProps {
   onPostNow: () => void;
   onImageDelete: (imageId: string) => void;
   onGeneratePersonalized: () => void;
-  onRewriteContent?: (type: number) => void;
+  onRewriteContent: (type: RewriteInstructionType) => void;
 }
 
 export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
@@ -57,7 +62,9 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
   isPosting,
   isAddingToQueue,
   isScheduling,
+  isGenerating,
   isGeneratingPersonalized,
+  isRewriting,
   onContentChange,
   onImageUpload,
   onEmojiPickerToggle,
@@ -302,17 +309,18 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
               <div className="flex items-center gap-2">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <GradientButton
+                    <Button
+                      variant="ghost"
+                      className="h-9 w-9 p-0 hover:bg-neutral-50"
                       onClick={onGeneratePersonalized}
                       disabled={isGeneratingPersonalized}
-                      isLoading={isGeneratingPersonalized}
-                      variant="primary"
-                      size="default"
-                      className="bg-[#8B5CF6] hover:bg-[#7C3AED] text-white px-4 h-9 rounded-lg shadow-sm flex items-center gap-2 transition-all"
-                      leftIcon={<Sparkles className="w-4 h-4" />}
                     >
-                      {isGeneratingPersonalized ? "Generating..." : "Generate AI Post"}
-                    </GradientButton>
+                      {isGeneratingPersonalized ? (
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                      ) : (
+                        <Sparkles className="h-5 w-5" />
+                      )}
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p className="text-xs">
@@ -323,18 +331,21 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <GradientButton
-                      variant="primary"
-                      size="default"
-                      className="bg-[#8B5CF6] hover:bg-[#7C3AED] text-white px-4 h-9 rounded-lg shadow-sm flex items-center gap-2 transition-all"
-                      leftIcon={<Wand2 className="w-4 h-4" />}
+                    <Button
+                      variant="ghost"
+                      className="h-9 w-9 p-0 hover:bg-neutral-50"
+                      disabled={isRewriting}
                     >
-                      AI Rewrite
-                    </GradientButton>
+                      {isRewriting ? (
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                      ) : (
+                        <Wand2 className="h-5 w-5" />
+                      )}
+                    </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-[200px] p-1">
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(1)}
+                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.IMPROVE)}
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
@@ -343,7 +354,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                       <span>Improve Overall</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(2)}
+                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.SHORTER)}
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
@@ -354,7 +365,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                       <span>Make it Shorter</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(3)}
+                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.LONGER)}
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
@@ -365,7 +376,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                       <span>Make it Longer</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(4)}
+                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.PROFESSIONAL)}
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
@@ -376,7 +387,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                       <span>More Professional</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(5)}
+                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.CASUAL)}
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
@@ -385,7 +396,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                       <span>More Casual</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(6)}
+                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.SEO_OPTIMIZE)}
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
@@ -397,7 +408,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                       <span>SEO Optimize</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(7)}
+                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.STORYTELLING)}
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
@@ -408,7 +419,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                       <span>Add Storytelling</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(8)}
+                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.PERSUASIVE)}
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
@@ -419,7 +430,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                       <span>More Persuasive</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(9)}
+                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.IMPROVE_HOOK)}
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">

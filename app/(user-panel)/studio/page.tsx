@@ -48,12 +48,16 @@ const ContentCreationTools: React.FC = () => {
     handlePromptChange,
     handleGenerate,
     handleGeneratePersonalized,
+    handleRewriteContent,
     setTone,
     isGenerating,
+    isGeneratingPersonalized,
+    isRewriting,
     postLength,
     setPostLength,
   } = useGenerateLinkedInPosts({
     onContentGenerated: handleContentChange,
+    currentPostId: postDetails?.id,
   });
 
   const handleEmojiSelect = (emoji: any) => {
@@ -97,7 +101,9 @@ const ContentCreationTools: React.FC = () => {
               isPosting={isPosting}
               isAddingToQueue={isAddingToQueue}
               isScheduling={isScheduling}
-              isGeneratingPersonalized={isGenerating}
+              isGenerating={isGenerating}
+              isGeneratingPersonalized={isGeneratingPersonalized}
+              isRewriting={isRewriting}
               onContentChange={handleContentChange}
               onImageUpload={() => setIsImageModalOpen(true)}
               onEmojiPickerToggle={() => setShowEmojiPicker(!showEmojiPicker)}
@@ -110,6 +116,7 @@ const ContentCreationTools: React.FC = () => {
               }
               onImageDelete={handleImageDelete}
               onGeneratePersonalized={handleGeneratePersonalized}
+              onRewriteContent={handleRewriteContent}
             />
           </motion.div>
 
