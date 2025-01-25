@@ -28,6 +28,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { GradientButton } from "@/components/ui/gradient-button";
 
 interface LinkedInEditorProps {
   content: string;
@@ -45,7 +46,7 @@ interface LinkedInEditorProps {
   onPostNow: () => void;
   onImageDelete: (imageId: string) => void;
   onGeneratePersonalized: () => void;
-
+  onRewriteContent?: (type: number) => void;
 }
 
 export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
@@ -64,6 +65,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
   onPostNow,
   onImageDelete,
   onGeneratePersonalized,
+  onRewriteContent,
 
 }) => {
   const contentRef = useRef<HTMLTextAreaElement>(null);
@@ -296,34 +298,137 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                 </Tooltip>
               </div>
 
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={onGeneratePersonalized}
-                    disabled={isGeneratingPersonalized}
-                    className={cn(
-                      "h-9 px-4 rounded-xl border border-blue-500/30 text-blue-600",
-                      "hover:bg-blue-50/50 hover:border-blue-500/50 transition-all",
-                      "flex items-center gap-2 text-sm font-medium",
-                      "disabled:opacity-50 disabled:cursor-not-allowed"
-                    )}
-                  >
-                    {isGeneratingPersonalized ? (
-                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      <Sparkles className="w-4 h-4" />
-                    )}
-                    {isGeneratingPersonalized
-                      ? "Generating..."
-                      : "Generate AI Post"}
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-xs">
-                    Generate a personalized post using AI
-                  </p>
-                </TooltipContent>
-              </Tooltip>
+              <div className="flex items-center gap-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <GradientButton
+                      onClick={onGeneratePersonalized}
+                      disabled={isGeneratingPersonalized}
+                      isLoading={isGeneratingPersonalized}
+                      variant="primary"
+                      size="default"
+                      leftIcon={<Sparkles className="w-4 h-4" />}
+                    >
+                      {isGeneratingPersonalized ? "Generating..." : "Generate AI Post"}
+                    </GradientButton>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">
+                      Generate a personalized post using AI
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <GradientButton
+                      variant="primary"
+                      size="default"
+                      leftIcon={<MoreHorizontal className="w-4 h-4" />}
+                    >
+                      AI Rewrite
+                    </GradientButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[200px] p-1">
+                    <DropdownMenuItem
+                      onClick={() => onRewriteContent?.(1)}
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                        <Sparkles className="h-3.5 w-3.5 text-blue-600" />
+                      </div>
+                      <span>Improve Overall</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onRewriteContent?.(2)}
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                        <svg className="h-3.5 w-3.5 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M3 6h18M3 12h10M3 18h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                        </svg>
+                      </div>
+                      <span>Make it Shorter</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onRewriteContent?.(3)}
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                        <svg className="h-3.5 w-3.5 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                        </svg>
+                      </div>
+                      <span>Make it Longer</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onRewriteContent?.(4)}
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                        <svg className="h-3.5 w-3.5 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M20 7L12 3L4 7M20 7L12 11M20 7V17L12 21M12 11L4 7M12 11V21M4 7V17L12 21" stroke="currentColor" strokeWidth="2"/>
+                        </svg>
+                      </div>
+                      <span>More Professional</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onRewriteContent?.(5)}
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                        <Smile className="h-3.5 w-3.5 text-blue-600" />
+                      </div>
+                      <span>More Casual</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onRewriteContent?.(6)}
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                        <svg className="h-3.5 w-3.5 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M7 8h10M7 12h10M7 16h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                          <circle cx="19" cy="5" r="3" stroke="currentColor" strokeWidth="2"/>
+                        </svg>
+                      </div>
+                      <span>SEO Optimize</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onRewriteContent?.(7)}
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                        <svg className="h-3.5 w-3.5 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </div>
+                      <span>Add Storytelling</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onRewriteContent?.(8)}
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                        <svg className="h-3.5 w-3.5 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                      <span>More Persuasive</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onRewriteContent?.(9)}
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                        <svg className="h-3.5 w-3.5 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </div>
+                      <span>Improve Hook</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
           </div>
         </>

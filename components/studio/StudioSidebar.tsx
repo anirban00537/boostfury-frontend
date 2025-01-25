@@ -173,49 +173,37 @@ export const StudioSidebar = ({
 
       <motion.div
         initial={{ opacity: 0, x: 400 }}
-        animate={{
+        animate={{ 
           opacity: isEditorOpen ? 1 : 0,
           x: isEditorOpen ? 0 : 400,
         }}
         transition={{ duration: 0.3 }}
         className={cn(
-          "fixed top-0 right-0 h-screen w-[400px] bg-gradient-to-b from-violet-50/50 via-white to-white flex flex-col",
+          "fixed top-0 right-0 h-screen w-[400px] bg-white flex flex-col border-l border-neutral-200/60",
           !isEditorOpen && "pointer-events-none"
         )}
       >
-        {/* Beautiful Background Pattern */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute inset-0 bg-[radial-gradient(#e9e4ff_1px,transparent_1px)] [background-size:16px_16px] opacity-40" />
-          <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-violet-100/20 to-transparent" />
-        </div>
-
         {/* Beautiful Header */}
-        <div className="relative border-b border-violet-100">
-          <div className="absolute inset-0 bg-gradient-to-b from-violet-100/20 via-violet-50/10 to-transparent" />
-          <div className="mx-auto px-6 py-5 relative">
-            <div className="flex items-center gap-4">
+        <div className="relative border-b border-neutral-100">
+          <div className="mx-auto px-5 py-4 relative">
+            <div className="flex items-center gap-3">
               <div className="relative group">
-                <div className="absolute -inset-1 rounded-xl bg-violet-100 blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
-                <div className="relative flex items-center justify-center w-12 h-12 rounded-xl bg-white shadow-sm border border-violet-100 group-hover:border-violet-200 transition-all duration-300">
-                  <div className="absolute inset-0 rounded-xl bg-violet-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <Wand2 className="w-6 h-6 text-violet-600 relative" />
+                <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-violet-50 border border-violet-100 group-hover:border-violet-200 transition-all duration-300">
+                  <Wand2 className="w-4 h-4 text-violet-600 relative" />
                 </div>
               </div>
               <div>
-                <div className="flex items-center gap-3 mb-0.5">
-                  <h1 className="text-xl font-semibold text-violet-950">
+                <div className="flex items-center gap-2">
+                  <h1 className="text-base font-semibold text-neutral-800">
                     AI Studio
                   </h1>
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-violet-100 blur opacity-25" />
-                    <div className="px-2 py-1 rounded-md bg-white/80 border border-violet-200 backdrop-blur-sm relative">
-                      <span className="text-[11px] font-semibold text-violet-600">
-                        BETA
-                      </span>
-                    </div>
+                  <div className="px-1.5 py-0.5 rounded-md bg-violet-50 border border-violet-100">
+                    <span className="text-[10px] font-medium text-violet-600 uppercase tracking-wide">
+                      Beta
+                    </span>
                   </div>
                 </div>
-                <p className="text-sm text-violet-600/80">
+                <p className="text-xs text-neutral-500">
                   Powered by Advanced AI
                 </p>
               </div>
@@ -224,7 +212,7 @@ export const StudioSidebar = ({
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-violet-200 scrollbar-track-transparent">
+        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-200 scrollbar-track-transparent">
           <div className="p-6 space-y-8">
             {/* Prompt Input */}
             <motion.div
