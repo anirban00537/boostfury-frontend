@@ -250,7 +250,7 @@ export const StudioSidebar = ({
                   onChange={handlePromptChange}
                   placeholder="Enter your topic or idea..."
                   maxLength={500}
-                  className="w-full h-[120px] px-4 py-3 text-[15px] leading-relaxed bg-white rounded-xl border border-neutral-200 placeholder:text-neutral-400 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/30 resize-none transition-all duration-200"
+                  className="w-full h-[120px] px-4 py-3 text-[15px] leading-relaxed rounded-xl border-2 border-neutral-200 placeholder:text-neutral-400 text-neutral-900 focus:outline-none resize-none transition-all duration-200 bg-white focus:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#4158D0,#C850C0,#7F00FF,#4158D0)_border-box] focus:border-transparent"
                 />
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -326,33 +326,50 @@ export const StudioSidebar = ({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="space-y-3"
+              className="space-y-4"
             >
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-violet-600" />
-                <label className="text-sm font-medium text-neutral-900">
+                <div className="p-1.5 rounded-lg bg-gradient-to-tr from-indigo-100 via-fuchsia-100 to-amber-100">
+                  <Sparkles className="w-4 h-4 text-violet-600" />
+                </div>
+                <label className="text-sm font-medium bg-gradient-to-r from-neutral-800 to-neutral-600 bg-clip-text text-transparent">
                   Choose the tone
                 </label>
               </div>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 {toneOptions.map((option) => (
                   <Tooltip key={option.value}>
                     <TooltipTrigger asChild>
                       <button
                         onClick={() => setTone(option.value)}
                         className={cn(
-                          "relative group flex items-center gap-2 p-2 rounded-xl transition-all duration-200 border h-[42px]",
+                          "group relative flex items-center gap-2.5 p-2.5 rounded-xl transition-all duration-300 border min-h-[52px]",
                           tone === option.value
-                            ? "bg-violet-50 border-violet-200 shadow-sm"
-                            : "bg-white border-neutral-200 hover:border-violet-200 hover:shadow-sm"
+                            ? "bg-gradient-to-tr from-violet-50/80 to-fuchsia-50/80 border-violet-200 shadow-lg shadow-violet-100/50 scale-[1.02]"
+                            : "bg-white hover:bg-gradient-to-tr hover:from-violet-50/40 hover:to-fuchsia-50/40 border-neutral-200/60 hover:border-violet-200 hover:shadow-md hover:shadow-violet-100/30 hover:scale-[1.01]"
                         )}
                       >
-                        <span className="text-lg shrink-0 relative">{option.emoji}</span>
-                        <span className={cn(
-                          "text-xs font-medium truncate relative",
+                        <div className={cn(
+                          "relative flex items-center justify-center w-8 h-8 rounded-lg shrink-0 transition-all duration-300",
                           tone === option.value
-                            ? "text-violet-600"
-                            : "text-neutral-600"
+                            ? "bg-gradient-to-tr from-violet-500/20 to-fuchsia-500/20"
+                            : "bg-gradient-to-tr from-neutral-100 to-neutral-50 group-hover:from-violet-100/40 group-hover:to-fuchsia-100/40"
+                        )}>
+                          <span className="text-lg relative z-10">{option.emoji}</span>
+                          <div className={cn(
+                            "absolute inset-0 rounded-lg transition-opacity duration-300",
+                            tone === option.value
+                              ? "opacity-100"
+                              : "opacity-0 group-hover:opacity-100"
+                          )}>
+                            <div className="absolute inset-0 bg-gradient-to-tr from-violet-500/10 to-fuchsia-500/10 rounded-lg blur-md" />
+                          </div>
+                        </div>
+                        <span className={cn(
+                          "text-sm font-medium flex-1 text-left transition-colors duration-300 line-clamp-2",
+                          tone === option.value
+                            ? "bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent"
+                            : "text-neutral-600 group-hover:text-violet-600"
                         )}>
                           {option.label}
                         </span>
