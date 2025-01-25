@@ -3,7 +3,6 @@ import {
   generateLinkedInPosts,
   generatePersonalizedPost,
   rewriteContent,
-  LINKEDIN_REWRITE_INSTRUCTIONS,
   RewriteInstructionType
 } from "@/services/ai-content";
 import { GenerateLinkedInPostsDTO, GeneratePersonalizedPostDto } from "@/types";

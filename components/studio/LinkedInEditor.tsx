@@ -32,7 +32,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { GradientButton } from "@/components/ui/gradient-button";
-import { LINKEDIN_REWRITE_INSTRUCTIONS, RewriteInstructionType } from "@/services/ai-content";
+import {  RewriteInstructionType } from "@/services/ai-content";
+import { LINKEDIN_REWRITE_INSTRUCTIONS } from "@/lib/core-constants";
 
 interface LinkedInEditorProps {
   content: string;
@@ -310,15 +311,21 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
-                      variant="ghost"
-                      className="h-9 w-9 p-0 hover:bg-neutral-50"
+                      variant="outline"
+                      className="h-9 px-3 hover:bg-neutral-50 hover:text-neutral-900 flex items-center gap-2 border-neutral-200"
                       onClick={onGeneratePersonalized}
                       disabled={isGeneratingPersonalized}
                     >
                       {isGeneratingPersonalized ? (
-                        <Loader2 className="h-5 w-5 animate-spin" />
+                        <>
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                          <span>Generating...</span>
+                        </>
                       ) : (
-                        <Sparkles className="h-5 w-5" />
+                        <>
+                          <Sparkles className="h-5 w-5" />
+                          <span>Ai Personal Writer</span>
+                        </>
                       )}
                     </Button>
                   </TooltipTrigger>
@@ -332,8 +339,8 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
-                      variant="ghost"
-                      className="h-9 w-9 p-0 hover:bg-neutral-50"
+                      variant="outline"
+                      className="h-9 px-3 hover:bg-neutral-50 hover:text-neutral-900 flex items-center gap-2 border-neutral-200"
                       disabled={isRewriting}
                     >
                       {isRewriting ? (

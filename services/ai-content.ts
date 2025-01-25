@@ -1,3 +1,4 @@
+import { LINKEDIN_REWRITE_INSTRUCTIONS } from "@/lib/core-constants";
 import request from "@/lib/request";
 
 export interface UpdateAiStyleDto {
@@ -96,17 +97,7 @@ export const generateCarouselContent = async (
 };
 
 // Content Rewriting
-export const LINKEDIN_REWRITE_INSTRUCTIONS = {
-  IMPROVE: 1, // Improve the overall quality and engagement
-  SHORTER: 2, // Make the content more concise
-  LONGER: 3, // Expand the content with more details
-  PROFESSIONAL: 4, // Make it more formal and professional
-  CASUAL: 5, // Make it more conversational and friendly
-  SEO_OPTIMIZE: 6, // Optimize for LinkedIn's algorithm
-  STORYTELLING: 7, // Convert into a story format
-  PERSUASIVE: 8, // Make it more convincing and action-oriented
-  IMPROVE_HOOK: 9, // Improve the opening hook to grab attention
-} as const;
+
 
 export type RewriteInstructionType = typeof LINKEDIN_REWRITE_INSTRUCTIONS[keyof typeof LINKEDIN_REWRITE_INSTRUCTIONS];
 
