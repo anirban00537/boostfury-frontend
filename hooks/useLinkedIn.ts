@@ -164,6 +164,7 @@ const useLinkedIn = () => {
     connectLinkedIn,
     disconnectProfile,
     isAuthenticated: loggedin,
+    refetchProfiles,
   };
 };
 

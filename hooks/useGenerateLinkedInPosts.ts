@@ -10,6 +10,7 @@ import { useAuth } from "./useAuth";
 import { processApiResponse } from "@/lib/functions";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
+import { useRouter } from "next/navigation";
 
 interface ContentIdea {
   idea: string;
@@ -22,6 +23,7 @@ interface UseGenerateLinkedInPostsProps {
 export const useGenerateLinkedInPosts = ({
   onContentGenerated,
 }: UseGenerateLinkedInPostsProps) => {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { refetchSubscription } = useAuth();
   const { linkedinProfile } = useSelector((state: RootState) => state.user);
@@ -154,7 +156,11 @@ export const useGenerateLinkedInPosts = ({
       toast.error("Please connect your LinkedIn account first");
       return;
     }
-
+    if(linkedinProfile.contentTopics.length === 0 || !linkedinProfile.professionalIdentity) {
+      toast.error("Please update your AI Voice & Style preferences first");
+      router.push("/settings/ai-style");
+      return;
+    }
     try {
       setIsGenerating(true);
       await generatePersonalized({

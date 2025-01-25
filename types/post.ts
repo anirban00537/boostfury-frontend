@@ -117,6 +117,8 @@ export interface LinkedInProfileUI {
   avatarUrl: string;
   type: "linkedin";
   status: "connected" | "disconnected";
+  contentTopics: string[];
+  professionalIdentity: string | null;
 }
 
 // Full LinkedIn Profile for API/backend interactions
