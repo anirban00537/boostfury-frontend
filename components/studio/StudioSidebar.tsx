@@ -289,24 +289,6 @@ export const StudioSidebar = ({
       {/* Generate Buttons */}
       <div className="space-y-3 px-6 pb-6">
         <GradientButton
-          onClick={handlePersonalizedGenerate}
-          disabled={isPersonalizedGenerating}
-          className="w-full"
-          variant="primary"
-          leftIcon={
-            isPersonalizedGenerating ? (
-              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <Sparkles className="w-4 h-4" />
-            )
-          }
-        >
-          {isPersonalizedGenerating
-            ? "Generating..."
-            : "Generate Personalized Post"}
-        </GradientButton>
-
-        <GradientButton
           onClick={handleRegularGenerate}
           disabled={!prompt.trim() || prompt.length < 10 || isRegularGenerating}
           variant="primary"

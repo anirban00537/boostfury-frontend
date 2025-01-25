@@ -1,10 +1,9 @@
 "use client";
 import React from "react";
-import { Linkedin, Plus, Trash2, Users } from "lucide-react";
+import { Linkedin, Users, Trash2 } from "lucide-react";
 import Image from "next/image";
 import useLinkedIn from "@/hooks/useLinkedIn";
-import { GradientButton } from "@/components/ui/gradient-button";
-import { EmptyState } from "@/components/ui/empty-state";
+import { LinkedInConnect } from "@/components/ui/linkedin-connect";
 
 const AccountsPage = () => {
   const {
@@ -50,40 +49,11 @@ const AccountsPage = () => {
           </div>
         ) : !profile ? (
           <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-xl border border-neutral-200/60 shadow-sm overflow-hidden">
-              <div className="p-8 text-center">
-                <div className="size-16 rounded-2xl bg-[#0A66C2]/10 flex items-center justify-center mx-auto mb-6">
-                  <Linkedin className="size-8 text-[#0A66C2]" />
-                </div>
-                <h2 className="text-xl font-semibold text-neutral-900 mb-2">
-                  Connect LinkedIn Account
-                </h2>
-                <p className="text-neutral-600 mb-6 max-w-md mx-auto">
-                  Connect your LinkedIn profile to start creating and scheduling
-                  posts for your professional network.
-                </p>
-                <GradientButton
-                  variant="primary"
-                  onClick={connectLinkedIn}
-                  disabled={isConnecting}
-                  className="shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <div className="flex items-center gap-2">
-                    {isConnecting ? (
-                      <>
-                        <div className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                        <span>Connecting...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Plus className="size-4" />
-                        <span>Connect LinkedIn Account</span>
-                      </>
-                    )}
-                  </div>
-                </GradientButton>
-              </div>
-            </div>
+            <LinkedInConnect
+              onConnect={connectLinkedIn}
+              isConnecting={isConnecting}
+              variant="default"
+            />
           </div>
         ) : (
           <div className="max-w-2xl mx-auto">

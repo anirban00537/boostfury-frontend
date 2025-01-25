@@ -97,6 +97,7 @@ const ContentCreationTools: React.FC = () => {
               isPosting={isPosting}
               isAddingToQueue={isAddingToQueue}
               isScheduling={isScheduling}
+              isGeneratingPersonalized={isGenerating}
               onContentChange={handleContentChange}
               onImageUpload={() => setIsImageModalOpen(true)}
               onEmojiPickerToggle={() => setShowEmojiPicker(!showEmojiPicker)}
@@ -108,6 +109,7 @@ const ContentCreationTools: React.FC = () => {
                 linkedinProfile?.id && handlePostNow(linkedinProfile.id)
               }
               onImageDelete={handleImageDelete}
+              onGeneratePersonalized={handleGeneratePersonalized}
             />
           </motion.div>
 
