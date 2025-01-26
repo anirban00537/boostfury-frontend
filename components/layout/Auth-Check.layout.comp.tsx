@@ -1,15 +1,16 @@
 "use client";
 import { useAuth } from "@/hooks/useAuth";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FullScreenLoading from "../utils-components/loading/Fullscreen.loading.comp";
 import { useDispatch, useSelector } from "react-redux";
 import { darkColorPresets, lightColorPresets } from "@/lib/color-presets";
-import useLinkedIn from "@/hooks/useLinkedIn";
+import { default as useLinkedIn } from "@/hooks/useLinkedIn"; 
 import { RootState } from "@/state/store";
 import toast from "react-hot-toast";
 import { ShoppingBag } from "lucide-react";
 import { useContentPosting } from "@/hooks/useContent";
+import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
 
 // Define public routes that don't require authentication
 const publicRoutes = ["/", "/login", "/signup", "/forgot-password"];
@@ -24,8 +25,16 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useLinkedIn();
+
+  // Check for LinkedIn profile
+  useEffect(() => {
+    if (loggedin && !isLoading && !linkedinProfile && !publicRoutes.includes(pathname || "")) {
+      setShowOnboarding(true);
+    }
+  }, [loggedin, isLoading, linkedinProfile, pathname]);
 
   // Enhanced Auth check effect
   useEffect(() => {
@@ -105,7 +114,15 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
     return null; // Return null instead of loading screen to prevent flash
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <OnboardingModal 
+        isOpen={showOnboarding} 
+        onClose={() => setShowOnboarding(false)} 
+      />
+    </>
+  );
 };
 
 export default AuthCheckLayout;

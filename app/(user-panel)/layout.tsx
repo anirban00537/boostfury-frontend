@@ -41,7 +41,7 @@ export default function DashboardLayout({
           }
         `}
       >
-        <Sidebar onClose={() => setIsSidebarOpen(false)} />
+        <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       </div>
 
       <div className="flex-1 w-full">
