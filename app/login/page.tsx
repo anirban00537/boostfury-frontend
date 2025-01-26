@@ -33,169 +33,137 @@ const LoginPage = () => {
   );
 
   return (
-    <div className="min-h-screen w-full flex">
-      {/* Left Side - Design/Branding Section */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-white">
-        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-5"></div>
-        <div className="relative w-full flex flex-col items-center justify-center p-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-md text-center"
-          >
-            <div
-              className="relative mb-8 mx-auto w-20 h-20 cursor-pointer group"
-              onClick={() => router.push("/")}
-            >
-              <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/20 to-primary/0 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative size-20 rounded-xl bg-primary/5 flex items-center justify-center">
-                <Image
-                  src="/single-logo.svg"
-                  height={48}
-                  width={48}
-                  alt="BoostFury.com"
-                  className="transition-transform duration-200 group-hover:scale-105"
-                />
-              </div>
-            </div>
-
-            <h1 className="text-4xl font-bold mb-6 leading-tight text-gray-900">
-              Create Professional LinkedIn Content
+    <div className="min-h-screen w-full flex bg-white">
+      {/* Left Section */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-16">
+        <div className="w-full max-w-[440px]">
+          <div className="mb-8">
+            <h1 className="text-2xl font-semibold mb-2 flex items-center gap-2">
+              Login{" "}
+              <span role="img" aria-label="wave" className="text-2xl">
+                ✌️
+              </span>
             </h1>
-            <p className="text-lg text-gray-600 mb-12">
-              Transform your LinkedIn presence with AI-powered content creation
-              tools
+            <p className="text-gray-500 text-sm">
+              How do I get started lorem ipsum dolor sit?
             </p>
+          </div>
 
-            <div className="space-y-3">
-              {features.map((feature, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 * (index + 1), duration: 0.5 }}
-                  className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 
-                           bg-white hover:bg-gray-50/80 transition-colors duration-200"
-                >
-                  <div className="relative">
-                    <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/20 to-primary/0 rounded-lg blur-sm" />
-                    <div className="relative size-8 rounded-lg bg-primary/5 flex items-center justify-center">
-                      <feature.icon className="size-4 text-primary" />
-                    </div>
-                  </div>
-                  <span className="text-gray-700 font-medium">
-                    {feature.text}
-                  </span>
-                </motion.div>
-              ))}
+          <div className="space-y-4">
+            {/* Google Login Button */}
+            <div className="transform hover:scale-[1.02] transition-transform duration-200">
+              <GoogleLogin
+                onSuccess={onLoginSuccess}
+                onError={() => {
+                  console.error("Google Login Failed");
+                }}
+                shape="rectangular"
+                width={300}
+                theme="filled_blue"
+                text="signin_with"
+                size="large"
+              />
             </div>
-          </motion.div>
+
+            {/* Footer Links */}
+            <div className="text-center space-y-4 mt-12">
+              <p className="text-xs text-gray-500 max-w-sm mx-auto">
+                By signing in, you agree to our{" "}
+                <Link
+                  href="/terms"
+                  className="text-blue-600 hover:text-blue-700"
+                >
+                  Terms of Service
+                </Link>{" "}
+                and{" "}
+                <Link
+                  href="/privacy"
+                  className="text-blue-600 hover:text-blue-700"
+                >
+                  Privacy Policy
+                </Link>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Right Side - Login Section */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50/50">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-md space-y-8 p-8 sm:p-10"
-        >
-          {/* Back to Home Link */}
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors group mb-8"
-          >
-            <div className="relative">
-              <div className="absolute -inset-0.5 bg-gradient-to-br from-gray-200/20 to-gray-200/0 rounded-lg blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative size-8 rounded-lg bg-white flex items-center justify-center border border-gray-200">
-                <ArrowLeft className="size-4" />
+      {/* Right Section */}
+      <div className="hidden lg:block w-1/2 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 relative overflow-hidden">
+        {/* Animated background patterns */}
+        <div className="absolute inset-0 bg-[url('/images/wave-pattern.svg')] opacity-10 animate-slow-spin" />
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent" />
+
+        {/* Floating circles */}
+        <div className="absolute top-20 left-20 w-64 h-64 bg-gradient-to-r from-blue-400/20 to-sky-400/20 rounded-full blur-3xl animate-blob" />
+        <div className="absolute bottom-20 right-20 w-64 h-64 bg-gradient-to-r from-sky-400/20 to-blue-400/20 rounded-full blur-3xl animate-blob animation-delay-2000" />
+
+        <div className="relative h-full flex flex-col items-center justify-center p-16 text-white">
+          <div className="max-w-md text-center space-y-12">
+            {/* Main Content */}
+            <div className="space-y-8">
+              <div className="space-y-6">
+                <h2 className="text-6xl font-bold leading-tight bg-gradient-to-r from-white via-blue-100 to-sky-200 bg-clip-text text-transparent">
+                  Automate Your LinkedIn
+                </h2>
+                <div className="text-4xl font-bold text-white">
+                  Reach 10x More Prospects
+                  <span className="ml-2 animate-bounce inline-block">🚀</span>
+                </div>
+              </div>
+
+              <p className="text-xl text-blue-100 leading-relaxed">
+                Smart scheduling that helps you connect with the right people at
+                the right time
+              </p>
+            </div>
+
+            {/* Viral LinkedIn Stats */}
+            <div className="relative mt-12">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-sky-500/20 rounded-2xl blur-xl" />
+              <div className="relative space-y-6 bg-white/10 rounded-2xl p-8 backdrop-blur-md border border-white/20">
+                <div className="grid grid-cols-3 gap-8">
+                  <div className="text-center space-y-1">
+                    <div className="text-4xl font-bold bg-gradient-to-r from-white to-sky-200 bg-clip-text text-transparent">
+                      500+
+                    </div>
+                    <div className="text-sm text-blue-100">
+                      Connections/Week
+                    </div>
+                  </div>
+                  <div className="text-center space-y-1">
+                    <div className="text-4xl font-bold bg-gradient-to-r from-white to-sky-200 bg-clip-text text-transparent">
+                      24/7
+                    </div>
+                    <div className="text-sm text-blue-100">Active Growth</div>
+                  </div>
+                  <div className="text-center space-y-1">
+                    <div className="text-4xl font-bold bg-gradient-to-r from-white to-sky-200 bg-clip-text text-transparent">
+                      85%
+                    </div>
+                    <div className="text-sm text-blue-100">Response Rate</div>
+                  </div>
+                </div>
               </div>
             </div>
-            Back to Home
-          </Link>
+          </div>
 
-          <div className="text-center">
-            <div className="lg:hidden mb-8">
-              <div className="relative w-16 h-16 mx-auto cursor-pointer group">
-                <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/20 to-primary/0 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative size-16 rounded-xl bg-primary/5 flex items-center justify-center">
-                  <Image
-                    src="/logo.svg"
-                    height={40}
-                    width={40}
-                    alt="BoostFury.com"
-                    className="transition-transform duration-200 group-hover:scale-105"
-                  />
-                </div>
-              </div>
+          {/* Social Proof Badge */}
+          <div className="absolute top-8 right-8">
+            <div className="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
+              <span className="text-sm font-medium">
+                Trusted by LinkedIn Influencers 🌟
+              </span>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">
-              Welcome Back
-            </h2>
-            <p className="text-gray-600">
-              Sign in to continue to BoostFury.com
-            </p>
           </div>
 
-          {/* Login Form Section */}
-          <div className="mt-12 space-y-6">
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="w-full"
-            >
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-200"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-4 bg-gray-50/50 text-gray-500">
-                    Continue with
-                  </span>
-                </div>
-              </div>
-
-              <div className="mt-6 flex justify-center">
-                <div className="transform hover:scale-[1.02] transition-transform duration-200">
-                  <GoogleLogin
-                    onSuccess={onLoginSuccess}
-                    onError={() => {
-                      console.error("Google Login Failed");
-                    }}
-                    shape="rectangular"
-                    width={300}
-                    theme="filled_blue"
-                    text="signin_with"
-                    size="large"
-                  />
-                </div>
-              </div>
-            </motion.div>
+          {/* Floating Action Badge */}
+          <div className="absolute bottom-8 left-8 animate-pulse">
+            <div className="bg-gradient-to-br from-white/90 to-white/70 rounded-full w-14 h-14 flex items-center justify-center shadow-lg">
+              <span className="text-2xl">⚡</span>
+            </div>
           </div>
-
-          {/* Footer Links */}
-          <div className="text-center space-y-4 mt-12">
-            <p className="text-xs text-gray-500 max-w-sm mx-auto">
-              By signing in, you agree to our{" "}
-              <Link
-                href="/terms"
-                className="text-primary hover:text-primary/80 transition-colors"
-              >
-                Terms of Service
-              </Link>{" "}
-              and{" "}
-              <Link
-                href="/privacy"
-                className="text-primary hover:text-primary/80 transition-colors"
-              >
-                Privacy Policy
-              </Link>
-            </p>
-          </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
