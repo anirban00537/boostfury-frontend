@@ -70,14 +70,21 @@ export const useContentPosting = () => {
         // TODO: Implement image upload functionality
         await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
 
-        // Simulate successful upload with a temporary URL
+        // Create a temporary LinkedInPostImage
+        const tempId = Date.now().toString();
         const tempUrl = URL.createObjectURL(file);
+        const tempImage: LinkedInPostImage = {
+          id: tempId,
+          postId: tempId, // Using same ID for now since post isn't created yet
+          imageUrl: tempUrl,
+          order: (postDetails.images?.length || 0) + 1,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+
         setPostDetails((prev) => ({
           ...prev,
-          images: [
-            ...(prev.images || []),
-            { id: Date.now().toString(), imageUrl: tempUrl },
-          ],
+          images: [...(prev.images || []), tempImage],
         }));
 
         setIsUploading(false);
@@ -88,7 +95,7 @@ export const useContentPosting = () => {
         return false;
       }
     },
-    []
+    [postDetails.images]
   );
 
   const handleImageDelete = useCallback(async (imageId: string) => {
