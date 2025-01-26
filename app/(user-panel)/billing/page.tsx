@@ -89,7 +89,7 @@ const SubscriptionDetails = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              {data?.data?.isActive && (
+              {data?.data?.isActive && !data?.data?.subscription.isTrial && (
                 <GradientButton
                   variant="danger"
                   size="default"
