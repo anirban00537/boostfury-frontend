@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import { ShoppingBag } from "lucide-react";
 import { useContentPosting } from "@/hooks/useContent";
 import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
+import { useQueryClient } from "react-query";
 
 // Define public routes that don't require authentication
 const publicRoutes = ["/", "/login", "/signup", "/forgot-password"];
@@ -26,27 +27,27 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const queryClient = useQueryClient();
 
   useLinkedIn();
 
   // Check for LinkedIn profile
   useEffect(() => {
-    console.log(
-      loggedin,
-      isLoading,
-      linkedinProfile,
-      linkedinProfile?.professionalIdentity,
-      "ssssssssssssssssssss"
-    );
     if (
       loggedin &&
       !isLoading &&
-      !linkedinProfile &&
-      !linkedinProfile?.professionalIdentity
+      linkedinProfile && // LinkedIn is connected
+      (!linkedinProfile.professionalIdentity?.trim() ||
+        !linkedinProfile.contentTopics?.length ||
+        linkedinProfile.contentTopics.length === 0) // Check for empty values
     ) {
+      // Invalidate queries to ensure fresh data
+      queryClient.invalidateQueries(["aiStyle", linkedinProfile.id]);
       setShowOnboarding(true);
+    } else {
+      setShowOnboarding(false);
     }
-  }, [loggedin, isLoading, linkedinProfile, pathname]);
+  }, [loggedin, isLoading, linkedinProfile, queryClient]);
 
   // Enhanced Auth check effect
   useEffect(() => {
