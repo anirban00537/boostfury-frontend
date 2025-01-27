@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import FullScreenLoading from "../utils-components/loading/Fullscreen.loading.comp";
 import { useDispatch, useSelector } from "react-redux";
 import { darkColorPresets, lightColorPresets } from "@/lib/color-presets";
-import { default as useLinkedIn } from "@/hooks/useLinkedIn"; 
+import { default as useLinkedIn } from "@/hooks/useLinkedIn";
 import { RootState } from "@/state/store";
 import toast from "react-hot-toast";
 import { ShoppingBag } from "lucide-react";
@@ -31,7 +31,19 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
 
   // Check for LinkedIn profile
   useEffect(() => {
-    if (loggedin && !isLoading && !linkedinProfile && !publicRoutes.includes(pathname || "")) {
+    console.log(
+      loggedin,
+      isLoading,
+      linkedinProfile,
+      linkedinProfile?.professionalIdentity,
+      "ssssssssssssssssssss"
+    );
+    if (
+      loggedin &&
+      !isLoading &&
+      !linkedinProfile &&
+      !linkedinProfile?.professionalIdentity
+    ) {
       setShowOnboarding(true);
     }
   }, [loggedin, isLoading, linkedinProfile, pathname]);
@@ -117,9 +129,9 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       {children}
-      <OnboardingModal 
-        isOpen={showOnboarding} 
-        onClose={() => setShowOnboarding(false)} 
+      <OnboardingModal
+        isOpen={showOnboarding}
+        onClose={() => setShowOnboarding(false)}
       />
     </>
   );

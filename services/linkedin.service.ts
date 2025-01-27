@@ -30,12 +30,14 @@ export const getLinkedInAuthUrl = async (): Promise<LinkedInAuthResponse> => {
 
 export const handleLinkedInCallback = async (
   code: string,
-  state: string
+  state: string,
+  timezone:string
 ): Promise<LinkedInCallbackResponse> => {
   const response = await request.get(`/linkedin/callback`, {
     params: {
       code,
       state,
+      timezone,
     },
   });
   return response.data;

@@ -1,4 +1,5 @@
 import toast from "react-hot-toast";
+import { format } from "date-fns";
 
 interface ApiResponse {
   success: boolean;
@@ -38,7 +39,7 @@ export const processApiResponse = (
     if (result.response?.data?.message) {
       const message = result.response.data.message;
       if (Array.isArray(message)) {
-        message.forEach(msg => toast.error(msg));
+        message.forEach((msg) => toast.error(msg));
       } else {
         toast.error(message);
       }
@@ -63,3 +64,11 @@ export const processApiResponse = (
     return null;
   }
 };
+
+// Get user's browser timezone
+export const getUserTimezone = (): string => {
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  console.log("User Timezone:", timezone); // e.g., "America/New_York", "Asia/Tokyo", etc.
+  return timezone;
+};
+

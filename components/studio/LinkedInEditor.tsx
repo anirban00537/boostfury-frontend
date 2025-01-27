@@ -104,6 +104,9 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                 <span className="font-semibold text-[15px] text-[#191919]">
                   {linkedinProfile?.name}
                 </span>
+                <span className="text-[13px] text-neutral-600">
+                  {linkedinProfile?.timezone}
+                </span>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button className="flex items-center gap-1.5 text-[13px] text-neutral-600 mt-0.5 hover:bg-neutral-50 px-2 -ml-2 py-1 rounded-md transition-all group">

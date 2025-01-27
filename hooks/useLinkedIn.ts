@@ -8,7 +8,7 @@ import {
   getLinkedInProfile,
   disconnectLinkedInProfile,
 } from "@/services/linkedin.service";
-import { processApiResponse } from "@/lib/functions";
+import { getUserTimezone, processApiResponse } from "@/lib/functions";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
@@ -62,8 +62,10 @@ export const useLinkedInCallback = (
       if (state !== storedState) {
         throw new Error("Invalid state parameter");
       }
+      const timezone = getUserTimezone();
+      console.log(timezone);
 
-      return await handleLinkedInCallback(code, state);
+      return await handleLinkedInCallback(code, state, timezone);
     },
     {
       onSuccess: (response) => {
