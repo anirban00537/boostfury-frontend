@@ -241,11 +241,12 @@ export const useContentPosting = () => {
 
   // Content change handler
   const handleContentChange = useCallback(
-    async (newContent: string) => {
+    async (newContent: string, category?: string) => {
       console.log("Content change triggered:", {
         newContent: newContent.slice(0, 50) + "...",
         draftId,
         hasLinkedInProfile: !!linkedinProfile?.id,
+        category,
       });
 
       // Update local state immediately for UI responsiveness
@@ -261,6 +262,7 @@ export const useContentPosting = () => {
         content: newContent.trim(),
         postType: "text" as const,
         linkedInProfileId: linkedinProfile.id,
+        category,
         ...(draftId ? { id: draftId } : {}),
       };
       console.log("Prepared draft data:", draftData);

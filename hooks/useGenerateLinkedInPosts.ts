@@ -3,7 +3,7 @@ import {
   generateLinkedInPosts,
   generatePersonalizedPost,
   rewriteContent,
-  RewriteInstructionType
+  RewriteInstructionType,
 } from "@/services/ai-content";
 import { GenerateLinkedInPostsDTO, GeneratePersonalizedPostDto } from "@/types";
 import toast from "react-hot-toast";
@@ -19,13 +19,13 @@ interface ContentIdea {
 }
 
 interface UseGenerateLinkedInPostsProps {
-  onContentGenerated?: (content: string) => void;
+  onContentGenerated: (content: string, category?: string) => void;
   currentPostId?: string;
 }
 
 export const useGenerateLinkedInPosts = ({
   onContentGenerated,
-  currentPostId
+  currentPostId,
 }: UseGenerateLinkedInPostsProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -35,10 +35,17 @@ export const useGenerateLinkedInPosts = ({
   // Core states
   const [prompt, setPrompt] = useState("");
   const [tone, setTone] = useState("professional");
-  const [postLength, setPostLength] = useState<"short" | "medium" | "long">("medium");
+  const [selectedCategory, setSelectedCategory] = useState<string>("Business");
+  const [postLength, setPostLength] = useState<"short" | "medium" | "long">(
+    "medium"
+  );
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // Generate personalized post mutation
-  const { mutateAsync: generatePersonalized, isLoading: isGeneratingPersonalized } = useMutation(
+  const {
+    mutateAsync: generatePersonalized,
+    isLoading: isGeneratingPersonalized,
+  } = useMutation(
     (dto: GeneratePersonalizedPostDto) => generatePersonalizedPost(dto),
     {
       onSuccess: async (response) => {
@@ -69,9 +76,8 @@ export const useGenerateLinkedInPosts = ({
   );
 
   // Generate regular post mutation
-  const { mutateAsync: generatePost, isLoading: isGeneratingPost } = useMutation(
-    (dto: GenerateLinkedInPostsDTO) => generateLinkedInPosts(dto),
-    {
+  const { mutateAsync: generatePost, isLoading: isGeneratingPost } =
+    useMutation((dto: GenerateLinkedInPostsDTO) => generateLinkedInPosts(dto), {
       onSuccess: async (response) => {
         if (!response.success) {
           toast.error(response.message || "Failed to generate content");
@@ -94,8 +100,7 @@ export const useGenerateLinkedInPosts = ({
         await queryClient.invalidateQueries(["subscription"]);
         await refetchSubscription().catch(console.error);
       },
-    }
-  );
+    });
 
   // Rewrite content mutation
   const { mutateAsync: rewritePost, isLoading: isRewriting } = useMutation(
@@ -145,8 +150,14 @@ export const useGenerateLinkedInPosts = ({
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, [prompt, isGeneratingPost]);
 
-  const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handlePromptChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+    category?: string
+  ) => {
     setPrompt(e.target.value);
+    if (category) {
+      setSelectedCategory(category);
+    }
   };
 
   const handleGenerate = async () => {
@@ -168,6 +179,7 @@ export const useGenerateLinkedInPosts = ({
         language: "en",
         tone,
         postLength,
+        category: selectedCategory,
       });
     } catch (error) {
       console.error("Error in handleGenerate:", error);
@@ -187,7 +199,10 @@ export const useGenerateLinkedInPosts = ({
       toast.error("Please connect your LinkedIn account first");
       return;
     }
-    if(linkedinProfile.contentTopics.length === 0 || !linkedinProfile.professionalIdentity) {
+    if (
+      linkedinProfile.contentTopics.length === 0 ||
+      !linkedinProfile.professionalIdentity
+    ) {
       toast.error("Please update your AI Voice & Style preferences first");
       router.push("/settings/ai-style");
       return;
@@ -228,6 +243,7 @@ export const useGenerateLinkedInPosts = ({
     // States
     prompt,
     tone,
+    selectedCategory,
     postLength,
     isGenerating: isGeneratingPost,
     isGeneratingPersonalized,
@@ -239,6 +255,7 @@ export const useGenerateLinkedInPosts = ({
     handleGeneratePersonalized,
     handleRewriteContent,
     setTone,
+    setSelectedCategory,
     setPostLength,
   };
 };

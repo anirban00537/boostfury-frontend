@@ -56,7 +56,9 @@ const ContentCreationTools: React.FC = () => {
     postLength,
     setPostLength,
   } = useGenerateLinkedInPosts({
-    onContentGenerated: handleContentChange,
+    onContentGenerated: (content: string, category?: string) => {
+      handleContentChange(content, category);
+    },
     currentPostId: postDetails?.id,
   });
 
@@ -74,6 +76,13 @@ const ContentCreationTools: React.FC = () => {
       return success;
     }
     return false;
+  };
+
+  const handlePromptChangeWithCategory = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+    category?: string
+  ) => {
+    handlePromptChange(e, category);
   };
 
   return (
@@ -153,12 +162,12 @@ const ContentCreationTools: React.FC = () => {
       <StudioSidebar
         prompt={prompt}
         tone={tone}
+        postLength={postLength}
         isGenerating={isGenerating}
-        handlePromptChange={handlePromptChange}
         handleGenerate={handleGenerate}
         handleGeneratePersonalized={handleGeneratePersonalized}
+        handlePromptChange={handlePromptChangeWithCategory}
         setTone={setTone}
-        postLength={postLength}
         setPostLength={setPostLength}
       />
     </motion.div>

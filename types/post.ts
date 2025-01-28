@@ -30,6 +30,7 @@ export interface Post {
   user: PostUser;
   postLogs: PostLog[];
   images: LinkedInPostImage[];
+  category?: string;
 }
 
 export interface PostGroup<T extends Post = Post> {
@@ -83,6 +84,7 @@ export interface CreateDraftParams {
 }
 
 export interface CreateDraftPostType {
+  id?: string;
   content: string;
   postType: PostContentType;
   linkedInProfileId: string | null;
@@ -90,7 +92,7 @@ export interface CreateDraftPostType {
   documentUrl?: string | null;
   hashtags?: string[] | null;
   mentions?: string[] | null;
-  id?: string;
+  category?: string;
 }
 
 // API Response Types
@@ -152,7 +154,6 @@ export interface PostLog {
   createdAt: string;
   updatedAt: string;
 }
-
 
 export interface SchedulePostType {
   scheduledTime: string;

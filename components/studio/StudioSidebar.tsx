@@ -1,7 +1,15 @@
 "use client";
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Sparkles, Info, ChevronDown, Wand2, Lightbulb, Zap, Brain } from "lucide-react";
+import {
+  Sparkles,
+  Info,
+  ChevronDown,
+  Wand2,
+  Lightbulb,
+  Zap,
+  Brain,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { useSelector, useDispatch } from "react-redux";
@@ -12,6 +20,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const postLengthOptions = [
   {
@@ -34,71 +49,106 @@ const postLengthOptions = [
   },
 ] as const;
 
+const categoryOptions = [
+  {
+    value: "thought_leadership",
+    label: "Thought Leadership",
+    description: "Share industry insights and expert opinions",
+  },
+  {
+    value: "industry_insight",
+    label: "Industry Insight",
+    description: "Analysis and trends in your industry",
+  },
+  {
+    value: "career_milestone",
+    label: "Career Milestone",
+    description: "Professional achievements and career updates",
+  },
+  {
+    value: "educational_content",
+    label: "Educational Content",
+    description: "Share knowledge and learning resources",
+  },
+  {
+    value: "personal_story",
+    label: "Personal Story",
+    description: "Share personal experiences and lessons",
+  },
+  {
+    value: "value_driven_promotion",
+    label: "Value-Driven Promotion",
+    description: "Promote while providing value",
+  },
+  {
+    value: "commentary_opinion",
+    label: "Commentary / Opinion",
+    description: "Share your perspective on industry topics",
+  },
+  {
+    value: "how_to_tips",
+    label: "How-To / Tips",
+    description: "Practical advice and tutorials",
+  },
+  {
+    value: "behind_the_scenes",
+    label: "Behind-The-Scenes",
+    description: "Share work culture and processes",
+  },
+  {
+    value: "personal_achievement",
+    label: "Personal Achievement",
+    description: "Celebrate personal wins and milestones",
+  },
+] as const;
+
 const toneOptions = [
   {
     value: "professional",
     label: "Professional",
-    emoji: "💼",
-    tooltip: "Formal and business-oriented tone",
-    gradient: "from-blue-500 to-indigo-600",
+    description: "Formal and business-oriented tone",
   },
   {
     value: "casual",
     label: "Casual",
-    emoji: "😊",
-    tooltip: "Relaxed and conversational style",
-    gradient: "from-green-500 to-emerald-600",
+    description: "Relaxed and conversational style",
   },
   {
     value: "friendly",
     label: "Friendly",
-    emoji: "🤝",
-    tooltip: "Warm and approachable tone",
-    gradient: "from-amber-500 to-orange-600",
+    description: "Warm and approachable tone",
   },
   {
     value: "humorous",
     label: "Humorous",
-    emoji: "😄",
-    tooltip: "Light and entertaining style",
-    gradient: "from-pink-500 to-rose-600",
+    description: "Light and entertaining style",
   },
   {
     value: "inspirational",
     label: "Inspirational",
-    emoji: "✨",
-    tooltip: "Motivational and uplifting content",
-    gradient: "from-purple-500 to-violet-600",
+    description: "Motivational and uplifting content",
   },
   {
     value: "educational",
     label: "Educational",
-    emoji: "📚",
-    tooltip: "Informative and teaching-focused",
-    gradient: "from-cyan-500 to-blue-600",
+    description: "Informative and teaching-focused",
   },
   {
     value: "storytelling",
     label: "Storytelling",
-    emoji: "📖",
-    tooltip: "Narrative and engaging style",
-    gradient: "from-red-500 to-rose-600",
+    description: "Narrative and engaging style",
   },
   {
     value: "analytical",
     label: "Analytical",
-    emoji: "📊",
-    tooltip: "Data-driven and logical approach",
-    gradient: "from-indigo-500 to-purple-600",
-  },
-  {
-    value: "persuasive",
-    label: "Persuasive",
-    emoji: "🎯",
-    tooltip: "Convincing and compelling tone",
-    gradient: "from-teal-500 to-emerald-600",
+    description: "Data-driven and logical approach",
   },
 ] as const;
+
+type CategoryOption = (typeof categoryOptions)[number];
+type CategoryValue = CategoryOption["value"];
+type ToneOption = (typeof toneOptions)[number];
+type ToneValue = ToneOption["value"];
 
 interface StudioSidebarProps {
   // Generation states and handlers
@@ -108,7 +158,10 @@ interface StudioSidebarProps {
   isGenerating: boolean;
   handleGenerate: () => void;
   handleGeneratePersonalized: () => void;
-  handlePromptChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handlePromptChange: (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+    category?: string
+  ) => void;
   setTone: (tone: string) => void;
   setPostLength: (length: "short" | "medium" | "long") => void;
 }
@@ -125,8 +178,12 @@ export const StudioSidebar = ({
   setPostLength,
 }: StudioSidebarProps) => {
   const [isRegularGenerating, setIsRegularGenerating] = useState(false);
-  const [isPersonalizedGenerating, setIsPersonalizedGenerating] = useState(false);
+  const [isPersonalizedGenerating, setIsPersonalizedGenerating] =
+    useState(false);
   const [showTips, setShowTips] = useState(true);
+  const [selectedCategory, setSelectedCategory] =
+    useState<CategoryValue>("thought_leadership");
+  const [selectedTone, setSelectedTone] = useState<ToneValue>("professional");
   const dispatch = useDispatch();
 
   // Get states from Redux
@@ -150,13 +207,30 @@ export const StudioSidebar = ({
     setIsPersonalizedGenerating(false);
   };
 
+  const handleCategoryChange = (value: CategoryValue) => {
+    setSelectedCategory(value);
+    // Pass both content and category when category changes
+    handlePromptChange(
+      {
+        target: { value: prompt },
+      } as React.ChangeEvent<HTMLTextAreaElement>,
+      value
+    );
+  };
+
+  const handlePromptChangeWithCategory = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    handlePromptChange(e, selectedCategory);
+  };
+
   return (
     <>
       {/* Toggle Button */}
       <motion.button
         onClick={handleToggle}
         initial={{ opacity: 0 }}
-        animate={{ 
+        animate={{
           opacity: 1,
           right: isEditorOpen ? "400px" : "0px",
         }}
@@ -173,7 +247,7 @@ export const StudioSidebar = ({
 
       <motion.div
         initial={{ opacity: 0, x: 400 }}
-        animate={{ 
+        animate={{
           opacity: isEditorOpen ? 1 : 0,
           x: isEditorOpen ? 0 : 400,
         }}
@@ -235,7 +309,7 @@ export const StudioSidebar = ({
               <div className="relative group">
                 <textarea
                   value={prompt}
-                  onChange={handlePromptChange}
+                  onChange={handlePromptChangeWithCategory}
                   placeholder="Enter your topic or idea..."
                   maxLength={500}
                   className="w-full h-[120px] px-4 py-3 text-[15px] leading-relaxed rounded-xl border-2 border-neutral-200 placeholder:text-neutral-400 text-neutral-900 focus:outline-none resize-none transition-all duration-200 bg-white focus:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#4158D0,#C850C0,#7F00FF,#4158D0)_border-box] focus:border-transparent"
@@ -253,6 +327,98 @@ export const StudioSidebar = ({
                   </TooltipContent>
                 </Tooltip>
               </div>
+            </motion.div>
+
+            {/* Category Selection */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="space-y-3"
+            >
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-lg bg-gradient-to-tr from-indigo-100 via-fuchsia-100 to-amber-100">
+                  <Sparkles className="w-4 h-4 text-violet-600" />
+                </div>
+                <label className="text-sm font-medium bg-gradient-to-r from-neutral-800 to-neutral-600 bg-clip-text text-transparent">
+                  Select Post Category
+                </label>
+              </div>
+              <Select
+                value={selectedCategory}
+                onValueChange={handleCategoryChange}
+              >
+                <SelectTrigger
+                  className="w-full h-12 text-[15px] bg-white rounded-xl border border-neutral-200/60 
+                  text-neutral-900 focus:outline-none focus:ring-2 focus:ring-violet-500/20 
+                  focus:border-violet-500/30 transition-all duration-200"
+                >
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categoryOptions.map((category) => (
+                    <SelectItem
+                      key={category.value}
+                      value={category.value}
+                      className="text-sm"
+                    >
+                      {category.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-sm text-neutral-500 mt-1">
+                {
+                  categoryOptions.find((c) => c.value === selectedCategory)
+                    ?.description
+                }
+              </p>
+            </motion.div>
+
+            {/* Tone Selection */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="space-y-3"
+            >
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-lg bg-gradient-to-tr from-indigo-100 via-fuchsia-100 to-amber-100">
+                  <Sparkles className="w-4 h-4 text-violet-600" />
+                </div>
+                <label className="text-sm font-medium bg-gradient-to-r from-neutral-800 to-neutral-600 bg-clip-text text-transparent">
+                  Select Writing Tone
+                </label>
+              </div>
+              <Select
+                value={selectedTone}
+                onValueChange={(value: ToneValue) => {
+                  setSelectedTone(value);
+                  setTone(value);
+                }}
+              >
+                <SelectTrigger
+                  className="w-full h-12 text-[15px] bg-white rounded-xl border border-neutral-200/60 
+                  text-neutral-900 focus:outline-none focus:ring-2 focus:ring-violet-500/20 
+                  focus:border-violet-500/30 transition-all duration-200"
+                >
+                  <SelectValue placeholder="Select a tone" />
+                </SelectTrigger>
+                <SelectContent>
+                  {toneOptions.map((tone) => (
+                    <SelectItem
+                      key={tone.value}
+                      value={tone.value}
+                      className="text-sm"
+                    >
+                      {tone.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-sm text-neutral-500 mt-1">
+                {toneOptions.find((t) => t.value === selectedTone)?.description}
+              </p>
             </motion.div>
 
             {/* Post Length Selection */}
@@ -291,74 +457,14 @@ export const StudioSidebar = ({
                         >
                           {option.icon}
                         </div>
-                        <span className={cn(
-                          "text-sm font-medium",
-                          postLength === option.value
-                            ? "text-violet-600"
-                            : "text-neutral-600"
-                        )}>
-                          {option.label}
-                        </span>
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="text-xs">{option.tooltip}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Tone Selection */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="space-y-4"
-            >
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-gradient-to-tr from-indigo-100 via-fuchsia-100 to-amber-100">
-                  <Sparkles className="w-4 h-4 text-violet-600" />
-                </div>
-                <label className="text-sm font-medium bg-gradient-to-r from-neutral-800 to-neutral-600 bg-clip-text text-transparent">
-                  Choose the tone
-                </label>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                {toneOptions.map((option) => (
-                  <Tooltip key={option.value}>
-                    <TooltipTrigger asChild>
-                      <button
-                        onClick={() => setTone(option.value)}
-                        className={cn(
-                          "group relative flex items-center gap-2.5 p-2.5 rounded-xl transition-all duration-300 border min-h-[52px]",
-                          tone === option.value
-                            ? "bg-gradient-to-tr from-violet-50/80 to-fuchsia-50/80 border-violet-200 shadow-lg shadow-violet-100/50 scale-[1.02]"
-                            : "bg-white hover:bg-gradient-to-tr hover:from-violet-50/40 hover:to-fuchsia-50/40 border-neutral-200/60 hover:border-violet-200 hover:shadow-md hover:shadow-violet-100/30 hover:scale-[1.01]"
-                        )}
-                      >
-                        <div className={cn(
-                          "relative flex items-center justify-center w-8 h-8 rounded-lg shrink-0 transition-all duration-300",
-                          tone === option.value
-                            ? "bg-gradient-to-tr from-violet-500/20 to-fuchsia-500/20"
-                            : "bg-gradient-to-tr from-neutral-100 to-neutral-50 group-hover:from-violet-100/40 group-hover:to-fuchsia-100/40"
-                        )}>
-                          <span className="text-lg relative z-10">{option.emoji}</span>
-                          <div className={cn(
-                            "absolute inset-0 rounded-lg transition-opacity duration-300",
-                            tone === option.value
-                              ? "opacity-100"
-                              : "opacity-0 group-hover:opacity-100"
-                          )}>
-                            <div className="absolute inset-0 bg-gradient-to-tr from-violet-500/10 to-fuchsia-500/10 rounded-lg blur-md" />
-                          </div>
-                        </div>
-                        <span className={cn(
-                          "text-sm font-medium flex-1 text-left transition-colors duration-300 line-clamp-2",
-                          tone === option.value
-                            ? "bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent"
-                            : "text-neutral-600 group-hover:text-violet-600"
-                        )}>
+                        <span
+                          className={cn(
+                            "text-sm font-medium",
+                            postLength === option.value
+                              ? "text-violet-600"
+                              : "text-neutral-600"
+                          )}
+                        >
                           {option.label}
                         </span>
                       </button>
@@ -374,7 +480,7 @@ export const StudioSidebar = ({
         </div>
 
         {/* Generate Button */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
@@ -382,7 +488,9 @@ export const StudioSidebar = ({
         >
           <GradientButton
             onClick={handleRegularGenerate}
-            disabled={!prompt.trim() || prompt.length < 10 || isRegularGenerating}
+            disabled={
+              !prompt.trim() || prompt.length < 10 || isRegularGenerating
+            }
             variant="primary"
             className="w-full relative group shadow-lg shadow-violet-100/50"
             leftIcon={

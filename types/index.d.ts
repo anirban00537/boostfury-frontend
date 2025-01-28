@@ -210,6 +210,7 @@ export interface GenerateLinkedInPostsDTO {
   tone?: string;
   writingStyle?: string;
   postLength?: "short" | "medium" | "long";
+  category?: string;
 }
 
 export interface GeneratePersonalizedPostDto {
