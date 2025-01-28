@@ -12,6 +12,8 @@ import {
   User,
   CreditCard,
   Sparkles,
+  Crown,
+  Rocket,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -29,6 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
+import { PlanCard } from "./PlanCard.comp";
 
 // Define base interface for navigation items
 interface BaseNavigationItem {
@@ -84,15 +87,16 @@ const NavigationItem: React.FC<{
       className={cn(
         "group relative flex items-center gap-x-3 rounded-xl px-3 py-2.5",
         "transition-all duration-200",
-        isActive
-          ? "bg-neutral-100 shadow-sm"
-          : "hover:bg-neutral-50"
+        isActive ? "bg-neutral-100 shadow-sm" : "hover:bg-neutral-50"
       )}
     >
-      <div className={cn(
-        "relative flex items-center justify-center",
-        isActive && "after:absolute after:-inset-2 after:bg-primary/10 after:blur-lg after:rounded-full"
-      )}>
+      <div
+        className={cn(
+          "relative flex items-center justify-center",
+          isActive &&
+            "after:absolute after:-inset-2 after:bg-primary/10 after:blur-lg after:rounded-full"
+        )}
+      >
         <item.icon
           className={cn(
             "w-[18px] h-[18px] transition-all duration-200",
@@ -154,11 +158,56 @@ interface SidebarProps {
   isOpen: boolean;
 }
 
+// Add type for subscription package
+interface SubscriptionPackage {
+  name: string;
+  type: string;
+}
+
+interface Usage {
+  words: {
+    used: number;
+    limit: number;
+    nextReset: string;
+  };
+  linkedin: {
+    accountsUsed: number;
+    accountsLimit: number;
+    postsUsed: number;
+    postsLimit: number;
+    nextReset: string;
+  };
+}
+
+interface Subscription {
+  id: string;
+  status: string;
+  isTrial: boolean;
+  startDate: string;
+  endDate: string;
+  package: SubscriptionPackage;
+  subscriptionId: string | null;
+  isActive: boolean;
+  features: {
+    viralPostGeneration: boolean;
+    aiStudio: boolean;
+    postIdeaGenerator: boolean;
+  };
+  usage: Usage;
+}
+
+interface UserState {
+  userinfo: any;
+  subscription: Subscription;
+  loggedin: boolean;
+  linkedinProfile: any;
+}
+
 // Update the Sidebar component
 const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
   const pathname = usePathname();
   const { userinfo, subscription } = useSelector(
-    (state: RootState) => state.user
+    (state: { user: UserState }) => state.user
   );
   const { logoutUser } = useAuth();
 
@@ -185,6 +234,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
     e.preventDefault();
     window.location.href = "/studio";
   };
+  console.log(subscription, "subscriptionsubscriptionsubscription");
 
   return (
     <aside
@@ -281,11 +331,14 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
               )}
             >
               <div className="flex items-center gap-x-3">
-                <div className={cn(
-                  "relative flex items-center justify-center",
-                  pathname === "/settings/ai-style" && "after:absolute after:-inset-2 after:bg-primary/10 after:blur-lg after:rounded-full"
-                )}>
-                  <Wand2 
+                <div
+                  className={cn(
+                    "relative flex items-center justify-center",
+                    pathname === "/settings/ai-style" &&
+                      "after:absolute after:-inset-2 after:bg-primary/10 after:blur-lg after:rounded-full"
+                  )}
+                >
+                  <Wand2
                     className={cn(
                       "w-[18px] h-[18px] transition-all duration-200",
                       pathname === "/settings/ai-style"
@@ -294,7 +347,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
                     )}
                   />
                 </div>
-                <span 
+                <span
                   className={cn(
                     "text-sm font-medium transition-colors duration-200",
                     pathname === "/settings/ai-style"
@@ -311,12 +364,15 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
             </Link>
           </div>
         </div>
+
+        {/* Plan Section */}
+        <PlanCard subscription={subscription} />
       </div>
 
       {/* Footer Section */}
       <div className="shrink-0 border-t border-neutral-200/80">
         {/* AI Usage Section */}
-        {subscription.isActive && (
+        {subscription.status === "active" && (
           <div className="px-4 py-3 border-b border-neutral-200/80">
             <div className="flex items-center justify-between mb-2.5">
               <div className="flex items-center gap-2">
@@ -394,7 +450,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
 
             <DropdownMenuItem
               className="px-3 py-2.5 cursor-pointer hover:bg-gray-50"
-              onClick={() => window.location.href = "/billing"}
+              onClick={() => (window.location.href = "/billing")}
             >
               <User className="mr-2 h-4 w-4" />
               <span>Billing management</span>
