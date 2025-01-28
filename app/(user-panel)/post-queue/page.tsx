@@ -27,6 +27,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
 import Link from "next/link";
 import { EmptyState } from "@/components/ui/empty-state";
+import LoadingSection from "@/components/utils-components/loading/LoadingSection.comp";
 
 // Define interfaces for type safety
 interface PostImage {
@@ -166,107 +167,116 @@ export default function PostQueuePage() {
       </div>
 
       <div className="px-4 lg:px-8 py-8 mx-auto">
-        {/* Queue Summary */}
-        {totalPosts > 0 && (
-          <div className="relative mb-8 group">
-            <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/50 via-neutral-300/50 to-neutral-200/50 rounded-xl blur-md opacity-0 group-hover:opacity-100 transition-all duration-500" />
-            <div className="relative p-6 rounded-xl bg-white/50 backdrop-blur-sm border border-neutral-200/60">
-              <div className="flex items-center gap-3">
-                <div className="relative size-10 rounded-xl bg-primary/5 flex items-center justify-center shrink-0">
-                  <Calendar className="size-5 text-primary" />
-                </div>
-                <p className="text-sm text-neutral-600">
-                  You have{" "}
-                  <span className="font-medium text-neutral-900">
-                    {totalPosts} posts
-                  </span>{" "}
-                  scheduled. The last one will be published on{" "}
-                  <span className="font-medium text-neutral-900">
-                    {format(
-                      new Date(posts[posts.length - 1].scheduledTime),
-                      "EEEE MMMM do"
-                    )}
-                  </span>
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Posts List */}
-        {totalPosts > 0 ? (
-          <div className="space-y-12">
-            {Object.entries(groupPostsByDate(posts)).map(
-              ([date, datePosts]) => (
-                <div key={date}>
-                  {/* Date Header */}
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="relative size-8 rounded-lg bg-neutral-100/80 flex items-center justify-center shrink-0">
-                      <Calendar className="size-4 text-neutral-600" />
-                    </div>
-                    <h3 className="text-sm font-medium text-neutral-900">
-                      {date}
-                    </h3>
-                  </div>
-
-                  {/* Posts Grid */}
-                  <div className="space-y-3">
-                    {datePosts.map((post: Post) => (
-                      <motion.div
-                        key={post.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="group relative"
-                      >
-                        <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
-                        <div className="relative flex items-center gap-4 p-4 rounded-xl bg-white/50 backdrop-blur-sm border border-neutral-200/60 overflow-hidden">
-                          {/* Time */}
-                          <div className="min-w-[100px] shrink-0">
-                            <div className="text-sm font-medium text-neutral-900">
-                              {format(new Date(post.scheduledTime), "hh:mm a")}
-                            </div>
-                            <div className="text-xs text-neutral-500 mt-0.5">
-                              {post.timeUntilPublishing}
-                            </div>
-                          </div>
-
-                          {/* Platform Icon */}
-                          <div className="relative size-10 rounded-lg bg-[#0077b5]/10 flex items-center justify-center shrink-0">
-                            <Linkedin className="size-5 text-[#0077b5]" />
-                          </div>
-
-                          {/* Content */}
-                          <div className="w-[400px] lg:w-[500px] shrink-0">
-                            <p className="text-sm text-neutral-700 truncate">
-                              {post.content}
-                            </p>
-                          </div>
-
-                          {/* Actions */}
-                          <div className="flex items-center gap-2 ml-auto opacity-0 group-hover:opacity-100 transition-all duration-200 shrink-0">
-                            <Link href={`/studio?draft_id=${post.id}`}>
-                              <button className="relative size-8 rounded-lg flex items-center justify-center hover:bg-neutral-100/80 transition-colors">
-                                <PenSquare className="size-4 text-neutral-500" />
-                              </button>
-                            </Link>
-                            <button className="relative size-8 rounded-lg flex items-center justify-center hover:bg-neutral-100/80 transition-colors">
-                              <Eye className="size-4 text-neutral-500" />
-                            </button>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              )
-            )}
-          </div>
+        {isLoadingQueue ? (
+          <LoadingSection className="min-h-[200px]" />
         ) : (
-          <EmptyState
-            icon={Calendar}
-            title="Your Queue is Empty"
-            description="Start scheduling your posts to maintain a consistent presence on your social media platforms."
-          />
+          <>
+            {/* Queue Summary */}
+            {totalPosts > 0 && (
+              <div className="relative mb-8 group">
+                <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/50 via-neutral-300/50 to-neutral-200/50 rounded-xl blur-md opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                <div className="relative p-6 rounded-xl bg-white/50 backdrop-blur-sm border border-neutral-200/60">
+                  <div className="flex items-center gap-3">
+                    <div className="relative size-10 rounded-xl bg-primary/5 flex items-center justify-center shrink-0">
+                      <Calendar className="size-5 text-primary" />
+                    </div>
+                    <p className="text-sm text-neutral-600">
+                      You have{" "}
+                      <span className="font-medium text-neutral-900">
+                        {totalPosts} posts
+                      </span>{" "}
+                      scheduled. The last one will be published on{" "}
+                      <span className="font-medium text-neutral-900">
+                        {format(
+                          new Date(posts[posts.length - 1].scheduledTime),
+                          "EEEE MMMM do"
+                        )}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Posts List */}
+            {totalPosts > 0 ? (
+              <div className="space-y-12">
+                {Object.entries(groupPostsByDate(posts)).map(
+                  ([date, datePosts]) => (
+                    <div key={date}>
+                      {/* Date Header */}
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="relative size-8 rounded-lg bg-neutral-100/80 flex items-center justify-center shrink-0">
+                          <Calendar className="size-4 text-neutral-600" />
+                        </div>
+                        <h3 className="text-sm font-medium text-neutral-900">
+                          {date}
+                        </h3>
+                      </div>
+
+                      {/* Posts Grid */}
+                      <div className="space-y-3">
+                        {datePosts.map((post: Post) => (
+                          <motion.div
+                            key={post.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="group relative"
+                          >
+                            <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-200/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+                            <div className="relative flex items-center gap-4 p-4 rounded-xl bg-white/50 backdrop-blur-sm border border-neutral-200/60 overflow-hidden">
+                              {/* Time */}
+                              <div className="min-w-[100px] shrink-0">
+                                <div className="text-sm font-medium text-neutral-900">
+                                  {format(
+                                    new Date(post.scheduledTime),
+                                    "hh:mm a"
+                                  )}
+                                </div>
+                                <div className="text-xs text-neutral-500 mt-0.5">
+                                  {post.timeUntilPublishing}
+                                </div>
+                              </div>
+
+                              {/* Platform Icon */}
+                              <div className="relative size-10 rounded-lg bg-[#0077b5]/10 flex items-center justify-center shrink-0">
+                                <Linkedin className="size-5 text-[#0077b5]" />
+                              </div>
+
+                              {/* Content */}
+                              <div className="w-[400px] lg:w-[500px] shrink-0">
+                                <p className="text-sm text-neutral-700 truncate">
+                                  {post.content}
+                                </p>
+                              </div>
+
+                              {/* Actions */}
+                              <div className="flex items-center gap-2 ml-auto opacity-0 group-hover:opacity-100 transition-all duration-200 shrink-0">
+                                <Link href={`/studio?draft_id=${post.id}`}>
+                                  <button className="relative size-8 rounded-lg flex items-center justify-center hover:bg-neutral-100/80 transition-colors">
+                                    <PenSquare className="size-4 text-neutral-500" />
+                                  </button>
+                                </Link>
+                                <button className="relative size-8 rounded-lg flex items-center justify-center hover:bg-neutral-100/80 transition-colors">
+                                  <Eye className="size-4 text-neutral-500" />
+                                </button>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            ) : (
+              <EmptyState
+                icon={Calendar}
+                title="Your Queue is Empty"
+                description="Start scheduling your posts to maintain a consistent presence on your social media platforms."
+              />
+            )}
+          </>
         )}
       </div>
 

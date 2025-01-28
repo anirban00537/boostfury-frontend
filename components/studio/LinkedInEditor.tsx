@@ -246,8 +246,8 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                     ) : (
                       <>
                         <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
-                          <Clock className="h-4 w-4 text-blue-600" />
-                        </div>
+                        <Clock className="h-4 w-4 text-blue-600" />
+                      </div>
                         <div className="flex flex-col flex-1">
                           <span>
                             {isScheduling ? "Scheduling..." : "Schedule"}
@@ -352,7 +352,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                       {isPosting || isAddingToQueue || isScheduling ? (
                         <Loader2 className="w-[18px] h-[18px] animate-spin" />
                       ) : (
-                        <ImageIcon className="w-[18px] h-[18px] group-hover:text-neutral-900 transition-colors" />
+                      <ImageIcon className="w-[18px] h-[18px] group-hover:text-neutral-900 transition-colors" />
                       )}
                     </button>
                   </TooltipTrigger>
@@ -371,7 +371,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                       {isPosting || isAddingToQueue || isScheduling ? (
                         <Loader2 className="w-[18px] h-[18px] animate-spin" />
                       ) : (
-                        <Smile className="w-[18px] h-[18px] group-hover:text-neutral-900 transition-colors" />
+                      <Smile className="w-[18px] h-[18px] group-hover:text-neutral-900 transition-colors" />
                       )}
                     </button>
                   </TooltipTrigger>
@@ -389,7 +389,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                       {isPosting || isAddingToQueue || isScheduling ? (
                         <Loader2 className="w-[18px] h-[18px] animate-spin" />
                       ) : (
-                        <Hash className="w-[18px] h-[18px] group-hover:text-neutral-900 transition-colors" />
+                      <Hash className="w-[18px] h-[18px] group-hover:text-neutral-900 transition-colors" />
                       )}
                     </button>
                   </TooltipTrigger>
@@ -407,7 +407,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                       {isPosting || isAddingToQueue || isScheduling ? (
                         <Loader2 className="w-[18px] h-[18px] animate-spin" />
                       ) : (
-                        <Link2 className="w-[18px] h-[18px] group-hover:text-neutral-900 transition-colors" />
+                      <Link2 className="w-[18px] h-[18px] group-hover:text-neutral-900 transition-colors" />
                       )}
                     </button>
                   </TooltipTrigger>
@@ -418,8 +418,8 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
               </div>
 
               <div className="flex items-center gap-2">
-                <RainbowButton
-                  onClick={onGeneratePersonalized}
+                    <RainbowButton
+                      onClick={onGeneratePersonalized}
                   disabled={
                     isGeneratingPersonalized ||
                     isPosting ||
@@ -427,19 +427,19 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                     isScheduling
                   }
                   className="h-10 px-4 flex items-center gap-2 bg-[#0A66C2] hover:bg-[#004182] transition-colors rounded-full text-sm font-medium shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isGeneratingPersonalized ? (
-                    <>
+                    >
+                      {isGeneratingPersonalized ? (
+                        <>
                       <Loader2 className="h-4 w-4 animate-spin" />
                       <span>Generating...</span>
-                    </>
-                  ) : (
-                    <>
+                        </>
+                      ) : (
+                        <>
                       <Sparkles className="h-4 w-4" />
-                      <span>AI Personal Writer</span>
-                    </>
-                  )}
-                </RainbowButton>
+                          <span>AI Personal Writer</span>
+                        </>
+                      )}
+                    </RainbowButton>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>

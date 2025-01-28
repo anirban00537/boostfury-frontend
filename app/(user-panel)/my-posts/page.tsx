@@ -37,6 +37,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
 import { EmptyState } from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils";
+import LoadingSection from "@/components/utils-components/loading/LoadingSection.comp";
 
 interface PostConfig {
   id: PostTabId;
@@ -298,9 +299,7 @@ const ContentManager = () => {
       <div className=" px-4 sm:px-6 py-8">
         <div className="p-6">
           {isLoadingPosts ? (
-            <div className="flex justify-center items-center h-40">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-            </div>
+            <LoadingSection className="min-h-[400px]" />
           ) : (
             <div className="space-y-6">
               {postsData[activeTab]?.map((group, groupIndex) => (

@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Sparkles, Wand2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import LoadingSection from "@/components/utils-components/loading/LoadingSection.comp";
 
 const ContentCreationTools: React.FC = () => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
@@ -85,6 +86,14 @@ const ContentCreationTools: React.FC = () => {
     handlePromptChange(e, category);
   };
 
+  const isLoading =
+    isPosting ||
+    isAddingToQueue ||
+    isScheduling ||
+    isGenerating ||
+    isGeneratingPersonalized ||
+    isRewriting;
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -98,36 +107,42 @@ const ContentCreationTools: React.FC = () => {
         )}
       >
         <div className="w-[550px] py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <LinkedInEditor
-              content={content}
-              linkedinProfile={linkedinProfile}
-              postDetails={postDetails}
-              isPosting={isPosting}
-              isAddingToQueue={isAddingToQueue}
-              isScheduling={isScheduling}
-              isGenerating={isGenerating}
-              isGeneratingPersonalized={isGeneratingPersonalized}
-              isRewriting={isRewriting}
-              onContentChange={handleContentChange}
-              onImageUpload={() => setIsImageModalOpen(true)}
-              onEmojiPickerToggle={() => setShowEmojiPicker(!showEmojiPicker)}
-              onSchedule={() => setIsScheduleModalOpen(true)}
-              onAddToQueue={() =>
-                linkedinProfile?.id && handleAddToQueue(linkedinProfile.id)
-              }
-              onPostNow={() =>
-                linkedinProfile?.id && handlePostNow(linkedinProfile.id)
-              }
-              onImageDelete={handleImageDelete}
-              onGeneratePersonalized={handleGeneratePersonalized}
-              onRewriteContent={handleRewriteContent}
-            />
-          </motion.div>
+          {isLoading ? (
+            <div className="w-[650px] bg-white rounded-2xl border border-[#0A66C2]/10 shadow-[0_0_0_1px_rgba(10,102,194,0.1)] overflow-hidden">
+              <LoadingSection className="min-h-[400px]" />
+            </div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <LinkedInEditor
+                content={content}
+                linkedinProfile={linkedinProfile}
+                postDetails={postDetails}
+                isPosting={isPosting}
+                isAddingToQueue={isAddingToQueue}
+                isScheduling={isScheduling}
+                isGenerating={isGenerating}
+                isGeneratingPersonalized={isGeneratingPersonalized}
+                isRewriting={isRewriting}
+                onContentChange={handleContentChange}
+                onImageUpload={() => setIsImageModalOpen(true)}
+                onEmojiPickerToggle={() => setShowEmojiPicker(!showEmojiPicker)}
+                onSchedule={() => setIsScheduleModalOpen(true)}
+                onAddToQueue={() =>
+                  linkedinProfile?.id && handleAddToQueue(linkedinProfile.id)
+                }
+                onPostNow={() =>
+                  linkedinProfile?.id && handlePostNow(linkedinProfile.id)
+                }
+                onImageDelete={handleImageDelete}
+                onGeneratePersonalized={handleGeneratePersonalized}
+                onRewriteContent={handleRewriteContent}
+              />
+            </motion.div>
+          )}
 
           {/* Emoji Picker */}
           <AnimatePresence>
@@ -159,17 +174,23 @@ const ContentCreationTools: React.FC = () => {
         </div>
       </div>
 
-      <StudioSidebar
-        prompt={prompt}
-        tone={tone}
-        postLength={postLength}
-        isGenerating={isGenerating}
-        handleGenerate={handleGenerate}
-        handleGeneratePersonalized={handleGeneratePersonalized}
-        handlePromptChange={handlePromptChangeWithCategory}
-        setTone={setTone}
-        setPostLength={setPostLength}
-      />
+      {isLoading ? (
+        <div className="h-full fixed right-0 top-0 w-[380px] bg-white shadow-[-1px_0_0_0_rgba(0,0,0,0.05)] z-10">
+          <LoadingSection className="min-h-screen" />
+        </div>
+      ) : (
+        <StudioSidebar
+          prompt={prompt}
+          tone={tone}
+          postLength={postLength}
+          isGenerating={isGenerating}
+          handleGenerate={handleGenerate}
+          handleGeneratePersonalized={handleGeneratePersonalized}
+          handlePromptChange={handlePromptChangeWithCategory}
+          setTone={setTone}
+          setPostLength={setPostLength}
+        />
+      )}
     </motion.div>
   );
 };
