@@ -32,9 +32,9 @@ export const useContentPosting = () => {
       setIsPosting(true);
       // TODO: Implement post now functionality
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
-      setIsPosting(false);
     } catch (error) {
       console.error("Error posting content:", error);
+    } finally {
       setIsPosting(false);
     }
   }, []);
@@ -44,9 +44,9 @@ export const useContentPosting = () => {
       setIsAddingToQueue(true);
       // TODO: Implement add to queue functionality
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
-      setIsAddingToQueue(false);
     } catch (error) {
       console.error("Error adding to queue:", error);
+    } finally {
       setIsAddingToQueue(false);
     }
   }, []);
@@ -56,9 +56,9 @@ export const useContentPosting = () => {
       setIsScheduling(true);
       // TODO: Implement schedule functionality
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
-      setIsScheduling(false);
     } catch (error) {
       console.error("Error scheduling post:", error);
+    } finally {
       setIsScheduling(false);
     }
   }, []);

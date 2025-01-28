@@ -32,8 +32,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { GradientButton } from "@/components/ui/gradient-button";
-import {  RewriteInstructionType } from "@/services/ai-content";
+import { RewriteInstructionType } from "@/services/ai-content";
 import { LINKEDIN_REWRITE_INSTRUCTIONS } from "@/lib/core-constants";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 
 interface LinkedInEditorProps {
   content: string;
@@ -75,7 +76,6 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
   onImageDelete,
   onGeneratePersonalized,
   onRewriteContent,
-
 }) => {
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
@@ -111,7 +111,9 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                   <TooltipTrigger asChild>
                     <button className="flex items-center gap-1.5 text-[13px] text-neutral-600 mt-0.5 hover:bg-neutral-50 px-2 -ml-2 py-1 rounded-md transition-all group">
                       <Globe2 className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-700 transition-colors" />
-                      <span className="group-hover:text-neutral-700">Anyone</span>
+                      <span className="group-hover:text-neutral-700">
+                        Anyone
+                      </span>
                       <svg
                         className="w-3 h-3 ml-0.5 group-hover:text-neutral-700"
                         viewBox="0 0 16 16"
@@ -130,7 +132,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
             <div className="flex items-center">
               <motion.button
                 onClick={onAddToQueue}
-                disabled={isAddingToQueue}
+                disabled={isAddingToQueue || !content.trim()}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className={cn(
@@ -143,16 +145,30 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                 <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
                   <Linkedin className="w-3.5 h-3.5" />
                 </div>
-                {isAddingToQueue ? "Adding..." : "Add to Queue"}
+                {isAddingToQueue ? (
+                  <>
+                    <div className="h-4 w-4 relative animate-spin">
+                      <div className="absolute inset-0 rounded-full border-2 border-white/20 border-t-white" />
+                    </div>
+                    <span>Adding...</span>
+                  </>
+                ) : (
+                  "Add to Queue"
+                )}
               </motion.button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <motion.button
+                    disabled={!content.trim()}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="h-9 w-9 bg-[#8B5CF6] hover:bg-[#7C3AED] 
-                    rounded-r-lg transition-all shadow-sm border border-[#7C3AED]/20 border-l-white/20 flex items-center justify-center"
+                    className={cn(
+                      "h-9 w-9 bg-[#8B5CF6] hover:bg-[#7C3AED]",
+                      "rounded-r-lg transition-all shadow-sm border border-[#7C3AED]/20 border-l-white/20",
+                      "flex items-center justify-center",
+                      "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#8B5CF6]"
+                    )}
                   >
                     <ChevronDown className="h-4 w-4 text-white" />
                   </motion.button>
@@ -160,17 +176,25 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                 <DropdownMenuContent align="end" className="w-[180px] p-1">
                   <DropdownMenuItem
                     onClick={onSchedule}
-                    disabled={isScheduling}
+                    disabled={isScheduling || !content.trim()}
                     className="gap-2.5 h-10 px-4 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600"
                   >
-                    <div className="w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center">
-                      <Clock className="h-4 w-4 text-blue-600" />
-                    </div>
-                    <span>Schedule</span>
+                    {isScheduling ? (
+                      <div className="w-7 h-7 rounded-full bg-neutral-50 flex items-center justify-center">
+                        <div className="h-4 w-4 relative animate-spin">
+                          <div className="absolute inset-0 rounded-full border-2 border-neutral-200 border-t-neutral-600" />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center">
+                        <Clock className="h-4 w-4 text-blue-600" />
+                      </div>
+                    )}
+                    <span>{isScheduling ? "Scheduling..." : "Schedule"}</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={onPostNow}
-                    disabled={isPosting}
+                    disabled={isPosting || !content.trim()}
                     className="gap-2.5 h-10 px-4 rounded-lg data-[highlighted]:bg-green-50 data-[highlighted]:text-green-600"
                   >
                     {isPosting ? (
@@ -313,24 +337,25 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
               <div className="flex items-center gap-2">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="h-9 px-3 hover:bg-neutral-50 hover:text-neutral-900 flex items-center gap-2 border-neutral-200"
+                    <RainbowButton
                       onClick={onGeneratePersonalized}
                       disabled={isGeneratingPersonalized}
+                      className="h-9 px-3 flex items-center gap-2"
                     >
                       {isGeneratingPersonalized ? (
                         <>
                           <Loader2 className="h-5 w-5 animate-spin" />
-                          <span>Generating...</span>
+                          <span className="inline-flex items-center gap-1">
+                            Generating<span className="animate-pulse">...</span>
+                          </span>
                         </>
                       ) : (
                         <>
                           <Sparkles className="h-5 w-5" />
-                          <span>Ai Personal Writer</span>
+                          <span>AI Personal Writer</span>
                         </>
                       )}
-                    </Button>
+                    </RainbowButton>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p className="text-xs">
@@ -341,21 +366,24 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="h-9 px-3 hover:bg-neutral-50 hover:text-neutral-900 flex items-center gap-2 border-neutral-200"
+                    <RainbowButton
                       disabled={isRewriting}
+                      className="h-9 w-9 flex items-center justify-center p-0"
                     >
                       {isRewriting ? (
                         <Loader2 className="h-5 w-5 animate-spin" />
                       ) : (
                         <Wand2 className="h-5 w-5" />
                       )}
-                    </Button>
+                    </RainbowButton>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-[200px] p-1">
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.IMPROVE)}
+                      onClick={() =>
+                        onRewriteContent?.(
+                          LINKEDIN_REWRITE_INSTRUCTIONS.IMPROVE
+                        )
+                      }
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
@@ -364,40 +392,81 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                       <span>Improve Overall</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.SHORTER)}
+                      onClick={() =>
+                        onRewriteContent?.(
+                          LINKEDIN_REWRITE_INSTRUCTIONS.SHORTER
+                        )
+                      }
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
-                        <svg className="h-3.5 w-3.5 text-neutral-700" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M3 6h18M3 12h10M3 18h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                        <svg
+                          className="h-3.5 w-3.5 text-neutral-700"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M3 6h18M3 12h10M3 18h6"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
                         </svg>
                       </div>
                       <span>Make it Shorter</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.LONGER)}
+                      onClick={() =>
+                        onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.LONGER)
+                      }
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
-                        <svg className="h-3.5 w-3.5 text-neutral-700" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                        <svg
+                          className="h-3.5 w-3.5 text-neutral-700"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M3 6h18M3 12h18M3 18h18"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
                         </svg>
                       </div>
                       <span>Make it Longer</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.PROFESSIONAL)}
+                      onClick={() =>
+                        onRewriteContent?.(
+                          LINKEDIN_REWRITE_INSTRUCTIONS.PROFESSIONAL
+                        )
+                      }
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
-                        <svg className="h-3.5 w-3.5 text-neutral-700" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M20 7L12 3L4 7M20 7L12 11M20 7V17L12 21M12 11L4 7M12 11V21M4 7V17L12 21" stroke="currentColor" strokeWidth="2"/>
+                        <svg
+                          className="h-3.5 w-3.5 text-neutral-700"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M20 7L12 3L4 7M20 7L12 11M20 7V17L12 21M12 11L4 7M12 11V21M4 7V17L12 21"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                          />
                         </svg>
                       </div>
                       <span>More Professional</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.CASUAL)}
+                      onClick={() =>
+                        onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.CASUAL)
+                      }
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
@@ -406,46 +475,111 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                       <span>More Casual</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.SEO_OPTIMIZE)}
+                      onClick={() =>
+                        onRewriteContent?.(
+                          LINKEDIN_REWRITE_INSTRUCTIONS.SEO_OPTIMIZE
+                        )
+                      }
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
-                        <svg className="h-3.5 w-3.5 text-neutral-700" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M7 8h10M7 12h10M7 16h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                          <circle cx="19" cy="5" r="3" stroke="currentColor" strokeWidth="2"/>
+                        <svg
+                          className="h-3.5 w-3.5 text-neutral-700"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M7 8h10M7 12h10M7 16h10"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                          <circle
+                            cx="19"
+                            cy="5"
+                            r="3"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                          />
                         </svg>
                       </div>
                       <span>SEO Optimize</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.STORYTELLING)}
+                      onClick={() =>
+                        onRewriteContent?.(
+                          LINKEDIN_REWRITE_INSTRUCTIONS.STORYTELLING
+                        )
+                      }
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
-                        <svg className="h-3.5 w-3.5 text-neutral-700" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <svg
+                          className="h-3.5 w-3.5 text-neutral-700"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M13 10V3L4 14h7v7l9-11h-7z"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
                         </svg>
                       </div>
                       <span>Add Storytelling</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.PERSUASIVE)}
+                      onClick={() =>
+                        onRewriteContent?.(
+                          LINKEDIN_REWRITE_INSTRUCTIONS.PERSUASIVE
+                        )
+                      }
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
-                        <svg className="h-3.5 w-3.5 text-neutral-700" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </div>
+                        <svg
+                          className="h-3.5 w-3.5 text-neutral-700"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
                       <span>More Persuasive</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.IMPROVE_HOOK)}
+                      onClick={() =>
+                        onRewriteContent?.(
+                          LINKEDIN_REWRITE_INSTRUCTIONS.IMPROVE_HOOK
+                        )
+                      }
                       className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
-                        <svg className="h-3.5 w-3.5 text-neutral-700" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <svg
+                          className="h-3.5 w-3.5 text-neutral-700"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M13 10V3L4 14h7v7l9-11h-7z"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
                         </svg>
                       </div>
                       <span>Improve Hook</span>

@@ -18,7 +18,6 @@ import {
   Wand2,
 } from "lucide-react";
 import {
-  PostPreview,
   DropdownItem,
 } from "@/components/content-create/PostPreview";
 import { Button } from "@/components/ui/button";
