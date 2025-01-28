@@ -36,6 +36,7 @@ import { GradientButton } from "@/components/ui/gradient-button";
 import { RewriteInstructionType } from "@/services/ai-content";
 import { LINKEDIN_REWRITE_INSTRUCTIONS } from "@/lib/core-constants";
 import { RainbowButton } from "@/components/ui/rainbow-button";
+import { POST_STATUS } from "@/lib/core-constants";
 
 interface LinkedInEditorProps {
   content: string;
@@ -84,7 +85,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-[650px] bg-white rounded-2xl shadow-lg border border-neutral-100 overflow-hidden"
+      className="w-[650px] bg-white rounded-2xl border border-[#0A66C2]/10 shadow-[0_0_0_1px_rgba(10,102,194,0.1)] overflow-hidden"
     >
       {linkedinProfile ? (
         <>
@@ -108,6 +109,36 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                 <span className="text-[13px] text-neutral-600">
                   {linkedinProfile?.timezone}
                 </span>
+                {postDetails?.status !== undefined && (
+                  <div className="flex items-center gap-2 mt-1">
+                    <div
+                      className={cn(
+                        "px-2 py-0.5 rounded-full text-xs font-medium",
+                        postDetails.status === POST_STATUS.DRAFT &&
+                          "bg-neutral-100 text-neutral-700",
+                        postDetails.status === POST_STATUS.SCHEDULED &&
+                          "bg-blue-50 text-blue-700",
+                        postDetails.status === POST_STATUS.PUBLISHED &&
+                          "bg-green-50 text-green-700",
+                        postDetails.status === POST_STATUS.FAILED &&
+                          "bg-red-50 text-red-700"
+                      )}
+                    >
+                      {postDetails.status === POST_STATUS.DRAFT && "Draft"}
+                      {postDetails.status === POST_STATUS.SCHEDULED &&
+                        "Scheduled"}
+                      {postDetails.status === POST_STATUS.PUBLISHED &&
+                        "Published"}
+                      {postDetails.status === POST_STATUS.FAILED && "Failed"}
+                    </div>
+                    {postDetails.status === POST_STATUS.SCHEDULED &&
+                      postDetails.scheduledTime && (
+                        <span className="text-xs text-neutral-500">
+                          {new Date(postDetails.scheduledTime).toLocaleString()}
+                        </span>
+                      )}
+                  </div>
+                )}
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button className="flex items-center gap-1.5 text-[13px] text-neutral-600 mt-1 hover:bg-neutral-50 px-2 -ml-2 py-1 rounded-md transition-all group">
@@ -127,36 +158,82 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
 
             {/* Action Buttons */}
             <div className="flex items-center gap-2">
-              <RainbowButton
+              <Button
                 onClick={onAddToQueue}
-                disabled={isAddingToQueue || !content.trim()}
-                className="h-10 px-4 flex items-center gap-2"
+                disabled={
+                  isAddingToQueue ||
+                  !content.trim() ||
+                  postDetails?.scheduledTime ||
+                  postDetails?.status === POST_STATUS.SCHEDULED
+                }
+                className="h-9 px-4 flex items-center gap-2 bg-[#0a66c2] hover:bg-[#004182] text-white rounded-[18px] text-[14px] font-medium border-0 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isAddingToQueue ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <span>Adding...</span>
+                    <Loader2 className="h-4 w-4 animate-spin text-white" />
+                    <span>Adding to Queue...</span>
                   </>
                 ) : (
                   <>
-                    <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
-                      <Linkedin className="w-3.5 h-3.5" />
-                    </div>
+                    <Linkedin className="w-4 h-4" />
                     <span>Add to Queue</span>
                   </>
                 )}
-              </RainbowButton>
+              </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <RainbowButton
+                  <Button
                     disabled={!content.trim()}
-                    className="h-10 w-10 flex items-center justify-center p-0"
+                    className="h-9 w-9 flex items-center justify-center p-0 bg-[#0a66c2] hover:bg-[#004182] text-white rounded-full border-0 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <ChevronDown className="h-4 w-4" />
-                  </RainbowButton>
+                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[200px] p-1.5">
+                  {/* Post Status Info */}
+                  <div className="px-4 py-2 border-b border-neutral-100">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-neutral-600">Status</span>
+                        <div
+                          className={cn(
+                            "px-2 py-0.5 rounded-full text-xs font-medium",
+                            postDetails?.status === POST_STATUS.DRAFT &&
+                              "bg-neutral-100 text-neutral-700",
+                            postDetails?.status === POST_STATUS.SCHEDULED &&
+                              "bg-blue-50 text-blue-700",
+                            postDetails?.status === POST_STATUS.PUBLISHED &&
+                              "bg-green-50 text-green-700",
+                            postDetails?.status === POST_STATUS.FAILED &&
+                              "bg-red-50 text-red-700"
+                          )}
+                        >
+                          {postDetails?.status === POST_STATUS.DRAFT && "Draft"}
+                          {postDetails?.status === POST_STATUS.SCHEDULED &&
+                            "Scheduled"}
+                          {postDetails?.status === POST_STATUS.PUBLISHED &&
+                            "Published"}
+                          {postDetails?.status === POST_STATUS.FAILED &&
+                            "Failed"}
+                        </div>
+                      </div>
+                      {postDetails?.status === POST_STATUS.SCHEDULED &&
+                        postDetails?.scheduledTime && (
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-neutral-600">
+                              Scheduled for
+                            </span>
+                            <span className="text-xs font-medium">
+                              {new Date(
+                                postDetails.scheduledTime
+                              ).toLocaleString()}
+                            </span>
+                          </div>
+                        )}
+                    </div>
+                  </div>
+
                   <DropdownMenuItem
                     onClick={onSchedule}
                     disabled={isScheduling || !content.trim()}
@@ -167,11 +244,25 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                         <Loader2 className="h-4 w-4 animate-spin" />
                       </div>
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
-                        <Clock className="h-4 w-4 text-blue-600" />
-                      </div>
+                      <>
+                        <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
+                          <Clock className="h-4 w-4 text-blue-600" />
+                        </div>
+                        <div className="flex flex-col flex-1">
+                          <span>
+                            {isScheduling ? "Scheduling..." : "Schedule"}
+                          </span>
+                          {postDetails?.scheduledTime && (
+                            <span className="text-xs text-neutral-500">
+                              Scheduled for{" "}
+                              {new Date(
+                                postDetails.scheduledTime
+                              ).toLocaleString()}
+                            </span>
+                          )}
+                        </div>
+                      </>
                     )}
-                    <span>{isScheduling ? "Scheduling..." : "Schedule"}</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={onPostNow}
@@ -255,9 +346,14 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                   <TooltipTrigger asChild>
                     <button
                       onClick={onImageUpload}
-                      className="p-2.5 text-neutral-600 hover:bg-neutral-50 rounded-lg transition-all group"
+                      disabled={isPosting || isAddingToQueue || isScheduling}
+                      className="p-2.5 text-neutral-600 hover:bg-neutral-50 rounded-lg transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <ImageIcon className="w-[18px] h-[18px] group-hover:text-neutral-900 transition-colors" />
+                      {isPosting || isAddingToQueue || isScheduling ? (
+                        <Loader2 className="w-[18px] h-[18px] animate-spin" />
+                      ) : (
+                        <ImageIcon className="w-[18px] h-[18px] group-hover:text-neutral-900 transition-colors" />
+                      )}
                     </button>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -269,9 +365,14 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                   <TooltipTrigger asChild>
                     <button
                       onClick={onEmojiPickerToggle}
-                      className="p-2.5 text-neutral-600 hover:bg-neutral-50 rounded-lg transition-all group"
+                      disabled={isPosting || isAddingToQueue || isScheduling}
+                      className="p-2.5 text-neutral-600 hover:bg-neutral-50 rounded-lg transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Smile className="w-[18px] h-[18px] group-hover:text-neutral-900 transition-colors" />
+                      {isPosting || isAddingToQueue || isScheduling ? (
+                        <Loader2 className="w-[18px] h-[18px] animate-spin" />
+                      ) : (
+                        <Smile className="w-[18px] h-[18px] group-hover:text-neutral-900 transition-colors" />
+                      )}
                     </button>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -281,8 +382,15 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
 
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button className="p-2.5 text-neutral-600 hover:bg-neutral-50 rounded-lg transition-all group">
-                      <Hash className="w-[18px] h-[18px] group-hover:text-neutral-900 transition-colors" />
+                    <button
+                      disabled={isPosting || isAddingToQueue || isScheduling}
+                      className="p-2.5 text-neutral-600 hover:bg-neutral-50 rounded-lg transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isPosting || isAddingToQueue || isScheduling ? (
+                        <Loader2 className="w-[18px] h-[18px] animate-spin" />
+                      ) : (
+                        <Hash className="w-[18px] h-[18px] group-hover:text-neutral-900 transition-colors" />
+                      )}
                     </button>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -292,8 +400,15 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
 
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button className="p-2.5 text-neutral-600 hover:bg-neutral-50 rounded-lg transition-all group">
-                      <Link2 className="w-[18px] h-[18px] group-hover:text-neutral-900 transition-colors" />
+                    <button
+                      disabled={isPosting || isAddingToQueue || isScheduling}
+                      className="p-2.5 text-neutral-600 hover:bg-neutral-50 rounded-lg transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isPosting || isAddingToQueue || isScheduling ? (
+                        <Loader2 className="w-[18px] h-[18px] animate-spin" />
+                      ) : (
+                        <Link2 className="w-[18px] h-[18px] group-hover:text-neutral-900 transition-colors" />
+                      )}
                     </button>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -305,8 +420,13 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
               <div className="flex items-center gap-2">
                 <RainbowButton
                   onClick={onGeneratePersonalized}
-                  disabled={isGeneratingPersonalized}
-                  className="h-10 px-4 flex items-center gap-2"
+                  disabled={
+                    isGeneratingPersonalized ||
+                    isPosting ||
+                    isAddingToQueue ||
+                    isScheduling
+                  }
+                  className="h-10 px-4 flex items-center gap-2 bg-[#0A66C2] hover:bg-[#004182] transition-colors rounded-full text-sm font-medium shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isGeneratingPersonalized ? (
                     <>
@@ -324,8 +444,13 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <RainbowButton
-                      disabled={isRewriting}
-                      className="h-10 w-10 flex items-center justify-center p-0"
+                      disabled={
+                        isRewriting ||
+                        isPosting ||
+                        isAddingToQueue ||
+                        isScheduling
+                      }
+                      className="h-10 w-10 flex items-center justify-center p-0 bg-[#0A66C2] hover:bg-[#004182] transition-colors rounded-full shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isRewriting ? (
                         <Loader2 className="h-5 w-5 animate-spin" />
@@ -341,14 +466,175 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                           LINKEDIN_REWRITE_INSTRUCTIONS.IMPROVE
                         )
                       }
-                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900"
+                      disabled={
+                        isRewriting ||
+                        isPosting ||
+                        isAddingToQueue ||
+                        isScheduling
+                      }
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
                         <Sparkles className="h-3.5 w-3.5 text-neutral-700" />
                       </div>
                       <span>Improve Overall</span>
                     </DropdownMenuItem>
-                    {/* ... rest of rewrite options ... */}
+
+                    <DropdownMenuItem
+                      onClick={() =>
+                        onRewriteContent?.(
+                          LINKEDIN_REWRITE_INSTRUCTIONS.SHORTER
+                        )
+                      }
+                      disabled={
+                        isRewriting ||
+                        isPosting ||
+                        isAddingToQueue ||
+                        isScheduling
+                      }
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
+                        <Wand2 className="h-3.5 w-3.5 text-neutral-700" />
+                      </div>
+                      <span>Make it Shorter</span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={() =>
+                        onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.LONGER)
+                      }
+                      disabled={
+                        isRewriting ||
+                        isPosting ||
+                        isAddingToQueue ||
+                        isScheduling
+                      }
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
+                        <Wand2 className="h-3.5 w-3.5 text-neutral-700" />
+                      </div>
+                      <span>Make it Longer</span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={() =>
+                        onRewriteContent?.(
+                          LINKEDIN_REWRITE_INSTRUCTIONS.PROFESSIONAL
+                        )
+                      }
+                      disabled={
+                        isRewriting ||
+                        isPosting ||
+                        isAddingToQueue ||
+                        isScheduling
+                      }
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
+                        <Wand2 className="h-3.5 w-3.5 text-neutral-700" />
+                      </div>
+                      <span>More Professional</span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={() =>
+                        onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.CASUAL)
+                      }
+                      disabled={
+                        isRewriting ||
+                        isPosting ||
+                        isAddingToQueue ||
+                        isScheduling
+                      }
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
+                        <Wand2 className="h-3.5 w-3.5 text-neutral-700" />
+                      </div>
+                      <span>More Casual</span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={() =>
+                        onRewriteContent?.(
+                          LINKEDIN_REWRITE_INSTRUCTIONS.SEO_OPTIMIZE
+                        )
+                      }
+                      disabled={
+                        isRewriting ||
+                        isPosting ||
+                        isAddingToQueue ||
+                        isScheduling
+                      }
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
+                        <Wand2 className="h-3.5 w-3.5 text-neutral-700" />
+                      </div>
+                      <span>SEO Optimize</span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={() =>
+                        onRewriteContent?.(
+                          LINKEDIN_REWRITE_INSTRUCTIONS.STORYTELLING
+                        )
+                      }
+                      disabled={
+                        isRewriting ||
+                        isPosting ||
+                        isAddingToQueue ||
+                        isScheduling
+                      }
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
+                        <Wand2 className="h-3.5 w-3.5 text-neutral-700" />
+                      </div>
+                      <span>Make it a Story</span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={() =>
+                        onRewriteContent?.(
+                          LINKEDIN_REWRITE_INSTRUCTIONS.PERSUASIVE
+                        )
+                      }
+                      disabled={
+                        isRewriting ||
+                        isPosting ||
+                        isAddingToQueue ||
+                        isScheduling
+                      }
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
+                        <Wand2 className="h-3.5 w-3.5 text-neutral-700" />
+                      </div>
+                      <span>More Persuasive</span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={() =>
+                        onRewriteContent?.(
+                          LINKEDIN_REWRITE_INSTRUCTIONS.IMPROVE_HOOK
+                        )
+                      }
+                      disabled={
+                        isRewriting ||
+                        isPosting ||
+                        isAddingToQueue ||
+                        isScheduling
+                      }
+                      className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-neutral-50 data-[highlighted]:text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center">
+                        <Wand2 className="h-3.5 w-3.5 text-neutral-700" />
+                      </div>
+                      <span>Improve Hook</span>
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
