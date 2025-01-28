@@ -20,6 +20,7 @@ const ContentCreationTools: React.FC = () => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   // Get states from Redux
   const { linkedinProfile } = useSelector((state: RootState) => state.user);
@@ -103,7 +104,7 @@ const ContentCreationTools: React.FC = () => {
       <div
         className={cn(
           "w-full min-h-[calc(100vh-148px)] flex justify-center transition-all duration-300",
-          isEditorOpen ? "pr-[400px]" : "pr-0"
+          isSidebarCollapsed ? "pr-[80px]" : "pr-[400px]"
         )}
       >
         <div className="w-[550px] py-8">
@@ -175,7 +176,12 @@ const ContentCreationTools: React.FC = () => {
       </div>
 
       {isLoading ? (
-        <div className="h-full fixed right-0 top-0 w-[380px] bg-white shadow-[-1px_0_0_0_rgba(0,0,0,0.05)] z-10">
+        <div
+          className={cn(
+            "h-full fixed right-0 top-0 bg-white shadow-[-1px_0_0_0_rgba(0,0,0,0.05)] z-10 transition-all duration-300",
+            isSidebarCollapsed ? "w-[80px]" : "w-[380px]"
+          )}
+        >
           <LoadingSection className="min-h-screen" />
         </div>
       ) : (
@@ -189,6 +195,8 @@ const ContentCreationTools: React.FC = () => {
           handlePromptChange={handlePromptChangeWithCategory}
           setTone={setTone}
           setPostLength={setPostLength}
+          isCollapsed={isSidebarCollapsed}
+          onCollapse={setIsSidebarCollapsed}
         />
       )}
     </motion.div>

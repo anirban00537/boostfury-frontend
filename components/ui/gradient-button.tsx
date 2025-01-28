@@ -20,17 +20,17 @@ const buttonVariants = cva(
           disabled:before:from-white/40 disabled:hover:from-gray-50 disabled:hover:via-white disabled:hover:to-gray-50
         `,
         primary: `
-          bg-gradient-to-r from-[#4F46E5] via-[#7C3AED] to-[#4F46E5]
-          hover:from-[#4338CA] hover:via-[#6D28D9] hover:to-[#4338CA]
-          active:from-[#3730A3] active:via-[#5B21B6] active:to-[#3730A3]
+          bg-gradient-to-r from-neutral-900 via-black to-neutral-900
+          hover:from-neutral-800 hover:via-neutral-900 hover:to-neutral-800
+          active:from-neutral-950 active:via-neutral-900 active:to-neutral-950
           text-white
           border-0
-          focus:ring-indigo-500/30
+          focus:ring-neutral-500/30
           relative
           before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none before:rounded-xl
           after:absolute after:inset-0 after:rounded-xl after:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.2)] after:pointer-events-none
           disabled:before:from-white/10
-          group-hover:shadow-lg group-hover:shadow-indigo-500/20
+          group-hover:shadow-lg group-hover:shadow-neutral-500/20
           transition-all duration-300
         `,
         success: `

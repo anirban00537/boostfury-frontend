@@ -85,7 +85,7 @@ const NavigationItem: React.FC<{
         "group relative flex items-center gap-x-3 rounded-xl px-3 py-2.5",
         "transition-all duration-200",
         isActive
-          ? "bg-gradient-to-r from-neutral-100 to-neutral-50 shadow-sm"
+          ? "bg-neutral-100 shadow-sm"
           : "hover:bg-neutral-50"
       )}
     >
@@ -189,7 +189,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
   return (
     <aside
       className={cn(
-        "fixed inset-y-0 left-0 z-50 flex h-full w-72 flex-col border-r border-neutral-200/80 bg-gradient-to-b from-white to-neutral-50/80 backdrop-blur-xl transition-transform duration-300 lg:relative lg:z-0 lg:translate-x-0",
+        "fixed inset-y-0 left-0 z-50 flex h-full w-72 flex-col border-r border-neutral-200/80 bg-gray-50/50 backdrop-blur-xl transition-transform duration-300 lg:relative lg:z-0 lg:translate-x-0",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}
     >

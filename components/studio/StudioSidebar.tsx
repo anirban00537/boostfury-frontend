@@ -10,6 +10,8 @@ import {
   Zap,
   Brain,
   Loader2,
+  ChevronRight,
+  ChevronLeft,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { GradientButton } from "@/components/ui/gradient-button";
@@ -166,6 +168,9 @@ interface StudioSidebarProps {
   ) => void;
   setTone: (tone: string) => void;
   setPostLength: (length: "short" | "medium" | "long") => void;
+  // Collapse functionality
+  isCollapsed?: boolean;
+  onCollapse?: (collapsed: boolean) => void;
 }
 
 export const StudioSidebar = ({
@@ -178,6 +183,8 @@ export const StudioSidebar = ({
   handlePromptChange,
   setTone,
   setPostLength,
+  isCollapsed = false,
+  onCollapse,
 }: StudioSidebarProps) => {
   const [isRegularGenerating, setIsRegularGenerating] = useState(false);
   const [isPersonalizedGenerating, setIsPersonalizedGenerating] =
@@ -226,10 +233,36 @@ export const StudioSidebar = ({
     handlePromptChange(e, selectedCategory);
   };
 
+  const handleToggleCollapse = () => {
+    onCollapse?.(!isCollapsed);
+  };
+
   return (
-    <div className="h-full flex flex-col bg-white fixed right-0 top-0 w-[380px] shadow-[-1px_0_0_0_rgba(0,0,0,0.05)] z-10">
+    <div
+      className={cn(
+        "h-full flex flex-col bg-gray-50/50 fixed right-0 top-0 shadow-[-1px_0_0_0_rgba(0,0,0,0.05)] z-10 transition-all duration-300",
+        isCollapsed ? "w-[60px]" : "w-[380px]"
+      )}
+    >
+      {/* Collapse Button */}
+      <button
+        onClick={handleToggleCollapse}
+        className="absolute -left-3 top-8 size-6 rounded-full bg-white shadow-md border border-neutral-200/60 flex items-center justify-center hover:scale-110 transition-all duration-200 group"
+      >
+        {isCollapsed ? (
+          <ChevronLeft className="size-3 text-neutral-600 group-hover:text-neutral-900" />
+        ) : (
+          <ChevronRight className="size-3 text-neutral-600 group-hover:text-neutral-900" />
+        )}
+      </button>
+
       {/* Content Area */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-200 scrollbar-track-transparent hover:scrollbar-thumb-neutral-300">
+      <div
+        className={cn(
+          "flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-200 scrollbar-track-transparent hover:scrollbar-thumb-neutral-300",
+          isCollapsed && "opacity-0 invisible"
+        )}
+      >
         <div className="px-7 py-8 space-y-8">
           {/* Prompt Input */}
           <motion.div
@@ -421,9 +454,13 @@ export const StudioSidebar = ({
           </motion.div>
         </div>
       </div>
-
       {/* Fixed Generate Button at Bottom */}
-      <div className="flex-none px-7 py-6 border-t border-neutral-100/80">
+      <div
+        className={cn(
+          "flex-none px-7 py-6 border-t border-neutral-100/80",
+          isCollapsed && "opacity-0 invisible"
+        )}
+      >
         <RainbowButton
           onClick={handleGenerate}
           disabled={isGenerating || !prompt.trim()}
@@ -444,6 +481,21 @@ export const StudioSidebar = ({
           )}
         </RainbowButton>
       </div>
+
+      {/* Collapsed State Mini Actions */}
+      {isCollapsed && (
+        <div className="absolute inset-x-0 bottom-6">
+          <div className="px-2 space-y-3">
+            <button
+              onClick={handleGenerate}
+              disabled={isGenerating || !prompt.trim()}
+              className="w-full p-2 rounded-xl bg-gradient-to-r from-neutral-900 via-black to-neutral-900 text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              <Wand2 className="size-5 mx-auto" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
