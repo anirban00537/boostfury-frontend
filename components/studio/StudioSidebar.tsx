@@ -9,6 +9,7 @@ import {
   Lightbulb,
   Zap,
   Brain,
+  Loader2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { GradientButton } from "@/components/ui/gradient-button";
@@ -27,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 
 const postLengthOptions = [
   {
@@ -225,289 +227,224 @@ export const StudioSidebar = ({
   };
 
   return (
-    <>
-      {/* Toggle Button */}
-      <motion.button
-        onClick={handleToggle}
-        initial={{ opacity: 0 }}
-        animate={{
-          opacity: 1,
-          right: isEditorOpen ? "400px" : "0px",
-        }}
-        transition={{ duration: 0.3 }}
-        className="fixed top-4 p-2.5 bg-white hover:bg-neutral-50 rounded-l-xl border border-r-0 border-neutral-200/60 group transition-all duration-300 hover:shadow-lg z-50"
-      >
-        <motion.div
-          animate={{ rotate: isEditorOpen ? 0 : 180 }}
-          transition={{ duration: 0.3 }}
-        >
-          <ChevronDown className="w-5 h-5 text-neutral-600 group-hover:text-neutral-900" />
-        </motion.div>
-      </motion.button>
-
-      <motion.div
-        initial={{ opacity: 0, x: 400 }}
-        animate={{
-          opacity: isEditorOpen ? 1 : 0,
-          x: isEditorOpen ? 0 : 400,
-        }}
-        transition={{ duration: 0.3 }}
-        className={cn(
-          "fixed top-0 right-0 h-screen w-[400px] bg-white flex flex-col border-l border-neutral-200/60",
-          !isEditorOpen && "pointer-events-none"
-        )}
-      >
-        {/* Beautiful Header */}
-        <div className="relative border-b border-neutral-100">
-          <div className="mx-auto px-5 py-4 relative">
-            <div className="flex items-center gap-3">
-              <div className="relative group">
-                <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-violet-50 border border-violet-100 group-hover:border-violet-200 transition-all duration-300">
-                  <Wand2 className="w-4 h-4 text-violet-600 relative" />
-                </div>
+    <div className="h-full flex flex-col bg-white fixed right-0 top-0 w-[380px] shadow-[-1px_0_0_0_rgba(0,0,0,0.05)] z-10">
+      {/* Content Area */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-200 scrollbar-track-transparent hover:scrollbar-thumb-neutral-300">
+        <div className="px-7 py-8 space-y-8">
+          {/* Prompt Input */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-3"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-violet-600" />
+                <label className="text-sm font-medium text-neutral-900">
+                  What would you like to write about?
+                </label>
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-base font-semibold text-neutral-800">
-                    AI Studio
-                  </h1>
-                  <div className="px-1.5 py-0.5 rounded-md bg-violet-50 border border-violet-100">
-                    <span className="text-[10px] font-medium text-violet-600 uppercase tracking-wide">
-                      Beta
-                    </span>
-                  </div>
-                </div>
-                <p className="text-xs text-neutral-500">
-                  Powered by Advanced AI
-                </p>
-              </div>
+              <span className="text-xs text-neutral-500">
+                {prompt.length}/500
+              </span>
             </div>
-          </div>
-        </div>
+            <div className="relative group">
+              <textarea
+                value={prompt}
+                onChange={handlePromptChangeWithCategory}
+                placeholder="Enter your topic or idea..."
+                maxLength={500}
+                className="w-full h-[120px] px-4 py-3 text-[15px] leading-relaxed rounded-xl border-2 border-neutral-200 placeholder:text-neutral-400 text-neutral-900 focus:outline-none resize-none transition-all duration-200 bg-white focus:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#4158D0,#C850C0,#7F00FF,#4158D0)_border-box] focus:border-transparent"
+              />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className="absolute top-2 right-2 p-1.5 rounded-md hover:bg-violet-50 text-violet-400 hover:text-violet-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Info className="w-4 h-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs">
+                    Be specific about your topic and target audience
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </motion.div>
 
-        {/* Content Area */}
-        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-200 scrollbar-track-transparent">
-          <div className="p-6 space-y-8">
-            {/* Prompt Input */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="space-y-3"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-violet-600" />
-                  <label className="text-sm font-medium text-neutral-900">
-                    What would you like to write about?
-                  </label>
-                </div>
-                <span className="text-xs text-neutral-500">
-                  {prompt.length}/500
-                </span>
+          {/* Category Selection */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="space-y-3"
+          >
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-gradient-to-tr from-indigo-100 via-fuchsia-100 to-amber-100">
+                <Sparkles className="w-4 h-4 text-violet-600" />
               </div>
-              <div className="relative group">
-                <textarea
-                  value={prompt}
-                  onChange={handlePromptChangeWithCategory}
-                  placeholder="Enter your topic or idea..."
-                  maxLength={500}
-                  className="w-full h-[120px] px-4 py-3 text-[15px] leading-relaxed rounded-xl border-2 border-neutral-200 placeholder:text-neutral-400 text-neutral-900 focus:outline-none resize-none transition-all duration-200 bg-white focus:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#4158D0,#C850C0,#7F00FF,#4158D0)_border-box] focus:border-transparent"
-                />
-                <Tooltip>
+              <label className="text-sm font-medium bg-gradient-to-r from-neutral-800 to-neutral-600 bg-clip-text text-transparent">
+                Select Post Category
+              </label>
+            </div>
+            <Select
+              value={selectedCategory}
+              onValueChange={handleCategoryChange}
+            >
+              <SelectTrigger
+                className="w-full h-12 text-[15px] bg-white rounded-xl border border-neutral-200/60 
+                text-neutral-900 focus:outline-none focus:ring-2 focus:ring-violet-500/20 
+                focus:border-violet-500/30 transition-all duration-200"
+              >
+                <SelectValue placeholder="Select a category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categoryOptions.map((category) => (
+                  <SelectItem
+                    key={category.value}
+                    value={category.value}
+                    className="text-sm"
+                  >
+                    {category.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-sm text-neutral-500 mt-1">
+              {
+                categoryOptions.find((c) => c.value === selectedCategory)
+                  ?.description
+              }
+            </p>
+          </motion.div>
+
+          {/* Tone Selection */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="space-y-3"
+          >
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-gradient-to-tr from-indigo-100 via-fuchsia-100 to-amber-100">
+                <Sparkles className="w-4 h-4 text-violet-600" />
+              </div>
+              <label className="text-sm font-medium bg-gradient-to-r from-neutral-800 to-neutral-600 bg-clip-text text-transparent">
+                Select Writing Tone
+              </label>
+            </div>
+            <Select
+              value={selectedTone}
+              onValueChange={(value: ToneValue) => {
+                setSelectedTone(value);
+                setTone(value);
+              }}
+            >
+              <SelectTrigger
+                className="w-full h-12 text-[15px] bg-white rounded-xl border border-neutral-200/60 
+                text-neutral-900 focus:outline-none focus:ring-2 focus:ring-violet-500/20 
+                focus:border-violet-500/30 transition-all duration-200"
+              >
+                <SelectValue placeholder="Select a tone" />
+              </SelectTrigger>
+              <SelectContent>
+                {toneOptions.map((tone) => (
+                  <SelectItem
+                    key={tone.value}
+                    value={tone.value}
+                    className="text-sm"
+                  >
+                    {tone.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-sm text-neutral-500 mt-1">
+              {toneOptions.find((t) => t.value === selectedTone)?.description}
+            </p>
+          </motion.div>
+
+          {/* Post Length Selection */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="space-y-3"
+          >
+            <div className="flex items-center gap-2">
+              <Brain className="w-4 h-4 text-violet-600" />
+              <label className="text-sm font-medium text-neutral-900">
+                Select post length
+              </label>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {postLengthOptions.map((option) => (
+                <Tooltip key={option.value}>
                   <TooltipTrigger asChild>
-                    <button className="absolute top-2 right-2 p-1.5 rounded-md hover:bg-violet-50 text-violet-400 hover:text-violet-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Info className="w-4 h-4" />
+                    <button
+                      onClick={() => setPostLength(option.value)}
+                      className={cn(
+                        "flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200",
+                        postLength === option.value
+                          ? "bg-violet-50 border border-violet-200 shadow-sm"
+                          : "bg-white border border-neutral-200 hover:border-violet-200 hover:shadow-sm"
+                      )}
+                    >
+                      <div
+                        className={cn(
+                          "w-8 h-8 rounded-full flex items-center justify-center mb-2",
+                          postLength === option.value
+                            ? "bg-violet-100 text-violet-600"
+                            : "bg-neutral-100 text-neutral-500"
+                        )}
+                      >
+                        {option.icon}
+                      </div>
+                      <span
+                        className={cn(
+                          "text-sm font-medium",
+                          postLength === option.value
+                            ? "text-violet-600"
+                            : "text-neutral-600"
+                        )}
+                      >
+                        {option.label}
+                      </span>
                     </button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p className="text-xs">
-                      Be specific about your topic and target audience
-                    </p>
+                    <p className="text-xs">{option.tooltip}</p>
                   </TooltipContent>
                 </Tooltip>
-              </div>
-            </motion.div>
-
-            {/* Category Selection */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="space-y-3"
-            >
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-gradient-to-tr from-indigo-100 via-fuchsia-100 to-amber-100">
-                  <Sparkles className="w-4 h-4 text-violet-600" />
-                </div>
-                <label className="text-sm font-medium bg-gradient-to-r from-neutral-800 to-neutral-600 bg-clip-text text-transparent">
-                  Select Post Category
-                </label>
-              </div>
-              <Select
-                value={selectedCategory}
-                onValueChange={handleCategoryChange}
-              >
-                <SelectTrigger
-                  className="w-full h-12 text-[15px] bg-white rounded-xl border border-neutral-200/60 
-                  text-neutral-900 focus:outline-none focus:ring-2 focus:ring-violet-500/20 
-                  focus:border-violet-500/30 transition-all duration-200"
-                >
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categoryOptions.map((category) => (
-                    <SelectItem
-                      key={category.value}
-                      value={category.value}
-                      className="text-sm"
-                    >
-                      {category.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-sm text-neutral-500 mt-1">
-                {
-                  categoryOptions.find((c) => c.value === selectedCategory)
-                    ?.description
-                }
-              </p>
-            </motion.div>
-
-            {/* Tone Selection */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="space-y-3"
-            >
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-gradient-to-tr from-indigo-100 via-fuchsia-100 to-amber-100">
-                  <Sparkles className="w-4 h-4 text-violet-600" />
-                </div>
-                <label className="text-sm font-medium bg-gradient-to-r from-neutral-800 to-neutral-600 bg-clip-text text-transparent">
-                  Select Writing Tone
-                </label>
-              </div>
-              <Select
-                value={selectedTone}
-                onValueChange={(value: ToneValue) => {
-                  setSelectedTone(value);
-                  setTone(value);
-                }}
-              >
-                <SelectTrigger
-                  className="w-full h-12 text-[15px] bg-white rounded-xl border border-neutral-200/60 
-                  text-neutral-900 focus:outline-none focus:ring-2 focus:ring-violet-500/20 
-                  focus:border-violet-500/30 transition-all duration-200"
-                >
-                  <SelectValue placeholder="Select a tone" />
-                </SelectTrigger>
-                <SelectContent>
-                  {toneOptions.map((tone) => (
-                    <SelectItem
-                      key={tone.value}
-                      value={tone.value}
-                      className="text-sm"
-                    >
-                      {tone.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-sm text-neutral-500 mt-1">
-                {toneOptions.find((t) => t.value === selectedTone)?.description}
-              </p>
-            </motion.div>
-
-            {/* Post Length Selection */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="space-y-3"
-            >
-              <div className="flex items-center gap-2">
-                <Brain className="w-4 h-4 text-violet-600" />
-                <label className="text-sm font-medium text-neutral-900">
-                  Select post length
-                </label>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                {postLengthOptions.map((option) => (
-                  <Tooltip key={option.value}>
-                    <TooltipTrigger asChild>
-                      <button
-                        onClick={() => setPostLength(option.value)}
-                        className={cn(
-                          "flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200",
-                          postLength === option.value
-                            ? "bg-violet-50 border border-violet-200 shadow-sm"
-                            : "bg-white border border-neutral-200 hover:border-violet-200 hover:shadow-sm"
-                        )}
-                      >
-                        <div
-                          className={cn(
-                            "w-8 h-8 rounded-full flex items-center justify-center mb-2",
-                            postLength === option.value
-                              ? "bg-violet-100 text-violet-600"
-                              : "bg-neutral-100 text-neutral-500"
-                          )}
-                        >
-                          {option.icon}
-                        </div>
-                        <span
-                          className={cn(
-                            "text-sm font-medium",
-                            postLength === option.value
-                              ? "text-violet-600"
-                              : "text-neutral-600"
-                          )}
-                        >
-                          {option.label}
-                        </span>
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="text-xs">{option.tooltip}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                ))}
-              </div>
-            </motion.div>
-          </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
+      </div>
 
-        {/* Generate Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="relative p-6 bg-gradient-to-t from-white via-white to-transparent"
+      {/* Fixed Generate Button at Bottom */}
+      <div className="flex-none px-7 py-6 border-t border-neutral-100/80">
+        <RainbowButton
+          onClick={handleGenerate}
+          disabled={isGenerating || !prompt.trim()}
+          className="w-full h-11 flex items-center justify-center gap-2.5"
         >
-          <GradientButton
-            onClick={handleRegularGenerate}
-            disabled={
-              !prompt.trim() || prompt.length < 10 || isRegularGenerating
-            }
-            variant="primary"
-            className="w-full relative group shadow-lg shadow-violet-100/50"
-            leftIcon={
-              isRegularGenerating ? (
-                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Wand2 className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-              )
-            }
-          >
-            <span className="relative">
-              {isRegularGenerating ? "Generating..." : "Generate Post"}
-            </span>
-          </GradientButton>
-        </motion.div>
-      </motion.div>
-    </>
+          {isGenerating ? (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span className="inline-flex items-center gap-1">
+                Generating<span className="animate-pulse">...</span>
+              </span>
+            </>
+          ) : (
+            <>
+              <Wand2 className="h-5 w-5" />
+              <span>Generate Content</span>
+            </>
+          )}
+        </RainbowButton>
+      </div>
+    </div>
   );
 };
 

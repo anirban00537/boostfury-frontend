@@ -17,9 +17,7 @@ import {
   CalendarDays,
   Wand2,
 } from "lucide-react";
-import {
-  DropdownItem,
-} from "@/components/content-create/PostPreview";
+import { DropdownItem } from "@/components/content-create/PostPreview";
 import { Button } from "@/components/ui/button";
 import { PostType, PostSectionConfig, PostTabId, Post } from "@/types/post";
 import { useContentManagement, useContentPosting } from "@/hooks/useContent";
@@ -236,8 +234,8 @@ const ContentManager = () => {
   const getDropdownItems = (post: any): DropdownItem[] => {
     const items: DropdownItem[] = [];
 
-    // Add edit option only for draft posts
-    if (activeTab === "draft") {
+    // Add edit option for draft and scheduled posts
+    if (activeTab === "draft" || activeTab === "scheduled") {
       items.push({
         label: "Edit",
         icon: <Pencil className="h-4 w-4" />,
