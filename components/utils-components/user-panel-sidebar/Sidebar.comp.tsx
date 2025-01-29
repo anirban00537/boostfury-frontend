@@ -75,6 +75,20 @@ const navigationItems: BaseNavigationItem[] = [
     badge: "LinkedIn",
     badgeColor: "bg-gradient-to-r from-blue-500 to-blue-700 text-white",
   },
+  {
+    id: "billing",
+    name: "Billing & Usage",
+    icon: CreditCard,
+    href: "/billing",
+  },
+  {
+    id: "ai-style",
+    name: "AI Voice & Style",
+    icon: Wand2,
+    href: "/settings/ai-style",
+    badge: "New",
+    badgeColor: "bg-gradient-to-r from-primary to-primary/80 text-white",
+  },
 ];
 
 const NavigationItem: React.FC<{
@@ -211,15 +225,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
   );
   const { logoutUser } = useAuth();
 
-  // Get word usage from the subscription structure
-  const wordUsage = {
-    used: subscription.usage.words.used,
-    limit: subscription.usage.words.limit,
-    percentage:
-      (subscription.usage.words.used / subscription.usage.words.limit) * 100 ||
-      0,
-  };
-
   const formatTokens = (tokens: number) => {
     if (tokens >= 1000000) {
       return (tokens / 1000000).toFixed(1) + "M";
@@ -288,121 +293,25 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
 
       {/* Navigation Sections */}
       <div className="flex-1 overflow-y-auto py-4 space-y-8">
-        {/* Features Section */}
-        <div>
-          <div className="px-5 mb-3">
-            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
-              Features
-            </span>
+        {/* Navigation Menu */}
+        <nav className="px-2">
+          <div className="space-y-1.5">
+            {navigationItems.map((item) => (
+              <NavigationItem
+                key={item.id}
+                item={item}
+                isActive={pathname === item.href}
+              />
+            ))}
           </div>
-          <Navigation />
-        </div>
+        </nav>
 
-        {/* Settings Section */}
-        <div>
-          <div className="px-5 mb-3">
-            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
-              Settings
-            </span>
-          </div>
-          <div className="px-2 space-y-1.5">
-            <Link
-              href="/billing"
-              className="group flex items-center gap-x-3 rounded-xl px-3 py-2.5 hover:bg-neutral-50 transition-all duration-200"
-            >
-              <div className="relative flex items-center justify-center">
-                <CreditCard className="w-[18px] h-[18px] text-neutral-500 group-hover:text-neutral-700 transition-colors duration-200" />
-              </div>
-              <span className="text-sm font-medium text-neutral-600 group-hover:text-neutral-800">
-                Billing & Usage
-              </span>
-            </Link>
-            <Link
-              href="/settings/ai-style"
-              className={cn(
-                "group flex items-center justify-between rounded-xl px-3 py-2.5 transition-all duration-200",
-                pathname === "/settings/ai-style"
-                  ? "bg-gradient-to-r from-neutral-100 to-neutral-50 shadow-sm"
-                  : "hover:bg-neutral-50"
-              )}
-            >
-              <div className="flex items-center gap-x-3">
-                <div
-                  className={cn(
-                    "relative flex items-center justify-center",
-                    pathname === "/settings/ai-style" &&
-                      "after:absolute after:-inset-2 after:bg-primary/10 after:blur-lg after:rounded-full"
-                  )}
-                >
-                  <Wand2
-                    className={cn(
-                      "w-[18px] h-[18px] transition-all duration-200",
-                      pathname === "/settings/ai-style"
-                        ? "text-primary"
-                        : "text-neutral-500 group-hover:text-neutral-700"
-                    )}
-                  />
-                </div>
-                <span
-                  className={cn(
-                    "text-sm font-medium transition-colors duration-200",
-                    pathname === "/settings/ai-style"
-                      ? "text-neutral-900"
-                      : "text-neutral-600 group-hover:text-neutral-800"
-                  )}
-                >
-                  AI Voice & Style
-                </span>
-              </div>
-              <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-gradient-to-r from-primary to-primary/80 text-white shadow-sm">
-                New
-              </span>
-            </Link>
-          </div>
-        </div>
-
-        {/* Plan Section */}
-        <PlanCard subscription={subscription} />
+        {/* Plan Section with Word Usage */}
+        <PlanCard subscription={subscription} formatTokens={formatTokens} />
       </div>
 
       {/* Footer Section */}
       <div className="shrink-0 border-t border-neutral-200/80">
-        {/* AI Usage Section */}
-        {subscription.status === "active" && (
-          <div className="px-4 py-3 border-b border-neutral-200/80">
-            <div className="flex items-center justify-between mb-2.5">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-primary" />
-                </div>
-                <span className="text-sm font-medium text-neutral-900">
-                  AI Credits
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-medium px-2 py-0.5 rounded-lg bg-gradient-to-br from-neutral-100 to-neutral-50 text-neutral-700 border border-neutral-200/60">
-                  {formatTokens(wordUsage.used)}
-                </span>
-                <span className="text-xs text-neutral-400">/</span>
-                <span className="text-xs font-medium text-neutral-500">
-                  {formatTokens(wordUsage.limit)}
-                </span>
-              </div>
-            </div>
-            <div className="relative w-full h-2 bg-gradient-to-r from-neutral-100 to-neutral-50 rounded-lg overflow-hidden border border-neutral-200/60">
-              <div
-                className={cn(
-                  "absolute inset-y-0 left-0 transition-all duration-300 ease-in-out bg-gradient-to-r",
-                  wordUsage.percentage > 80
-                    ? "from-red-500 to-red-600"
-                    : "from-primary to-primary/80"
-                )}
-                style={{ width: `${wordUsage.percentage}%` }}
-              />
-            </div>
-          </div>
-        )}
-
         {/* User Profile Section */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
