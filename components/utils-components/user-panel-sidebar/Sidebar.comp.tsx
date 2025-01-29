@@ -17,9 +17,9 @@ import {
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
 import { GradientButton } from "@/components/ui/gradient-button";
@@ -281,10 +281,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
                 </div>
                 <span className="font-medium">Create New</span>
               </div>
-              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-white/20 backdrop-blur-sm">
-                <span className="text-[10px] font-medium">⌘</span>
-                <span className="text-[10px] font-medium">N</span>
-              </div>
             </div>
           </GradientButton>
         </div>
@@ -411,8 +407,18 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="w-full px-4 py-3 flex items-center gap-3 hover:bg-neutral-50/80 transition-all duration-200">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center text-neutral-900 text-sm font-medium shadow-sm">
-                {userinfo?.first_name?.charAt(0) || "U"}
+              <div className="relative w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center text-neutral-900 text-sm font-medium shadow-sm">
+                {userinfo?.photo ? (
+                  <Image
+                    src={userinfo.photo}
+                    alt={userinfo?.first_name || "User"}
+                    layout="fill"
+                    objectFit="cover"
+                    className="transform group-hover:scale-105 transition-transform duration-200"
+                  />
+                ) : (
+                  <span>{userinfo?.first_name?.charAt(0) || "U"}</span>
+                )}
               </div>
               <div className="flex-1 text-left">
                 <div className="text-sm font-medium text-neutral-900 truncate">
