@@ -24,9 +24,6 @@ const ContentCreationTools: React.FC = () => {
 
   // Get states from Redux
   const { linkedinProfile } = useSelector((state: RootState) => state.user);
-  const isEditorOpen = useSelector(
-    (state: RootState) => state.content.isEditorOpen
-  );
 
   // Get states and handlers from hooks
   const {

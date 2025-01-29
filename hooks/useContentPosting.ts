@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/state/store";
-import { setContent } from "@/state/slices/contentSlice";
 import { LinkedInPostImage } from "@/types/post";
 
 interface PostDetails {
@@ -13,20 +12,13 @@ interface PostDetails {
 
 export const useContentPosting = () => {
   const dispatch = useDispatch();
-  const content = useSelector((state: RootState) => state.content.content);
   const [isPosting, setIsPosting] = useState(false);
   const [isAddingToQueue, setIsAddingToQueue] = useState(false);
   const [isScheduling, setIsScheduling] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [postDetails, setPostDetails] = useState<PostDetails>({});
 
-  const handleContentChange = useCallback(
-    (newContent: string) => {
-      dispatch(setContent(newContent));
-    },
-    [dispatch]
-  );
-
+ 
   const handlePostNow = useCallback(async (profileId: string) => {
     try {
       setIsPosting(true);
@@ -111,7 +103,6 @@ export const useContentPosting = () => {
   }, []);
 
   return {
-    content,
     postDetails,
     isPosting,
     isAddingToQueue,
@@ -119,7 +110,6 @@ export const useContentPosting = () => {
     handlePostNow,
     handleAddToQueue,
     handleSchedule,
-    handleContentChange,
     handleImageUpload,
     isUploading,
     handleImageDelete,

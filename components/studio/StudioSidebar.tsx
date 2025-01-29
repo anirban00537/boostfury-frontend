@@ -17,7 +17,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/state/store";
-import { toggleEditor } from "@/state/slices/contentSlice";
 import {
   Tooltip,
   TooltipContent,
@@ -195,14 +194,8 @@ export const StudioSidebar = ({
   const [selectedTone, setSelectedTone] = useState<ToneValue>("professional");
   const dispatch = useDispatch();
 
-  // Get states from Redux
-  const isEditorOpen = useSelector(
-    (state: RootState) => state.content.isEditorOpen
-  );
 
-  const handleToggle = () => {
-    dispatch(toggleEditor());
-  };
+ 
 
   const handleRegularGenerate = async () => {
     setIsRegularGenerating(true);

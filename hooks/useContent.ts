@@ -36,19 +36,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { processApiResponse } from "@/lib/functions";
 import debounce from "lodash/debounce";
 import { AxiosResponse } from "axios";
-import {
-  setContent,
-  setPostDetails,
-  setIsAutoSaving,
-  setIsLoadingDraft,
-  setIsCreatingDraft,
-  setIsPosting,
-  setIsAddingToQueue,
-  setIsScheduling,
-  setIsUploading,
-  removeImage,
-  reorderImages as dispatchReorderImages,
-} from "../state/slices/contentSlice";
+
 
 interface DraftResponse {
   success: boolean;
