@@ -1,23 +1,99 @@
 "use client";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { motion } from "framer-motion";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Sparkles, CheckCircle2, ArrowLeft } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Sparkles, CheckCircle2, ArrowLeft, Linkedin } from "lucide-react";
+import { getLinkedInAuthUrl } from "@/services/auth";
+import { toast } from "react-hot-toast";
 
 const LoginPage = () => {
-  const { handleGoogleLogin, isLoading } = useAuth();
+  const { handleGoogleLogin, handleLinkedInLogin, isLoading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isProcessingLogin, setIsProcessingLogin] = useState(false);
 
-  const features = [
-    { text: "AI-powered content generation", icon: Sparkles },
-    { text: "Professional carousel creation", icon: CheckCircle2 },
-    { text: "Smart scheduling tools", icon: CheckCircle2 },
-    { text: "Analytics and insights", icon: CheckCircle2 },
-  ];
+  // Handle LinkedIn OAuth callback
+  useEffect(() => {
+    const code = searchParams.get("code");
+    const state = searchParams.get("state");
+    const error = searchParams.get("error");
+    const errorDescription = searchParams.get("error_description");
+
+    // Only proceed if we have both code and state
+    if (!code || !state) {
+      if (error) {
+        toast.error(
+          decodeURIComponent(errorDescription || "LinkedIn login failed")
+        );
+        router.push("/login");
+      }
+      return;
+    }
+
+    // Prevent multiple login attempts
+    if (isProcessingLogin) {
+      return;
+    }
+
+    setIsProcessingLogin(true);
+
+    // Verify state from sessionStorage
+    const storedState = sessionStorage.getItem("linkedin_state");
+    if (!storedState) {
+      toast.error("LinkedIn login session expired");
+      setIsProcessingLogin(false);
+      router.push("/login");
+      return;
+    }
+
+    if (state !== storedState) {
+      toast.error("Invalid state parameter");
+      setIsProcessingLogin(false);
+      router.push("/login");
+      return;
+    }
+
+    // Process the login
+    handleLinkedInLogin(code, state)
+      .then(() => {
+        sessionStorage.removeItem("linkedin_state");
+      })
+      .catch((error) => {
+        toast.error("Failed to login with LinkedIn");
+        console.error("LinkedIn login error:", error);
+        router.push("/login");
+      })
+      .finally(() => {
+        setIsProcessingLogin(false);
+      });
+  }, [searchParams, handleLinkedInLogin, isProcessingLogin, router]);
+
+  const handleLinkedInClick = async () => {
+    if (isProcessingLogin) return;
+
+    try {
+      const response = await getLinkedInAuthUrl();
+      if (response.success && response.data.url) {
+        console.log(
+          response.data,
+          "response.data.stateresponse.data.stateresponse.data.state"
+        );
+        // First store the state
+        sessionStorage.setItem("linkedin_state", response.data.state);
+        // Then redirect to LinkedIn
+        window.location.href = response.data.url;
+      } else {
+        toast.error(response.message || "Failed to initiate LinkedIn login");
+      }
+    } catch (error) {
+      console.error("Failed to get LinkedIn auth URL:", error);
+      toast.error("Failed to initiate LinkedIn login");
+    }
+  };
 
   const onLoginSuccess = useCallback(
     (credentialResponse: CredentialResponse) => {
@@ -31,6 +107,13 @@ const LoginPage = () => {
     },
     [handleGoogleLogin, router]
   );
+
+  const features = [
+    { text: "AI-powered content generation", icon: Sparkles },
+    { text: "Professional carousel creation", icon: CheckCircle2 },
+    { text: "Smart scheduling tools", icon: CheckCircle2 },
+    { text: "Analytics and insights", icon: CheckCircle2 },
+  ];
 
   return (
     <div className="min-h-screen w-full flex bg-white">
@@ -64,6 +147,21 @@ const LoginPage = () => {
                 size="large"
               />
             </div>
+
+            {/* LinkedIn Login Button */}
+            <button
+              onClick={handleLinkedInClick}
+              className="w-[300px] h-[40px] flex items-center justify-center gap-2 bg-[#0077B5] text-white rounded-md hover:bg-[#006399] transition-colors duration-200 transform hover:scale-[1.02]"
+            >
+              <Image
+                src="/images/linkedin-icon.png"
+                alt="LinkedIn"
+                width={20}
+                height={20}
+                className="rounded"
+              />
+              Sign in with LinkedIn
+            </button>
 
             {/* Footer Links */}
             <div className="text-center space-y-4 mt-12">

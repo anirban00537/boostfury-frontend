@@ -10,11 +10,12 @@ import {
 } from "@/state/slices/user.slice";
 import { useCallback, useEffect } from "react";
 import { CredentialResponse } from "@react-oauth/google";
-import { googleSignIn, profile } from "@/services/auth";
+import { googleSignIn, linkedInSignIn, profile } from "@/services/auth";
 import { checkSubscription } from "@/services/subscription.service";
 import Cookies from "js-cookie";
 import { RootState } from "@/state/store";
 import { ResponseData, UserInfo } from "@/types";
+import { LinkedInLoginDto } from "@/services/auth";
 
 export const useAuth = () => {
   const router = useRouter();
@@ -90,6 +91,32 @@ export const useAuth = () => {
     }
   );
 
+  const linkedInLoginMutation = useMutation(
+    (data: LinkedInLoginDto) => linkedInSignIn(data),
+    {
+      onSuccess: (result) => {
+        if (result.success) {
+          const { accessToken, refreshToken, user } = result.data;
+          dispatch(setUser(user as UserInfo));
+
+          Cookies.set("token", accessToken, { expires: 7 });
+          Cookies.set("refreshToken", refreshToken, { expires: 30 });
+          Cookies.set("user", JSON.stringify(user), { expires: 7 });
+
+          toast.success("Logged in successfully with LinkedIn");
+          router.push("/studio");
+        } else {
+          toast.error(result.message || "Failed to log in with LinkedIn");
+          router.push("/login");
+        }
+      },
+      onError: (error: Error) => {
+        toast.error(`Failed to log in with LinkedIn: ${error.message}`);
+        router.push("/login");
+      },
+    }
+  );
+
   const logoutMutation = useMutation(
     () => {
       // Implement your logout logic here
@@ -129,6 +156,18 @@ export const useAuth = () => {
     [loginMutation]
   );
 
+  const handleLinkedInLogin = useCallback(
+    async (code: string, state: string) => {
+      try {
+        return await linkedInLoginMutation.mutateAsync({ code, state });
+      } catch (error) {
+        console.error("Error during LinkedIn login:", error);
+        throw error; // Re-throw to be handled by the calling component
+      }
+    },
+    [linkedInLoginMutation]
+  );
+
   const logoutUser = () => {
     logoutMutation.mutate();
   };
@@ -140,6 +179,7 @@ export const useAuth = () => {
     isAuthenticated: loggedin,
     isLoading: loading,
     handleGoogleLogin,
+    handleLinkedInLogin,
     logoutUser,
     subscriptionData,
     isSubscriptionLoading,
