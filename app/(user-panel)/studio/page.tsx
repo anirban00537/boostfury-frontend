@@ -42,6 +42,7 @@ const ContentCreationTools: React.FC = () => {
     handleImageUpload,
     isUploading,
     handleImageDelete,
+    isLoadingDraft,
   } = useContentPosting();
 
   const {
@@ -87,19 +88,11 @@ const ContentCreationTools: React.FC = () => {
     handlePromptChange(e, category);
   };
 
-  const isLoading =
-    isPosting ||
-    isAddingToQueue ||
-    isScheduling ||
-    isGenerating ||
-    isGeneratingPersonalized ||
-    isRewriting;
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="relative min-h-screen bg-white"
+      className="relative min-h-screen bg-slate-100"
     >
       <div
         className={cn(
@@ -108,7 +101,7 @@ const ContentCreationTools: React.FC = () => {
         )}
       >
         <div className="w-[550px] py-8">
-          {isLoading ? (
+          {isLoadingDraft ? (
             <div className="w-[650px] bg-white rounded-2xl border border-[#0A66C2]/10 shadow-[0_0_0_1px_rgba(10,102,194,0.1)] overflow-hidden">
               <LoadingSection className="min-h-[400px]" />
             </div>
@@ -175,7 +168,7 @@ const ContentCreationTools: React.FC = () => {
         </div>
       </div>
 
-      {isLoading ? (
+      {isLoadingDraft ? (
         <div
           className={cn(
             "h-full fixed right-0 top-0 bg-white shadow-[-1px_0_0_0_rgba(0,0,0,0.05)] z-10 transition-all duration-300",

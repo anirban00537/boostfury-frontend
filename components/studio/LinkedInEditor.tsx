@@ -171,17 +171,14 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                 shimmerColor="rgba(255, 255, 255, 0.2)"
                 background="linear-gradient(110deg, #2563eb, #3b82f6)"
               >
-                {isGeneratingPersonalized ? (
-                  <>
+                <div className="flex items-center gap-2">
+                  {isGeneratingPersonalized ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    <span>Generating...</span>
-                  </>
-                ) : (
-                  <>
+                  ) : (
                     <Sparkles className="h-4 w-4" />
-                    <span>AI Personal Writer</span>
-                  </>
-                )}
+                  )}
+                  <span>AI Personal Writer</span>
+                </div>
               </ShimmerButton>
 
               <ShimmerButton
