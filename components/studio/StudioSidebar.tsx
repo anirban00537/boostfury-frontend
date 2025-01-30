@@ -265,7 +265,7 @@ export const StudioSidebar = ({
               <div className="p-1.5 rounded-lg bg-gradient-to-tr from-blue-100 via-cyan-100 to-sky-100">
                 <Sparkles className="w-4 h-4 text-blue-600" />
               </div>
-              <label className="text-sm font-medium bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent">
+              <label className="text-sm font-semibold text-neutral-900">
                 Select Post Category
               </label>
             </div>
@@ -311,7 +311,7 @@ export const StudioSidebar = ({
               <div className="p-1.5 rounded-lg bg-gradient-to-tr from-blue-100 via-cyan-100 to-sky-100">
                 <Sparkles className="w-4 h-4 text-blue-600" />
               </div>
-              <label className="text-sm font-medium bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent">
+              <label className="text-sm font-semibold text-neutral-900">
                 Select Writing Tone
               </label>
             </div>
@@ -355,7 +355,7 @@ export const StudioSidebar = ({
           >
             <div className="flex items-center gap-2">
               <Brain className="w-4 h-4 text-blue-600" />
-              <label className="text-sm font-medium bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent">
+              <label className="text-sm font-semibold text-neutral-900">
                 Select post length
               </label>
             </div>
@@ -423,7 +423,7 @@ export const StudioSidebar = ({
               <div className="p-1.5 rounded-lg bg-gradient-to-tr from-blue-500/20 via-cyan-500/20 to-sky-500/20">
                 <Sparkles className="w-4 h-4 text-blue-600" />
               </div>
-              <label className="text-sm font-medium bg-gradient-to-r from-blue-600 via-cyan-600 to-sky-600 bg-clip-text text-transparent">
+              <label className="text-sm font-semibold text-neutral-900">
                 What would you like to write about?
               </label>
             </div>

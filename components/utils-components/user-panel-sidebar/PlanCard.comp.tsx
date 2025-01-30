@@ -132,12 +132,12 @@ export const PlanCard: React.FC<PlanCardProps> = ({
             </div>
 
             {/* Upgrade Button */}
-            <Link href="/pricing" className="block mt-3">
+            <Link href="/billing?tab=plans" className="block mt-3">
               <GradientButton
-                variant="secondary"
-                size="xs"
+                variant="primary"
+                size="sm"
                 fullWidth
-                className="bg-white/10 hover:bg-white/20 border-white/10 hover:border-white/20 text-white shadow-lg shadow-black/5 hover:shadow-xl hover:shadow-black/10 transition-all duration-300 hover:-translate-y-0.5 h-9"
+                className="!bg-white/10 hover:bg-white/20 border-white/10 hover:border-white/20 text-white shadow-lg shadow-black/5 hover:shadow-xl hover:shadow-black/10 transition-all duration-300 hover:-translate-y-0.5 h-9"
               >
                 <div className="flex items-center justify-center gap-2">
                   <Rocket className="size-4 animate-pulse group-hover:animate-none group-hover:scale-110 transition-transform duration-300" />
