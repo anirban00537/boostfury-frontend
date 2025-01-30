@@ -194,9 +194,6 @@ export const StudioSidebar = ({
   const [selectedTone, setSelectedTone] = useState<ToneValue>("professional");
   const dispatch = useDispatch();
 
-
- 
-
   const handleRegularGenerate = async () => {
     setIsRegularGenerating(true);
     await handleGenerate();
@@ -233,7 +230,7 @@ export const StudioSidebar = ({
   return (
     <div
       className={cn(
-        "h-full flex flex-col bg-gray-50/50 fixed right-0 top-0 shadow-[-1px_0_0_0_rgba(0,0,0,0.05)] z-10 transition-all duration-300",
+        "h-full flex flex-col bg-white fixed right-0 top-0 shadow-[-1px_0_0_0_rgba(0,0,0,0.05)] z-10 transition-all duration-300",
         isCollapsed ? "w-[60px]" : "w-[380px]"
       )}
     >
@@ -257,47 +254,6 @@ export const StudioSidebar = ({
         )}
       >
         <div className="px-7 py-8 space-y-8">
-          {/* Prompt Input */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-3"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-violet-600" />
-                <label className="text-sm font-medium text-neutral-900">
-                  What would you like to write about?
-                </label>
-              </div>
-              <span className="text-xs text-neutral-500">
-                {prompt.length}/500
-              </span>
-            </div>
-            <div className="relative group">
-              <textarea
-                value={prompt}
-                onChange={handlePromptChangeWithCategory}
-                placeholder="Enter your topic or idea..."
-                maxLength={500}
-                className="w-full h-[120px] px-4 py-3 text-[15px] leading-relaxed rounded-xl border-2 border-neutral-200 placeholder:text-neutral-400 text-neutral-900 focus:outline-none resize-none transition-all duration-200 bg-white focus:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#4158D0,#C850C0,#7F00FF,#4158D0)_border-box] focus:border-transparent"
-              />
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button className="absolute top-2 right-2 p-1.5 rounded-md hover:bg-violet-50 text-violet-400 hover:text-violet-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Info className="w-4 h-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-xs">
-                    Be specific about your topic and target audience
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          </motion.div>
-
           {/* Category Selection */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -306,10 +262,10 @@ export const StudioSidebar = ({
             className="space-y-3"
           >
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-gradient-to-tr from-indigo-100 via-fuchsia-100 to-amber-100">
-                <Sparkles className="w-4 h-4 text-violet-600" />
+              <div className="p-1.5 rounded-lg bg-gradient-to-tr from-blue-100 via-cyan-100 to-sky-100">
+                <Sparkles className="w-4 h-4 text-blue-600" />
               </div>
-              <label className="text-sm font-medium bg-gradient-to-r from-neutral-800 to-neutral-600 bg-clip-text text-transparent">
+              <label className="text-sm font-medium bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent">
                 Select Post Category
               </label>
             </div>
@@ -319,8 +275,8 @@ export const StudioSidebar = ({
             >
               <SelectTrigger
                 className="w-full h-12 text-[15px] bg-white rounded-xl border border-neutral-200/60 
-                text-neutral-900 focus:outline-none focus:ring-2 focus:ring-violet-500/20 
-                focus:border-violet-500/30 transition-all duration-200"
+                text-neutral-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 
+                focus:border-blue-500/30 transition-all duration-200"
               >
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
@@ -352,10 +308,10 @@ export const StudioSidebar = ({
             className="space-y-3"
           >
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-gradient-to-tr from-indigo-100 via-fuchsia-100 to-amber-100">
-                <Sparkles className="w-4 h-4 text-violet-600" />
+              <div className="p-1.5 rounded-lg bg-gradient-to-tr from-blue-100 via-cyan-100 to-sky-100">
+                <Sparkles className="w-4 h-4 text-blue-600" />
               </div>
-              <label className="text-sm font-medium bg-gradient-to-r from-neutral-800 to-neutral-600 bg-clip-text text-transparent">
+              <label className="text-sm font-medium bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent">
                 Select Writing Tone
               </label>
             </div>
@@ -368,8 +324,8 @@ export const StudioSidebar = ({
             >
               <SelectTrigger
                 className="w-full h-12 text-[15px] bg-white rounded-xl border border-neutral-200/60 
-                text-neutral-900 focus:outline-none focus:ring-2 focus:ring-violet-500/20 
-                focus:border-violet-500/30 transition-all duration-200"
+                text-neutral-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 
+                focus:border-blue-500/30 transition-all duration-200"
               >
                 <SelectValue placeholder="Select a tone" />
               </SelectTrigger>
@@ -398,8 +354,8 @@ export const StudioSidebar = ({
             className="space-y-3"
           >
             <div className="flex items-center gap-2">
-              <Brain className="w-4 h-4 text-violet-600" />
-              <label className="text-sm font-medium text-neutral-900">
+              <Brain className="w-4 h-4 text-blue-600" />
+              <label className="text-sm font-medium bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent">
                 Select post length
               </label>
             </div>
@@ -412,15 +368,15 @@ export const StudioSidebar = ({
                       className={cn(
                         "flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200",
                         postLength === option.value
-                          ? "bg-violet-50 border border-violet-200 shadow-sm"
-                          : "bg-white border border-neutral-200 hover:border-violet-200 hover:shadow-sm"
+                          ? "bg-blue-50 border border-blue-200 shadow-sm"
+                          : "bg-white border border-neutral-200 hover:border-blue-200 hover:shadow-sm"
                       )}
                     >
                       <div
                         className={cn(
                           "w-8 h-8 rounded-full flex items-center justify-center mb-2",
                           postLength === option.value
-                            ? "bg-violet-100 text-violet-600"
+                            ? "bg-blue-100 text-blue-600"
                             : "bg-neutral-100 text-neutral-500"
                         )}
                       >
@@ -430,7 +386,7 @@ export const StudioSidebar = ({
                         className={cn(
                           "text-sm font-medium",
                           postLength === option.value
-                            ? "text-violet-600"
+                            ? "text-blue-600"
                             : "text-neutral-600"
                         )}
                       >
@@ -447,17 +403,67 @@ export const StudioSidebar = ({
           </motion.div>
         </div>
       </div>
-      {/* Fixed Generate Button at Bottom */}
+
+      {/* Prompt Input Section */}
       <div
         className={cn(
-          "flex-none px-7 py-6 border-t border-neutral-100/80",
+          "flex-none px-7 py-6 border-t border-neutral-100/80 space-y-4 bg-gradient-to-b from-white to-blue-50/30",
           isCollapsed && "opacity-0 invisible"
         )}
       >
+        {/* Prompt Input */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="space-y-3"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-gradient-to-tr from-blue-500/20 via-cyan-500/20 to-sky-500/20">
+                <Sparkles className="w-4 h-4 text-blue-600" />
+              </div>
+              <label className="text-sm font-medium bg-gradient-to-r from-blue-600 via-cyan-600 to-sky-600 bg-clip-text text-transparent">
+                What would you like to write about?
+              </label>
+            </div>
+            <span className="text-xs font-medium px-2 py-1 rounded-md bg-gradient-to-r from-blue-100 to-sky-100 text-blue-600">
+              {prompt.length}/500
+            </span>
+          </div>
+          <div className="relative group">
+            <div className="absolute -inset-[2px] bg-gradient-to-r from-blue-500 via-cyan-500 to-sky-500 rounded-xl blur-lg opacity-0 group-hover:opacity-20 transition-all duration-500" />
+            <div className="absolute inset-[-1px] bg-gradient-to-r from-blue-500 via-cyan-500 to-sky-500 rounded-xl opacity-20" />
+            <textarea
+              value={prompt}
+              onChange={handlePromptChangeWithCategory}
+              placeholder="Enter your topic or idea..."
+              maxLength={500}
+              className="relative w-full h-[120px] px-4 py-3 text-[15px] leading-relaxed rounded-xl border-0 placeholder:text-neutral-400 text-neutral-900 focus:outline-none resize-none transition-all duration-200 bg-white shadow-lg shadow-blue-500/5 backdrop-blur-xl"
+            />
+            <div className="absolute bottom-3 right-3 flex items-center gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className="p-1.5 rounded-md bg-gradient-to-r from-blue-50 to-sky-50 text-blue-400 hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110">
+                    <Info className="w-4 h-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs">
+                    Be specific about your topic and target audience
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+              <div className="size-2 rounded-full bg-gradient-to-r from-blue-500 to-sky-500 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Generate Button */}
         <RainbowButton
           onClick={handleGenerate}
-          disabled={isGenerating || !prompt.trim()}
-          className="w-full h-11 flex items-center justify-center gap-2.5"
+          disabled={isGenerating}
+          className="w-full h-12 flex items-center justify-center gap-2.5 shadow-lg shadow-blue-500/10"
         >
           {isGenerating ? (
             <>
@@ -482,7 +488,7 @@ export const StudioSidebar = ({
             <button
               onClick={handleGenerate}
               disabled={isGenerating || !prompt.trim()}
-              className="w-full p-2 rounded-xl bg-gradient-to-r from-neutral-900 via-black to-neutral-900 text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="w-full p-2 rounded-xl bg-gradient-to-r from-blue-600 via-cyan-600 to-sky-600 text-white hover:opacity-90 transition-opacity disabled:opacity-50"
             >
               <Wand2 className="size-5 mx-auto" />
             </button>
