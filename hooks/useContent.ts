@@ -37,7 +37,6 @@ import { processApiResponse } from "@/lib/functions";
 import debounce from "lodash/debounce";
 import { AxiosResponse } from "axios";
 
-
 interface DraftResponse {
   success: boolean;
   message: string;
@@ -50,7 +49,6 @@ interface DraftResponse {
   };
 }
 
-// Define the response types
 interface ApiResponse<T> {
   success: boolean;
   message: string;
@@ -65,13 +63,11 @@ interface DeleteImageData {
   success: boolean;
 }
 
-// Define the variables type
-type UploadImageVariables = {
+interface UploadImageVariables {
   file: File;
   postId: string;
-};
+}
 
-// Define response types
 interface DeleteImageResponse {
   success: boolean;
   message: string;
@@ -80,13 +76,11 @@ interface DeleteImageResponse {
   };
 }
 
-// Define variable types
-type DeleteImageVariables = {
+interface DeleteImageVariables {
   postId: string;
   imageId: string;
-};
+}
 
-// Define response type for reorder
 interface ReorderImagesResponse {
   success: boolean;
   message: string;
@@ -95,11 +89,10 @@ interface ReorderImagesResponse {
   };
 }
 
-// Define variable type for reorder
-type ReorderImagesVariables = {
+interface ReorderImagesVariables {
   postId: string;
   imageIds: string[];
-};
+}
 
 interface PostResponse {
   success: boolean;
@@ -117,7 +110,6 @@ interface SchedulePostResponse {
   };
 }
 
-// API function types
 type PostNowFn = (postId: string) => Promise<PostResponse>;
 type AddToQueueFn = (postId: string, timezone: string) => Promise<PostResponse>;
 type SchedulePostFn = (
@@ -125,7 +117,6 @@ type SchedulePostFn = (
   scheduleData: SchedulePostType
 ) => Promise<SchedulePostResponse>;
 
-// Declare API functions with types
 const postNowApi: PostNowFn = postNow;
 const addToQueueApi: AddToQueueFn = addToQueue;
 const schedulePostApi: SchedulePostFn = schedulePost;
@@ -137,13 +128,12 @@ export const useContentPosting = () => {
   const { linkedinProfile } = useSelector((state: RootState) => state.user);
   const queryClient = useQueryClient();
 
-  // Local states
   const [content, setContent] = useState("");
   const [postDetails, setPostDetails] = useState<Post | null>(null);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [images, setImages] = useState<LinkedInPostImage[]>([]);
+  const [isCreatingInitialDraft, setIsCreatingInitialDraft] = useState(false);
 
-  // Save draft mutation
   const { mutateAsync: saveDraft } = useMutation<
     DraftResponse,
     Error,
@@ -163,11 +153,7 @@ export const useContentPosting = () => {
       }
     },
   });
-  //shuffling
-  const { mutateAsync: shuffleQueueMutation, isLoading: isShuffling } =
-    useMutation<PostResponse, Error, string>(shuffleQueue);
 
-  // Content change handler with debounce
   const debouncedSaveDraft = useCallback(
     debounce(async (draftData: CreateDraftPostType) => {
       if (!linkedinProfile?.id) return;
@@ -189,12 +175,6 @@ export const useContentPosting = () => {
     [linkedinProfile?.id, saveDraft]
   );
 
-  useEffect(() => {
-    return () => {
-      debouncedSaveDraft.cancel();
-    };
-  }, [debouncedSaveDraft]);
-
   const handleContentChange = useCallback(
     async (newContent: string, category?: string) => {
       setContent(newContent);
@@ -212,22 +192,26 @@ export const useContentPosting = () => {
       if (draftId) {
         debouncedSaveDraft(draftData);
       } else if (newContent.trim()) {
-        const response = await saveDraft(draftData);
-        if (response.success && response.data?.post?.id) {
-          router.replace(`/studio?draft_id=${response.data.post.id}`, { scroll: false });
-          setPostDetails(response.data.post as Post);
+        setIsCreatingInitialDraft(true);
+        try {
+          const response = await saveDraft(draftData);
+          if (response.success && response.data?.post?.id) {
+            router.replace(`/studio?draft_id=${response.data.post.id}`, { scroll: false });
+            setPostDetails(response.data.post as Post);
+          }
+        } finally {
+          setIsCreatingInitialDraft(false);
         }
       }
     },
     [draftId, linkedinProfile?.id, saveDraft, debouncedSaveDraft, router]
   );
 
-  // Load draft details query
   const { isLoading: isLoadingDraft } = useQuery(
     ["draftDetails", draftId],
     () => getDraftPostDetails(draftId || ""),
     {
-      enabled: Boolean(draftId && linkedinProfile?.id),
+      enabled: Boolean(draftId && linkedinProfile?.id && !isCreatingInitialDraft),
       onSuccess: (response) => {
         if (!response.success || !response.data.post) return;
         const post = response.data.post;
@@ -242,7 +226,6 @@ export const useContentPosting = () => {
     }
   );
 
-  // Post actions mutations
   const { mutateAsync: postNowMutation, isLoading: isPosting } = useMutation<
     PostResponse,
     Error,
@@ -280,7 +263,6 @@ export const useContentPosting = () => {
       },
     });
 
-  // Image mutations
   const { mutateAsync: uploadImageMutation, isLoading: isUploading } =
     useMutation<UploadImageResponse, Error, UploadImageVariables>(
       ({ file, postId }) => uploadImage(postId, file),
@@ -316,7 +298,6 @@ export const useContentPosting = () => {
     }
   );
 
-  // Action handlers
   const handlePostNow = useCallback(
     async (linkedinProfileId: string) => {
       if (!draftId) return;
@@ -347,8 +328,66 @@ export const useContentPosting = () => {
     [draftId, linkedinProfile?.id, schedulePostMutation]
   );
 
+  const { mutateAsync: shuffleQueueMutation, isLoading: isShuffling } =
+    useMutation<PostResponse, Error, string>(shuffleQueue);
+
+  const createInitialDraft = async () => {
+    if (!linkedinProfile?.id) return null;
+    const draftData: CreateDraftPostType = {
+      content: content.trim(),
+      postType: "text" as const,
+      linkedInProfileId: linkedinProfile.id,
+    };
+    
+    const response = await saveDraft(draftData);
+    if (response.success && response.data?.post?.id) {
+      router.replace(`/studio?draft_id=${response.data.post.id}`, { scroll: false });
+      setPostDetails(response.data.post as Post);
+      return response.data.post.id;
+    }
+    return null;
+  };
+
+  const handleImageUpload = useCallback(async (file: File) => {
+    try {
+      let currentDraftId = draftId || postDetails?.id || undefined;
+
+      // If no draft exists, create one
+      if (!currentDraftId) {
+        const newDraftId = await createInitialDraft();
+        if (!newDraftId) return false;
+        currentDraftId = newDraftId;
+      }
+
+      // Upload image with the draft ID
+      const uploadResponse = await uploadImageMutation({ file, postId: currentDraftId });
+      if (uploadResponse.success) {
+        // Fetch updated draft details to get the new image
+        const draftResponse = await getDraftPostDetails(currentDraftId);
+        if (draftResponse.success && draftResponse.data.post) {
+          setPostDetails(draftResponse.data.post);
+          if (draftResponse.data.post.images) {
+            setImages(draftResponse.data.post.images);
+          }
+        }
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return false;
+    }
+  }, [draftId, postDetails, uploadImageMutation, createInitialDraft]);
+
+  const handleImageDelete = useCallback(
+    async (imageId: string) => {
+      if (!postDetails?.id) return;
+      await deleteImageMutation({ postId: postDetails.id, imageId });
+    },
+    [postDetails, deleteImageMutation]
+  );
+
   return {
-    // States
     content,
     postDetails,
     isAutoSaving,
@@ -357,29 +396,16 @@ export const useContentPosting = () => {
     isAddingToQueue,
     isScheduling,
     isUploading,
-    // Actions
+    draftId,
     handleContentChange,
     handlePostNow,
     handleAddToQueue,
     handleSchedule,
     shuffleQueueMutation: shuffleQueue,
     isShuffling,
-    // Image related
     images,
-    handleImageUpload: async (file: File) => {
-      if (!postDetails?.id) return false;
-      try {
-        await uploadImageMutation({ file, postId: postDetails.id });
-        await queryClient.invalidateQueries(["draftDetails", draftId]);
-        return true;
-      } catch (error) {
-        return false;
-      }
-    },
-    handleImageDelete: async (imageId: string) => {
-      if (!postDetails?.id) return;
-      await deleteImageMutation({ postId: postDetails.id, imageId });
-    },
+    handleImageUpload,
+    handleImageDelete,
   };
 };
 
@@ -399,7 +425,6 @@ export const useContentManagement = () => {
     totalPages: 1,
   });
 
-  // Map tab ID to status number
   const getStatusFromTab = (tab: PostTabId): PostType => {
     const statusMap: Record<PostTabId, PostType> = {
       draft: POST_STATUS.DRAFT,
@@ -410,7 +435,6 @@ export const useContentManagement = () => {
     return statusMap[tab];
   };
 
-  // Query for fetching posts
   const {
     data,
     isLoading: isLoadingPosts,
@@ -438,6 +462,7 @@ export const useContentManagement = () => {
       },
     }
   );
+
   const { mutateAsync: deletePostMutation, isLoading: isDeleting } =
     useMutation({
       mutationFn: (postId: string) => deletePost(postId),
@@ -460,7 +485,7 @@ export const useContentManagement = () => {
     },
     [deletePostMutation]
   );
-  // Helper function to organize posts by date
+
   const organizePostsByDate = (posts: Post[]): PostGroup[] => {
     if (!Array.isArray(posts)) return [];
 
@@ -484,7 +509,6 @@ export const useContentManagement = () => {
     }));
   };
 
-  // Helper function to get relevant date from post
   const getPostDate = (post: Post): string => {
     if (post.publishedAt)
       return new Date(post.publishedAt).toLocaleDateString();
