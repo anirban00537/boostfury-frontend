@@ -123,3 +123,22 @@ export const shuffleQueue = async () => {
   const response = await request.post("/content-posting/shuffle-queue");
   return response.data;
 };
+
+export interface GenerateAndCreateDraftDto {
+  prompt: string;
+  linkedInProfileId: string;
+  language?: string;
+  tone?: string;
+  postLength?: "short" | "medium" | "long";
+  category?: string;
+}
+
+export const generateAndCreateDraft = async (
+  data: GenerateAndCreateDraftDto
+) => {
+  const response = await request.post(
+    "/content-posting/generate-and-create-draft",
+    data
+  );
+  return response.data;
+};
