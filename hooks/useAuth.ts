@@ -92,29 +92,32 @@ export const useAuth = () => {
   );
 
   const linkedInLoginMutation = useMutation(
-    (data: LinkedInLoginDto) => linkedInSignIn(data),
-    {
-      onSuccess: (result) => {
-        if (result.success) {
-          const { accessToken, refreshToken, user } = result.data;
-          dispatch(setUser(user as UserInfo));
-
-          Cookies.set("token", accessToken, { expires: 7 });
-          Cookies.set("refreshToken", refreshToken, { expires: 30 });
-          Cookies.set("user", JSON.stringify(user), { expires: 7 });
-
-          toast.success("Logged in successfully with LinkedIn");
-          router.push("/studio");
-        } else {
-          toast.error(result.message || "Failed to log in with LinkedIn");
-          router.push("/login");
-        }
-      },
-      onError: (error: Error) => {
-        toast.error(`Failed to log in with LinkedIn: ${error.message}`);
-        router.push("/login");
-      },
+    async ({ code, state }: { code: string; state: string }) => {
+      const response = await linkedInSignIn({ code, state });
+      if (!response.success || !response.data) {
+        throw new Error(response.message || "Login failed");
+      }
+      
+      const { accessToken, refreshToken, user } = response.data;
+      
+      // Set user in Redux
+      dispatch(setUser(user));
+      
+      // Set cookies
+      Cookies.set("token", accessToken, { expires: 7 });
+      Cookies.set("refreshToken", refreshToken, { expires: 30 });
+      Cookies.set("user", JSON.stringify(user), { expires: 7 });
+      
+      // Navigate to studio
+      router.push("/studio");
+      
+      return response;
     }
+  );
+
+  const handleLinkedInLogin = useCallback(
+    (code: string, state: string) => linkedInLoginMutation.mutateAsync({ code, state }),
+    [linkedInLoginMutation]
   );
 
   const logoutMutation = useMutation(
@@ -154,18 +157,6 @@ export const useAuth = () => {
       }
     },
     [loginMutation]
-  );
-
-  const handleLinkedInLogin = useCallback(
-    async (code: string, state: string) => {
-      try {
-        return await linkedInLoginMutation.mutateAsync({ code, state });
-      } catch (error) {
-        console.error("Error during LinkedIn login:", error);
-        throw error; // Re-throw to be handled by the calling component
-      }
-    },
-    [linkedInLoginMutation]
   );
 
   const logoutUser = () => {

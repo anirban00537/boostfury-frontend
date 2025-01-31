@@ -57,11 +57,7 @@ export const useLinkedInCallback = (
         throw new Error("Missing required parameters");
       }
 
-      // Verify state
-      const storedState = sessionStorage.getItem("linkedin_state");
-      if (state !== storedState) {
-        throw new Error("Invalid state parameter");
-      }
+   
       const timezone = getUserTimezone();
       console.log(timezone);
 

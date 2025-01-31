@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -21,26 +21,6 @@ const LoginPage = () => {
   const { handleLinkedInLogin, isLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const hasProcessedLogin = useRef(false);
-
-  // LinkedIn login mutation
-  const linkedInLoginMutation = useMutation(
-    async ({ code, state }: { code: string; state: string }) => {
-      return handleLinkedInLogin(code, state);
-    },
-    {
-      onSuccess: () => {
-        sessionStorage.removeItem("linkedin_state");
-        hasProcessedLogin.current = false;
-      },
-      onError: (error) => {
-        toast.error("Failed to login with LinkedIn");
-        console.error("LinkedIn login error:", error);
-        router.push("/login");
-        hasProcessedLogin.current = false;
-      },
-    }
-  );
 
   // Handle LinkedIn OAuth callback
   useEffect(() => {
@@ -48,27 +28,48 @@ const LoginPage = () => {
     const state = searchParams.get("state");
     const error = searchParams.get("error");
     const errorDescription = searchParams.get("error_description");
+    const storedState = sessionStorage.getItem("linkedin_state");
+    const loginProcessId = localStorage.getItem("login_process_id");
 
-    // Return early if already processing or no code/state
-    if (hasProcessedLogin.current || !code || !state) {
-      if (error && !hasProcessedLogin.current) {
-        toast.error(
-          decodeURIComponent(errorDescription || "LinkedIn login failed")
-        );
-        router.push("/login");
-      }
+    // Generate a unique ID for this login attempt
+    const currentLoginId = code && state ? `${code}-${state}` : null;
+
+    // If no code/state, or already processed this specific login attempt, don't proceed
+    if (!currentLoginId || loginProcessId === currentLoginId || !code || !state) {
       return;
     }
 
-    // Verify state from sessionStorage
-    const storedState = sessionStorage.getItem("linkedin_state");
+    const processLogin = async () => {
+      // Store the current login attempt ID immediately
+      localStorage.setItem("login_process_id", currentLoginId);
 
-    // Process the login only once
-    if (!linkedInLoginMutation.isLoading && !hasProcessedLogin.current) {
-      hasProcessedLogin.current = true;
-      linkedInLoginMutation.mutate({ code, state });
-    }
-  }, [searchParams, router, linkedInLoginMutation]);
+      if (error) {
+        toast.error(decodeURIComponent(errorDescription || "LinkedIn login failed"));
+        router.push("/login");
+        return;
+      }
+
+      // Ensure we have valid state before proceeding
+      if (state === storedState && code) {
+        try {
+          await handleLinkedInLogin(code, state);
+          sessionStorage.removeItem("linkedin_state");
+          localStorage.removeItem("login_process_id");
+        } catch (error) {
+          toast.error("Failed to login with LinkedIn");
+          console.error("LinkedIn login error:", error);
+          router.push("/login");
+          localStorage.removeItem("login_process_id"); // Clean up on error too
+        }
+      } else {
+        toast.error("Invalid state parameter");
+        router.push("/login");
+        localStorage.removeItem("login_process_id");
+      }
+    };
+
+    processLogin();
+  }, []);
 
   // LinkedIn auth URL mutation
   const linkedInAuthMutation = useMutation(
