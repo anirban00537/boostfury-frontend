@@ -136,7 +136,7 @@ const Hero = () => {
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             {/* Start Creating Button */}
-            <Link href="/studio" className="group inline-flex">
+            <Link href="/dashboard" className="group inline-flex">
               <div className="relative inline-flex items-center justify-center">
                 <div className="absolute -inset-[2px] bg-gradient-to-r from-primary to-primary rounded-xl group-hover:opacity-100 transition duration-200" />
                 <div className="relative px-8 py-3 bg-primary rounded-lg font-medium text-white flex items-center gap-2 transition-all duration-200 group-hover:scale-[1.02]">

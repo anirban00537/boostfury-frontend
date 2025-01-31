@@ -80,7 +80,7 @@ export const useAuth = () => {
           Cookies.set("user", JSON.stringify(user), { expires: 7 });
 
           toast.success("Logged in successfully");
-          router.push("/studio");
+          router.push("/dashboard");
         } else {
           toast.error(`Failed to log in: ${result.message}`);
         }
@@ -109,7 +109,7 @@ export const useAuth = () => {
       Cookies.set("user", JSON.stringify(user), { expires: 7 });
       
       // Navigate to studio
-      router.push("/studio");
+      router.push("/dashboard");
       
       return response;
     }

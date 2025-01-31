@@ -60,7 +60,7 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
         router.push(`/login?from=${encodeURIComponent(pathname || "")}`);
       } else if (loggedin && pathname === "/login") {
         // Logged in and trying to access login page
-        router.push("/studio");
+        router.push("/dashboard");
       } else if (loggedin && !isActive && !isPricingPage) {
         // Show subscription required toast
         toast.custom(

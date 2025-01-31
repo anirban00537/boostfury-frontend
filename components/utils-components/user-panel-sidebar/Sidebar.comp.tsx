@@ -46,10 +46,10 @@ interface BaseNavigationItem {
 // Then combine the navigation items
 const navigationItems: BaseNavigationItem[] = [
   {
-    id: "studio",
-    name: "Studio",
+    id: "dashboard",
+    name: "Dashboard",
     icon: Wand2,
-    href: "/studio",
+    href: "/dashboard",
     badge: "AI",
     badgeColor: "bg-gradient-to-r from-indigo-500 to-blue-500 text-white",
   },
@@ -231,7 +231,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
     e.preventDefault();
     window.location.href = "/studio";
   };
-  console.log(subscription, "subscriptionsubscriptionsubscription");
 
   return (
     <aside
@@ -276,7 +275,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
                 <div className="w-5 h-5 rounded-lg bg-white/20 flex items-center justify-center">
                   <Plus className="h-3.5 w-3.5" />
                 </div>
-                <span className="font-medium">Create New</span>
+                <span className="font-medium">Create New Post</span>
               </div>
             </div>
           </GradientButton>

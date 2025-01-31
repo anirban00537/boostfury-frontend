@@ -119,6 +119,10 @@ const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange }) => {
                 </div>
               </GradientButton>
             </Link>
+            {/* dashboard */}
+            <Link href="/dashboard">
+              <GradientButton variant="outline">Dashboard</GradientButton>
+            </Link>
           </div>
         </div>
 
