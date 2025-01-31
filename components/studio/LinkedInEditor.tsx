@@ -179,20 +179,200 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                 </div>
               </ShimmerButton>
 
-              <ShimmerButton
-                disabled={
-                  isRewriting || isPosting || isAddingToQueue || isScheduling
-                }
-                className="h-10 w-10 flex items-center justify-center p-0 rounded-xl"
-                shimmerColor="rgba(255, 255, 255, 0.2)"
-                background="linear-gradient(110deg, #2563eb, #3b82f6)"
-              >
-                {isRewriting ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Wand2 className="h-4 w-4" />
-                )}
-              </ShimmerButton>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <ShimmerButton
+                    disabled={
+                      isRewriting ||
+                      isPosting ||
+                      isAddingToQueue ||
+                      isScheduling
+                    }
+                    className="h-10 w-10 flex items-center justify-center p-0 rounded-xl"
+                    shimmerColor="rgba(255, 255, 255, 0.2)"
+                    background="linear-gradient(110deg, #2563eb, #3b82f6)"
+                  >
+                    {isRewriting ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Wand2 className="h-4 w-4" />
+                    )}
+                  </ShimmerButton>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[200px] p-1.5">
+                  <DropdownMenuItem
+                    onClick={() =>
+                      onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.IMPROVE)
+                    }
+                    disabled={
+                      isRewriting ||
+                      isPosting ||
+                      isAddingToQueue ||
+                      isScheduling
+                    }
+                    className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                      <Sparkles className="h-3.5 w-3.5 text-blue-600" />
+                    </div>
+                    <span>Improve Overall</span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() =>
+                      onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.SHORTER)
+                    }
+                    disabled={
+                      isRewriting ||
+                      isPosting ||
+                      isAddingToQueue ||
+                      isScheduling
+                    }
+                    className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                      <Wand2 className="h-3.5 w-3.5 text-blue-600" />
+                    </div>
+                    <span>Make it Shorter</span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() =>
+                      onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.LONGER)
+                    }
+                    disabled={
+                      isRewriting ||
+                      isPosting ||
+                      isAddingToQueue ||
+                      isScheduling
+                    }
+                    className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                      <Wand2 className="h-3.5 w-3.5 text-blue-600" />
+                    </div>
+                    <span>Make it Longer</span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() =>
+                      onRewriteContent?.(
+                        LINKEDIN_REWRITE_INSTRUCTIONS.PROFESSIONAL
+                      )
+                    }
+                    disabled={
+                      isRewriting ||
+                      isPosting ||
+                      isAddingToQueue ||
+                      isScheduling
+                    }
+                    className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                      <Wand2 className="h-3.5 w-3.5 text-blue-600" />
+                    </div>
+                    <span>More Professional</span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() =>
+                      onRewriteContent?.(LINKEDIN_REWRITE_INSTRUCTIONS.CASUAL)
+                    }
+                    disabled={
+                      isRewriting ||
+                      isPosting ||
+                      isAddingToQueue ||
+                      isScheduling
+                    }
+                    className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                      <Wand2 className="h-3.5 w-3.5 text-blue-600" />
+                    </div>
+                    <span>More Casual</span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() =>
+                      onRewriteContent?.(
+                        LINKEDIN_REWRITE_INSTRUCTIONS.SEO_OPTIMIZE
+                      )
+                    }
+                    disabled={
+                      isRewriting ||
+                      isPosting ||
+                      isAddingToQueue ||
+                      isScheduling
+                    }
+                    className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                      <Wand2 className="h-3.5 w-3.5 text-blue-600" />
+                    </div>
+                    <span>SEO Optimize</span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() =>
+                      onRewriteContent?.(
+                        LINKEDIN_REWRITE_INSTRUCTIONS.STORYTELLING
+                      )
+                    }
+                    disabled={
+                      isRewriting ||
+                      isPosting ||
+                      isAddingToQueue ||
+                      isScheduling
+                    }
+                    className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                      <Wand2 className="h-3.5 w-3.5 text-blue-600" />
+                    </div>
+                    <span>Make it a Story</span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() =>
+                      onRewriteContent?.(
+                        LINKEDIN_REWRITE_INSTRUCTIONS.PERSUASIVE
+                      )
+                    }
+                    disabled={
+                      isRewriting ||
+                      isPosting ||
+                      isAddingToQueue ||
+                      isScheduling
+                    }
+                    className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                      <Wand2 className="h-3.5 w-3.5 text-blue-600" />
+                    </div>
+                    <span>More Persuasive</span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() =>
+                      onRewriteContent?.(
+                        LINKEDIN_REWRITE_INSTRUCTIONS.IMPROVE_HOOK
+                      )
+                    }
+                    disabled={
+                      isRewriting ||
+                      isPosting ||
+                      isAddingToQueue ||
+                      isScheduling
+                    }
+                    className="gap-2 h-9 px-3 rounded-lg data-[highlighted]:bg-blue-50 data-[highlighted]:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center">
+                      <Wand2 className="h-3.5 w-3.5 text-blue-600" />
+                    </div>
+                    <span>Improve Hook</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 
