@@ -6,6 +6,8 @@ import {
   FileText,
   CheckCircle2,
   XCircle,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
@@ -16,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 interface LinkedInProfile {
   id: string;
@@ -78,6 +81,15 @@ export const PostPreviewNotRedux = ({
   imageUrls,
 }: PostPreviewNotReduxProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [shouldShowMore, setShouldShowMore] = useState(false);
+  const maxHeight = 200; // Maximum height in pixels before showing "Show More"
+
+  useEffect(() => {
+    if (contentRef.current && !hideViewModeSelector) {
+      setShouldShowMore(contentRef.current.scrollHeight > maxHeight);
+    }
+  }, [content, hideViewModeSelector]);
 
   const getStatusConfig = (status: string | undefined) => {
     switch (status) {
@@ -219,7 +231,10 @@ export const PostPreviewNotRedux = ({
             <div className="relative">
               <div
                 ref={contentRef}
-                className="whitespace-pre-wrap break-words relative"
+                className={cn(
+                  "whitespace-pre-wrap break-words relative transition-all duration-300",
+                  !hideViewModeSelector && !isExpanded && "line-clamp-[8]"
+                )}
                 style={{
                   wordBreak: "break-word",
                   overflowWrap: "break-word",
@@ -228,6 +243,32 @@ export const PostPreviewNotRedux = ({
               >
                 {content}
               </div>
+              {!hideViewModeSelector && shouldShowMore && (
+                <div
+                  className={cn(
+                    "flex items-center gap-2 pt-2",
+                    !isExpanded && "relative"
+                  )}
+                >
+                  <span className="text-neutral-400">...</span>
+                  <button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1 transition-colors"
+                  >
+                    {isExpanded ? (
+                      <>
+                        Show less
+                        <ChevronUp className="w-4 h-4" />
+                      </>
+                    ) : (
+                      <>
+                        Show more
+                        <ChevronDown className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>

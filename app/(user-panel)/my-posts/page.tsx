@@ -86,7 +86,7 @@ const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange }) => {
   const router = useRouter();
 
   return (
-    <div className="relative border-b border-neutral-200/60 bg-white/50 backdrop-blur-sm sticky top-0 z-10">
+    <div className="relative border-b border-neutral-200/60 bg-white/50 backdrop-blur-sm sticky top-0 z-10 ">
       <div className="px-8 pt-8 pb-0">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
@@ -116,18 +116,6 @@ const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange }) => {
                 <div className="flex items-center gap-2">
                   <Plus className="h-4 w-4" />
                   <span>Create New</span>
-                </div>
-              </GradientButton>
-            </Link>
-
-            <Link href="/dashboard">
-              <GradientButton
-                variant="default"
-                className="shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-center gap-2">
-                  <Wand2 className="h-4 w-4" />
-                  <span>Dashboard</span>
                 </div>
               </GradientButton>
             </Link>
@@ -294,7 +282,7 @@ const ContentManager = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen max-w-7xl mx-auto">
       <TabHeader activeTab={activeTab} onTabChange={handleTabClick} />
       <div className=" px-4 sm:px-6 py-8">
         <div className="p-6">
@@ -360,7 +348,7 @@ const ContentManager = () => {
                         <PostPreviewNotRedux
                           content={post.content}
                           isGenerating={false}
-                          hideViewModeSelector
+                          hideViewModeSelector={false}
                           status={
                             activeTab as
                               | "scheduled"

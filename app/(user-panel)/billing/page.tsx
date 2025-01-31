@@ -244,7 +244,7 @@ const SubscriptionDetails = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen max-w-7xl mx-auto">
       {/* Header Section */}
       <div className="relative border-b border-neutral-200/60 bg-white/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="px-8 pt-8 pb-0">
@@ -292,7 +292,7 @@ const SubscriptionDetails = () => {
         </div>
       </div>
 
-      <div className="px-4 sm:px-6 py-8">
+      <div className="px-4 sm:px-6  py-8">
         {activeTab === "current" && (
           <div className="space-y-8">
             {/* Current Plan Overview */}

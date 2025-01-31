@@ -55,13 +55,14 @@ interface GroupedPosts {
 export default function PostQueuePage() {
   const { linkedinProfile } = useSelector((state: RootState) => state.user);
   const { queueData, isLoadingQueue, refetchQueue } = useScheduledQueue();
-  const { shuffleQueue, isShuffling } = useContentPosting();
+  const { shuffleQueueMutation: shuffleQueue } = useContentPosting();
   const { refetchPosts } = useContentManagement();
   const posts = queueData?.data?.posts || [];
   const totalPosts = posts.length;
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modalMode, setModalMode] = React.useState<"add" | "edit">("add");
   const [selectedPost, setSelectedPost] = React.useState<Post | null>(null);
+  const [isShuffling, setIsShuffling] = React.useState(false);
 
   const handleOpenModal = useCallback((mode: "add" | "edit", post?: Post) => {
     setModalMode(mode);
@@ -103,17 +104,19 @@ export default function PostQueuePage() {
     }
 
     try {
+      setIsShuffling(true);
       await shuffleQueue();
-      // Refetch both queue and scheduled posts
       await Promise.all([refetchQueue(), refetchPosts()]);
     } catch (error) {
       console.error("Error shuffling queue:", error);
       toast.error("Failed to shuffle queue");
+    } finally {
+      setIsShuffling(false);
     }
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen max-w-7xl mx-auto">
       <div className="relative border-b border-neutral-200/60 bg-white/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="px-8 pt-8 pb-6">
           {/* Header Section */}

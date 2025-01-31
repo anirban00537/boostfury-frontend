@@ -163,6 +163,9 @@ export const useContentPosting = () => {
       }
     },
   });
+  //shuffling
+  const { mutateAsync: shuffleQueueMutation, isLoading: isShuffling } =
+    useMutation<PostResponse, Error, string>(shuffleQueue);
 
   // Content change handler with debounce
   const debouncedSaveDraft = useCallback(
@@ -363,6 +366,8 @@ export const useContentPosting = () => {
     handlePostNow,
     handleAddToQueue,
     handleSchedule,
+    shuffleQueueMutation: shuffleQueue,
+    isShuffling,
     // Image related
     images,
     handleImageUpload: async (file: File) => {

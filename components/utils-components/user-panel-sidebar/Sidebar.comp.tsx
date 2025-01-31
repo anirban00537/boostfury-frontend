@@ -68,10 +68,10 @@ const navigationItems: BaseNavigationItem[] = [
     badgeColor: "bg-gradient-to-r from-green-500 to-emerald-500 text-white",
   },
   {
-    id: "account",
-    name: "Manage Accounts",
+    id: "account-settings",
+    name: "Account Settings",
     icon: Linkedin,
-    href: "/account",
+    href: "/account-settings",
     badge: "LinkedIn",
     badgeColor: "bg-gradient-to-r from-blue-500 to-blue-700 text-white",
   },
@@ -80,14 +80,6 @@ const navigationItems: BaseNavigationItem[] = [
     name: "Billing & Usage",
     icon: CreditCard,
     href: "/billing",
-  },
-  {
-    id: "ai-style",
-    name: "AI Voice & Style",
-    icon: Wand2,
-    href: "/settings/ai-style",
-    badge: "New",
-    badgeColor: "bg-gradient-to-r from-primary to-primary/80 text-white",
   },
 ];
 
