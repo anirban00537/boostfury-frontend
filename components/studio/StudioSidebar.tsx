@@ -230,269 +230,246 @@ export const StudioSidebar = ({
   return (
     <div
       className={cn(
-        "h-full flex flex-col bg-white fixed right-0 top-0 shadow-[-1px_0_0_0_rgba(0,0,0,0.05)] z-10 transition-all duration-300",
+        "h-full flex flex-col bg-gradient-to-br from-white via-white to-blue-50/40 fixed right-0 top-0 shadow-[-16px_0_50px_rgb(0,0,0,0.06)] z-10 transition-all duration-300 backdrop-blur-2xl border-l border-[#0A66C2]/10",
         isCollapsed ? "w-[60px]" : "w-[380px]"
       )}
     >
       {/* Collapse Button */}
       <button
         onClick={handleToggleCollapse}
-        className="absolute -left-3 top-8 size-6 rounded-full bg-white shadow-md border border-neutral-200/60 flex items-center justify-center hover:scale-110 transition-all duration-200 group"
+        className="absolute -left-4 top-8 h-8 w-8 rounded-full bg-gradient-to-b from-white to-blue-50/30 shadow-[0_8px_24px_rgb(0,0,0,0.08)] border border-blue-100/30 flex items-center justify-center hover:scale-110 transition-all duration-200 group backdrop-blur-2xl"
       >
         {isCollapsed ? (
-          <ChevronLeft className="size-3 text-neutral-600 group-hover:text-neutral-900" />
+          <ChevronLeft className="h-4 w-4 text-neutral-600 group-hover:text-blue-600" />
         ) : (
-          <ChevronRight className="size-3 text-neutral-600 group-hover:text-neutral-900" />
+          <ChevronRight className="h-4 w-4 text-neutral-600 group-hover:text-blue-600" />
         )}
       </button>
 
       {/* Content Area */}
-      <div
-        className={cn(
-          "flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-200 scrollbar-track-transparent hover:scrollbar-thumb-neutral-300",
-          isCollapsed && "opacity-0 invisible"
-        )}
-      >
-        <div className="px-7 py-8 space-y-8">
-          {/* Category Selection */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-3"
-          >
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-gradient-to-tr from-blue-100 via-cyan-100 to-sky-100">
-                <Sparkles className="w-4 h-4 text-blue-600" />
-              </div>
-              <label className="text-sm font-semibold text-neutral-900">
-                Select Post Category
-              </label>
-            </div>
-            <Select
-              value={selectedCategory}
-              onValueChange={handleCategoryChange}
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-100 scrollbar-track-transparent hover:scrollbar-thumb-blue-200">
+        <AnimatePresence>
+          {!isCollapsed && (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              className="p-8"
             >
-              <SelectTrigger
-                className="w-full h-12 text-[15px] bg-white rounded-xl border border-neutral-200/60 
-                text-neutral-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 
-                focus:border-blue-500/30 transition-all duration-200"
-              >
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categoryOptions.map((category) => (
-                  <SelectItem
-                    key={category.value}
-                    value={category.value}
-                    className="text-sm"
-                  >
-                    {category.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="text-sm text-neutral-500 mt-1">
-              {
-                categoryOptions.find((c) => c.value === selectedCategory)
-                  ?.description
-              }
-            </p>
-          </motion.div>
-
-          {/* Tone Selection */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-3"
-          >
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-gradient-to-tr from-blue-100 via-cyan-100 to-sky-100">
-                <Sparkles className="w-4 h-4 text-blue-600" />
+              {/* Prompt Input */}
+              <div className="relative mb-8 group">
+                <label className="text-[13px] font-semibold text-neutral-800 mb-2.5 block">
+                  Prompt
+                </label>
+                <div className="absolute -inset-2 bg-gradient-to-br from-blue-500/5 via-blue-500/5 to-transparent rounded-2xl blur-lg group-focus-within:from-blue-500/10 group-focus-within:via-blue-500/10 transition-all duration-300" />
+                <textarea
+                  value={prompt}
+                  onChange={handlePromptChangeWithCategory}
+                  placeholder="What would you like to write about?"
+                  className="relative w-full h-32 text-[15px] leading-relaxed bg-white/95 border border-neutral-200/80 rounded-xl p-5 focus:outline-none focus:ring-[3px] focus:ring-blue-500/20 focus:border-blue-200 resize-none placeholder:text-neutral-400 transition-all duration-200 shadow-[0_8px_24px_rgb(0,0,0,0.04)]"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(145deg, #ffffff, #fafbff)",
+                  }}
+                />
               </div>
-              <label className="text-sm font-semibold text-neutral-900">
-                Select Writing Tone
-              </label>
-            </div>
-            <Select
-              value={selectedTone}
-              onValueChange={(value: ToneValue) => {
-                setSelectedTone(value);
-                setTone(value);
-              }}
-            >
-              <SelectTrigger
-                className="w-full h-12 text-[15px] bg-white rounded-xl border border-neutral-200/60 
-                text-neutral-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 
-                focus:border-blue-500/30 transition-all duration-200"
-              >
-                <SelectValue placeholder="Select a tone" />
-              </SelectTrigger>
-              <SelectContent>
-                {toneOptions.map((tone) => (
-                  <SelectItem
-                    key={tone.value}
-                    value={tone.value}
-                    className="text-sm"
-                  >
-                    {tone.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="text-sm text-neutral-500 mt-1">
-              {toneOptions.find((t) => t.value === selectedTone)?.description}
-            </p>
-          </motion.div>
 
-          {/* Post Length Selection */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="space-y-3"
-          >
-            <div className="flex items-center gap-2">
-              <Brain className="w-4 h-4 text-blue-600" />
-              <label className="text-sm font-semibold text-neutral-900">
-                Select post length
-              </label>
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              {postLengthOptions.map((option) => (
-                <Tooltip key={option.value}>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => setPostLength(option.value)}
-                      className={cn(
-                        "flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200",
-                        postLength === option.value
-                          ? "bg-blue-50 border border-blue-200 shadow-sm"
-                          : "bg-white border border-neutral-200 hover:border-blue-200 hover:shadow-sm"
-                      )}
-                    >
-                      <div
-                        className={cn(
-                          "w-8 h-8 rounded-full flex items-center justify-center mb-2",
-                          postLength === option.value
-                            ? "bg-blue-100 text-blue-600"
-                            : "bg-neutral-100 text-neutral-500"
-                        )}
+              {/* Post Length Selector */}
+              <div className="space-y-2.5 mb-8">
+                <label className="text-[13px] font-semibold text-neutral-800">
+                  Post Length
+                </label>
+                <div className="grid grid-cols-3 gap-3">
+                  {postLengthOptions.map((option) => (
+                    <Tooltip key={option.value}>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => setPostLength(option.value)}
+                          className={cn(
+                            "group relative flex flex-col items-center gap-2 py-4 px-3 rounded-xl border transition-all duration-300",
+                            postLength === option.value
+                              ? "bg-gradient-to-b from-blue-600 to-blue-500 border-blue-400 shadow-[0_8px_24px_-4px_rgba(37,99,235,0.24)] scale-[1.02]"
+                              : "bg-gradient-to-b from-white to-neutral-50/80 border-neutral-200/80 hover:border-blue-200/60 hover:bg-gradient-to-b hover:from-blue-50/50 hover:to-blue-50/20 hover:scale-[1.02] hover:shadow-[0_0_0_1px_rgba(37,99,235,0.06),0_8px_24px_-4px_rgba(37,99,235,0.04)]"
+                          )}
+                        >
+                          <div
+                            className={cn(
+                              "p-2 rounded-lg transition-all duration-300",
+                              postLength === option.value
+                                ? "bg-white/20 text-white"
+                                : "bg-gradient-to-br from-neutral-100/80 to-neutral-50/50 text-neutral-600 group-hover:text-blue-600 group-hover:bg-gradient-to-br group-hover:from-blue-100/60 group-hover:to-blue-50/40"
+                            )}
+                          >
+                            {option.icon}
+                          </div>
+                          <span
+                            className={cn(
+                              "text-sm font-medium transition-colors duration-300",
+                              postLength === option.value
+                                ? "text-white"
+                                : "text-neutral-600 group-hover:text-blue-600"
+                            )}
+                          >
+                            {option.label}
+                          </span>
+                          <div
+                            className={cn(
+                              "absolute inset-0 opacity-0 transition-opacity duration-300",
+                              postLength === option.value && "opacity-100"
+                            )}
+                          >
+                            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-transparent rounded-xl blur-xl" />
+                          </div>
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent
+                        side="bottom"
+                        className="bg-white/95 backdrop-blur-xl border-neutral-200/60 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.12)] px-3 py-2"
                       >
-                        {option.icon}
+                        <p className="text-xs font-medium text-neutral-600">
+                          {option.tooltip}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  ))}
+                </div>
+              </div>
+
+              {/* Category Selector */}
+              <div className="space-y-2.5 mb-8">
+                <label className="text-[13px] font-semibold text-neutral-800">
+                  Category
+                </label>
+                <Select
+                  value={selectedCategory}
+                  onValueChange={handleCategoryChange}
+                >
+                  <SelectTrigger className="w-full h-12 bg-white/95 border-neutral-200/80 rounded-xl focus:ring-[3px] focus:ring-blue-500/20 focus:border-blue-200 shadow-[0_8px_24px_rgb(0,0,0,0.04)] text-[13px] font-medium">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[280px] p-2 bg-white/95 backdrop-blur-xl border-neutral-200/60 shadow-[0_16px_32px_rgb(0,0,0,0.08)]">
+                    {categoryOptions.map((category) => (
+                      <SelectItem
+                        key={category.value}
+                        value={category.value}
+                        className="py-2.5 px-3 text-[13px] font-medium text-neutral-800 rounded-lg data-[highlighted]:bg-gradient-to-br data-[highlighted]:from-blue-50 data-[highlighted]:to-blue-50/50 data-[highlighted]:text-blue-700 cursor-pointer transition-all duration-200"
+                      >
+                        {category.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Tone Selector */}
+              <div className="space-y-2.5">
+                <label className="text-[13px] font-semibold text-neutral-800">
+                  Tone
+                </label>
+                <Select
+                  value={selectedTone}
+                  onValueChange={(value: ToneValue) => {
+                    setSelectedTone(value);
+                    setTone(value);
+                  }}
+                >
+                  <SelectTrigger className="w-full h-12 bg-white/95 border-neutral-200/80 rounded-xl focus:ring-[3px] focus:ring-blue-500/20 focus:border-blue-200 shadow-[0_8px_24px_rgb(0,0,0,0.04)] text-[13px] font-medium">
+                    <SelectValue placeholder="Select a tone" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[280px] p-2 bg-white/95 backdrop-blur-xl border-neutral-200/60 shadow-[0_16px_32px_rgb(0,0,0,0.08)]">
+                    {toneOptions.map((tone) => (
+                      <SelectItem
+                        key={tone.value}
+                        value={tone.value}
+                        className="py-2.5 px-3 text-[13px] font-medium text-neutral-800 rounded-lg data-[highlighted]:bg-gradient-to-br data-[highlighted]:from-blue-50 data-[highlighted]:to-blue-50/50 data-[highlighted]:text-blue-700 cursor-pointer transition-all duration-200"
+                      >
+                        {tone.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Prompt Tips */}
+              <AnimatePresence>
+                {showTips && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mt-8"
+                  >
+                    <div className="p-5 bg-gradient-to-br from-blue-50/80 via-blue-50/60 to-blue-50/40 rounded-xl border border-blue-100/80 shadow-[0_8px_24px_rgb(0,0,0,0.04)]">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-2.5">
+                          <div className="p-1.5 rounded-lg bg-gradient-to-br from-blue-100/90 to-blue-100/60">
+                            <Info className="h-3.5 w-3.5 text-blue-600" />
+                          </div>
+                          <span className="text-[13px] font-semibold text-neutral-800">
+                            Prompt Tips
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => setShowTips(false)}
+                          className="text-neutral-400 hover:text-blue-600 transition-colors"
+                        >
+                          <ChevronDown className="h-4 w-4" />
+                        </button>
                       </div>
-                      <span
-                        className={cn(
-                          "text-sm font-medium",
-                          postLength === option.value
-                            ? "text-blue-600"
-                            : "text-neutral-600"
-                        )}
-                      >
-                        {option.label}
-                      </span>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="text-xs">{option.tooltip}</p>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Prompt Input Section */}
-      <div
-        className={cn(
-          "flex-none px-7 py-6 border-t border-neutral-100/80 space-y-4 bg-gradient-to-b from-white to-blue-50/30",
-          isCollapsed && "opacity-0 invisible"
-        )}
-      >
-        {/* Prompt Input */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="space-y-3"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-gradient-to-tr from-blue-500/20 via-cyan-500/20 to-sky-500/20">
-                <Sparkles className="w-4 h-4 text-blue-600" />
-              </div>
-              <label className="text-sm font-semibold text-neutral-900">
-                What would you like to write about?
-              </label>
-            </div>
-            <span className="text-xs font-medium px-2 py-1 rounded-md bg-gradient-to-r from-blue-100 to-sky-100 text-blue-600">
-              {prompt.length}/500
-            </span>
-          </div>
-          <div className="relative group">
-            <div className="absolute -inset-[2px] bg-gradient-to-r from-blue-500 via-cyan-500 to-sky-500 rounded-xl blur-lg opacity-0 group-hover:opacity-20 transition-all duration-500" />
-            <div className="absolute inset-[-1px] bg-gradient-to-r from-blue-500 via-cyan-500 to-sky-500 rounded-xl opacity-20" />
-            <textarea
-              value={prompt}
-              onChange={handlePromptChangeWithCategory}
-              placeholder="Enter your topic or idea..."
-              maxLength={500}
-              className="relative w-full h-[120px] px-4 py-3 text-[15px] leading-relaxed rounded-xl border-0 placeholder:text-neutral-400 text-neutral-900 focus:outline-none resize-none transition-all duration-200 bg-white shadow-lg shadow-blue-500/5 backdrop-blur-xl"
-            />
-            <div className="absolute bottom-3 right-3 flex items-center gap-2">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button className="p-1.5 rounded-md bg-gradient-to-r from-blue-50 to-sky-50 text-blue-400 hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110">
-                    <Info className="w-4 h-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-xs">
-                    Be specific about your topic and target audience
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-              <div className="size-2 rounded-full bg-gradient-to-r from-blue-500 to-sky-500 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Generate Button */}
-        <RainbowButton
-          onClick={handleGenerate}
-          disabled={isGenerating}
-          className="w-full h-12 flex items-center justify-center gap-2.5 shadow-lg shadow-blue-500/10"
-        >
-          {isGenerating ? (
-            <>
-              <Loader2 className="h-5 w-5 animate-spin" />
-              <span className="inline-flex items-center gap-1">
-                Generating<span className="animate-pulse">...</span>
-              </span>
-            </>
-          ) : (
-            <>
-              <Wand2 className="h-5 w-5" />
-              <span>Generate Content</span>
-            </>
+                      <ul className="mt-4 space-y-2.5 text-[13px] text-neutral-600">
+                        <li className="flex items-start gap-2.5">
+                          <span className="text-blue-500 text-lg leading-none">
+                            •
+                          </span>
+                          Be specific about your topic and target audience
+                        </li>
+                        <li className="flex items-start gap-2.5">
+                          <span className="text-blue-500 text-lg leading-none">
+                            •
+                          </span>
+                          Include key points you want to cover
+                        </li>
+                        <li className="flex items-start gap-2.5">
+                          <span className="text-blue-500 text-lg leading-none">
+                            •
+                          </span>
+                          Mention desired style and perspective
+                        </li>
+                        <li className="flex items-start gap-2.5">
+                          <span className="text-blue-500 text-lg leading-none">
+                            •
+                          </span>
+                          Add relevant keywords or industry terms
+                        </li>
+                      </ul>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           )}
-        </RainbowButton>
+        </AnimatePresence>
       </div>
 
-      {/* Collapsed State Mini Actions */}
-      {isCollapsed && (
-        <div className="absolute inset-x-0 bottom-6">
-          <div className="px-2 space-y-3">
-            <button
-              onClick={handleGenerate}
-              disabled={isGenerating || !prompt.trim()}
-              className="w-full p-2 rounded-xl bg-gradient-to-r from-blue-600 via-cyan-600 to-sky-600 text-white hover:opacity-90 transition-opacity disabled:opacity-50"
-            >
-              <Wand2 className="size-5 mx-auto" />
-            </button>
-          </div>
+      {/* Bottom Generate Button */}
+      {!isCollapsed && (
+        <div className="flex-none px-8 py-6 pt-0 border-t border-neutral-100/80 bg-gradient-to-br from-white via-white to-blue-50/40">
+          <RainbowButton
+            onClick={handleRegularGenerate}
+            disabled={isRegularGenerating}
+            className="w-full h-[52px] text-[14px] font-medium rounded-xl shadow-[0_8px_24px_rgb(0,0,0,0.06)]"
+          >
+            <div className="flex items-center gap-3 justify-center">
+              {isRegularGenerating ? (
+                <Loader2 className="h-4 w-4 animate-spin text-black" />
+              ) : (
+                <div className="p-1.5 rounded-lg bg-white/20">
+                  <Sparkles className="h-4 w-4 text-black" />
+                </div>
+              )}
+              <span>Generate with AI</span>
+            </div>
+          </RainbowButton>
         </div>
       )}
     </div>
