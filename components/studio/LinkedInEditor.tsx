@@ -97,12 +97,12 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-[650px] bg-gradient-to-b from-white via-white to-blue-50/20 rounded-3xl border border-[#0A66C2]/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden backdrop-blur-xl"
+      className="w-full lg:w-[650px] bg-gradient-to-b from-white via-white to-blue-50/20 rounded-3xl border border-[#0A66C2]/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden backdrop-blur-xl"
     >
       {linkedinProfile ? (
         <>
           {/* Profile Header with AI Buttons */}
-          <div className="flex-none px-7 py-6 flex items-start justify-between border-b border-neutral-100 bg-gradient-to-b from-white to-blue-50/20">
+          <div className="flex-none px-4 lg:px-7 py-4 lg:py-6 flex flex-col lg:flex-row lg:items-start justify-between gap-4 lg:gap-0 border-b border-neutral-100 bg-gradient-to-b from-white to-blue-50/20">
             <div className="flex items-start gap-4">
               <div className="relative">
                 <div className="absolute -inset-1 bg-gradient-to-br from-blue-500/20 via-blue-500/10 to-transparent rounded-full blur-md" />
@@ -123,7 +123,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                   {linkedinProfile?.timezone}
                 </span>
                 {postDetails?.status !== undefined && (
-                  <div className="flex items-center gap-2 mt-1.5">
+                  <div className="flex flex-wrap items-center gap-2 mt-1.5">
                     <div
                       className={cn(
                         "px-2.5 py-1 rounded-full text-xs font-medium shadow-sm backdrop-blur-sm",
@@ -156,7 +156,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
             </div>
 
             {/* AI Writer Buttons */}
-            <div className="flex items-center gap-2 mt-1">
+            <div className="flex items-center gap-2">
               <ShimmerButton
                 onClick={onGeneratePersonalized}
                 disabled={
@@ -165,7 +165,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                   isAddingToQueue ||
                   isScheduling
                 }
-                className="h-10 px-4 flex items-center gap-2 text-[14px] font-medium rounded-xl"
+                className="h-10 px-4 flex items-center gap-2 text-[14px] font-medium rounded-xl w-full lg:w-auto"
                 shimmerColor="rgba(255, 255, 255, 0.2)"
                 background="linear-gradient(110deg, #2563eb, #3b82f6)"
               >
@@ -378,7 +378,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
 
           {/* Content Area */}
           <div className="flex-1 overflow-y-auto bg-gradient-to-b from-white via-white to-blue-50/30">
-            <div className="p-7">
+            <div className="p-4 lg:p-7">
               <div className="relative">
                 <div className="absolute -inset-1 bg-gradient-to-br from-blue-500/5 via-blue-500/5 to-transparent rounded-3xl blur-lg" />
                 <textarea
@@ -386,13 +386,13 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                   value={content}
                   onChange={(e) => onContentChange(e.target.value)}
                   placeholder="What do you want to talk about?"
-                  className="relative w-full min-h-[400px] text-[16px] leading-[1.7] bg-white/80 border border-neutral-200/80 rounded-2xl p-6 focus:outline-none focus:ring-[3px] focus:ring-blue-500/10 focus:border-blue-200 resize-none placeholder:text-neutral-400 transition-all duration-200 shadow-[0_2px_10px_rgb(0,0,0,0.02)]"
+                  className="relative w-full min-h-[300px] lg:min-h-[400px] text-[15px] lg:text-[16px] leading-[1.7] bg-white/80 border border-neutral-200/80 rounded-2xl p-4 lg:p-6 focus:outline-none focus:ring-[3px] focus:ring-blue-500/10 focus:border-blue-200 resize-none placeholder:text-neutral-400 transition-all duration-200 shadow-[0_2px_10px_rgb(0,0,0,0.02)]"
                   style={{
                     backgroundImage:
                       "linear-gradient(to bottom, #ffffff, #fafbff)",
                   }}
                 />
-                <div className="absolute right-5 bottom-5 flex items-center gap-2">
+                <div className="absolute right-3 lg:right-5 bottom-3 lg:bottom-5 flex items-center gap-2">
                   {isAutoSaving ? (
                     <div className="flex items-center gap-1.5 text-xs text-neutral-500 bg-white/90 px-3 py-1.5 rounded-full shadow-sm border border-neutral-100 backdrop-blur-sm">
                       <Loader2 className="w-3 h-3 animate-spin" />
@@ -421,7 +421,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
-                            className="relative group w-16 h-16 rounded-lg overflow-hidden border border-neutral-200/80 shadow-sm bg-white cursor-pointer hover:border-blue-200 transition-colors"
+                            className="relative group w-14 h-14 lg:w-16 lg:h-16 rounded-lg overflow-hidden border border-neutral-200/80 shadow-sm bg-white cursor-pointer hover:border-blue-200 transition-colors"
                           >
                             <img
                               src={image.imageUrl}
@@ -440,7 +440,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                             </button>
                           </motion.div>
                         </DialogTrigger>
-                        <DialogContent className="max-w-4xl p-0 overflow-hidden bg-transparent border-none">
+                        <DialogContent className="max-w-[90vw] lg:max-w-4xl p-0 overflow-hidden bg-transparent border-none">
                           <div className="relative group">
                             <div className="absolute inset-0 -z-10 bg-black/90 backdrop-blur-xl" />
                             <button
@@ -477,7 +477,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
 
           {/* Bottom Action Bar */}
           <div className="flex-none border-t border-neutral-100 bg-gradient-to-b from-white to-blue-50/20">
-            <div className="p-4 flex items-center justify-between">
+            <div className="p-4 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 lg:gap-0">
               {/* Media Buttons */}
               <div className="flex items-center gap-1">
                 <Tooltip>
@@ -533,7 +533,6 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                               const newText = before + emoji.emoji + after;
                               onContentChange(newText);
 
-                              // Set cursor position after emoji
                               setTimeout(() => {
                                 if (contentRef.current) {
                                   const newPosition =
@@ -561,7 +560,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
               </div>
 
               {/* Schedule Buttons */}
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-2">
                 <GradientButton
                   onClick={onAddToQueue}
                   disabled={
@@ -571,7 +570,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                     postDetails?.status === POST_STATUS.SCHEDULED
                   }
                   variant="primary"
-                  className="h-9 px-4 text-[14px] font-medium rounded-[18px]"
+                  className="h-9 px-4 text-[14px] font-medium rounded-[18px] w-full lg:w-auto"
                   leftIcon={
                     isAddingToQueue ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -587,7 +586,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                   onClick={onSchedule}
                   disabled={isScheduling || !content.trim()}
                   variant="outline"
-                  className="h-9 px-4 text-[14px] font-medium rounded-[18px]"
+                  className="h-9 px-4 text-[14px] font-medium rounded-[18px] w-full lg:w-auto"
                   leftIcon={
                     isScheduling ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -603,7 +602,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                   onClick={onPostNow}
                   disabled={isPosting || !content.trim()}
                   variant="outline"
-                  className="h-9 px-4 text-[14px] font-medium rounded-[18px]"
+                  className="h-9 px-4 text-[14px] font-medium rounded-[18px] w-full lg:w-auto"
                   leftIcon={
                     isPosting ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -619,7 +618,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
           </div>
         </>
       ) : (
-        <LinkedInConnect variant="redirect" className="p-8" />
+        <LinkedInConnect variant="redirect" className="p-4 lg:p-8" />
       )}
     </motion.div>
   );

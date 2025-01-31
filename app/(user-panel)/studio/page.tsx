@@ -96,12 +96,13 @@ const ContentCreationTools: React.FC = () => {
       <div
         className={cn(
           "w-full min-h-[calc(100vh-148px)] flex justify-center transition-all duration-300",
-          isSidebarCollapsed ? "pr-[80px]" : "pr-[400px]"
+          "px-4 lg:px-0",
+          isSidebarCollapsed ? "lg:pr-[80px]" : "lg:pr-[400px]"
         )}
       >
-        <div className="w-[550px] py-8">
+        <div className="w-full lg:w-[550px] py-8">
           {isLoadingDraft && draftId ? (
-            <div className="w-[650px] bg-white rounded-2xl border border-[#0A66C2]/10 shadow-[0_0_0_1px_rgba(10,102,194,0.1)] overflow-hidden">
+            <div className="w-full lg:w-[650px] bg-white rounded-2xl border border-[#0A66C2]/10 shadow-[0_0_0_1px_rgba(10,102,194,0.1)] overflow-hidden">
               <LoadingSection className="min-h-[400px]" />
             </div>
           ) : (
@@ -145,7 +146,7 @@ const ContentCreationTools: React.FC = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="absolute top-20 right-20 z-50 shadow-xl rounded-xl overflow-hidden border border-neutral-200/60 bg-white"
+                className="fixed top-20 right-4 lg:right-20 z-50 shadow-xl rounded-xl overflow-hidden border border-neutral-200/60 bg-white"
               >
                 <Picker data={data} onEmojiSelect={handleEmojiSelect} />
               </motion.div>
@@ -171,7 +172,7 @@ const ContentCreationTools: React.FC = () => {
       {isLoadingDraft && draftId ? (
         <div
           className={cn(
-            "h-full fixed right-0 top-0 bg-white shadow-[-1px_0_0_0_rgba(0,0,0,0.05)] z-10 transition-all duration-300",
+            "h-full fixed right-0 top-0 bg-white shadow-[-1px_0_0_0_rgba(0,0,0,0.05)] z-10 transition-all duration-300 hidden lg:block",
             isSidebarCollapsed ? "w-[80px]" : "w-[380px]"
           )}
         >
