@@ -214,16 +214,12 @@ export const useContentPosting = () => {
       } else if (newContent.trim()) {
         const response = await saveDraft(draftData);
         if (response.success && response.data?.post?.id) {
-          window.history.pushState(
-            {},
-            "",
-            `/studio?draft_id=${response.data.post.id}`
-          );
+          router.replace(`/studio?draft_id=${response.data.post.id}`, { scroll: false });
           setPostDetails(response.data.post as Post);
         }
       }
     },
-    [draftId, linkedinProfile?.id, saveDraft, debouncedSaveDraft]
+    [draftId, linkedinProfile?.id, saveDraft, debouncedSaveDraft, router]
   );
 
   // Load draft details query

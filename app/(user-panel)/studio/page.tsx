@@ -40,6 +40,7 @@ const ContentCreationTools: React.FC = () => {
     isUploading,
     handleImageDelete,
     isLoadingDraft,
+    isAutoSaving,
   } = useContentPosting();
 
   const {
@@ -118,6 +119,7 @@ const ContentCreationTools: React.FC = () => {
                 isGenerating={isGenerating}
                 isGeneratingPersonalized={isGeneratingPersonalized}
                 isRewriting={isRewriting}
+                isAutoSaving={isAutoSaving}
                 onContentChange={handleContentChange}
                 onImageUpload={() => setIsImageModalOpen(true)}
                 onEmojiPickerToggle={() => setShowEmojiPicker(!showEmojiPicker)}

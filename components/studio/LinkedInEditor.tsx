@@ -55,6 +55,7 @@ interface LinkedInEditorProps {
   isGenerating: boolean;
   isGeneratingPersonalized: boolean;
   isRewriting: boolean;
+  isAutoSaving: boolean;
   onContentChange: (content: string) => void;
   onImageUpload: () => void;
   onEmojiPickerToggle: () => void;
@@ -76,6 +77,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
   isGenerating,
   isGeneratingPersonalized,
   isRewriting,
+  isAutoSaving,
   onContentChange,
   onImageUpload,
   onEmojiPickerToggle,
@@ -144,18 +146,6 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                       )}
                   </div>
                 )}
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button className="flex items-center gap-1.5 text-[13px] text-neutral-600 mt-2 hover:bg-neutral-50 px-2.5 -ml-2.5 py-1 rounded-lg transition-all group">
-                      <Globe2 className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-700 transition-colors" />
-                      <span className="group-hover:text-neutral-700">Anyone</span>
-                      <ChevronDown className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-700" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="text-xs">Choose who can see your post</p>
-                  </TooltipContent>
-                </Tooltip>
               </div>
             </div>
 
@@ -215,8 +205,16 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                     backgroundImage: 'linear-gradient(to bottom, #ffffff, #fafbff)'
                   }}
                 />
-                <div className="absolute right-4 bottom-4 text-xs text-neutral-500 bg-white/90 px-3 py-1.5 rounded-full shadow-sm border border-neutral-100">
-                  {content.length} characters
+                <div className="absolute right-4 bottom-4 flex items-center gap-2">
+                  {isAutoSaving ? (
+                    <div className="flex items-center gap-1.5 text-xs text-neutral-500 bg-white/90 px-3 py-1.5 rounded-full shadow-sm border border-neutral-100">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      <span>Saving...</span>
+                    </div>
+                  ) : null}
+                  <div className="text-xs text-neutral-500 bg-white/90 px-3 py-1.5 rounded-full shadow-sm border border-neutral-100">
+                    {content.length} characters
+                  </div>
                 </div>
               </div>
 
