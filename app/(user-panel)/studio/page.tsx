@@ -126,9 +126,7 @@ const ContentCreationTools: React.FC = () => {
                 onImageUpload={() => setIsImageModalOpen(true)}
                 onEmojiPickerToggle={() => setShowEmojiPicker(!showEmojiPicker)}
                 onSchedule={() => setIsScheduleModalOpen(true)}
-                onAddToQueue={() =>
-                  linkedinProfile?.id && handleAddToQueue(linkedinProfile.id)
-                }
+                onAddToQueue={() => draftId && handleAddToQueue(draftId)}
                 onPostNow={() =>
                   linkedinProfile?.id && handlePostNow(linkedinProfile.id)
                 }

@@ -124,7 +124,7 @@ export const shuffleQueue = async () => {
   return response.data;
 };
 
-export interface GenerateAndCreateDraftDto {
+export interface SuperGenerateDto {
   prompt: string;
   linkedInProfileId: string;
   language?: string;
@@ -133,12 +133,7 @@ export interface GenerateAndCreateDraftDto {
   category?: string;
 }
 
-export const generateAndCreateDraft = async (
-  data: GenerateAndCreateDraftDto
-) => {
-  const response = await request.post(
-    "/content-posting/generate-and-create-draft",
-    data
-  );
+export const superGenerate = async (data: SuperGenerateDto) => {
+  const response = await request.post("/content-posting/super-generator", data);
   return response.data;
 };

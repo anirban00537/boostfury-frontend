@@ -307,7 +307,7 @@ export const useContentPosting = () => {
   );
 
   const handleAddToQueue = useCallback(
-    async (linkedinProfileId: string) => {
+    async (draftId: string) => {
       if (!draftId) return;
       await addToQueueMutation(draftId);
     },
