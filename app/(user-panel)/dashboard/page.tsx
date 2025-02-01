@@ -112,6 +112,8 @@ const LinkedInChatPage = () => {
   const { handleContentChange, postDetails, handleAddToQueue } =
     useContentPosting();
   const queryClient = useQueryClient();
+  const [isEditLoading, setIsEditLoading] = useState(false);
+  const [isQueueLoading, setIsQueueLoading] = useState(false);
 
   const { mutate, isLoading } = useMutation(
     "generatePost",
@@ -179,6 +181,7 @@ const LinkedInChatPage = () => {
     }
 
     try {
+      setIsEditLoading(true);
       const draftResponse = await saveDraft({
         content: generatedContent,
         linkedInProfileId: linkedinProfile.id,
@@ -200,6 +203,8 @@ const LinkedInChatPage = () => {
         description: "Failed to create draft",
         variant: "destructive",
       });
+    } finally {
+      setIsEditLoading(false);
     }
   };
 
@@ -214,6 +219,7 @@ const LinkedInChatPage = () => {
     }
 
     try {
+      setIsQueueLoading(true);
       const draftResponse = await saveDraft({
         content: generatedContent,
         linkedInProfileId: linkedinProfile.id,
@@ -236,6 +242,8 @@ const LinkedInChatPage = () => {
         description: "Failed to process request",
         variant: "destructive",
       });
+    } finally {
+      setIsQueueLoading(false);
     }
   };
 
@@ -468,17 +476,49 @@ const LinkedInChatPage = () => {
                       variant="outline"
                       size="sm"
                       onClick={handleEditInEditor}
+                      disabled={isEditLoading}
                       className="h-9 px-4 rounded-xl text-sm font-medium whitespace-nowrap bg-gradient-to-r hover:from-neutral-50 hover:to-neutral-100 border border-neutral-200/50"
                     >
-                      Edit in Editor
+                      {isEditLoading ? (
+                        <div className="flex items-center gap-2">
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{
+                              duration: 1,
+                              repeat: Infinity,
+                              ease: "linear",
+                            }}
+                            className="w-3.5 h-3.5 border-2 border-neutral-400/30 border-t-neutral-400 rounded-full"
+                          />
+                          <span>Opening Editor...</span>
+                        </div>
+                      ) : (
+                        "Edit in Editor"
+                      )}
                     </GradientButton>
                     <GradientButton
                       variant="primary"
                       size="sm"
                       onClick={handleAddToQueueClick}
+                      disabled={isQueueLoading}
                       className="h-9 px-4 rounded-xl text-sm font-medium whitespace-nowrap"
                     >
-                      Add to Queue
+                      {isQueueLoading ? (
+                        <div className="flex items-center gap-2">
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{
+                              duration: 1,
+                              repeat: Infinity,
+                              ease: "linear",
+                            }}
+                            className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full"
+                          />
+                          <span>Adding to Queue...</span>
+                        </div>
+                      ) : (
+                        "Add to Queue"
+                      )}
                     </GradientButton>
                   </div>
                 </div>
