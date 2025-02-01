@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
 import { useContentPosting } from "@/hooks/useContent";
+import { GradientButton } from "@/components/ui/gradient-button";
 
 const postLengthOptions = [
   {
@@ -239,14 +240,10 @@ const LinkedInChatPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FCFCFD]">
-      {/* Background Gradients */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute w-[1000px] h-[1000px] -left-[200px] -top-[200px] rounded-full bg-gradient-to-br from-blue-50 via-indigo-50/50 to-transparent opacity-60 blur-3xl" />
-        <div className="absolute w-[1000px] h-[1000px] -right-[200px] bottom-[0px] rounded-full bg-gradient-to-tl from-purple-50 via-blue-50/50 to-transparent opacity-60 blur-3xl" />
-      </div>
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+      {/* Subtle Background Pattern */}
+      <div className="fixed inset-0 bg-grid-neutral-100/25 [mask-image:radial-gradient(white,transparent)] pointer-events-none" />
 
-      {/* Main Content */}
       <div
         className={cn(
           "relative transition-all duration-500 min-h-screen",
@@ -260,7 +257,7 @@ const LinkedInChatPage = () => {
           className={cn(
             "flex-1 relative px-6 lg:px-12 py-8 lg:py-12",
             generatedContent &&
-              "lg:border-r border-neutral-200/70 bg-gradient-to-br from-white via-white to-blue-50/20"
+              "lg:border-r border-neutral-200/50 bg-white/50 backdrop-blur-sm"
           )}
         >
           <div className="max-w-2xl mx-auto">
@@ -269,9 +266,9 @@ const LinkedInChatPage = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50/50 border border-blue-100/50 text-blue-700 text-sm font-medium shadow-sm"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50/80 border border-blue-100/50 text-blue-600 text-sm font-medium shadow-sm backdrop-blur-sm"
             >
-              <span className="size-2 rounded-full bg-blue-600"></span>
+              <span className="size-2 rounded-full bg-blue-500 animate-pulse"></span>
               AI Content Generator
             </motion.div>
 
@@ -294,11 +291,11 @@ const LinkedInChatPage = () => {
                 )}
               >
                 <span>Create</span> <span>viral</span>{" "}
-                <span className="relative inline-block">
-                  <span className="relative z-10 bg-gradient-to-r from-[#4361EE] to-[#7209B7] bg-clip-text text-transparent">
+                <span className="relative">
+                  <span className="relative z-10 text-blue-600">
                     LinkedIn posts
                   </span>
-                  <span className="absolute -bottom-1 left-0 right-0 h-[0.4em] bg-gradient-to-r from-[#4361EE]/20 to-[#7209B7]/20 blur-sm" />
+                  <span className="absolute -bottom-2 left-0 right-0 h-3 bg-blue-100/50 -skew-x-6" />
                 </span>
               </h1>
             </motion.div>
@@ -310,36 +307,36 @@ const LinkedInChatPage = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="mt-12"
             >
-              <div className="relative group">
-                <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-10 blur transition duration-1000 group-hover:opacity-20" />
-                <div className="relative">
-                  <div className="relative">
-                    <div className="mb-3 flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2 text-sm text-neutral-500">
-                          <div className="size-1.5 rounded-full bg-emerald-500"></div>
-                          Ready to generate
-                        </div>
-                        <div className="h-4 w-[1px] bg-neutral-200"></div>
-                        <div className="text-sm text-neutral-500">
-                          AI will help optimize your content
-                        </div>
-                      </div>
+              <div className="relative">
+                <div className="mb-4 flex items-center justify-between">
+                  <div className="flex items-center gap-4 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-neutral-200/50 shadow-sm">
+                    <div className="flex items-center gap-2 text-sm text-neutral-500">
+                      <div className="size-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                      Ready to generate
                     </div>
+                    <div className="h-4 w-[1px] bg-neutral-200"></div>
+                    <div className="text-sm text-neutral-500">
+                      AI will help optimize your content
+                    </div>
+                  </div>
+                </div>
+                <div className="relative group">
+                  <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-[30px] blur-xl opacity-10 group-hover:opacity-30 transition-all duration-1000 group-hover:duration-200 animate-gradient"></div>
+                  <div className="relative bg-white rounded-[30px] shadow-xl hover:shadow-2xl transition-all duration-500">
                     <Textarea
                       value={prompt}
                       onChange={(e) => setPrompt(e.target.value)}
                       placeholder="What would you like to post about? Describe your topic or message..."
-                      className="w-full min-h-[100px] resize-none bg-white/80 backdrop-blur-sm text-neutral-900 placeholder:text-neutral-400 rounded-2xl border-0 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 p-5 pr-[120px] text-sm shadow-lg transition-all duration-300"
+                      className="w-full min-h-[90px] resize-none bg-transparent text-neutral-900 placeholder:text-neutral-400 rounded-[30px] border-0 focus:ring-2 focus:ring-blue-500/30 p-6 pr-[140px] text-sm transition-all duration-300"
                     />
-                    <div className="absolute right-3 inset-y-0 flex items-center">
-                      <ShimmerButton
+                    <div className="absolute right-4 inset-y-0 flex items-center">
+                      <GradientButton
                         onClick={handleGenerate}
                         disabled={isLoading}
-                        className="h-10 px-6 rounded-xl text-sm font-medium shadow-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-1px]"
-                        background="linear-gradient(110deg, #2563eb, #4f46e5, #7c3aed)"
+                        variant="primary"
+                        className="relative h-12 px-8 rounded-[20px] text-sm font-medium whitespace-nowrap"
                       >
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-100 to-white flex items-center gap-2">
+                        <div className="relative flex items-center justify-center gap-2">
                           {isLoading ? (
                             <>
                               <motion.div
@@ -349,93 +346,93 @@ const LinkedInChatPage = () => {
                                   repeat: Infinity,
                                   ease: "linear",
                                 }}
-                                className="w-3.5 h-3.5 border-2 border-white/30 border-t-white/90 rounded-full"
+                                className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
                               />
-                              <span className="text-sm">Generating...</span>
+                              <span className="font-medium">Generating...</span>
                             </>
                           ) : (
-                            <span className="text-sm">Generate</span>
+                            <span className="font-medium">Generate</span>
                           )}
-                        </span>
-                      </ShimmerButton>
+                        </div>
+                      </GradientButton>
                     </div>
                   </div>
+                </div>
 
-                  {/* Options Section */}
-                  <div className="mt-4 grid grid-cols-3 gap-3">
-                    {/* Category */}
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-neutral-600">
-                        Category
-                      </label>
-                      <Select value={category} onValueChange={setCategory}>
-                        <SelectTrigger className="w-full h-9 text-xs bg-white/80 backdrop-blur-sm border-0 shadow-sm">
-                          <SelectValue placeholder="Select category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {categoryOptions.map((option) => (
-                            <SelectItem
-                              key={option.value}
-                              value={option.value}
-                              className="text-xs"
-                            >
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                {/* Options Section */}
+                <div className="mt-6 grid grid-cols-3 gap-4">
+                  {/* Category */}
+                  <div className="space-y-2 bg-gradient-to-br from-blue-50 via-blue-50/80 to-white backdrop-blur-sm p-3 rounded-xl border border-blue-100/50 shadow-[0_2px_10px_-2px_rgba(59,130,246,0.1)] hover:shadow-[0_8px_20px_-4px_rgba(59,130,246,0.15)] group hover:translate-y-[-2px] transition-all duration-300">
+                    <label className="text-xs font-medium text-blue-600">
+                      Category
+                    </label>
+                    <Select value={category} onValueChange={setCategory}>
+                      <SelectTrigger className="w-full h-9 text-xs bg-white/70 border-0 shadow-sm text-blue-700">
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categoryOptions.map((option) => (
+                          <SelectItem
+                            key={option.value}
+                            value={option.value}
+                            className="text-xs"
+                          >
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                    {/* Tone */}
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-neutral-600">
-                        Tone
-                      </label>
-                      <Select value={tone} onValueChange={setTone}>
-                        <SelectTrigger className="w-full h-9 text-xs bg-white/80 backdrop-blur-sm border-0 shadow-sm">
-                          <SelectValue placeholder="Select tone" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {toneOptions.map((option) => (
-                            <SelectItem
-                              key={option.value}
-                              value={option.value}
-                              className="text-xs"
-                            >
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  {/* Tone */}
+                  <div className="space-y-2 bg-gradient-to-br from-purple-50 via-purple-50/80 to-white backdrop-blur-sm p-3 rounded-xl border border-purple-100/50 shadow-[0_2px_10px_-2px_rgba(147,51,234,0.1)] hover:shadow-[0_8px_20px_-4px_rgba(147,51,234,0.15)] group hover:translate-y-[-2px] transition-all duration-300">
+                    <label className="text-xs font-medium text-purple-600">
+                      Tone
+                    </label>
+                    <Select value={tone} onValueChange={setTone}>
+                      <SelectTrigger className="w-full h-9 text-xs bg-white/70 border-0 shadow-sm text-purple-700">
+                        <SelectValue placeholder="Select tone" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {toneOptions.map((option) => (
+                          <SelectItem
+                            key={option.value}
+                            value={option.value}
+                            className="text-xs"
+                          >
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                    {/* Post Length */}
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-neutral-600">
-                        Length
-                      </label>
-                      <Select
-                        value={postLength}
-                        onValueChange={(value: "short" | "medium" | "long") =>
-                          setPostLength(value)
-                        }
-                      >
-                        <SelectTrigger className="w-full h-9 text-xs bg-white/80 backdrop-blur-sm border-0 shadow-sm">
-                          <SelectValue placeholder="Select length" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {postLengthOptions.map((option) => (
-                            <SelectItem
-                              key={option.value}
-                              value={option.value}
-                              className="text-xs"
-                            >
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  {/* Post Length */}
+                  <div className="space-y-2 bg-gradient-to-br from-emerald-50 via-emerald-50/80 to-white backdrop-blur-sm p-3 rounded-xl border border-emerald-100/50 shadow-[0_2px_10px_-2px_rgba(16,185,129,0.1)] hover:shadow-[0_8px_20px_-4px_rgba(16,185,129,0.15)] group hover:translate-y-[-2px] transition-all duration-300">
+                    <label className="text-xs font-medium text-emerald-600">
+                      Length
+                    </label>
+                    <Select
+                      value={postLength}
+                      onValueChange={(value: "short" | "medium" | "long") =>
+                        setPostLength(value)
+                      }
+                    >
+                      <SelectTrigger className="w-full h-9 text-xs bg-white/70 border-0 shadow-sm text-emerald-700">
+                        <SelectValue placeholder="Select length" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {postLengthOptions.map((option) => (
+                          <SelectItem
+                            key={option.value}
+                            value={option.value}
+                            className="text-xs"
+                          >
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </div>
@@ -449,15 +446,15 @@ const LinkedInChatPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
-            className="relative bg-white px-6 lg:px-12 py-8 lg:py-12 overflow-y-auto border-t lg:border-t-0 border-neutral-200/70"
+            className="relative bg-white/50 backdrop-blur-sm px-6 lg:px-12 py-8 lg:py-12 overflow-y-auto"
           >
             <div className="max-w-lg mx-auto">
               <div className="sticky top-8 space-y-8">
                 {/* Preview Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-neutral-200/50 shadow-sm">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <div className="size-2 rounded-full bg-emerald-500"></div>
+                      <div className="size-2 rounded-full bg-emerald-500 animate-pulse"></div>
                       <h2 className="text-lg font-semibold text-neutral-900">
                         Post Preview
                       </h2>
@@ -467,27 +464,27 @@ const LinkedInChatPage = () => {
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <ShimmerButton
+                    <GradientButton
+                      variant="outline"
+                      size="sm"
                       onClick={handleEditInEditor}
-                      className="h-9 px-4 rounded-xl text-sm font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-700 transition-all duration-300"
-                      background="linear-gradient(to right, #f5f5f5, #e5e5e5)"
+                      className="h-9 px-4 rounded-xl text-sm font-medium whitespace-nowrap bg-gradient-to-r hover:from-neutral-50 hover:to-neutral-100 border border-neutral-200/50"
                     >
                       Edit in Editor
-                    </ShimmerButton>
-                    <ShimmerButton
+                    </GradientButton>
+                    <GradientButton
+                      variant="primary"
+                      size="sm"
                       onClick={handleAddToQueueClick}
-                      className="h-9 px-4 rounded-xl text-sm font-medium shadow-sm hover:shadow-md transition-all duration-300"
-                      background="linear-gradient(110deg, #2563eb, #4f46e5, #7c3aed)"
+                      className="h-9 px-4 rounded-xl text-sm font-medium whitespace-nowrap"
                     >
-                      <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-100 to-white">
-                        Add to Queue
-                      </span>
-                    </ShimmerButton>
+                      Add to Queue
+                    </GradientButton>
                   </div>
                 </div>
 
                 {/* Preview Card */}
-                <div className="bg-white rounded-2xl shadow-[0_0_1px_rgba(0,0,0,0.1),0_2px_4px_rgba(0,0,0,0.05)] transition-all duration-300 hover:shadow-[0_0_1px_rgba(0,0,0,0.1),0_4px_8px_rgba(0,0,0,0.1)]">
+                <div className="bg-white rounded-xl border border-neutral-200/50 shadow-lg transition-all duration-300 hover:shadow-xl">
                   <PostPreviewNotRedux
                     content={generatedContent}
                     isGenerating={isLoading}
@@ -508,6 +505,24 @@ const LinkedInChatPage = () => {
           </motion.div>
         )}
       </div>
+
+      <style jsx global>{`
+        @keyframes gradient {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+        .animate-gradient {
+          background-size: 200% 200%;
+          animation: gradient 8s ease infinite;
+        }
+      `}</style>
     </div>
   );
 };
