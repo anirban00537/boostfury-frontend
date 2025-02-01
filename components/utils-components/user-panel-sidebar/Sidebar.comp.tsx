@@ -273,12 +273,14 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose, isOpen }) => {
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-2">
                 <div className="w-5 h-5 rounded-lg bg-white/20 flex items-center justify-center">
-                  <Plus className="h-3.5 w-3.5" />
+                  <Wand2 className="h-3.5 w-3.5" />
                 </div>
-                <span className="font-medium">Create New Post</span>
+                <span className="font-medium">Ai Editor</span>
               </div>
+
             </div>
           </GradientButton>
+
         </div>
       </div>
 

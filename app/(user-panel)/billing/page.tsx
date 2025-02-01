@@ -26,6 +26,7 @@ import { GradientButton } from "@/components/ui/gradient-button";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter, useSearchParams } from "next/navigation";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 
 const pricingPlans = [
   {
@@ -138,6 +139,124 @@ const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange }) => {
           />
         </button>
       ))}
+    </div>
+  );
+};
+
+const PricingPlan = ({
+  plan,
+  currentPlan,
+}: {
+  plan: (typeof pricingPlans)[0];
+  currentPlan?: string;
+}) => {
+  const isCurrentPlan = currentPlan === plan.name;
+
+  return (
+    <div className="relative pt-4 h-full">
+      <div
+        className={cn(
+          "relative group rounded-xl bg-white/80 backdrop-blur-sm border border-neutral-200/60 shadow-sm transition-all duration-300 hover:shadow-lg mt-4 h-full flex flex-col",
+          plan.popular && "ring-2 ring-primary/20 shadow-lg"
+        )}
+      >
+        {plan.popular && (
+          <div className="absolute -top-3 right-8">
+            <div className="px-4 py-1.5 bg-gradient-to-r from-violet-600 to-purple-600 text-white text-xs font-medium rounded-full shadow-lg">
+              Most Popular
+            </div>
+          </div>
+        )}
+        <div className="p-8 flex flex-col flex-1">
+          {/* Plan Header */}
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
+              <div className="relative w-12 h-12 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center border border-neutral-200/40">
+                <plan.icon
+                  className={cn(
+                    "w-6 h-6",
+                    plan.popular ? "text-primary" : "text-neutral-900"
+                  )}
+                />
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-neutral-900">
+                {plan.name}
+              </h3>
+              <p className="text-sm text-neutral-500 mt-1">
+                {plan.description}
+              </p>
+            </div>
+          </div>
+
+          {/* Price */}
+          <div className="mt-8">
+            <div className="flex items-baseline">
+              <span className="text-4xl font-bold bg-gradient-to-r from-neutral-900 to-neutral-800 bg-clip-text text-transparent">
+                ${plan.price}
+              </span>
+              <span className="ml-2 text-neutral-500">/month</span>
+            </div>
+          </div>
+
+          {/* Features */}
+          <div className="mt-8 space-y-4 flex-1">
+            {plan.features.map((feature) => (
+              <div key={feature} className="flex items-start gap-3">
+                <div className="relative mt-1">
+                  <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-emerald-200/40 to-transparent rounded-full"></div>
+                  <div className="relative w-4 h-4 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center border border-emerald-200/40">
+                    <Check className="w-2.5 h-2.5 text-emerald-600" />
+                  </div>
+                </div>
+                <span className="text-neutral-600 text-sm">{feature}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Action Button */}
+          <div className="mt-8">
+            <ShimmerButton
+              disabled={isCurrentPlan}
+              className={cn(
+                "w-full h-12 rounded-xl font-medium shadow-lg transition-all duration-300 hover:-translate-y-0.5",
+                isCurrentPlan ? "opacity-50 cursor-not-allowed" : ""
+              )}
+              background={
+                plan.popular
+                  ? "linear-gradient(110deg, #2563eb, #4f46e5, #7c3aed)"
+                  : "linear-gradient(110deg, #0f172a, #1e293b)"
+              }
+            >
+              {isCurrentPlan ? "Current Plan" : `Upgrade to ${plan.name}`}
+            </ShimmerButton>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const PricingPlans = ({ currentPlan }: { currentPlan?: string }) => {
+  return (
+    <div className="space-y-8">
+      <div className="text-center max-w-2xl mx-auto mb-12">
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 bg-clip-text text-transparent">
+          Choose Your Plan
+        </h2>
+        <p className="mt-4 text-neutral-600">
+          Select the perfect plan for your content creation needs. Upgrade or
+          downgrade anytime.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+        {pricingPlans.map((plan) => (
+          <PricingPlan key={plan.name} plan={plan} currentPlan={currentPlan} />
+        ))}
+      </div>
     </div>
   );
 };
@@ -469,106 +588,7 @@ const SubscriptionDetails = () => {
         )}
 
         {activeTab === "plans" && (
-          <div className="space-y-8">
-            <div className="text-center max-w-2xl mx-auto mb-12">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 bg-clip-text text-transparent">
-                Choose Your Plan
-              </h2>
-              <p className="mt-4 text-neutral-600">
-                Select the perfect plan for your content creation needs. Upgrade
-                or downgrade anytime.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {pricingPlans.map((plan) => (
-                <div
-                  key={plan.name}
-                  className={cn(
-                    "relative group rounded-2xl bg-white border border-neutral-200/60 shadow-sm overflow-hidden",
-                    plan.popular && "scale-105 shadow-xl"
-                  )}
-                >
-                  {plan.popular && (
-                    <div className="absolute top-0 right-8 transform translate-y-[-50%]">
-                      <div className="px-3 py-1 bg-gradient-to-r from-violet-600 to-purple-600 text-white text-xs font-medium rounded-full shadow-lg">
-                        Most Popular
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="p-8">
-                    {/* Plan Header */}
-                    <div className="flex items-center gap-4">
-                      <div
-                        className={cn(
-                          "p-3 rounded-xl bg-gradient-to-r",
-                          plan.gradient,
-                          "bg-opacity-10"
-                        )}
-                      >
-                        <plan.icon className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-semibold text-neutral-900">
-                          {plan.name}
-                        </h3>
-                        <p className="text-sm text-neutral-500 mt-1">
-                          {plan.description}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Price */}
-                    <div className="mt-8 flex items-baseline">
-                      <span className="text-4xl font-bold text-neutral-900">
-                        ${plan.price}
-                      </span>
-                      <span className="ml-2 text-neutral-500">/month</span>
-                    </div>
-
-                    {/* Features */}
-                    <ul className="mt-8 space-y-4">
-                      {plan.features.map((feature) => (
-                        <li key={feature} className="flex items-center gap-3">
-                          <div
-                            className={cn(
-                              "p-1 rounded-full bg-gradient-to-r",
-                              plan.gradient,
-                              "bg-opacity-10"
-                            )}
-                          >
-                            <Check className="w-4 h-4 text-green-600" />
-                          </div>
-                          <span className="text-neutral-600">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    {/* Action Button */}
-                    <div className="mt-8">
-                      <GradientButton
-                        variant={plan.popular ? "primary" : "default"}
-                        fullWidth
-                        className={cn(
-                          "h-12 shadow-lg transition-all duration-300 hover:-translate-y-0.5",
-                          plan.popular
-                            ? "shadow-violet-500/20"
-                            : "shadow-neutral-200/50"
-                        )}
-                      >
-                        <span className="font-medium">
-                          {data?.data?.subscription?.package?.name === plan.name
-                            ? "Current Plan"
-                            : "Upgrade to " + plan.name}
-                        </span>
-                      </GradientButton>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <PricingPlans currentPlan={data?.data?.subscription?.package?.name} />
         )}
       </div>
     </div>

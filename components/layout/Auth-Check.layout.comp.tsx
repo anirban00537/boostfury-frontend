@@ -52,7 +52,7 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
   // Enhanced Auth check effect
   useEffect(() => {
     const isPublicRoute = publicRoutes.includes(pathname || "");
-    const isPricingPage = pathname === "/pricing";
+    const isPricingPage = pathname === "/billing";
 
     if (!isLoading) {
       if (!loggedin && !isPublicRoute) {
@@ -91,10 +91,12 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
                 <button
                   onClick={() => {
                     toast.dismiss(t.id);
-                    router.push("/pricing");
+                    router.push("/billing?tab=plans");
                   }}
                   className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-blue-600 hover:text-blue-500 focus:outline-none"
                 >
+
+
                   View Plans
                 </button>
               </div>
@@ -107,10 +109,11 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
         );
 
         // Redirect to pricing page
-        router.push("/pricing");
+        router.push("/billing?tab=plans");
       }
     }
   }, [loggedin, isActive, isLoading, pathname, router]);
+
 
   // Only show loading on initial auth check
   if (isLoading) {
@@ -119,13 +122,14 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
 
   // Enhanced route accessibility check
   const isPublicRoute = publicRoutes.includes(pathname || "");
-  const isPricingPage = pathname === "/pricing";
+  const isPricingPage = pathname === "/billing";
   if (
     (!loggedin && !isPublicRoute) ||
     (loggedin && !isActive && !isPricingPage)
   ) {
     return null; // Return null instead of loading screen to prevent flash
   }
+
 
   return (
     <>
