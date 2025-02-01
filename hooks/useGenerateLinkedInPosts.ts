@@ -7,7 +7,7 @@ import {
 } from "@/services/ai-content";
 import { GenerateLinkedInPostsDTO, GeneratePersonalizedPostDto } from "@/types";
 import toast from "react-hot-toast";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "./useAuth";
 import { processApiResponse } from "@/lib/functions";
 import { useSelector } from "react-redux";
@@ -33,13 +33,31 @@ export const useGenerateLinkedInPosts = ({
   const { linkedinProfile } = useSelector((state: RootState) => state.user);
 
   // Core states
-  const [prompt, setPrompt] = useState("");
-  const [tone, setTone] = useState("professional");
-  const [selectedCategory, setSelectedCategory] = useState<string>("Business");
-  const [postLength, setPostLength] = useState<"short" | "medium" | "long">(
-    "medium"
+  const [state, setState] = useState({
+    prompt: "",
+    tone: "professional",
+    selectedCategory: "Business",
+    postLength: "medium" as "short" | "medium" | "long",
+  });
+
+  const handlePromptChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setState((prev) => ({ ...prev, prompt: e.target.value }));
+    },
+    []
   );
-  const [isGenerating, setIsGenerating] = useState(false);
+
+  const setTone = useCallback((newTone: string) => {
+    setState((prev) => ({ ...prev, tone: newTone }));
+  }, []);
+
+  const setPostLength = useCallback((length: "short" | "medium" | "long") => {
+    setState((prev) => ({ ...prev, postLength: length }));
+  }, []);
+
+  const setSelectedCategory = useCallback((category: string) => {
+    setState((prev) => ({ ...prev, selectedCategory: category }));
+  }, []);
 
   // Generate personalized post mutation
   const {
@@ -83,14 +101,8 @@ export const useGenerateLinkedInPosts = ({
           toast.error(response.message || "Failed to generate content");
           return;
         }
-
         const content = response.data?.post || "";
-
-        if (onContentGenerated) {
-          onContentGenerated(content);
-        }
-
-        // Refresh subscription data
+        onContentGenerated?.(content);
         await queryClient.invalidateQueries(["subscription"]);
         await refetchSubscription().catch(console.error);
       },
@@ -135,32 +147,8 @@ export const useGenerateLinkedInPosts = ({
     }
   );
 
-  // Keyboard shortcut for generation
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-        event.preventDefault();
-        if (!isGeneratingPost) {
-          handleGenerate();
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [prompt, isGeneratingPost]);
-
-  const handlePromptChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-    category?: string
-  ) => {
-    setPrompt(e.target.value);
-    if (category) {
-      setSelectedCategory(category);
-    }
-  };
-
-  const handleGenerate = async () => {
+  const handleGenerate = useCallback(async () => {
+    const { prompt, tone, postLength, selectedCategory } = state;
     if (!prompt.trim()) {
       toast.error("Please enter a topic or prompt");
       return;
@@ -183,16 +171,27 @@ export const useGenerateLinkedInPosts = ({
       });
     } catch (error) {
       console.error("Error in handleGenerate:", error);
-      try {
-        await Promise.all([
-          queryClient.invalidateQueries(["subscription"]),
-          refetchSubscription(),
-        ]);
-      } catch (refreshError) {
-        console.error("Error refreshing subscription data:", refreshError);
-      }
+      await Promise.all([
+        queryClient.invalidateQueries(["subscription"]),
+        refetchSubscription(),
+      ]).catch(console.error);
     }
-  };
+  }, [state, generatePost, queryClient, refetchSubscription]);
+
+  // Keyboard shortcut for generation
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+        event.preventDefault();
+        if (!isGeneratingPost) {
+          handleGenerate();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [handleGenerate, isGeneratingPost]);
 
   const handleGeneratePersonalized = async () => {
     if (!linkedinProfile?.id) {
@@ -240,16 +239,10 @@ export const useGenerateLinkedInPosts = ({
   };
 
   return {
-    // States
-    prompt,
-    tone,
-    selectedCategory,
-    postLength,
+    ...state,
     isGenerating: isGeneratingPost,
     isGeneratingPersonalized,
     isRewriting,
-    // Actions
-    setPrompt,
     handlePromptChange,
     handleGenerate,
     handleGeneratePersonalized,

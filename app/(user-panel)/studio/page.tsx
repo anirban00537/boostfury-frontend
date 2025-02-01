@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
 import { useContentPosting } from "@/hooks/useContent";
@@ -9,12 +9,12 @@ import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { ScheduleModal } from "@/components/content-create/ScheduleModal";
 import { LinkedInEditor } from "@/components/studio/LinkedInEditor";
-import { StudioSidebar } from "@/components/studio/StudioSidebar";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Sparkles, Wand2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import LoadingSection from "@/components/utils-components/loading/LoadingSection.comp";
+import StudioSidebar from "@/components/studio/StudioSidebar";
 
 const ContentCreationTools: React.FC = () => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
@@ -80,12 +80,12 @@ const ContentCreationTools: React.FC = () => {
     return false;
   };
 
-  const handlePromptChangeWithCategory = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-    category?: string
-  ) => {
-    handlePromptChange(e, category);
-  };
+  const handlePromptInput = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      handlePromptChange(e);
+    },
+    [handlePromptChange]
+  );
 
   return (
     <motion.div
@@ -186,7 +186,7 @@ const ContentCreationTools: React.FC = () => {
           isGenerating={isGenerating}
           handleGenerate={handleGenerate}
           handleGeneratePersonalized={handleGeneratePersonalized}
-          handlePromptChange={handlePromptChangeWithCategory}
+          handlePromptChange={handlePromptInput}
           setTone={setTone}
           setPostLength={setPostLength}
           isCollapsed={isSidebarCollapsed}

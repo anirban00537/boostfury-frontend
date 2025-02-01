@@ -104,7 +104,7 @@ const LinkedInChatPage = () => {
             className="text-sm bg-white/70 backdrop-blur-xl px-5 py-2.5 rounded-full text-neutral-600 flex items-center gap-3 shadow-md border border-neutral-100/50 hover:shadow-lg transition-all duration-300"
           >
             <span className="font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Boostfury
+              Ai
             </span>
             <div className="w-1 h-1 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400"></div>
             <span className="text-neutral-500">LinkedIn Content Generator</span>

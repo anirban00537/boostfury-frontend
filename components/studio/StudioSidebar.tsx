@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useCallback, memo } from "react";
 import { cn } from "@/lib/utils";
 import {
   Sparkles,
@@ -186,7 +186,28 @@ const tones = [
   "enthusiastic",
 ];
 
-export const StudioSidebar = ({
+const PromptInput = memo(
+  ({
+    value,
+    onChange,
+  }: {
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  }) => (
+    <Textarea
+      value={value}
+      onChange={onChange}
+      placeholder="What would you like to write about?"
+      className="min-h-[120px] bg-white border-neutral-200 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg"
+      autoComplete="off"
+      spellCheck="false"
+    />
+  )
+);
+
+PromptInput.displayName = "PromptInput";
+
+const StudioSidebar = ({
   prompt,
   tone,
   postLength,
@@ -204,31 +225,17 @@ export const StudioSidebar = ({
     useState<CategoryValue>("thought_leadership");
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-  const handleRegularGenerate = async () => {
+  const handleRegularGenerate = useCallback(async () => {
     setIsRegularGenerating(true);
     await handleGenerate();
     setIsRegularGenerating(false);
-  };
+  }, [handleGenerate]);
 
-  const handleCategoryChange = (value: CategoryValue) => {
+  const handleCategorySelect = useCallback((value: CategoryValue) => {
     setSelectedCategory(value);
-    handlePromptChange(
-      { target: { value: prompt } } as React.ChangeEvent<HTMLTextAreaElement>,
-      value
-    );
-  };
+  }, []);
 
-  const handlePromptChangeWithCategory = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    handlePromptChange(e, selectedCategory);
-  };
-
-  const handleToggleCollapse = () => {
-    onCollapse?.(!isCollapsed);
-  };
-
-  const SidebarContent = () => (
+  const sidebarContent = (
     <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-100 scrollbar-track-transparent hover:scrollbar-thumb-blue-200">
       {!isCollapsed && (
         <div className="p-8">
@@ -241,7 +248,7 @@ export const StudioSidebar = ({
             </div>
             <div>
               <h2 className="text-lg font-semibold text-neutral-900">
-                Boostfury AI Studio
+                AI Studio
               </h2>
               <p className="text-sm text-neutral-500">
                 Generate LinkedIn content
@@ -254,12 +261,7 @@ export const StudioSidebar = ({
             <label className="block text-sm font-medium text-neutral-700 mb-2">
               Enter a prompt
             </label>
-            <Textarea
-              value={prompt}
-              onChange={handlePromptChangeWithCategory}
-              placeholder="What would you like to write about?"
-              className="min-h-[120px] bg-white border-neutral-200 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg"
-            />
+            <PromptInput value={prompt} onChange={handlePromptChange} />
           </div>
 
           {/* Category Selector */}
@@ -269,7 +271,7 @@ export const StudioSidebar = ({
             </label>
             <Select
               value={selectedCategory}
-              onValueChange={handleCategoryChange}
+              onValueChange={handleCategorySelect}
             >
               <SelectTrigger className="w-full h-10">
                 <SelectValue placeholder="Select a category" />
@@ -336,15 +338,6 @@ export const StudioSidebar = ({
     </div>
   );
 
-  const MobileTrigger = () => (
-    <button
-      className="lg:hidden fixed right-4 top-4 z-50 h-10 w-10 rounded-full bg-white shadow-md flex items-center justify-center"
-      onClick={() => setIsSheetOpen(true)}
-    >
-      <Menu className="h-5 w-5 text-neutral-600" />
-    </button>
-  );
-
   return (
     <>
       {/* Desktop Sidebar */}
@@ -355,7 +348,7 @@ export const StudioSidebar = ({
         )}
       >
         <button
-          onClick={handleToggleCollapse}
+          onClick={() => onCollapse?.(!isCollapsed)}
           className="absolute -left-3 top-8 w-6 h-6 bg-white rounded-full shadow-md flex items-center justify-center"
         >
           {isCollapsed ? (
@@ -365,7 +358,7 @@ export const StudioSidebar = ({
           )}
         </button>
 
-        <SidebarContent />
+        {sidebarContent}
 
         {/* Fixed Generate Button */}
         {!isCollapsed && (
@@ -390,10 +383,12 @@ export const StudioSidebar = ({
       {/* Mobile Sheet */}
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetTrigger asChild>
-          <MobileTrigger />
+          <button className="lg:hidden fixed right-4 top-4 z-50 h-10 w-10 rounded-full bg-white shadow-md flex items-center justify-center">
+            <Menu className="h-5 w-5 text-neutral-600" />
+          </button>
         </SheetTrigger>
         <SheetContent side="right" className="w-full sm:w-[380px] p-0">
-          <SidebarContent />
+          {sidebarContent}
           {/* Fixed Generate Button for Mobile */}
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-white border-t border-neutral-100">
             <ShimmerButton
@@ -416,4 +411,6 @@ export const StudioSidebar = ({
   );
 };
 
-export default StudioSidebar;
+StudioSidebar.displayName = "StudioSidebar";
+
+export default memo(StudioSidebar);
