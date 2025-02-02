@@ -10,7 +10,12 @@ import {
 } from "@/state/slices/user.slice";
 import { useCallback, useEffect } from "react";
 import { CredentialResponse } from "@react-oauth/google";
-import { googleSignIn, linkedInSignIn, profile } from "@/services/auth";
+import {
+  googleSignIn,
+  linkedInSignIn,
+  profile,
+  adminLogin,
+} from "@/services/auth";
 import { checkSubscription } from "@/services/subscription.service";
 import Cookies from "js-cookie";
 import { RootState } from "@/state/store";
@@ -97,26 +102,27 @@ export const useAuth = () => {
       if (!response.success || !response.data) {
         throw new Error(response.message || "Login failed");
       }
-      
+
       const { accessToken, refreshToken, user } = response.data;
-      
+
       // Set user in Redux
       dispatch(setUser(user));
-      
+
       // Set cookies
       Cookies.set("token", accessToken, { expires: 7 });
       Cookies.set("refreshToken", refreshToken, { expires: 30 });
       Cookies.set("user", JSON.stringify(user), { expires: 7 });
-      
+
       // Navigate to studio
       router.push("/dashboard");
-      
+
       return response;
     }
   );
 
   const handleLinkedInLogin = useCallback(
-    (code: string, state: string) => linkedInLoginMutation.mutateAsync({ code, state }),
+    (code: string, state: string) =>
+      linkedInLoginMutation.mutateAsync({ code, state }),
     [linkedInLoginMutation]
   );
 
@@ -162,6 +168,60 @@ export const useAuth = () => {
   const logoutUser = () => {
     logoutMutation.mutate();
   };
+
+  // Admin login mutation
+  const adminLoginMutation = useMutation(
+    async ({ email, password }: { email: string; password: string }) => {
+      // First, perform admin login
+      const response = await adminLogin(email, password);
+      if (!response.success || !response.data) {
+        throw new Error(response.message || "Admin login failed");
+      }
+
+      const { accessToken, refreshToken, user } = response.data;
+
+      // Set initial tokens
+      Cookies.set("token", accessToken, { expires: 7 });
+      Cookies.set("refreshToken", refreshToken, { expires: 30 });
+
+      // Fetch complete user profile
+      const userProfileResponse = await profile();
+      if (!userProfileResponse.success || !userProfileResponse.data) {
+        throw new Error("Failed to fetch user profile");
+      }
+
+      // Combine user data with admin flag
+      const adminUser = {
+        ...userProfileResponse.data,
+        isAdmin: true,
+      };
+
+      // Update Redux state and cookies with complete user data
+      dispatch(setUser(adminUser));
+      Cookies.set("user", JSON.stringify(adminUser), { expires: 7 });
+
+      // Invalidate user queries to ensure fresh data
+      queryClient.invalidateQueries(["user"]);
+
+      // Navigate to admin dashboard
+      router.push("/my-admin/dashboard");
+
+      return response;
+    }
+  );
+
+  const handleAdminLogin = useCallback(
+    async (email: string, password: string) => {
+      try {
+        return await adminLoginMutation.mutateAsync({ email, password });
+      } catch (error) {
+        console.error("Error during admin login:", error);
+        throw error;
+      }
+    },
+    [adminLoginMutation]
+  );
+
   useEffect(() => {
     if (!isUserLoading && !isSubscriptionLoading) dispatch(setLoading(false));
   }, [isUserLoading, isSubscriptionLoading]);
@@ -171,6 +231,7 @@ export const useAuth = () => {
     isLoading: loading,
     handleGoogleLogin,
     handleLinkedInLogin,
+    handleAdminLogin,
     logoutUser,
     subscriptionData,
     isSubscriptionLoading,

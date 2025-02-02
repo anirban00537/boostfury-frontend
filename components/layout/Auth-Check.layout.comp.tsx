@@ -13,8 +13,13 @@ import { useContentPosting } from "@/hooks/useContent";
 import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
 import { useQueryClient } from "react-query";
 
-// Define public routes that don't require authentication
-const publicRoutes = ["/", "/login", "/signup", "/forgot-password"];
+const publicRoutes = [
+  "/",
+  "/login",
+  "/signup",
+  "/forgot-password",
+  "/my-admin/login",
+];
 
 const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
   const { isLoading } = useAuth();
@@ -22,12 +27,16 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
   const { isActive } = useSelector(
     (state: RootState) => state.user.subscription
   );
+  const isAdmin = useSelector(
+    (state: RootState) => state.user.userinfo?.is_admin
+  );
   const { linkedinProfile } = useSelector((state: RootState) => state.user);
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const queryClient = useQueryClient();
+  console.log("isAdmin", isAdmin);
 
   useLinkedIn();
 
@@ -54,15 +63,15 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
     const isPublicRoute = publicRoutes.includes(pathname || "");
     const isPricingPage = pathname === "/billing";
 
-    if (!isLoading) {
+    if (!isLoading && !isAdmin) {
       if (!loggedin && !isPublicRoute) {
         // Not logged in and trying to access protected route
         router.push(`/login?from=${encodeURIComponent(pathname || "")}`);
       } else if (loggedin && pathname === "/login") {
         // Logged in and trying to access login page
         router.push("/dashboard");
-      } else if (loggedin && !isActive && !isPricingPage) {
-        // Show subscription required toast
+      } else if (loggedin && !isActive && !isPricingPage && !isAdmin) {
+        // Show subscription required toast - Skip for admin users
         toast.custom(
           (t) => (
             <div
@@ -95,8 +104,6 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
                   }}
                   className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-blue-600 hover:text-blue-500 focus:outline-none"
                 >
-
-
                   View Plans
                 </button>
               </div>
@@ -108,12 +115,11 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
           }
         );
 
-        // Redirect to pricing page
+        // Redirect to pricing page - Skip for admin users
         router.push("/billing?tab=plans");
       }
     }
-  }, [loggedin, isActive, isLoading, pathname, router]);
-
+  }, [loggedin, isActive, isLoading, pathname, router, isAdmin]);
 
   // Only show loading on initial auth check
   if (isLoading) {
@@ -125,11 +131,10 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
   const isPricingPage = pathname === "/billing";
   if (
     (!loggedin && !isPublicRoute) ||
-    (loggedin && !isActive && !isPricingPage)
+    (loggedin && !isActive && !isPricingPage && !isAdmin)
   ) {
     return null; // Return null instead of loading screen to prevent flash
   }
-
 
   return (
     <>

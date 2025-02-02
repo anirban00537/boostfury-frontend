@@ -126,6 +126,7 @@ export interface UserInfo {
   birth_date: string | null;
   role: number;
   status: number;
+  is_admin: boolean;
   is_subscribed: number;
   email_verified: number;
   phone_verified: number;

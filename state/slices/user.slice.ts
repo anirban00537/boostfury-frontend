@@ -72,4 +72,3 @@ export const {
   setSubscriptionData,
 } = userSlice.actions;
 export default userSlice.reducer;
-

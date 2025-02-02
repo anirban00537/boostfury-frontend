@@ -13,11 +13,17 @@ export interface LinkedInLoginDto {
   state: string;
 }
 
-
 export const googleSignIn = async (idToken: string) => {
   const response = await request.post("/auth/google-login", { idToken });
   return response.data;
 };
+
+export const adminLogin = async (email: string, password: string) => {
+  const response = await request.post("/auth/admin-login", { email, password });
+  return response.data;
+};
+
+
 export const getLinkedInAuthUrl = async (): Promise<LinkedInAuthResponse> => {
   const response = await request.get("/auth/linkedin-auth/auth-url");
   return response.data;

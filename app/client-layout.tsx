@@ -8,21 +8,13 @@ import DefaultLayout from "@/components/layout/Default.layout.comp";
 import AuthCheckLayout from "@/components/layout/Auth-Check.layout.comp";
 
 // Separate client component that uses client hooks
-function ClientLayoutContent({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function ClientLayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>
-      <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
-        <DefaultLayout>
-          <AuthCheckLayout>
-            {children}
-          </AuthCheckLayout>
-        </DefaultLayout>
-        <Toaster />
-      </GoogleOAuthProvider>
+      <DefaultLayout>
+        <AuthCheckLayout>{children}</AuthCheckLayout>
+      </DefaultLayout>
+      <Toaster />
     </Provider>
   );
 }
@@ -34,12 +26,14 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Suspense fallback={
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center h-screen">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        </div>
+      }
+    >
       <ClientLayoutContent>{children}</ClientLayoutContent>
     </Suspense>
   );
-} 
+}
