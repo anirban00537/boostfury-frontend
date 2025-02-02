@@ -248,7 +248,7 @@ const LinkedInChatPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+    <div className="min-h-screen bg-slate-50">
       {/* Subtle Background Pattern */}
       <div className="fixed inset-0 bg-grid-neutral-100/25 [mask-image:radial-gradient(white,transparent)] pointer-events-none" />
 
