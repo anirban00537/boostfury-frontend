@@ -32,7 +32,7 @@ export const Navbar = () => {
     >
       <nav className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.svg" alt="Logo" width={120} height={40} />
+          <Image src="/logo.svg" alt="Logo" width={190} height={70} />
         </Link>
 
         <div className="flex items-center gap-4">

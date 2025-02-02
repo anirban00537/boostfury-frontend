@@ -79,15 +79,17 @@ export const Hero = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <ShimmerButton
-              className="w-full sm:w-auto h-14 px-8 rounded-2xl text-lg font-medium"
-              background="linear-gradient(110deg, #2563eb, #4f46e5)"
-            >
-              <Link href="/dashboard" className="flex items-center gap-2">
-                <Bot className="w-5 h-5" />
-                Start Creating for Free
-              </Link>
-            </ShimmerButton>
+            <Link href="/dashboard">
+              <ShimmerButton
+                className="w-full sm:w-auto h-14 px-8 rounded-2xl text-lg font-medium"
+                background="linear-gradient(110deg, #2563eb, #4f46e5)"
+              >
+                <div className="flex items-center gap-2">
+                  <Bot className="w-5 h-5" />
+                  Start Creating for Free
+                </div>
+              </ShimmerButton>
+            </Link>
           </div>
         </motion.div>
 
