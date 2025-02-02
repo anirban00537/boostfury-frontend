@@ -18,7 +18,7 @@ const publicRoutes = [
   "/login",
   "/signup",
   "/forgot-password",
-  "/my-admin/login",
+  "/admin-login",
 ];
 
 const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
