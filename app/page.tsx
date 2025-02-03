@@ -27,8 +27,11 @@ import { FeaturesGrid } from "@/components/landing/FeaturesGrid";
 import { Pricing } from "@/components/landing/Pricing";
 import { CTA } from "@/components/landing/CTA";
 import { Footer } from "@/components/landing/Footer";
+import { getPackagesAction } from "./actions/packages";
 
-const Page = () => {
+export default async function Page() {
+  const packages = await getPackagesAction();
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -36,11 +39,9 @@ const Page = () => {
       <Features />
       <ValueProps />
       <FeaturesGrid />
-      <Pricing />
+      <Pricing packages={packages} />
       <CTA />
       <Footer />
     </div>
   );
-};
-
-export default Page;
+}
