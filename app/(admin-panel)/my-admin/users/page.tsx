@@ -1,213 +1,296 @@
 "use client";
 
 import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "react-query";
-import { Card } from "@/components/ui/card";
-import {
-  Users,
-  UserCheck,
-  Mail,
-  Chrome,
-  Loader2,
-  Search,
-  Filter,
-} from "lucide-react";
+import { useQuery } from "react-query";
+import { ReusableTable, Column } from "@/components/admin/ReusableTable";
 import { format } from "date-fns";
-import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { User, Mail, Globe } from "lucide-react";
+import Image from "next/image";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { getAdminDashboardData } from "@/services/admin";
+import { getUsers } from "@/services/admin";
 
-interface User {
+interface UserData {
   id: string;
   email: string;
   first_name: string;
   last_name: string;
-  createdAt: string;
+  user_name: string;
+  photo: string;
+  country: string;
   status: number;
+  role: number;
+  is_subscribed: number;
+  email_verified: number;
+  createdAt: string;
+  subscription: any;
+  branding: any;
+  linkedInProfiles: any[];
 }
 
-interface LoginProvider {
-  _count: number;
-  login_provider: string;
+interface PaginationData {
+  currentPage: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+}
+
+interface ApiResponse {
+  success: boolean;
+  message: string;
+  data: {
+    items: UserData[];
+    pagination: PaginationData;
+  };
 }
 
 export default function UsersPage() {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [orderBy, setOrderBy] = useState("createdAt");
+  const [orderDirection, setOrderDirection] = useState<"asc" | "desc">("desc");
   const [searchTerm, setSearchTerm] = useState("");
-  const queryClient = useQueryClient();
 
-  const { data: dashboardData, isLoading } = useQuery(
-    "adminDashboard",
-    getAdminDashboardData
+  const { data: response, isLoading } = useQuery(
+    ["users", page, pageSize, orderBy, orderDirection, searchTerm],
+    () =>
+      getUsers({ page, pageSize, orderBy, orderDirection, search: searchTerm }),
+    {
+      keepPreviousData: true,
+    }
   );
 
-  if (isLoading) {
+  const getStatusBadge = (status: number) => {
+    const statusConfig: Record<number, { class: string; text: string }> = {
+      1: { class: "bg-green-100 text-green-800", text: "Active" },
+      0: { class: "bg-red-100 text-red-800", text: "Inactive" },
+    };
+    const config = statusConfig[status] || statusConfig[0];
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-6 h-6 animate-spin" />
-      </div>
+      <Badge className={`${config.class} capitalize px-2 py-1`}>
+        {config.text}
+      </Badge>
     );
-  }
+  };
 
-  // Filter users based on search term
-  const filteredUsers = dashboardData?.users.recent.filter((user: User) => {
-    const searchString =
-      `${user.first_name} ${user.last_name} ${user.email}`.toLowerCase();
-    return searchString.includes(searchTerm.toLowerCase());
-  });
-
-  return (
-    <div className="min-h-screen p-8 bg-slate-50/50 space-y-6">
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="p-6 flex items-start space-x-4">
-          <div className="p-3 bg-blue-100 rounded-lg">
-            <Users className="h-6 w-6 text-blue-600" />
-          </div>
+  const columns: Column<UserData>[] = [
+    {
+      header: "User",
+      accessor: (user) => (
+        <div className="flex items-center space-x-3">
+          {user.photo ? (
+            <Image
+              src={user.photo}
+              alt={user.first_name}
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
+          ) : (
+            <div className="p-2 bg-gray-100 rounded-full">
+              <User className="w-6 h-6 text-gray-600" />
+            </div>
+          )}
           <div>
-            <p className="text-sm text-gray-500">Total Users</p>
-            <h3 className="text-2xl font-bold">{dashboardData?.users.total}</h3>
-            <p className="text-sm text-green-600">
-              {dashboardData?.users.growthPercentage}% Growth
-            </p>
-          </div>
-        </Card>
-
-        <Card className="p-6 flex items-start space-x-4">
-          <div className="p-3 bg-green-100 rounded-lg">
-            <UserCheck className="h-6 w-6 text-green-600" />
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Active Users</p>
-            <h3 className="text-2xl font-bold">
-              {dashboardData?.users.active}
-            </h3>
-            <p className="text-sm text-gray-600">
-              Active/Total:{" "}
-              {(
-                (dashboardData?.users.active / dashboardData?.users.total) *
-                100
-              ).toFixed(1)}
-              %
-            </p>
-          </div>
-        </Card>
-
-        {dashboardData?.users.byLoginProvider.map((provider: LoginProvider) => (
-          <Card
-            key={provider.login_provider}
-            className="p-6 flex items-start space-x-4"
-          >
-            <div className="p-3 bg-purple-100 rounded-lg">
-              {provider.login_provider === "email" ? (
-                <Mail className="h-6 w-6 text-purple-600" />
-              ) : (
-                <Chrome className="h-6 w-6 text-purple-600" />
-              )}
+            <div className="font-medium">
+              {user.first_name} {user.last_name}
             </div>
-            <div>
-              <p className="text-sm text-gray-500 capitalize">
-                {provider.login_provider} Users
-              </p>
-              <h3 className="text-2xl font-bold">{provider._count}</h3>
-              <p className="text-sm text-gray-600">
-                {((provider._count / dashboardData?.users.total) * 100).toFixed(
-                  1
-                )}
-                % of total
-              </p>
-            </div>
-          </Card>
-        ))}
-      </div>
-
-      {/* Users Table Section */}
-      <Card className="p-6">
-        <div className="flex flex-col space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">Users Management</h2>
-            <div className="flex space-x-2">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
-                <Input
-                  placeholder="Search users..."
-                  className="pl-8"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              <Button variant="outline" size="icon">
-                <Filter className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>User</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Join Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredUsers?.map((user: User) => (
-                  <TableRow key={user.id}>
-                    <TableCell>
-                      <div className="flex items-center">
-                        <div className="ml-4">
-                          <div className="font-medium">
-                            {user.first_name} {user.last_name}
-                          </div>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>
-                      {format(new Date(user.createdAt), "MMM dd, yyyy")}
-                    </TableCell>
-                    <TableCell>
-                      <span
-                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          user.status === 1
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {user.status === 1 ? "Active" : "Inactive"}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <Button variant="outline" size="sm">
-                          Edit
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-red-600 hover:text-red-700"
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <div className="text-sm text-gray-500">@{user.user_name}</div>
           </div>
         </div>
-      </Card>
+      ),
+    },
+    {
+      header: "Contact",
+      accessor: (user) => (
+        <div className="space-y-1">
+          <div className="flex items-center text-sm text-gray-600">
+            <Mail className="w-4 h-4 mr-1" />
+            {user.email}
+          </div>
+          {user.country && (
+            <div className="flex items-center text-sm text-gray-600">
+              <Globe className="w-4 h-4 mr-1" />
+              {user.country}
+            </div>
+          )}
+        </div>
+      ),
+    },
+    {
+      header: "Status",
+      accessor: (user) => (
+        <div className="space-y-1">
+          {getStatusBadge(user.status)}
+          {user.is_subscribed === 1 && (
+            <Badge className="bg-purple-100 text-purple-800 px-2 py-1 block">
+              Subscribed
+            </Badge>
+          )}
+        </div>
+      ),
+    },
+    {
+      header: "Joined",
+      accessor: (user) => format(new Date(user.createdAt), "MMM dd, yyyy"),
+    },
+  ];
+
+  const handleEdit = (user: UserData) => {
+    console.log("Edit user:", user);
+  };
+
+  const handleDelete = (id: string | number) => {
+    console.log("Delete user:", id);
+  };
+
+  return (
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-semibold text-gray-900">Users</h1>
+          <p className="text-sm text-gray-500">
+            Manage and monitor user accounts
+          </p>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="flex justify-between items-center gap-4">
+        <div className="flex-1 max-w-sm">
+          <Input
+            placeholder="Search users..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full"
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <Select
+            value={pageSize.toString()}
+            onValueChange={(value) => setPageSize(Number(value))}
+          >
+            <SelectTrigger className="w-[120px]">
+              <SelectValue placeholder="Page Size" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="5">5 per page</SelectItem>
+              <SelectItem value="10">10 per page</SelectItem>
+              <SelectItem value="20">20 per page</SelectItem>
+              <SelectItem value="50">50 per page</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select
+            value={orderDirection}
+            onValueChange={(value: "asc" | "desc") => setOrderDirection(value)}
+          >
+            <SelectTrigger className="w-[120px]">
+              <SelectValue placeholder="Order" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="desc">Newest</SelectItem>
+              <SelectItem value="asc">Oldest</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Table */}
+      <ReusableTable
+        data={response?.data.items || []}
+        columns={columns}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        getRowId={(user) => user.id}
+        isLoading={isLoading}
+      />
+
+      {/* Pagination */}
+      {response?.data.pagination && (
+        <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+          <div className="flex flex-1 justify-between sm:hidden">
+            <Button
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+              variant="outline"
+            >
+              Previous
+            </Button>
+            <Button
+              onClick={() => setPage(page + 1)}
+              disabled={page === response.data.pagination.totalPages}
+              variant="outline"
+            >
+              Next
+            </Button>
+          </div>
+          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm text-gray-700">
+                Showing{" "}
+                <span className="font-medium">{(page - 1) * pageSize + 1}</span>{" "}
+                to{" "}
+                <span className="font-medium">
+                  {Math.min(
+                    page * pageSize,
+                    response.data.pagination.totalCount
+                  )}
+                </span>{" "}
+                of{" "}
+                <span className="font-medium">
+                  {response.data.pagination.totalCount}
+                </span>{" "}
+                results
+              </p>
+            </div>
+            <div>
+              <nav
+                className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+                aria-label="Pagination"
+              >
+                <Button
+                  onClick={() => setPage(page - 1)}
+                  disabled={page === 1}
+                  variant="outline"
+                  className="rounded-l-md"
+                >
+                  Previous
+                </Button>
+                {Array.from(
+                  { length: response.data.pagination.totalPages },
+                  (_, i) => i + 1
+                ).map((pageNum) => (
+                  <Button
+                    key={pageNum}
+                    onClick={() => setPage(pageNum)}
+                    variant={pageNum === page ? "default" : "outline"}
+                    className="rounded-none"
+                  >
+                    {pageNum}
+                  </Button>
+                ))}
+                <Button
+                  onClick={() => setPage(page + 1)}
+                  disabled={page === response.data.pagination.totalPages}
+                  variant="outline"
+                  className="rounded-r-md"
+                >
+                  Next
+                </Button>
+              </nav>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

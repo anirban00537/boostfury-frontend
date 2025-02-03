@@ -84,3 +84,26 @@ export const getAdminDashboardData = async () => {
   const response = await request.get("/admin/dashboard");
   return response.data.data;
 };
+
+// Users Management
+interface GetUsersParams {
+  page?: number;
+  pageSize?: number;
+  orderBy?: string;
+  orderDirection?: "asc" | "desc";
+  search?: string;
+}
+
+export const getUsers = async (params: GetUsersParams = {}) => {
+  const {
+    page = 1,
+    pageSize = 10,
+    orderBy = "createdAt",
+    orderDirection = "desc",
+    search = "",
+  } = params;
+  const response = await request.get("/admin/users", {
+    params: { page, pageSize, orderBy, orderDirection, search },
+  });
+  return response.data;
+};

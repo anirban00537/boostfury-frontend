@@ -30,6 +30,7 @@ export interface BasePackage {
   featuresList: string[];
   features: PackageFeatures[];
   is_trial_package?: boolean;
+  trial_duration_days?: number;
 }
 
 export interface Package extends BasePackage {

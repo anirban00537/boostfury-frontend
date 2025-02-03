@@ -120,21 +120,24 @@ export default function PackagesPage() {
     },
   });
 
+  const defaultValues = {
+    name: "",
+    description: "",
+    type: PackageType.MONTHLY,
+    status: PackageStatus.ACTIVE,
+    price: 0,
+    currency: "USD",
+    variantId: "",
+    productId: "",
+    monthlyWordLimit: 0,
+    featuresList: [],
+    features: [],
+    is_trial_package: false,
+    trial_duration_days: undefined,
+  };
+
   const form = useForm<PackageFormData>({
-    defaultValues: {
-      name: "",
-      description: "",
-      type: PackageType.MONTHLY,
-      status: PackageStatus.ACTIVE,
-      price: 0,
-      currency: "USD",
-      variantId: "",
-      productId: "",
-      monthlyWordLimit: 0,
-      featuresList: [],
-      features: [],
-      is_trial_package: false,
-    },
+    defaultValues,
   });
 
   const onSubmit = (data: PackageFormData) => {
@@ -154,6 +157,7 @@ export default function PackagesPage() {
         featuresList: editingPackage.featuresList,
         features: editingPackage.features,
         is_trial_package: editingPackage.is_trial_package || false,
+        trial_duration_days: editingPackage.trial_duration_days,
       };
 
       // Compare and only include changed fields
@@ -205,7 +209,13 @@ export default function PackagesPage() {
       featuresList: pkg.featuresList,
       features: pkg.features,
       is_trial_package: pkg.is_trial_package || false,
+      trial_duration_days: pkg.trial_duration_days,
     });
+    setIsCreateOpen(true);
+  };
+
+  const handleCreateClick = () => {
+    form.reset(defaultValues);
     setIsCreateOpen(true);
   };
 
@@ -219,7 +229,7 @@ export default function PackagesPage() {
 
   return (
     <div className="min-h-screen max-w-7xl mx-auto">
-      <PackageHeader onAddClick={() => setIsCreateOpen(true)} />
+      <PackageHeader onAddClick={handleCreateClick} />
 
       <Dialog
         open={isCreateOpen}
@@ -227,7 +237,7 @@ export default function PackagesPage() {
           setIsCreateOpen(open);
           if (!open) {
             setEditingPackage(null);
-            form.reset();
+            form.reset(defaultValues);
           }
         }}
       >
@@ -240,7 +250,7 @@ export default function PackagesPage() {
             onCancel={() => {
               setIsCreateOpen(false);
               setEditingPackage(null);
-              form.reset();
+              form.reset(defaultValues);
             }}
           />
         </DialogContent>
