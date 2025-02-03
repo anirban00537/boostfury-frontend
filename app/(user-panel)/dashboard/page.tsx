@@ -21,6 +21,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useContentPosting } from "@/hooks/useContent";
 import { GradientButton } from "@/components/ui/gradient-button";
+import { ArrowRight } from "lucide-react";
 
 const postLengthOptions = [
   {
@@ -256,54 +257,43 @@ const LinkedInChatPage = () => {
         className={cn(
           "relative transition-all duration-500 min-h-screen",
           generatedContent
-            ? "lg:grid lg:grid-cols-[1.2fr,1fr]"
+            ? "lg:grid lg:grid-cols-[1.5fr,1fr]"
             : "flex justify-center"
         )}
       >
         {/* Left Section - Input */}
         <div
           className={cn(
-            "flex-1 relative px-6 lg:px-12 py-8 lg:py-12",
+            "flex-1 relative px-4 sm:px-8 lg:px-16 py-8 lg:py-16",
             generatedContent &&
-              "lg:border-r border-neutral-200/50 bg-white/50 backdrop-blur-sm"
+              "lg:border-r border-neutral-200/50 bg-white/60 backdrop-blur-lg"
           )}
         >
-          <div className="max-w-2xl mx-auto">
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50/80 border border-blue-100/50 text-blue-600 text-sm font-medium shadow-sm backdrop-blur-sm"
-            >
-              <span className="size-2 rounded-full bg-blue-500 animate-pulse"></span>
-              AI Content Generator
-            </motion.div>
-
+          <div className="max-w-3xl mx-auto">
             {/* Header */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
+              transition={{ duration: 0.5 }}
               className={cn(
-                "mt-8 space-y-4",
+                "mt-6 space-y-4",
                 !generatedContent && "text-center"
               )}
             >
               <h1
                 className={cn(
-                  "font-bold tracking-tight text-neutral-900 whitespace-nowrap",
+                  "font-medium tracking-tight text-neutral-900 whitespace-pre-wrap",
                   generatedContent
                     ? "text-3xl lg:text-4xl"
-                    : "text-4xl lg:text-6xl"
+                    : "text-4xl lg:text-5xl"
                 )}
               >
-                <span>Create</span> <span>viral</span>{" "}
+                <span className="text-neutral-800">What would you like to</span>{" "}
                 <span className="relative">
-                  <span className="relative z-10 text-blue-600">
-                    LinkedIn posts
+                  <span className="relative z-10 text-blue-500 font-semibold">
+                    post today?
                   </span>
-                  <span className="absolute -bottom-2 left-0 right-0 h-3 bg-blue-100/50 -skew-x-6" />
+                  <span className="absolute -bottom-2 left-0 right-0 h-3 bg-blue-100/40 -skew-x-6 rounded-full" />
                 </span>
               </h1>
             </motion.div>
@@ -313,40 +303,28 @@ const LinkedInChatPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="mt-12"
+              className="mt-16"
             >
               <div className="relative">
-                <div className="mb-4 flex items-center justify-between">
-                  <div className="flex items-center gap-4 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-neutral-200/50 shadow-sm">
-                    <div className="flex items-center gap-2 text-sm text-neutral-500">
-                      <div className="size-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                      Ready to generate
-                    </div>
-                    <div className="h-4 w-[1px] bg-neutral-200"></div>
-                    <div className="text-sm text-neutral-500">
-                      AI will help optimize your content
-                    </div>
-                  </div>
-                </div>
                 <div className="relative group">
-                  <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-[30px] blur-xl opacity-10 group-hover:opacity-30 transition-all duration-1000 group-hover:duration-200 animate-gradient"></div>
-                  <div className="relative bg-white rounded-[30px] shadow-xl hover:shadow-2xl transition-all duration-500">
-                    <Textarea
-                      value={prompt}
-                      onChange={(e) => setPrompt(e.target.value)}
-                      placeholder="What would you like to post about? Describe your topic or message..."
-                      className="w-full min-h-[90px] resize-none bg-transparent text-neutral-900 placeholder:text-neutral-400 rounded-[30px] border-0 focus:ring-2 focus:ring-blue-500/30 p-6 pr-[140px] text-sm transition-all duration-300"
-                    />
-                    <div className="absolute right-4 inset-y-0 flex items-center">
-                      <GradientButton
-                        onClick={handleGenerate}
-                        disabled={isLoading}
-                        variant="primary"
-                        className="relative h-12 px-8 rounded-[20px] text-sm font-medium whitespace-nowrap"
-                      >
-                        <div className="relative flex items-center justify-center gap-2">
-                          {isLoading ? (
-                            <>
+                  <div className="absolute -inset-3 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-[35px] blur-2xl opacity-5 group-hover:opacity-20 transition-all duration-1000 group-hover:duration-200 animate-gradient"></div>
+                  <div className="relative p-[1px] rounded-[35px] bg-gradient-to-r from-blue-200 via-indigo-200 to-purple-200 transition-all duration-500">
+                    <div className="relative bg-white rounded-[35px] transition-all duration-500">
+                      <Textarea
+                        value={prompt}
+                        onChange={(e) => setPrompt(e.target.value)}
+                        placeholder="What would you like to post about? Describe your topic or message..."
+                        className="w-full min-h-[90px] resize-none bg-transparent text-neutral-900 placeholder:text-neutral-400 rounded-[30px] border-0 focus:ring-2 focus:ring-blue-500/30 p-6 pr-[140px] text-sm transition-all duration-300"
+                      />
+                      <div className="absolute right-4 inset-y-0 flex items-center">
+                        <GradientButton
+                          onClick={handleGenerate}
+                          disabled={isLoading}
+                          variant="primary"
+                          className="relative h-12 w-12 rounded-full text-sm font-medium flex items-center justify-center"
+                        >
+                          <div className="relative flex items-center justify-center">
+                            {isLoading ? (
                               <motion.div
                                 animate={{ rotate: 360 }}
                                 transition={{
@@ -356,26 +334,25 @@ const LinkedInChatPage = () => {
                                 }}
                                 className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
                               />
-                              <span className="font-medium">Generating...</span>
-                            </>
-                          ) : (
-                            <span className="font-medium">Generate</span>
-                          )}
-                        </div>
-                      </GradientButton>
+                            ) : (
+                              <ArrowRight className="w-5 h-5" />
+                            )}
+                          </div>
+                        </GradientButton>
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Options Section */}
-                <div className="mt-6 grid grid-cols-3 gap-4">
+                <div className="mt-8 grid grid-cols-3 gap-6">
                   {/* Category */}
-                  <div className="space-y-2 bg-gradient-to-br from-blue-50 via-blue-50/80 to-white backdrop-blur-sm p-3 rounded-xl border border-blue-100/50 shadow-[0_2px_10px_-2px_rgba(59,130,246,0.1)] hover:shadow-[0_8px_20px_-4px_rgba(59,130,246,0.15)] group hover:translate-y-[-2px] transition-all duration-300">
+                  <div className="space-y-2.5 bg-gradient-to-br from-blue-50/50 via-blue-50/30 to-white backdrop-blur-xl p-4 rounded-2xl border-2 border-blue-200/50 hover:border-blue-300/50 group hover:translate-y-[-2px] transition-all duration-300">
                     <label className="text-xs font-medium text-blue-600">
                       Category
                     </label>
                     <Select value={category} onValueChange={setCategory}>
-                      <SelectTrigger className="w-full h-9 text-xs bg-white/70 border-0 shadow-sm text-blue-700">
+                      <SelectTrigger className="w-full h-9 text-xs bg-white/70 border border-blue-100/50 text-blue-700">
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -393,12 +370,12 @@ const LinkedInChatPage = () => {
                   </div>
 
                   {/* Tone */}
-                  <div className="space-y-2 bg-gradient-to-br from-purple-50 via-purple-50/80 to-white backdrop-blur-sm p-3 rounded-xl border border-purple-100/50 shadow-[0_2px_10px_-2px_rgba(147,51,234,0.1)] hover:shadow-[0_8px_20px_-4px_rgba(147,51,234,0.15)] group hover:translate-y-[-2px] transition-all duration-300">
+                  <div className="space-y-2.5 bg-gradient-to-br from-purple-50/50 via-purple-50/30 to-white backdrop-blur-xl p-4 rounded-2xl border-2 border-purple-200/50 hover:border-purple-300/50 group hover:translate-y-[-2px] transition-all duration-300">
                     <label className="text-xs font-medium text-purple-600">
                       Tone
                     </label>
                     <Select value={tone} onValueChange={setTone}>
-                      <SelectTrigger className="w-full h-9 text-xs bg-white/70 border-0 shadow-sm text-purple-700">
+                      <SelectTrigger className="w-full h-9 text-xs bg-white/70 border border-purple-100/50 text-purple-700">
                         <SelectValue placeholder="Select tone" />
                       </SelectTrigger>
                       <SelectContent>
@@ -416,7 +393,7 @@ const LinkedInChatPage = () => {
                   </div>
 
                   {/* Post Length */}
-                  <div className="space-y-2 bg-gradient-to-br from-emerald-50 via-emerald-50/80 to-white backdrop-blur-sm p-3 rounded-xl border border-emerald-100/50 shadow-[0_2px_10px_-2px_rgba(16,185,129,0.1)] hover:shadow-[0_8px_20px_-4px_rgba(16,185,129,0.15)] group hover:translate-y-[-2px] transition-all duration-300">
+                  <div className="space-y-2.5 bg-gradient-to-br from-emerald-50/50 via-emerald-50/30 to-white backdrop-blur-xl p-4 rounded-2xl border-2 border-emerald-200/50 hover:border-emerald-300/50 group hover:translate-y-[-2px] transition-all duration-300">
                     <label className="text-xs font-medium text-emerald-600">
                       Length
                     </label>
@@ -426,7 +403,7 @@ const LinkedInChatPage = () => {
                         setPostLength(value)
                       }
                     >
-                      <SelectTrigger className="w-full h-9 text-xs bg-white/70 border-0 shadow-sm text-emerald-700">
+                      <SelectTrigger className="w-full h-9 text-xs bg-white/70 border border-emerald-100/50 text-emerald-700">
                         <SelectValue placeholder="Select length" />
                       </SelectTrigger>
                       <SelectContent>
@@ -454,12 +431,12 @@ const LinkedInChatPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
-            className="relative bg-white/50 backdrop-blur-sm px-6 lg:px-12 py-8 lg:py-12 overflow-y-auto"
+            className="relative bg-white/60 backdrop-blur-xl px-4 sm:px-8 lg:px-16 py-8 lg:py-16 overflow-y-auto"
           >
-            <div className="max-w-lg mx-auto">
-              <div className="sticky top-8 space-y-8">
+            <div className="max-w-xl mx-auto">
+              <div className="sticky top-8 space-y-10">
                 {/* Preview Header */}
-                <div className="flex items-center justify-between bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-neutral-200/50 shadow-sm">
+                <div className="flex items-center justify-between bg-white/90 backdrop-blur-xl p-6 rounded-2xl border border-neutral-200/50 shadow-lg hover:shadow-xl transition-all duration-300">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <div className="size-2 rounded-full bg-emerald-500 animate-pulse"></div>

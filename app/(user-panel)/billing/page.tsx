@@ -2,9 +2,12 @@
 import {
   cancelSubscription,
   checkSubscription,
+  getPackages,
+  createCheckout,
 } from "@/services/subscription.service";
 import { RootState } from "@/state/store";
 import { ResponseData } from "@/types";
+import { PackageType, PackageStatus, PackageFormData } from "@/types/packages";
 import React from "react";
 import toast from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
@@ -21,60 +24,29 @@ import {
   Sparkles,
   Zap,
   Check,
+  Loader2,
 } from "lucide-react";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { useForm } from "react-hook-form";
 
-const pricingPlans = [
-  {
-    name: "Starter",
-    price: "19",
-    description:
-      "Perfect for individuals getting started with content creation",
-    features: [
-      "10,000 words per month",
-      "5 LinkedIn posts per day",
-      "Basic AI content generation",
-      "Standard support",
-    ],
-    gradient: "from-blue-500 via-cyan-500 to-sky-500",
-    icon: Zap,
-  },
-  {
-    name: "Professional",
-    price: "49",
-    description: "Ideal for professionals and growing businesses",
-    features: [
-      "50,000 words per month",
-      "15 LinkedIn posts per day",
-      "Advanced AI content generation",
-      "Priority support",
-      "Custom tone & style settings",
-    ],
-    gradient: "from-violet-500 via-purple-500 to-fuchsia-500",
-    icon: Crown,
-    popular: true,
-  },
-  {
-    name: "Enterprise",
-    price: "99",
-    description: "For teams and businesses needing maximum power",
-    features: [
-      "Unlimited words",
-      "Unlimited LinkedIn posts",
-      "Premium AI content generation",
-      "24/7 Priority support",
-      "Custom tone & style settings",
-      "API access",
-      "Team collaboration",
-    ],
-    gradient: "from-amber-500 via-orange-500 to-red-500",
-    icon: Rocket,
-  },
-];
+interface PricingPlanType {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  variantId: string;
+  features: {
+    wordGeneration: {
+      limit: number;
+      description: string;
+    };
+    features: string[];
+  };
+}
 
 const tabConfigs = [
   {
@@ -147,20 +119,56 @@ const PricingPlan = ({
   plan,
   currentPlan,
 }: {
-  plan: (typeof pricingPlans)[0];
+  plan: PricingPlanType;
   currentPlan?: string;
 }) => {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const { loggedin } = useSelector((state: RootState) => state.user);
   const isCurrentPlan = currentPlan === plan.name;
+  const Icon =
+    plan.price === 0
+      ? Sparkles
+      : plan.price < 50
+      ? Zap
+      : plan.price < 100
+      ? Crown
+      : Rocket;
+
+  const handleUpgrade = async () => {
+    setIsLoading(true);
+    if (loggedin) {
+      try {
+        const response = await createCheckout({
+          variantId: plan.variantId,
+          redirectUrl: window.location.origin,
+        });
+
+        if (response.checkoutUrl) {
+          window.open(response.checkoutUrl, "_blank", "noopener,noreferrer");
+        } else {
+          toast.error("Failed to create checkout session");
+        }
+      } catch (error: any) {
+        console.error("Error purchasing product:", error);
+        toast.error(
+          "An error occurred while purchasing the product. Please try again."
+        );
+      }
+    } else {
+      toast.error("Please login to continue");
+    }
+    setIsLoading(false);
+  };
 
   return (
     <div className="relative pt-4 h-full">
       <div
         className={cn(
           "relative group rounded-xl bg-white/80 backdrop-blur-sm border border-neutral-200/60 shadow-sm transition-all duration-300 hover:shadow-lg mt-4 h-full flex flex-col",
-          plan.popular && "ring-2 ring-primary/20 shadow-lg"
+          plan.name === "Pro" && "ring-2 ring-primary/20 shadow-lg" // Making Pro plan popular
         )}
       >
-        {plan.popular && (
+        {plan.name === "Pro" && (
           <div className="absolute -top-3 right-8">
             <div className="px-4 py-1.5 bg-gradient-to-r from-violet-600 to-purple-600 text-white text-xs font-medium rounded-full shadow-lg">
               Most Popular
@@ -173,10 +181,10 @@ const PricingPlan = ({
             <div className="relative">
               <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
               <div className="relative w-12 h-12 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center border border-neutral-200/40">
-                <plan.icon
+                <Icon
                   className={cn(
                     "w-6 h-6",
-                    plan.popular ? "text-primary" : "text-neutral-900"
+                    plan.name === "Pro" ? "text-primary" : "text-neutral-900"
                   )}
                 />
               </div>
@@ -203,7 +211,20 @@ const PricingPlan = ({
 
           {/* Features */}
           <div className="mt-8 space-y-4 flex-1">
-            {plan.features.map((feature) => (
+            {/* Word limit feature */}
+            <div className="flex items-start gap-3">
+              <div className="relative mt-1">
+                <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-emerald-200/40 to-transparent rounded-full"></div>
+                <div className="relative w-4 h-4 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center border border-emerald-200/40">
+                  <Check className="w-2.5 h-2.5 text-emerald-600" />
+                </div>
+              </div>
+              <span className="text-neutral-600 text-sm">
+                {plan.features.wordGeneration.description}
+              </span>
+            </div>
+            {/* Other features */}
+            {plan.features.features.map((feature: string) => (
               <div key={feature} className="flex items-start gap-3">
                 <div className="relative mt-1">
                   <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-emerald-200/40 to-transparent rounded-full"></div>
@@ -219,18 +240,30 @@ const PricingPlan = ({
           {/* Action Button */}
           <div className="mt-8">
             <ShimmerButton
-              disabled={isCurrentPlan}
+              disabled={isCurrentPlan || isLoading}
+              onClick={handleUpgrade}
               className={cn(
                 "w-full h-12 rounded-xl font-medium shadow-lg transition-all duration-300 hover:-translate-y-0.5",
-                isCurrentPlan ? "opacity-50 cursor-not-allowed" : ""
+                isCurrentPlan || isLoading
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
               )}
               background={
-                plan.popular
+                plan.name === "Pro"
                   ? "linear-gradient(110deg, #2563eb, #4f46e5, #7c3aed)"
                   : "linear-gradient(110deg, #0f172a, #1e293b)"
               }
             >
-              {isCurrentPlan ? "Current Plan" : `Upgrade to ${plan.name}`}
+              {isLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Processing...
+                </span>
+              ) : isCurrentPlan ? (
+                "Current Plan"
+              ) : (
+                `Upgrade to ${plan.name}`
+              )}
             </ShimmerButton>
           </div>
         </div>
@@ -240,6 +273,13 @@ const PricingPlan = ({
 };
 
 const PricingPlans = ({ currentPlan }: { currentPlan?: string }) => {
+  // Get packages data from the query
+  const { data: packagesData } = useQuery(["packages"], getPackages, {
+    enabled: true,
+  });
+
+  const monthlyPlans = packagesData?.data?.packages?.monthly || [];
+
   return (
     <div className="space-y-8">
       <div className="text-center max-w-2xl mx-auto mb-12">
@@ -253,8 +293,8 @@ const PricingPlans = ({ currentPlan }: { currentPlan?: string }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
-        {pricingPlans.map((plan) => (
-          <PricingPlan key={plan.name} plan={plan} currentPlan={currentPlan} />
+        {monthlyPlans.map((plan: PricingPlanType) => (
+          <PricingPlan key={plan.id} plan={plan} currentPlan={currentPlan} />
         ))}
       </div>
     </div>
@@ -268,6 +308,18 @@ const SubscriptionDetails = () => {
   const [activeTab, setActiveTab] = React.useState(
     (searchParams?.get("tab") as string) || "current"
   );
+
+  // Fetch packages data
+  const { data: packagesData } = useQuery(["packages"], getPackages, {
+    enabled: loggedin,
+    onSuccess: (data) => {
+      console.log("Packages data:", data);
+    },
+    onError: (error: Error) => {
+      console.error("Failed to fetch packages:", error);
+      toast.error(`Failed to fetch packages: ${error.message}`);
+    },
+  });
 
   // Effect to handle URL query params for active tab
   React.useEffect(() => {
@@ -326,6 +378,25 @@ const SubscriptionDetails = () => {
       cancelPlan();
     }
   };
+
+  const defaultValues = {
+    name: "",
+    description: "",
+    type: PackageType.MONTHLY,
+    status: PackageStatus.ACTIVE,
+    price: 0,
+    currency: "USD",
+    variantId: "",
+    productId: "",
+    monthlyWordLimit: 0,
+    featuresList: [],
+    features: [],
+    trial_duration_days: undefined,
+  };
+
+  const form = useForm<PackageFormData>({
+    defaultValues,
+  });
 
   if (isSubscriptionLoading) {
     return (

@@ -38,6 +38,13 @@ export const PACKAGE_STATUS = {
   DEPRECATED: "deprecated",
 } as const;
 
+export const PACKAGE_TYPE = {
+  TRIAL: "trial",
+  MONTHLY: "monthly",
+  YEARLY: "yearly",
+  LIFETIME: "lifetime",
+} as const;
+
 export const WORD_TOKEN_LOG_TYPE = {
   USAGE: "USAGE",
   RESET: "RESET",

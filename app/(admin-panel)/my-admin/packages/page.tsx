@@ -176,11 +176,11 @@ export default function PackagesPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string | number) => {
     toast.promise(
       new Promise((resolve, reject) => {
         if (window.confirm("Are you sure you want to delete this package?")) {
-          deleteMutation.mutate(id);
+          deleteMutation.mutate(id.toString());
           resolve(true);
         } else {
           reject(new Error("Delete cancelled"));

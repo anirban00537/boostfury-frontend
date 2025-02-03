@@ -1,14 +1,15 @@
 import React from "react";
-import { Package } from "@/types/packages";
-import { Tag, Users, Clock } from "lucide-react";
+import { Package, PackageType } from "@/types/packages";
+import { Tag, Users, Clock, Calendar } from "lucide-react";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { ReusableTable, Column } from "@/components/admin/ReusableTable";
+import { PACKAGE_TYPE } from "@/lib/core-constants";
 
 interface PackageTableProps {
   packages: Package[];
   onEdit: (pkg: Package) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string | number) => void;
 }
 
 export function PackageTable({
@@ -29,13 +30,15 @@ export function PackageTable({
     }
   };
 
-  const getTypeColor = (type: string) => {
+  const getTypeColor = (type: PackageType) => {
     switch (type) {
-      case "monthly":
+      case PackageType.TRIAL:
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case PackageType.MONTHLY:
         return "bg-blue-100 text-blue-800 border-blue-200";
-      case "yearly":
+      case PackageType.YEARLY:
         return "bg-purple-100 text-purple-800 border-purple-200";
-      case "lifetime":
+      case PackageType.LIFETIME:
         return "bg-indigo-100 text-indigo-800 border-indigo-200";
       default:
         return "bg-gray-100 text-gray-800";
@@ -74,10 +77,11 @@ export function PackageTable({
           >
             {pkg.status}
           </Badge>
-          {pkg.is_trial_package && (
-            <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 px-2 py-1">
-              Trial Package
-            </Badge>
+          {pkg.type === PackageType.TRIAL && pkg.trial_duration_days && (
+            <div className="flex items-center text-xs text-gray-500 mt-1">
+              <Calendar className="w-3 h-3 mr-1" />
+              {pkg.trial_duration_days} days trial
+            </div>
           )}
         </div>
       ),

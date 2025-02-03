@@ -39,14 +39,11 @@ export function PackageForm({
   isEditing,
   onCancel,
 }: PackageFormProps) {
-  const watchIsTrialPackage = form.watch("is_trial_package");
-
-  // Custom submit handler to validate trial duration
   const handleSubmit = (data: PackageFormData) => {
-    if (data.is_trial_package && !data.trial_duration_days) {
+    if (!data.trial_duration_days) {
       form.setError("trial_duration_days", {
         type: "required",
-        message: "Trial duration is required for trial packages",
+        message: "Trial duration is required",
       });
       return;
     }
@@ -295,54 +292,27 @@ export function PackageForm({
 
             <FormField
               control={form.control}
-              name="is_trial_package"
+              name="trial_duration_days"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                <FormItem>
+                  <FormLabel className="text-sm font-medium text-gray-700">
+                    Trial Duration (Days)
+                  </FormLabel>
                   <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
+                    <Input
+                      type="number"
+                      placeholder="Enter trial duration in days"
+                      {...field}
+                      onChange={(e) => field.onChange(parseInt(e.target.value))}
+                      required
+                      min="1"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     />
                   </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel className="text-sm font-medium text-gray-700">
-                      Trial Package
-                    </FormLabel>
-                    <p className="text-sm text-gray-500">
-                      Enable this option if this is a trial package
-                    </p>
-                  </div>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-
-            {watchIsTrialPackage && (
-              <FormField
-                control={form.control}
-                name="trial_duration_days"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm font-medium text-gray-700">
-                      Trial Duration (Days)
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Enter trial duration in days"
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(parseInt(e.target.value))
-                        }
-                        required
-                        min="1"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
           </form>
         </div>
 
