@@ -39,11 +39,14 @@ export function PackageForm({
   isEditing,
   onCancel,
 }: PackageFormProps) {
+  const watchType = form.watch("type");
+  const isTrial = watchType === PackageType.TRIAL;
+
   const handleSubmit = (data: PackageFormData) => {
-    if (!data.trial_duration_days) {
+    if (isTrial && !data.trial_duration_days) {
       form.setError("trial_duration_days", {
         type: "required",
-        message: "Trial duration is required",
+        message: "Trial duration is required for trial packages",
       });
       return;
     }
@@ -114,30 +117,31 @@ export function PackageForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-sm font-medium text-gray-700">
-                      Type
+                      Package Type
                     </FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
-                      required
                     >
                       <FormControl>
-                        <SelectTrigger className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                          <SelectValue placeholder="Select type" />
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select package type" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {Object.values(PackageType).map((type) => (
-                          <SelectItem
-                            key={type}
-                            value={type}
-                            className="capitalize"
-                          >
-                            {type}
-                          </SelectItem>
-                        ))}
+                        <SelectItem value={PackageType.TRIAL}>Trial</SelectItem>
+                        <SelectItem value={PackageType.MONTHLY}>
+                          Monthly
+                        </SelectItem>
+                        <SelectItem value={PackageType.YEARLY}>
+                          Yearly
+                        </SelectItem>
+                        <SelectItem value={PackageType.LIFETIME}>
+                          Lifetime
+                        </SelectItem>
                       </SelectContent>
                     </Select>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -290,29 +294,35 @@ export function PackageForm({
               />
             </div>
 
-            <FormField
-              control={form.control}
-              name="trial_duration_days"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm font-medium text-gray-700">
-                    Trial Duration (Days)
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Enter trial duration in days"
-                      {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value))}
-                      required
-                      min="1"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+            <div className="grid grid-cols-2 gap-6">
+              {isTrial && (
+                <FormField
+                  control={form.control}
+                  name="trial_duration_days"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium text-gray-700">
+                        Trial Duration (Days)
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="Enter trial duration in days"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(parseInt(e.target.value))
+                          }
+                          required
+                          min="1"
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               )}
-            />
+            </div>
           </form>
         </div>
 

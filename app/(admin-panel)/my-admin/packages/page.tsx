@@ -132,7 +132,6 @@ export default function PackagesPage() {
     monthlyWordLimit: 0,
     featuresList: [],
     features: [],
-    is_trial_package: false,
     trial_duration_days: undefined,
   };
 
@@ -156,7 +155,6 @@ export default function PackagesPage() {
         monthlyWordLimit: editingPackage.monthlyWordLimit,
         featuresList: editingPackage.featuresList,
         features: editingPackage.features,
-        is_trial_package: editingPackage.is_trial_package || false,
         trial_duration_days: editingPackage.trial_duration_days,
       };
 
@@ -208,7 +206,6 @@ export default function PackagesPage() {
       monthlyWordLimit: pkg.monthlyWordLimit,
       featuresList: pkg.featuresList,
       features: pkg.features,
-      is_trial_package: pkg.is_trial_package || false,
       trial_duration_days: pkg.trial_duration_days,
     });
     setIsCreateOpen(true);
