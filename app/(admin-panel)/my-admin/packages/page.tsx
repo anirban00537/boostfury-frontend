@@ -17,6 +17,7 @@ import { PackageTable } from "@/components/admin/packages/PackageTable";
 import { PackageHeader } from "@/components/admin/packages/PackageHeader";
 import { PackageType, PackageStatus } from "@/types/packages";
 import toast from "react-hot-toast";
+import { processApiResponse } from "@/lib/functions";
 
 export default function PackagesPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -38,27 +39,27 @@ export default function PackagesPage() {
     },
   });
 
-  const createMutation = useMutation(createPackage, {
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["packages"],
-        refetchActive: true,
-      });
-      setIsCreateOpen(false);
-      toast.success("Package created successfully", {
-        duration: 4000,
-        position: "top-right",
-      });
-    },
-    onError: (error: any) => {
-      toast.error(error.message || "Failed to create package", {
-        duration: 4000,
-        position: "top-right",
-      });
-    },
-  });
+  const { mutateAsync: createMutation, isLoading: isCreating } = useMutation(
+    createPackage,
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries({
+          queryKey: ["packages"],
 
-  const updateMutation = useMutation(
+          refetchActive: true,
+        });
+        setIsCreateOpen(false);
+      },
+      onError: (error: any) => {
+        toast.error(error.message || "Failed to create package", {
+          duration: 4000,
+          position: "top-right",
+        });
+      },
+    }
+  );
+
+  const { mutateAsync: updateMutation, isLoading: isUpdating } = useMutation(
     ({ id, data }: { id: string; data: any }) => updatePackage(id, data),
     {
       onSuccess: () => {
@@ -165,12 +166,12 @@ export default function PackagesPage() {
         }
       });
 
-      updateMutation.mutate({
+      updateMutation({
         id: editingPackage.id,
         data: updateData,
       });
     } else {
-      createMutation.mutate(data);
+      createMutation(data);
     }
   };
 
@@ -242,7 +243,7 @@ export default function PackagesPage() {
           <PackageForm
             form={form}
             onSubmit={onSubmit}
-            isLoading={createMutation.isLoading || updateMutation.isLoading}
+            isLoading={isCreating || isUpdating}
             isEditing={!!editingPackage}
             onCancel={() => {
               setIsCreateOpen(false);

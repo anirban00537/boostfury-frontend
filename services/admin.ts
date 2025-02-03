@@ -49,9 +49,7 @@ interface UpdatePackageData {
 }
 
 // Package Management
-export const createPackage = async (
-  data: CreatePackageData
-): Promise<Package> => {
+export const createPackage = async (data: CreatePackageData) => {
   const response = await request.post("/admin/packages", data);
   return response.data.data;
 };

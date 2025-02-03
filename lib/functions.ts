@@ -16,6 +16,30 @@ interface ApiError {
   };
   message?: string;
 }
+export const processResponse = (response: any) => {
+  console.log(response, "responseresponse");
+  if (response.message && response.success) {
+    toast.success(response.message);
+    return;
+  } else if (response.message && response.success === false) {
+    toast.error(response.message);
+    return;
+  }
+
+  if (response?.response?.data?.statusCode == 500) {
+    toast.error(response?.response?.data?.message);
+    return;
+  }
+
+  if (response?.response?.data) {
+    toast.error(response?.response?.data?.message);
+  }
+  if (response?.response?.data?.message?.length > 0) {
+    response?.response?.data?.message?.map((message: string) => {
+      toast.error(message);
+    });
+  }
+};
 
 export const processApiResponse = (
   result: ApiResponse | ApiError
@@ -71,4 +95,3 @@ export const getUserTimezone = (): string => {
   console.log("User Timezone:", timezone); // e.g., "America/New_York", "Asia/Tokyo", etc.
   return timezone;
 };
-

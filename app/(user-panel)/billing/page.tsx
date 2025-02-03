@@ -12,7 +12,14 @@ import toast from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import LoadingSection from "@/components/utils-components/loading/LoadingSection.comp";
-import { CreditCard, FileText, Crown } from "lucide-react";
+import {
+  CreditCard,
+  FileText,
+  Crown,
+  Clock,
+  AlertCircle,
+  Check,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -218,16 +225,187 @@ const SubscriptionDetails = () => {
           <TabsContent value="current">
             {/* Current Plan Content */}
             {subscriptionData?.data?.subscription ? (
-              <div className="bg-white rounded-xl p-6 shadow-sm">
-                <h3 className="text-lg font-semibold mb-4">Current Plan</h3>
-                {/* Add current plan details here */}
-                <button
-                  onClick={handleCancelSubscription}
-                  disabled={isCanceling}
-                  className="text-red-600 hover:text-red-700 text-sm font-medium"
-                >
-                  Cancel Subscription
-                </button>
+              <div className="space-y-8">
+                {/* Current Plan Overview */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-neutral-200/60 shadow-sm">
+                  <div className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-8">
+                        {/* Plan Info */}
+                        <div className="flex items-center gap-4">
+                          <div className="relative">
+                            <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-lg"></div>
+                            <div className="relative w-10 h-10 bg-white/80 backdrop-blur-sm rounded-lg flex items-center justify-center border border-neutral-200/40">
+                              <FileText className="w-5 h-5 text-neutral-900" />
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-sm font-medium text-neutral-500">
+                              Current Plan
+                            </div>
+                            <div className="text-lg font-semibold text-neutral-900 capitalize mt-0.5">
+                              {subscriptionData?.data?.subscription?.package
+                                ?.name || "No Plan"}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="h-10 w-px bg-neutral-200/60"></div>
+
+                        {/* Plan Type */}
+                        <div>
+                          <div className="text-sm font-medium text-neutral-500">
+                            Plan Type
+                          </div>
+                          <div className="text-lg font-semibold text-neutral-900 capitalize mt-0.5">
+                            {subscriptionData?.data?.subscription?.package
+                              ?.type || "N/A"}
+                          </div>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="h-10 w-px bg-neutral-200/60"></div>
+
+                        {/* Status */}
+                        <div>
+                          <div className="text-sm font-medium text-neutral-500">
+                            Status
+                          </div>
+                          <div
+                            className={`text-lg font-semibold mt-0.5 ${
+                              subscriptionData?.data?.isActive
+                                ? "text-emerald-600"
+                                : "text-red-600"
+                            }`}
+                          >
+                            {subscriptionData?.data?.isActive
+                              ? "Active"
+                              : "Inactive"}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Status Badge */}
+                      <div
+                        className={`px-4 py-2 rounded-full text-sm font-medium ${
+                          subscriptionData?.data?.isActive
+                            ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
+                            : "bg-red-50 text-red-700 border border-red-100"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`w-2 h-2 rounded-full ${
+                              subscriptionData?.data?.isActive
+                                ? "bg-emerald-500"
+                                : "bg-red-500"
+                            }`}
+                          ></span>
+                          {subscriptionData?.data?.isActive
+                            ? "Active Plan"
+                            : "Inactive Plan"}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Subscription Details */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-neutral-200/60 shadow-sm">
+                  <div className="px-6 py-4 border-b border-neutral-100">
+                    <h2 className="text-base font-semibold text-neutral-900">
+                      Subscription Details
+                    </h2>
+                  </div>
+
+                  <div className="divide-y divide-neutral-100">
+                    {/* Duration Row */}
+                    <div className="px-6 py-4 flex items-center hover:bg-neutral-50/50 transition-colors">
+                      <div className="flex items-center gap-4 flex-1">
+                        <div className="relative">
+                          <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-lg"></div>
+                          <div className="relative w-10 h-10 bg-white/80 backdrop-blur-sm rounded-lg flex items-center justify-center border border-neutral-200/40">
+                            <Clock className="w-5 h-5 text-neutral-900" />
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-neutral-900">
+                            Subscription Period
+                          </div>
+                          <div className="mt-1 flex items-center gap-2 text-sm text-neutral-500">
+                            <span>
+                              {new Date(
+                                subscriptionData?.data?.subscription?.startDate
+                              ).toLocaleDateString("en-US", {
+                                month: "long",
+                                day: "numeric",
+                                year: "numeric",
+                              })}
+                            </span>
+                            <span>→</span>
+                            <span>
+                              {new Date(
+                                subscriptionData?.data?.subscription?.endDate
+                              ).toLocaleDateString("en-US", {
+                                month: "long",
+                                day: "numeric",
+                                year: "numeric",
+                              })}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-sm text-neutral-500">
+                        {Math.ceil(
+                          (new Date(
+                            subscriptionData?.data?.subscription?.endDate
+                          ).getTime() -
+                            new Date(
+                              subscriptionData?.data?.subscription?.startDate
+                            ).getTime()) /
+                            (1000 * 60 * 60 * 24)
+                        )}{" "}
+                        days total
+                      </div>
+                    </div>
+
+                    {/* Trial Status Row */}
+                    {subscriptionData?.data?.subscription?.isTrial && (
+                      <div className="px-6 py-4 flex items-center hover:bg-neutral-50/50 transition-colors">
+                        <div className="flex items-center gap-4 flex-1">
+                          <div className="relative">
+                            <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-lg"></div>
+                            <div className="relative w-10 h-10 bg-white/80 backdrop-blur-sm rounded-lg flex items-center justify-center border border-neutral-200/40">
+                              <AlertCircle className="w-5 h-5 text-neutral-900" />
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-sm font-medium text-neutral-900">
+                              Trial Status
+                            </div>
+                            <div className="mt-1 flex items-center gap-3">
+                              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary/5 text-primary">
+                                Trial Period
+                              </span>
+                              <span className="text-sm text-neutral-500">
+                                Trial ends in{" "}
+                                {Math.ceil(
+                                  (new Date(
+                                    subscriptionData?.data?.subscription?.endDate
+                                  ).getTime() -
+                                    new Date().getTime()) /
+                                    (1000 * 60 * 60 * 24)
+                                )}{" "}
+                                days
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="text-center py-8">
