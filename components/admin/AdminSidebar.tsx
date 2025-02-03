@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import {
   Package,
   Users,
@@ -92,11 +92,14 @@ const NavigationItem: React.FC<{
 );
 
 interface AdminSidebarProps {
-  onClose: () => void;
-  isOpen: boolean;
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function AdminSidebar({ onClose, isOpen }: AdminSidebarProps) {
+export default function AdminSidebar({
+  isSidebarOpen,
+  setIsSidebarOpen,
+}: AdminSidebarProps) {
   const pathname = usePathname();
   const { logoutUser } = useAuth();
 
@@ -104,12 +107,12 @@ export default function AdminSidebar({ onClose, isOpen }: AdminSidebarProps) {
     <aside
       className={cn(
         "fixed inset-y-0 left-0 z-50 flex h-full w-64 flex-col bg-white border-r border-gray-200 transition-transform lg:relative lg:translate-x-0",
-        isOpen ? "translate-x-0" : "-translate-x-full"
+        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}
     >
       {/* Close button for mobile */}
       <button
-        onClick={onClose}
+        onClick={() => setIsSidebarOpen(false)}
         className="lg:hidden absolute right-2 top-2 p-2 rounded-lg hover:bg-gray-100"
       >
         <X className="h-5 w-5 text-gray-500" />
