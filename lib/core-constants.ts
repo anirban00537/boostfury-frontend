@@ -1,32 +1,3 @@
-
-
-export const carouselsSize = [
-  {
-    id: 1,
-    platform: "Linkedin",
-    ratio: "4:5",
-    width: 500,
-    height: 640,
-  },
-  {
-    id: 2,
-    platform: "Linkedin",
-    ratio: "5:5",
-    width: 600,
-    height: 600,
-  },
-  {
-    id: 3,
-    platform: "Instagram",
-    ratio: "4:5",
-    width: 480,
-    height: 600,
-  },
-];
-
-
-
-
 export const POST_STATUS = {
   DRAFT: 0,
   SCHEDULED: 1,
@@ -53,4 +24,21 @@ export const LINKEDIN_REWRITE_INSTRUCTIONS = {
   STORYTELLING: 7, // Convert into a story format
   PERSUASIVE: 8, // Make it more convincing and action-oriented
   IMPROVE_HOOK: 9, // Improve the opening hook to grab attention
+} as const;
+export const SUBSCRIPTION_STATUS = {
+  ACTIVE: "active",
+  EXPIRED: "expired",
+  CANCELLED: "cancelled",
+  PENDING: "pending",
+} as const;
+
+export const PACKAGE_STATUS = {
+  ACTIVE: "active",
+  INACTIVE: "inactive",
+  DEPRECATED: "deprecated",
+} as const;
+
+export const WORD_TOKEN_LOG_TYPE = {
+  USAGE: "USAGE",
+  RESET: "RESET",
 } as const;

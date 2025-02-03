@@ -1,7 +1,86 @@
 import request from "@/lib/request";
 
+interface Package {
+  id: string;
+  name: string;
+  description: string;
+  type: string;
+  status: string;
+  price: number;
+  currency: string;
+  variantId: string;
+  productId: string;
+  monthlyWordLimit: number;
+  featuresList: string[];
+  features: number[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface CreatePackageData {
+  name: string;
+  description: string;
+  type: string;
+  price: number;
+  currency?: string;
+  variantId: string;
+  productId: string;
+  monthlyWordLimit: number;
+  featuresList?: string[];
+  viralPostGeneration?: boolean;
+  aiStudio?: boolean;
+  postIdeaGenerator?: boolean;
+}
+
+interface UpdatePackageData {
+  name?: string;
+  description?: string;
+  type?: string;
+  price?: number;
+  currency?: string;
+  variantId?: string;
+  productId?: string;
+  monthlyWordLimit?: number;
+  featuresList?: string[];
+  viralPostGeneration?: boolean;
+  aiStudio?: boolean;
+  postIdeaGenerator?: boolean;
+  status?: string;
+}
+
+// Package Management
+export const createPackage = async (
+  data: CreatePackageData
+): Promise<Package> => {
+  const response = await request.post("/admin/packages", data);
+  return response.data.data;
+};
+
+export const updatePackage = async (
+  id: string,
+  data: UpdatePackageData
+): Promise<Package> => {
+  const response = await request.put(`/admin/packages/${id}`, data);
+  return response.data.data;
+};
+
+export const deletePackage = async (id: string): Promise<void> => {
+  const response = await request.delete(`/admin/packages/${id}`);
+  return response.data.data;
+};
+
+export const getPackageById = async (id: string): Promise<Package> => {
+  const response = await request.get(`/admin/packages/${id}`);
+  return response.data.data;
+};
+
+export const getAllPackages = async (): Promise<Package[]> => {
+  const response = await request.get("/admin/packages");
+  return response.data.data;
+};
+
+// Dashboard Data
 export const getAdminDashboardData = async () => {
-  const response = await request.get("/user/admin/dashboard");
-  console.log("Admin Dashboard Response:", response.data);
-  return response.data;
+  const response = await request.get("/admin/dashboard");
+  return response.data.data;
 };
