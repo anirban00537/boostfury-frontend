@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Form,
   FormControl,
@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { GradientButton } from "@/components/ui/gradient-button";
-import { Loader2, Package as PackageIcon, X } from "lucide-react";
+import { Loader2, Package as PackageIcon, X, Plus, Trash2 } from "lucide-react";
 import { PackageType, PackageFormData } from "@/types/packages";
 import { UseFormReturn } from "react-hook-form";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -39,8 +39,33 @@ export function PackageForm({
   isEditing,
   onCancel,
 }: PackageFormProps) {
+  const [newFeature, setNewFeature] = useState("");
   const watchType = form.watch("type");
   const isTrial = watchType === PackageType.TRIAL;
+  const features = form.watch("featuresList") || [];
+
+  const handleAddFeature = () => {
+    if (newFeature.trim()) {
+      const currentFeatures = form.getValues("featuresList") || [];
+      form.setValue("featuresList", [...currentFeatures, newFeature.trim()]);
+      setNewFeature("");
+    }
+  };
+
+  const handleRemoveFeature = (index: number) => {
+    const currentFeatures = form.getValues("featuresList") || [];
+    form.setValue(
+      "featuresList",
+      currentFeatures.filter((_, i) => i !== index)
+    );
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddFeature();
+    }
+  };
 
   const handleSubmit = (data: PackageFormData) => {
     if (isTrial && !data.trial_duration_days) {
@@ -322,6 +347,56 @@ export function PackageForm({
                   )}
                 />
               )}
+            </div>
+
+            {/* Features List Section */}
+            <div className="space-y-4">
+              <FormLabel className="text-sm font-medium text-gray-700">
+                Features List
+              </FormLabel>
+              <div className="flex gap-2">
+                <Input
+                  value={newFeature}
+                  onChange={(e) => setNewFeature(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Add a feature..."
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  onClick={handleAddFeature}
+                  variant="outline"
+                  size="icon"
+                  className="shrink-0"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+
+              <div className="space-y-2">
+                {features.map((feature, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between gap-2 p-2 rounded-md bg-gray-50 border border-gray-200"
+                  >
+                    <span className="text-sm text-gray-700">{feature}</span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemoveFeature(index)}
+                      className="h-8 w-8 p-0 text-gray-500 hover:text-red-600"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                {features.length === 0 && (
+                  <p className="text-sm text-gray-500 text-center py-4">
+                    No features added yet
+                  </p>
+                )}
+              </div>
             </div>
           </form>
         </div>
