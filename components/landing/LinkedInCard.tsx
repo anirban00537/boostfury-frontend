@@ -47,9 +47,9 @@ export const LinkedInCard = () => {
       }
 
       setConnections((prev) => {
-        if (prev >= 1500) return prev;
-        const connectionIncrease = Math.floor(Math.random() * 40) + 20;
-        const newValue = Math.min(1500, prev + connectionIncrease);
+        if (prev >= 8000) return prev;
+        const connectionIncrease = Math.floor(Math.random() * 200) + 100;
+        const newValue = Math.min(8000, prev + connectionIncrease);
         const counter = { value: prev };
         anime({
           targets: counter,
@@ -65,9 +65,9 @@ export const LinkedInCard = () => {
       });
 
       setFollowers((prev) => {
-        if (prev >= 2500) return prev;
-        const followerIncrease = Math.floor(Math.random() * 50) + 30;
-        const newValue = Math.min(2500, prev + followerIncrease);
+        if (prev >= 12000) return prev;
+        const followerIncrease = Math.floor(Math.random() * 300) + 150;
+        const newValue = Math.min(12000, prev + followerIncrease);
         const counter = { value: prev };
         anime({
           targets: counter,
@@ -83,12 +83,12 @@ export const LinkedInCard = () => {
       });
 
       setLikes((prev) => {
-        if (prev >= 5000) {
+        if (prev >= 25000) {
           setIsBoostFuryEnabled(false);
           return prev;
         }
-        const likeIncrease = Math.floor(Math.random() * 150) + 100;
-        const newValue = Math.min(5000, prev + likeIncrease);
+        const likeIncrease = Math.floor(Math.random() * 500) + 300;
+        const newValue = Math.min(25000, prev + likeIncrease);
         const counter = { value: prev };
         anime({
           targets: counter,
@@ -104,9 +104,9 @@ export const LinkedInCard = () => {
       });
 
       setComments((prev) => {
-        if (prev >= 1000) return prev;
-        const commentIncrease = Math.floor(Math.random() * 30) + 20;
-        const newValue = Math.min(1000, prev + commentIncrease);
+        if (prev >= 5000) return prev;
+        const commentIncrease = Math.floor(Math.random() * 100) + 50;
+        const newValue = Math.min(5000, prev + commentIncrease);
         const counter = { value: prev };
         anime({
           targets: counter,
@@ -122,9 +122,9 @@ export const LinkedInCard = () => {
       });
 
       setReposts((prev) => {
-        if (prev >= 500) return prev;
-        const repostIncrease = Math.floor(Math.random() * 15) + 10;
-        const newValue = Math.min(500, prev + repostIncrease);
+        if (prev >= 3500) return prev;
+        const repostIncrease = Math.floor(Math.random() * 80) + 40;
+        const newValue = Math.min(3500, prev + repostIncrease);
         const counter = { value: prev };
         anime({
           targets: counter,
@@ -139,7 +139,7 @@ export const LinkedInCard = () => {
         return newValue;
       });
 
-      if (likes < 5000) {
+      if (likes < 25000) {
         setFloatingIcons((prev) => [...prev, Date.now()]);
         setTimeout(() => {
           setFloatingIcons((prev) => prev.slice(1));
@@ -162,17 +162,17 @@ export const LinkedInCard = () => {
           });
         }, 300);
       }
-    }, 200);
+    }, 150);
 
     return () => clearInterval(interval);
   }, [isBoostFuryEnabled, likes]);
 
-  // Add auto-reset functionality
+  // Add auto-reset functionality with longer disabled time
   useEffect(() => {
     if (!isBoostFuryEnabled) {
       const resetTimeout = setTimeout(() => {
         setIsBoostFuryEnabled(true);
-      }, 3000);
+      }, 5000); // Increased from 3000ms to 5000ms
       return () => clearTimeout(resetTimeout);
     }
   }, [isBoostFuryEnabled]);
@@ -313,6 +313,29 @@ export const LinkedInCard = () => {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
+          {/* LinkedIn Logo */}
+          <motion.div
+            className="w-8 h-8 mr-2"
+            animate={{
+              opacity: isBoostFuryEnabled ? 1 : 0.5,
+            }}
+          >
+            <svg
+              viewBox="0 0 1024 1024"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="drop-shadow-lg"
+            >
+              <rect width="1024" height="1024" rx="200" fill="#0A66C2" />
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M229.2 286.4C229.2 263.2 248.4 244 271.6 244C294.8 244 314 263.2 314 286.4C314 309.6 294.8 329.2 271.6 329.2C248.4 328.8 229.2 309.6 229.2 286.4ZM234 357.2H309.2V730.4H234V357.2ZM389.2 357.2H462V390H463.2C475.2 370.8 500.4 350.4 537.6 350.4C614 350.4 633.2 402.4 633.2 470.4V730.4H558V486.4C558 456.4 557.6 417.6 516.4 417.6C474.8 417.6 468 450.8 468 484.8V730.4H392.8V357.2H389.2Z"
+                fill="white"
+              />
+            </svg>
+          </motion.div>
+
           <div className="flex items-center gap-3">
             <motion.div
               className="w-12 h-6 rounded-full relative p-1"

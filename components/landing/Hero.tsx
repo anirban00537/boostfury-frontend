@@ -60,7 +60,7 @@ export const Hero = () => {
             transition={{ duration: 0.5 }}
             className="text-left lg:max-w-2xl"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-sm font-medium mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-sm font-normal mb-8">
               <Sparkles className="w-4 h-4" />
               10X Your LinkedIn Growth
             </div>
