@@ -121,8 +121,8 @@ const AuthCheckLayout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [loggedin, isActive, isLoading, pathname, router, isAdmin]);
 
-  // Only show loading on initial auth check, except for home page
-  if (isLoading && pathname !== "/") {
+  // Only show loading on initial auth check
+  if (isLoading) {
     return <FullScreenLoading />;
   }
 
