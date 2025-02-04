@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { useContentPosting } from "@/hooks/useContent";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { ArrowRight } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const postLengthOptions = [
   {
@@ -110,6 +111,8 @@ const LinkedInChatPage = () => {
   const { linkedinProfile, userinfo } = useSelector(
     (state: RootState) => state.user
   );
+  const { refetchSubscription } = useAuth();
+
   const { handleContentChange, postDetails, handleAddToQueue } =
     useContentPosting();
   const queryClient = useQueryClient();
@@ -135,6 +138,7 @@ const LinkedInChatPage = () => {
         });
         setGeneratedContent(response.data.post);
         console.log("Generated content:", response.data.post);
+        refetchSubscription();
       },
       onError: (error: Error) => {
         toast({
@@ -143,6 +147,7 @@ const LinkedInChatPage = () => {
           variant: "destructive",
         });
         console.error("Generation error:", error);
+        refetchSubscription();
       },
     }
   );
