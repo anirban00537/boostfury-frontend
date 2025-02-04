@@ -12,6 +12,8 @@ import {
   Rocket,
   Target,
   BarChart,
+  Shuffle,
+  Zap,
 } from "lucide-react";
 import { getLinkedInAuthUrl } from "@/services/auth";
 import { toast } from "react-hot-toast";
@@ -106,10 +108,36 @@ const LoginPage = () => {
   };
 
   const features = [
-    { text: "AI-powered content generation", icon: Sparkles },
-    { text: "Professional carousel creation", icon: CheckCircle2 },
-    { text: "Smart scheduling tools", icon: CheckCircle2 },
-    { text: "Analytics and insights", icon: CheckCircle2 },
+    {
+      icon: Sparkles,
+      title: "Advanced AI Editor",
+      description: "Professional editing tools powered by AI",
+    },
+    {
+      icon: Rocket,
+      title: "Viral Post Maker",
+      description: "Generate viral-worthy content instantly",
+    },
+    {
+      icon: Target,
+      title: "Personal Post Writer",
+      description: "Create content matching your brand voice",
+    },
+    {
+      icon: BarChart,
+      title: "Post Scheduler",
+      description: "Schedule posts for optimal engagement",
+    },
+    {
+      icon: Shuffle,
+      title: "Queue Shuffle",
+      description: "Mix up content for natural posting flow",
+    },
+    {
+      icon: Zap,
+      title: "Quick AI Rewrite",
+      description: "Enhance content quality instantly",
+    },
   ];
 
   return (
@@ -118,14 +146,24 @@ const LoginPage = () => {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-20">
         <div className="w-full max-w-[440px] space-y-12">
           {/* Logo & Welcome */}
-          <div className="space-y-2">
-            <h1 className="text-2xl font-medium text-neutral-900">
-              Welcome to{" "}
-              <span className="text-blue-600 font-semibold">BoostFury</span>
-            </h1>
-            <p className="text-neutral-500">
-              Sign in with LinkedIn to get started
-            </p>
+          <div className="space-y-6">
+            <Link href={"/"}>
+              <Image
+                src="/logo.svg"
+                alt="BoostFury Logo"
+                width={140}
+                height={40}
+                className="h-10 w-auto"
+              />
+            </Link>
+            <div className="space-y-2">
+              <h1 className="text-2xl font-medium text-neutral-900">
+                Welcome to BoostFury
+              </h1>
+              <p className="text-neutral-500">
+                Sign in with LinkedIn to get started
+              </p>
+            </div>
           </div>
 
           {/* Login Button */}
@@ -159,58 +197,24 @@ const LoginPage = () => {
 
           {/* Features Grid */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl border border-neutral-200/50 bg-white/50">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-lg bg-blue-50">
-                  <Rocket className="w-4 h-4 text-blue-600" />
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="p-4 rounded-xl border border-neutral-200/50 bg-white/50 hover:bg-white/80 transition-all duration-300"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 rounded-lg bg-blue-50">
+                    <feature.icon className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <h3 className="font-medium text-sm text-neutral-900">
+                    {feature.title}
+                  </h3>
                 </div>
-                <h3 className="font-medium text-sm text-neutral-900">
-                  AI Automation
-                </h3>
+                <p className="text-xs text-neutral-500">
+                  {feature.description}
+                </p>
               </div>
-              <p className="text-xs text-neutral-500">
-                Smart content generation and scheduling
-              </p>
-            </div>
-            <div className="p-4 rounded-xl border border-neutral-200/50 bg-white/50">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-lg bg-blue-50">
-                  <Target className="w-4 h-4 text-blue-600" />
-                </div>
-                <h3 className="font-medium text-sm text-neutral-900">
-                  Lead Generation
-                </h3>
-              </div>
-              <p className="text-xs text-neutral-500">
-                Connect with targeted prospects
-              </p>
-            </div>
-            <div className="p-4 rounded-xl border border-neutral-200/50 bg-white/50">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-lg bg-blue-50">
-                  <BarChart className="w-4 h-4 text-blue-600" />
-                </div>
-                <h3 className="font-medium text-sm text-neutral-900">
-                  Analytics
-                </h3>
-              </div>
-              <p className="text-xs text-neutral-500">
-                Track engagement and growth
-              </p>
-            </div>
-            <div className="p-4 rounded-xl border border-neutral-200/50 bg-white/50">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-lg bg-blue-50">
-                  <Sparkles className="w-4 h-4 text-blue-600" />
-                </div>
-                <h3 className="font-medium text-sm text-neutral-900">
-                  Smart Posts
-                </h3>
-              </div>
-              <p className="text-xs text-neutral-500">
-                Create engaging content that converts
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </div>

@@ -45,6 +45,13 @@ export const FeaturesGrid = () => {
               icon: Shuffle,
               color: "text-indigo-600",
             },
+            {
+              title: "Quick Ai Rewrite Tool",
+              description:
+                "Rewrite your content with AI to improve its quality and relevance. Get better results in less time.",
+              icon: Zap,
+              color: "text-blue-600",
+            }
           ].map((feature, index) => (
             <motion.div
               key={index}

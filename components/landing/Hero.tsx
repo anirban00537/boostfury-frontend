@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Bot, Sparkles, ArrowRight, Users, Zap, Trophy } from "lucide-react";
+import { Bot, Sparkles, ArrowRight, Users, Zap, Trophy, Clock } from "lucide-react";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 
 export const Hero = () => {
@@ -58,44 +58,7 @@ export const Hero = () => {
             </p>
           </motion.div>
 
-          {/* Feature highlights */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto mt-12"
-          >
-            {[
-              {
-                icon: <Users className="w-5 h-5 text-blue-600" />,
-                title: "Grow Your Network",
-                description: "Connect with professionals through engaging content",
-              },
-              {
-                icon: <Zap className="w-5 h-5 text-indigo-600" />,
-                title: "Save Time",
-                description: "Generate quality posts in seconds with AI",
-              },
-              {
-                icon: <Trophy className="w-5 h-5 text-blue-600" />,
-                title: "Drive Results",
-                description: "Increase engagement and generate more leads",
-              },
-            ].map((feature, i) => (
-              <div
-                key={i}
-                className="bg-white/50 backdrop-blur-sm p-6 rounded-2xl border border-blue-100/50 hover:border-blue-200/50 transition-all duration-300 hover:shadow-lg group"
-              >
-                <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="p-3 rounded-xl bg-blue-50 group-hover:bg-blue-100/50 transition-colors">
-                    {feature.icon}
-                  </div>
-                  <h3 className="font-semibold text-neutral-900">{feature.title}</h3>
-                  <p className="text-sm text-neutral-600">{feature.description}</p>
-                </div>
-              </div>
-            ))}
-          </motion.div>
+     
 
           {/* CTA section */}
           <motion.div
@@ -134,6 +97,71 @@ export const Hero = () => {
                 <div className="text-sm mt-1">Engagement Rate</div>
               </div>
             </div>
+          </motion.div>
+               {/* Feature highlights */}
+               <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="flex flex-wrap justify-center items-stretch gap-6 max-w-6xl mx-auto mt-12"
+          >
+            {[
+          
+              {
+                icon: <Zap className="w-5 h-5 text-indigo-600" />,
+                title: "AI Content",
+                description: "Generate quality posts in seconds",
+                color: "from-indigo-500/20 to-indigo-600/20",
+              },
+              {
+                icon: <Clock className="w-5 h-5 text-blue-600" />,
+                title: "Smart Schedule",
+                description: "Post at optimal engagement times",
+                color: "from-blue-500/20 to-blue-600/20",
+              },
+              {
+                icon: <Trophy className="w-5 h-5 text-indigo-600" />,
+                title: "Drive Results",
+                description: "Increase engagement and leads",
+                color: "from-indigo-500/20 to-indigo-600/20",
+              },
+            ].map((feature, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.5,
+                  delay: 0.2 + i * 0.1,
+                  ease: "easeOut",
+                }}
+                className="relative w-[240px] bg-white/50 backdrop-blur-sm p-6 rounded-2xl border border-blue-100/50 hover:border-blue-200/50 transition-all duration-300 hover:shadow-lg group"
+              >
+                {/* Connecting line */}
+                {i < 3 && (
+                  <div className="hidden sm:block absolute -right-7 top-1/2 transform -translate-y-1/2 w-8 h-[2px] bg-gradient-to-r from-blue-200 to-indigo-200" />
+                )}
+                
+                <div className="relative flex flex-col items-center text-center space-y-3">
+                  {/* Number badge */}
+                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 w-7 h-7 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center text-white text-sm font-medium">
+                    {i + 1}
+                  </div>
+                  
+                  {/* Icon with gradient background */}
+                  <div className={`p-3 rounded-xl bg-gradient-to-br ${feature.color} group-hover:scale-110 transition-all duration-300`}>
+                    {feature.icon}
+                  </div>
+                  
+                  <h3 className="font-semibold text-neutral-900 text-base">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-neutral-600 line-clamp-2">
+                    {feature.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </div>

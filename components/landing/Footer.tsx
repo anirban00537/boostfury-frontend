@@ -17,67 +17,8 @@ export const Footer = () => {
             <p className="text-sm text-neutral-500">
               © {new Date().getFullYear()} BoostFury. All rights reserved.
             </p>
-          </div>
+          </div>         
 
-          {/* Links */}
-          <div className="flex flex-wrap justify-center gap-8">
-            <div className="space-y-4">
-              <p className="text-sm font-medium text-neutral-700">Product</p>
-              <div className="space-y-3">
-                {[
-                  ["Features", "/features"],
-                  ["Pricing", "/pricing"],
-                  ["Blog", "/blog"],
-                ].map(([title, href]) => (
-                  <Link
-                    key={title}
-                    href={href}
-                    className="block text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
-                  >
-                    {title}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <p className="text-sm font-medium text-neutral-700">Company</p>
-              <div className="space-y-3">
-                {[
-                  ["About", "/about"],
-                  ["Contact", "/contact"],
-                  ["Privacy", "/privacy"],
-                ].map(([title, href]) => (
-                  <Link
-                    key={title}
-                    href={href}
-                    className="block text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
-                  >
-                    {title}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <p className="text-sm font-medium text-neutral-700">Support</p>
-              <div className="space-y-3">
-                {[
-                  ["Help Center", "/help"],
-                  ["Terms", "/terms"],
-                  ["API", "/api"],
-                ].map(([title, href]) => (
-                  <Link
-                    key={title}
-                    href={href}
-                    className="block text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
-                  >
-                    {title}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </footer>
