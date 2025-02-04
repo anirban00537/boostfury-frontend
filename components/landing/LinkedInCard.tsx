@@ -260,35 +260,28 @@ export const LinkedInCard = () => {
   }, [isBoostFuryEnabled]);
 
   return (
-    <div className="relative flex flex-col gap-8 max-w-xl mx-auto min-h-[600px]">
-      {/* BoostFury Toggle - Moved to top */}
+    <div className="relative flex flex-col gap-8 max-w-xl mx-auto">
+      {/* BoostFury Toggle */}
       <motion.button
         onClick={() => setIsBoostFuryEnabled((prev) => !prev)}
-        className="group flex items-center justify-center gap-6 px-8 py-4 rounded-2xl  shadow-sm mx-auto w-full max-w-md"
+        className="group flex items-center justify-center gap-6 px-8 py-4 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-100/50 shadow-lg shadow-blue-500/5 hover:shadow-blue-500/10 transition-all duration-300 mx-auto w-full max-w-md"
         variants={cardVariants}
         initial="hidden"
         animate="visible"
-        whileHover={{ scale: 1.01 }}
+        whileHover={{ scale: 1.01, y: -2 }}
         whileTap={{ scale: 0.99 }}
       >
         <motion.div
           className="w-10 h-10"
           animate={{ opacity: isBoostFuryEnabled ? 1 : 0.5 }}
         >
-          <svg
-            viewBox="0 0 1024 1024"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect width="1024" height="1024" rx="200" fill="#0A66C2" />
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M229.2 286.4C229.2 263.2 248.4 244 271.6 244C294.8 244 314 263.2 314 286.4C314 309.6 294.8 329.2 271.6 329.2C248.4 328.8 229.2 309.6 229.2 286.4ZM234 357.2H309.2V730.4H234V357.2ZM389.2 357.2H462V390H463.2C475.2 370.8 500.4 350.4 537.6 350.4C614 350.4 633.2 402.4 633.2 470.4V730.4H558V486.4C558 456.4 557.6 417.6 516.4 417.6C474.8 417.6 468 450.8 468 484.8V730.4H392.8V357.2H389.2Z"
-              fill="white"
-            />
-          </svg>
+          <img
+            src="/LinkedIn_icon.png"
+            alt="LinkedIn Icon"
+            className="w-10 h-10"
+          />
         </motion.div>
+
 
         <div className="flex items-center gap-4">
           <motion.div
@@ -332,7 +325,7 @@ export const LinkedInCard = () => {
         variants={cardVariants}
         initial="hidden"
         animate="visible"
-        className="rounded-3xl shadow-sm p-8 border border-gray-100 min-h-[120px] overflow-hidden"
+        className="rounded-3xl bg-white/80 backdrop-blur-sm border border-gray-100/50 shadow-lg shadow-blue-500/5 p-8 min-h-[120px] overflow-hidden"
       >
         <div className="flex items-center justify-between gap-6">
           {/* Reactions */}
@@ -356,7 +349,7 @@ export const LinkedInCard = () => {
             </div>
 
             <div className="flex items-center min-w-0">
-              <span className="text-base text-gray-600 px-6 py-3 rounded-full bg-gray-50/80 whitespace-nowrap">
+              <span className="text-base text-gray-600 px-6 py-3 rounded-full bg-gradient-to-r from-gray-50/90 to-white/90 border border-gray-100/50 shadow-sm whitespace-nowrap">
                 <span className="font-medium text-2xl text-gray-900 tabular-nums">
                   {metrics.likes.toLocaleString()}
                 </span>{" "}
@@ -366,7 +359,7 @@ export const LinkedInCard = () => {
           </div>
 
           {/* Engagement Metrics */}
-          <div className="flex items-center gap-4 px-6 py-3 rounded-full bg-gray-50/80 whitespace-nowrap">
+          <div className="flex items-center gap-4 px-6 py-3 rounded-full bg-gradient-to-r from-gray-50/90 to-white/90 border border-gray-100/50 shadow-sm whitespace-nowrap">
             <span className="flex items-center gap-3">
               <MessageCircle className="w-5 h-5 text-gray-400 flex-shrink-0" />
               <span className="text-base text-gray-600 font-medium tabular-nums">
@@ -389,13 +382,13 @@ export const LinkedInCard = () => {
         variants={cardVariants}
         initial="hidden"
         animate="visible"
-        className="rounded-3xl shadow-sm p-8 border border-gray-100 min-h-[200px]"
+        className="rounded-3xl bg-white/80 backdrop-blur-sm border border-gray-100/50 shadow-lg shadow-blue-500/5 p-8 min-h-[200px]"
       >
         <motion.div
           className="grid grid-cols-2 gap-16"
           animate={{ opacity: isBoostFuryEnabled ? 1 : 0.7 }}
         >
-          <div className="border-r border-gray-100">
+          <div className="border-r border-gray-100/50">
             <MetricCounter
               value={metrics.followers}
               label="New Followers"
