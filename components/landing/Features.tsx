@@ -26,32 +26,48 @@ export const Features = () => {
 
             <div className="space-y-6">
               <h2 className="text-4xl md:text-5xl font-bold text-neutral-900">
-                Watch Your Network{" "}
+                Transform Your LinkedIn{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-                  Come Alive
+                  Into a Growth Engine
                 </span>
               </h2>
 
               <p className="text-xl text-neutral-600 leading-relaxed">
-                Experience the power of AI-driven content as your LinkedIn
-                presence grows. See real-time engagement, connections, and
-                professional opportunities unfold.
+                Watch your LinkedIn presence soar with our AI-powered content
+                strategy. Users report up to 5x more profile views, 3x higher
+                engagement rates, and meaningful connections that convert into
+                opportunities.
               </p>
 
               <div className="space-y-4">
                 {[
-                  "Instant engagement notifications",
-                  "Growing professional network",
-                  "Real-time content performance",
-                  "Meaningful connections",
+                  "500% increase in profile visibility",
+                  "3x more post engagement & reactions",
+                  "Consistent weekly profile growth",
+                  "Quality connection requests daily",
+                  "Higher ranking in LinkedIn search",
+                  "Automated content that converts",
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center gap-3">
-                    <div className="w-5 h-5 rounded-full bg-blue-50 flex items-center justify-center">
+                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center">
                       <Check className="w-3 h-3 text-blue-600" />
                     </div>
-                    <span className="text-neutral-700">{feature}</span>
+                    <span className="text-neutral-700 font-medium">
+                      {feature}
+                    </span>
                   </div>
                 ))}
+              </div>
+
+              <div className="mt-8 p-4 rounded-xl bg-gradient-to-br from-blue-50/50 to-indigo-50/50 border border-blue-100/20">
+                <p className="text-sm text-blue-700 leading-relaxed">
+                  "After using Boostfury for just 30 days, my LinkedIn
+                  engagement skyrocketed. My posts now regularly reach 10k+
+                  views, and I've gained over 2,000 new relevant connections."
+                  <span className="block mt-2 font-medium">
+                    - Sarah Chen, Product Manager
+                  </span>
+                </p>
               </div>
             </div>
 

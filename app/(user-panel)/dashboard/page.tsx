@@ -119,7 +119,7 @@ const LinkedInChatPage = () => {
   const [isEditLoading, setIsEditLoading] = useState(false);
   const [isQueueLoading, setIsQueueLoading] = useState(false);
 
-  const { mutate, isLoading } = useMutation(
+  const { mutateAsync: generatePost, isLoading } = useMutation(
     "generatePost",
     (prompt: string) =>
       superGenerate({
@@ -173,7 +173,7 @@ const LinkedInChatPage = () => {
       return;
     }
 
-    mutate(prompt.trim());
+    generatePost(prompt.trim());
   };
 
   const handleEditInEditor = async () => {
@@ -254,79 +254,85 @@ const LinkedInChatPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Subtle Background Pattern */}
-      <div className="fixed inset-0 bg-grid-neutral-100/25 [mask-image:radial-gradient(white,transparent)] pointer-events-none" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
+      {/* Enhanced Background Pattern */}
+      <div className="fixed inset-0">
+        <div className="absolute inset-0 bg-grid-neutral-100/25 [mask-image:radial-gradient(white,transparent)] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/30 pointer-events-none" />
+      </div>
 
       <div
         className={cn(
-          "relative transition-all duration-500 min-h-screen",
+          "relative transition-all duration-700 ease-in-out min-h-screen",
           generatedContent
-            ? "lg:grid lg:grid-cols-[1.5fr,1fr]"
+            ? "lg:grid lg:grid-cols-[1.5fr,1fr] gap-6"
             : "flex justify-center"
         )}
       >
-        {/* Left Section - Input */}
+        {/* Left Section - Enhanced Input */}
         <div
           className={cn(
             "flex-1 relative px-4 sm:px-8 lg:px-16 py-8 lg:py-16",
             generatedContent &&
-              "lg:border-r border-neutral-200/50 bg-white/60 backdrop-blur-lg"
+              "lg:border-r border-neutral-200/50 bg-white/60 backdrop-blur-lg shadow-[1px_0_0_rgba(0,0,0,0.02)]"
           )}
         >
           <div className="max-w-3xl mx-auto">
-            {/* Header */}
+            {/* Enhanced Header Animation */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className={cn(
-                "mt-6 space-y-4",
-                !generatedContent && "text-center"
-              )}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+              className={cn("mt-6 space-y-6", !generatedContent && "text-center")}
             >
               <h1
                 className={cn(
-                  "font-medium tracking-tight text-neutral-900 whitespace-pre-wrap",
+                  "font-medium tracking-tight text-neutral-900 whitespace-pre-wrap leading-tight",
                   generatedContent
                     ? "text-3xl lg:text-4xl"
                     : "text-4xl lg:text-5xl"
                 )}
               >
-                <span className="text-neutral-800">What would you like to</span>{" "}
-                <span className="relative">
-                  <span className="relative z-10 text-blue-500 font-semibold">
-                    post today?
+                <span className="text-neutral-800">Create your next</span>{" "}
+                <span className="relative inline-block">
+                  <span className="relative z-10 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent font-semibold">
+                    LinkedIn post
                   </span>
-                  <span className="absolute -bottom-2 left-0 right-0 h-3 bg-blue-100/40 -skew-x-6 rounded-full" />
+                  <span className="absolute -bottom-2 left-0 right-0 h-3 bg-blue-100/40 -skew-x-6 rounded-full blur-sm" />
                 </span>
               </h1>
+              <p className="text-neutral-500 text-lg max-w-2xl mx-auto">
+                Craft engaging content that resonates with your professional network
+              </p>
             </motion.div>
 
-            {/* Input Section */}
+            {/* Enhanced Input Section */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
               className="mt-16"
             >
               <div className="relative">
                 <div className="relative group">
-                  <div className="absolute -inset-3 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-[35px] blur-2xl opacity-5 group-hover:opacity-20 transition-all duration-1000 group-hover:duration-200 animate-gradient"></div>
-                  <div className="relative p-[1px] rounded-[35px] bg-gradient-to-r from-blue-200 via-indigo-200 to-purple-200 transition-all duration-500">
-                    <div className="relative bg-white rounded-[35px] transition-all duration-500">
-                      <Textarea
+                  <div className="absolute -inset-3 bg-gradient-to-r from-blue-500/5 via-indigo-500/5 to-purple-500/5 rounded-[35px] blur-2xl opacity-0 group-hover:opacity-100 transition-all duration-1000 group-hover:duration-200 animate-gradient"></div>
+                  <div className="relative p-[1px] rounded-[35px] bg-gradient-to-r from-neutral-200 via-neutral-100 to-neutral-200 transition-all duration-500 group-hover:from-blue-200 group-hover:via-indigo-200 group-hover:to-purple-200">
+                    <div className="relative bg-white rounded-[35px] transition-all duration-500 group-hover:shadow-lg">
+                      <textarea
                         value={prompt}
                         onChange={(e) => setPrompt(e.target.value)}
-                        placeholder="What would you like to post about? Describe your topic or message..."
-                        className="w-full min-h-[90px] resize-none bg-transparent text-neutral-900 placeholder:text-neutral-400 rounded-[30px] border-0 focus:ring-2 focus:ring-blue-500/30 p-6 pr-[140px] text-sm transition-all duration-300"
+                        placeholder="What would you like to share with your network today? Describe your topic or message..."
+                        className="w-full min-h-[120px] resize-none bg-transparent text-neutral-700 placeholder:text-neutral-400 rounded-[30px] border-0 focus:outline-none focus:ring-0 p-7 pr-[140px] text-base transition-all duration-500 selection:bg-blue-50 focus:shadow-[0_0_30px_rgba(59,130,246,0.15)]"
+                        style={{
+                          boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.02)",
+                        }}
                       />
                       <div className="absolute right-4 inset-y-0 flex items-center">
                         <GradientButton
                           onClick={handleGenerate}
                           disabled={isLoading}
                           variant="primary"
-                          className="relative h-12 w-12 rounded-full text-sm font-medium flex items-center justify-center"
+                          className="relative h-14 w-14 rounded-full text-sm font-medium flex items-center justify-center bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 hover:from-blue-600 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                         >
                           <div className="relative flex items-center justify-center">
                             {isLoading ? (
@@ -337,10 +343,10 @@ const LinkedInChatPage = () => {
                                   repeat: Infinity,
                                   ease: "linear",
                                 }}
-                                className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
+                                className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
                               />
                             ) : (
-                              <ArrowRight className="w-5 h-5" />
+                              <ArrowRight className="w-6 h-6 text-white" />
                             )}
                           </div>
                         </GradientButton>
@@ -349,120 +355,119 @@ const LinkedInChatPage = () => {
                   </div>
                 </div>
 
-                {/* Options Section */}
-                <div className="mt-8 grid grid-cols-3 gap-6">
-                  {/* Category */}
-                  <div className="space-y-2.5 bg-gradient-to-br from-blue-50/50 via-blue-50/30 to-white backdrop-blur-xl p-4 rounded-2xl border-2 border-blue-200/50 hover:border-blue-300/50 group hover:translate-y-[-2px] transition-all duration-300">
-                    <label className="text-xs font-medium text-blue-600">
-                      Category
-                    </label>
-                    <Select value={category} onValueChange={setCategory}>
-                      <SelectTrigger className="w-full h-9 text-xs bg-white/70 border border-blue-100/50 text-blue-700">
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categoryOptions.map((option) => (
-                          <SelectItem
-                            key={option.value}
-                            value={option.value}
-                            className="text-xs"
-                          >
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Tone */}
-                  <div className="space-y-2.5 bg-gradient-to-br from-purple-50/50 via-purple-50/30 to-white backdrop-blur-xl p-4 rounded-2xl border-2 border-purple-200/50 hover:border-purple-300/50 group hover:translate-y-[-2px] transition-all duration-300">
-                    <label className="text-xs font-medium text-purple-600">
-                      Tone
-                    </label>
-                    <Select value={tone} onValueChange={setTone}>
-                      <SelectTrigger className="w-full h-9 text-xs bg-white/70 border border-purple-100/50 text-purple-700">
-                        <SelectValue placeholder="Select tone" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {toneOptions.map((option) => (
-                          <SelectItem
-                            key={option.value}
-                            value={option.value}
-                            className="text-xs"
-                          >
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Post Length */}
-                  <div className="space-y-2.5 bg-gradient-to-br from-emerald-50/50 via-emerald-50/30 to-white backdrop-blur-xl p-4 rounded-2xl border-2 border-emerald-200/50 hover:border-emerald-300/50 group hover:translate-y-[-2px] transition-all duration-300">
-                    <label className="text-xs font-medium text-emerald-600">
-                      Length
-                    </label>
-                    <Select
-                      value={postLength}
-                      onValueChange={(value: "short" | "medium" | "long") =>
-                        setPostLength(value)
-                      }
+                {/* Enhanced Options Section */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="mt-10 grid grid-cols-3 gap-6"
+                >
+                  {[
+                    {
+                      label: "Category",
+                      value: category,
+                      onChange: setCategory,
+                      options: categoryOptions,
+                      icon: "📚",
+                    },
+                    {
+                      label: "Tone",
+                      value: tone,
+                      onChange: setTone,
+                      options: toneOptions,
+                      icon: "🎭",
+                    },
+                    {
+                      label: "Length",
+                      value: postLength,
+                      onChange: (value: "short" | "medium" | "long") =>
+                        setPostLength(value),
+                      options: postLengthOptions,
+                      icon: "📏",
+                    },
+                  ].map((setting, index) => (
+                    <div
+                      key={setting.label}
+                      className="group relative"
                     >
-                      <SelectTrigger className="w-full h-9 text-xs bg-white/70 border border-emerald-100/50 text-emerald-700">
-                        <SelectValue placeholder="Select length" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {postLengthOptions.map((option) => (
-                          <SelectItem
-                            key={option.value}
-                            value={option.value}
-                            className="text-xs"
-                          >
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.1 * index }}
+                        className="space-y-2.5 bg-white rounded-2xl p-5 border border-neutral-200/50 hover:border-blue-200/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                      >
+                        <label className="text-sm font-medium text-neutral-600 flex items-center gap-2">
+                          <span>{setting.icon}</span>
+                          {setting.label}
+                        </label>
+                        <Select
+                          value={setting.value}
+                          onValueChange={setting.onChange}
+                        >
+                          <SelectTrigger className="w-full h-10 text-sm bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-50/50 transition-colors rounded-xl">
+                            <SelectValue placeholder={`Select ${setting.label.toLowerCase()}`} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {setting.options.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                                className="text-sm"
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </motion.div>
+                    </div>
+                  ))}
+                </motion.div>
               </div>
             </motion.div>
           </div>
         </div>
 
-        {/* Right Section - Preview */}
+        {/* Right Section - Enhanced Preview */}
         {generatedContent && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4 }}
-            className="relative bg-white/60 backdrop-blur-xl px-4 sm:px-8 lg:px-16 py-8 lg:py-16 overflow-y-auto"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            className="relative backdrop-blur-xl px-4 sm:px-8 lg:px-16 py-8 lg:py-16 overflow-y-auto bg-white/30"
           >
             <div className="max-w-xl mx-auto">
-              <div className="sticky top-8 space-y-10">
-                {/* Preview Header */}
-                <div className="flex items-center justify-between bg-white/90 backdrop-blur-xl p-6 rounded-2xl border border-neutral-200/50 shadow-lg hover:shadow-xl transition-all duration-300">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div className="size-2 rounded-full bg-emerald-500 animate-pulse"></div>
+              <div className="sticky top-8 space-y-8">
+                {/* Enhanced Preview Header */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="bg-white rounded-2xl shadow-sm border border-neutral-200/50"
+                >
+                  {/* Title Section */}
+                  <div className="p-5">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                       <h2 className="text-lg font-semibold text-neutral-900">
-                        Post Preview
+                        Preview
                       </h2>
                     </div>
-                    <p className="text-sm text-neutral-500">
-                      Here's how your post will appear on LinkedIn
+                    <p className="text-sm text-neutral-500 ml-5">
+                      Preview how your post will appear on LinkedIn
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
+
+                  {/* Enhanced Buttons Section */}
+                  <div className="flex items-center gap-3 p-4 border-t border-neutral-100 bg-neutral-50/50">
                     <GradientButton
                       variant="outline"
-                      size="sm"
                       onClick={handleEditInEditor}
                       disabled={isEditLoading}
-                      className="h-9 px-4 rounded-xl text-sm font-medium whitespace-nowrap bg-gradient-to-r hover:from-neutral-50 hover:to-neutral-100 border border-neutral-200/50"
+                      className="h-10 flex-1 px-4 rounded-xl text-sm font-medium bg-white hover:bg-neutral-50 border border-neutral-200 text-neutral-700 hover:border-blue-200 transition-all duration-300"
                     >
                       {isEditLoading ? (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-center gap-2">
                           <motion.div
                             animate={{ rotate: 360 }}
                             transition={{
@@ -470,23 +475,22 @@ const LinkedInChatPage = () => {
                               repeat: Infinity,
                               ease: "linear",
                             }}
-                            className="w-3.5 h-3.5 border-2 border-neutral-400/30 border-t-neutral-400 rounded-full"
+                            className="w-4 h-4 border-2 border-neutral-400/30 border-t-neutral-400 rounded-full"
                           />
                           <span>Opening Editor...</span>
                         </div>
                       ) : (
-                        "Edit in Editor"
+                        <span>Edit in Editor</span>
                       )}
                     </GradientButton>
                     <GradientButton
                       variant="primary"
-                      size="sm"
                       onClick={handleAddToQueueClick}
                       disabled={isQueueLoading}
-                      className="h-9 px-4 rounded-xl text-sm font-medium whitespace-nowrap"
+                      className="h-10 flex-1 px-4 rounded-xl text-sm font-medium bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white transform hover:scale-[1.02] transition-all duration-300"
                     >
                       {isQueueLoading ? (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-center gap-2">
                           <motion.div
                             animate={{ rotate: 360 }}
                             transition={{
@@ -494,19 +498,24 @@ const LinkedInChatPage = () => {
                               repeat: Infinity,
                               ease: "linear",
                             }}
-                            className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full"
+                            className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
                           />
                           <span>Adding to Queue...</span>
                         </div>
                       ) : (
-                        "Add to Queue"
+                        <span>Add to Queue</span>
                       )}
                     </GradientButton>
                   </div>
-                </div>
+                </motion.div>
 
-                {/* Preview Card */}
-                <div className="bg-white rounded-xl border border-neutral-200/50 shadow-lg transition-all duration-300 hover:shadow-xl">
+                {/* Enhanced Preview Card */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="transition-all duration-300 hover:shadow-xl rounded-2xl overflow-hidden"
+                >
                   <PostPreviewNotRedux
                     content={generatedContent}
                     isGenerating={isLoading}
@@ -521,7 +530,7 @@ const LinkedInChatPage = () => {
                     }}
                     status="draft"
                   />
-                </div>
+                </motion.div>
               </div>
             </div>
           </motion.div>
@@ -530,15 +539,9 @@ const LinkedInChatPage = () => {
 
       <style jsx global>{`
         @keyframes gradient {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
         }
         .animate-gradient {
           background-size: 200% 200%;

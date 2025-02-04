@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Sparkles, Clock, Users, Trophy } from "lucide-react";
+import { LinkedInCard } from "./LinkedInCard";
 
 export const ValueProps = () => {
   return (
@@ -103,42 +104,7 @@ export const ValueProps = () => {
             ))}
           </div>
 
-          {/* Right Side - Demo Image */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
-            className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-b from-white to-slate-50/80"
-          >
-            {/* Decorative Elements */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-500/5" />
-
-            {/* Demo Image */}
-            <div className="relative w-full pb-6 px-6">
-              <Image
-                src="/promptbox.png"
-                alt="AI Content Creation Interface"
-                width={800}
-                height={600}
-                className="w-full h-auto rounded-b-2xl shadow-lg"
-                priority
-              />
-
-              {/* Floating Elements */}
-              <div className="absolute top-4 right-8 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full border border-neutral-200/60 shadow-lg">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-sm font-medium text-neutral-600">
-                    AI Powered
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Extra UI Elements */}
-            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 rounded-full blur-2xl" />
-            <div className="absolute -top-6 -left-6 w-32 h-32 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-2xl" />
-          </motion.div>
+          <LinkedInCard />
         </div>
       </div>
     </section>
