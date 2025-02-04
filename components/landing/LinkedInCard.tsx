@@ -295,10 +295,10 @@ export const LinkedInCard = () => {
   );
 
   return (
-    <div className="relative flex flex-col gap-4">
+    <div className="relative flex flex-col gap-8">
       {/* BoostFury Switch */}
       <motion.div
-        className="absolute -top-12 left-0 flex items-center gap-6 z-50"
+        className="absolute -top-16 left-0"
         animate={{
           opacity: 1,
         }}
@@ -408,274 +408,278 @@ export const LinkedInCard = () => {
         </motion.button>
       </motion.div>
 
-      {/* Engagement Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        className="backdrop-blur-md bg-white/80 rounded-3xl shadow-2xl p-8 border border-white/20 w-full max-w-xl relative overflow-hidden"
-        style={{
-          background:
-            "linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)",
-        }}
-      >
-        {/* Background blur effects */}
+      <div className="flex flex-col gap-4">
+        {/* Engagement Card */}
         <motion.div
-          className="absolute -top-20 -left-20 w-40 h-40 rounded-full blur-3xl"
-          animate={{
-            backgroundColor: isBoostFuryEnabled
-              ? "rgba(59, 130, 246, 0.1)"
-              : "rgba(107, 114, 128, 0.1)",
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="backdrop-blur-md bg-white/80 rounded-3xl shadow-2xl p-8 border border-white/20 w-full max-w-xl relative overflow-hidden"
+          style={{
+            background:
+              "linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)",
           }}
-        />
-        <motion.div
-          className="absolute -bottom-20 -right-20 w-40 h-40 rounded-full blur-3xl"
-          animate={{
-            backgroundColor: isBoostFuryEnabled
-              ? "rgba(139, 92, 246, 0.1)"
-              : "rgba(107, 114, 128, 0.1)",
-          }}
-        />
+        >
+          {/* Background blur effects */}
+          <motion.div
+            className="absolute -top-20 -left-20 w-40 h-40 rounded-full blur-3xl"
+            animate={{
+              backgroundColor: isBoostFuryEnabled
+                ? "rgba(59, 130, 246, 0.1)"
+                : "rgba(107, 114, 128, 0.1)",
+            }}
+          />
+          <motion.div
+            className="absolute -bottom-20 -right-20 w-40 h-40 rounded-full blur-3xl"
+            animate={{
+              backgroundColor: isBoostFuryEnabled
+                ? "rgba(139, 92, 246, 0.1)"
+                : "rgba(107, 114, 128, 0.1)",
+            }}
+          />
 
-        {/* Reactions Section */}
-        <div className="relative">
-          <div className="flex items-center gap-4">
-            <div className="flex -space-x-3 relative">
-              {/* Floating Icons */}
-              <AnimatePresence>
-                {isBoostFuryEnabled &&
-                  floatingIcons.map((id) => <FloatingIcon key={id} id={id} />)}
-              </AnimatePresence>
+          {/* Reactions Section */}
+          <div className="relative">
+            <div className="flex items-center gap-4">
+              <div className="flex -space-x-3 relative">
+                {/* Floating Icons */}
+                <AnimatePresence>
+                  {isBoostFuryEnabled &&
+                    floatingIcons.map((id) => (
+                      <FloatingIcon key={id} id={id} />
+                    ))}
+                </AnimatePresence>
 
-              {/* Reaction icons */}
-              <motion.div
-                className="w-10 h-10 rounded-full border-3 border-white flex items-center justify-center shadow-xl z-30"
-                animate={{
-                  scale:
-                    showGrowthIndicator.likes && isBoostFuryEnabled
-                      ? [1, 1.5, 1]
-                      : 1,
-                  rotate:
-                    showGrowthIndicator.likes && isBoostFuryEnabled
-                      ? [0, -10, 10, 0]
-                      : 0,
-                  backgroundColor: isBoostFuryEnabled ? "#3B82F6" : "#9CA3AF",
-                }}
-                transition={{ duration: 0.5 }}
-              >
-                <ThumbsUp className="w-5 h-5 text-white" />
-              </motion.div>
-              <motion.div
-                className="w-10 h-10 rounded-full bg-red-500 border-3 border-white flex items-center justify-center shadow-xl z-20"
-                animate={{
-                  scale:
-                    showGrowthIndicator.likes && isBoostFuryEnabled
-                      ? [1, 1.5, 1]
-                      : 1,
-                  rotate:
-                    showGrowthIndicator.likes && isBoostFuryEnabled
-                      ? [0, -10, 10, 0]
-                      : 0,
-                }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-              >
-                <span className="text-base text-white">❤</span>
-              </motion.div>
-              <motion.div
-                className="w-10 h-10 rounded-full bg-yellow-500 border-3 border-white flex items-center justify-center shadow-xl z-10"
-                animate={{
-                  scale:
-                    showGrowthIndicator.likes && isBoostFuryEnabled
-                      ? [1, 1.5, 1]
-                      : 1,
-                  rotate:
-                    showGrowthIndicator.likes && isBoostFuryEnabled
-                      ? [0, -10, 10, 0]
-                      : 0,
-                }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <span className="text-base text-white">👏</span>
-              </motion.div>
-            </div>
-            <motion.div
-              className="flex items-center gap-2"
-              animate={{
-                scale:
-                  showGrowthIndicator.likes && isBoostFuryEnabled
-                    ? [1, 1.1, 1]
-                    : 1,
-              }}
-              transition={{ duration: 0.5 }}
-            >
-              <motion.span className="text-base text-gray-700 px-4 py-2 rounded-full bg-gray-100/80 backdrop-blur-sm">
-                <motion.span
-                  id="likes-counter"
-                  className="font-bold text-xl text-gray-900"
+                {/* Reaction icons */}
+                <motion.div
+                  className="w-10 h-10 rounded-full border-3 border-white flex items-center justify-center shadow-xl z-30"
                   animate={{
                     scale:
                       showGrowthIndicator.likes && isBoostFuryEnabled
-                        ? [1, 1.6, 1]
+                        ? [1, 1.5, 1]
                         : 1,
-                    color:
+                    rotate:
                       showGrowthIndicator.likes && isBoostFuryEnabled
-                        ? ["#111827", "#2563EB", "#111827"]
-                        : "#111827",
+                        ? [0, -10, 10, 0]
+                        : 0,
+                    backgroundColor: isBoostFuryEnabled ? "#3B82F6" : "#9CA3AF",
                   }}
-                  transition={{
-                    duration: 0.5,
-                    ease: "easeOut",
-                  }}
+                  transition={{ duration: 0.5 }}
                 >
-                  {likes}
-                </motion.span>{" "}
-                others
-              </motion.span>
-            </motion.div>
-            <motion.div
-              className="ml-auto flex items-center gap-3 px-6 py-2 rounded-full bg-gray-100/80 backdrop-blur-sm"
-              animate={{
-                scale:
-                  showGrowthIndicator.comments && isBoostFuryEnabled
-                    ? [1, 1.1, 1]
-                    : 1,
-              }}
-              transition={{ duration: 0.5 }}
-            >
-              <motion.span
+                  <ThumbsUp className="w-5 h-5 text-white" />
+                </motion.div>
+                <motion.div
+                  className="w-10 h-10 rounded-full bg-red-500 border-3 border-white flex items-center justify-center shadow-xl z-20"
+                  animate={{
+                    scale:
+                      showGrowthIndicator.likes && isBoostFuryEnabled
+                        ? [1, 1.5, 1]
+                        : 1,
+                    rotate:
+                      showGrowthIndicator.likes && isBoostFuryEnabled
+                        ? [0, -10, 10, 0]
+                        : 0,
+                  }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                >
+                  <span className="text-base text-white">❤</span>
+                </motion.div>
+                <motion.div
+                  className="w-10 h-10 rounded-full bg-yellow-500 border-3 border-white flex items-center justify-center shadow-xl z-10"
+                  animate={{
+                    scale:
+                      showGrowthIndicator.likes && isBoostFuryEnabled
+                        ? [1, 1.5, 1]
+                        : 1,
+                    rotate:
+                      showGrowthIndicator.likes && isBoostFuryEnabled
+                        ? [0, -10, 10, 0]
+                        : 0,
+                  }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  <span className="text-base text-white">👏</span>
+                </motion.div>
+              </div>
+              <motion.div
                 className="flex items-center gap-2"
+                animate={{
+                  scale:
+                    showGrowthIndicator.likes && isBoostFuryEnabled
+                      ? [1, 1.1, 1]
+                      : 1,
+                }}
+                transition={{ duration: 0.5 }}
+              >
+                <motion.span className="text-base text-gray-700 px-4 py-2 rounded-full bg-gray-100/80 backdrop-blur-sm">
+                  <motion.span
+                    id="likes-counter"
+                    className="font-bold text-xl text-gray-900"
+                    animate={{
+                      scale:
+                        showGrowthIndicator.likes && isBoostFuryEnabled
+                          ? [1, 1.6, 1]
+                          : 1,
+                      color:
+                        showGrowthIndicator.likes && isBoostFuryEnabled
+                          ? ["#111827", "#2563EB", "#111827"]
+                          : "#111827",
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      ease: "easeOut",
+                    }}
+                  >
+                    {likes}
+                  </motion.span>{" "}
+                  others
+                </motion.span>
+              </motion.div>
+              <motion.div
+                className="ml-auto flex items-center gap-3 px-6 py-2 rounded-full bg-gray-100/80 backdrop-blur-sm"
                 animate={{
                   scale:
                     showGrowthIndicator.comments && isBoostFuryEnabled
-                      ? [1, 1.2, 1]
+                      ? [1, 1.1, 1]
                       : 1,
                 }}
+                transition={{ duration: 0.5 }}
               >
-                <MessageCircle className="w-5 h-5 text-gray-600" />
-                <span
-                  id="comments-counter"
-                  className="text-base text-gray-700 font-medium"
+                <motion.span
+                  className="flex items-center gap-2"
+                  animate={{
+                    scale:
+                      showGrowthIndicator.comments && isBoostFuryEnabled
+                        ? [1, 1.2, 1]
+                        : 1,
+                  }}
                 >
-                  {comments}
-                </span>
-              </motion.span>
-              <span className="text-gray-400">•</span>
-              <motion.span
-                className="flex items-center gap-2"
-                animate={{
-                  scale:
-                    showGrowthIndicator.reposts && isBoostFuryEnabled
-                      ? [1, 1.2, 1]
-                      : 1,
-                }}
-              >
-                <Repeat2 className="w-5 h-5 text-gray-600" />
-                <span
-                  id="reposts-counter"
-                  className="text-base text-gray-700 font-medium"
+                  <MessageCircle className="w-5 h-5 text-gray-600" />
+                  <span
+                    id="comments-counter"
+                    className="text-base text-gray-700 font-medium"
+                  >
+                    {comments}
+                  </span>
+                </motion.span>
+                <span className="text-gray-400">•</span>
+                <motion.span
+                  className="flex items-center gap-2"
+                  animate={{
+                    scale:
+                      showGrowthIndicator.reposts && isBoostFuryEnabled
+                        ? [1, 1.2, 1]
+                        : 1,
+                  }}
                 >
-                  {reposts}
-                </span>
-              </motion.span>
+                  <Repeat2 className="w-5 h-5 text-gray-600" />
+                  <span
+                    id="reposts-counter"
+                    className="text-base text-gray-700 font-medium"
+                  >
+                    {reposts}
+                  </span>
+                </motion.span>
+              </motion.div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Network Growth Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="backdrop-blur-md bg-white/80 rounded-3xl shadow-2xl p-8 border border-white/20 w-full max-w-xl relative overflow-hidden"
+          style={{
+            background:
+              "linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)",
+          }}
+        >
+          <div className="relative">
+            <motion.div
+              className="grid grid-cols-2 gap-8"
+              animate={{
+                opacity: isBoostFuryEnabled ? 1 : 0.7,
+              }}
+            >
+              {/* Followers Section */}
+              <div className="text-center border-r border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                  Followers
+                </h3>
+                <motion.div
+                  className="text-4xl font-bold"
+                  animate={{
+                    scale:
+                      showGrowthIndicator.followers && isBoostFuryEnabled
+                        ? [1, 1.2, 1]
+                        : 1,
+                    color: isBoostFuryEnabled ? "#111827" : "#6B7280",
+                  }}
+                >
+                  <span id="followers-counter">0</span>
+                </motion.div>
+                <motion.p
+                  className="text-sm mt-1"
+                  animate={{
+                    color: isBoostFuryEnabled ? "#6B7280" : "#9CA3AF",
+                  }}
+                >
+                  New Followers
+                </motion.p>
+                {isBoostFuryEnabled && (
+                  <motion.div
+                    className="text-green-500 flex items-center gap-1 justify-center mt-2"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                  >
+                    <TrendingUp className="w-4 h-4" />
+                    <span className="text-sm font-medium">Growing</span>
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Connections Section */}
+              <div className="text-center">
+                <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                  Connections
+                </h3>
+                <motion.div
+                  className="text-4xl font-bold"
+                  animate={{
+                    scale:
+                      showGrowthIndicator.connections && isBoostFuryEnabled
+                        ? [1, 1.2, 1]
+                        : 1,
+                    color: isBoostFuryEnabled ? "#111827" : "#6B7280",
+                  }}
+                >
+                  <span id="connections-counter">0</span>
+                </motion.div>
+                <motion.p
+                  className="text-sm mt-1"
+                  animate={{
+                    color: isBoostFuryEnabled ? "#6B7280" : "#9CA3AF",
+                  }}
+                >
+                  New Connections
+                </motion.p>
+                {isBoostFuryEnabled && (
+                  <motion.div
+                    className="text-green-500 flex items-center gap-1 justify-center mt-2"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                  >
+                    <TrendingUp className="w-4 h-4" />
+                    <span className="text-sm font-medium">Growing</span>
+                  </motion.div>
+                )}
+              </div>
             </motion.div>
           </div>
-        </div>
-      </motion.div>
-
-      {/* Network Growth Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        className="backdrop-blur-md bg-white/80 rounded-3xl shadow-2xl p-8 border border-white/20 w-full max-w-xl relative overflow-hidden"
-        style={{
-          background:
-            "linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)",
-        }}
-      >
-        <div className="relative">
-          <motion.div
-            className="grid grid-cols-2 gap-8"
-            animate={{
-              opacity: isBoostFuryEnabled ? 1 : 0.7,
-            }}
-          >
-            {/* Followers Section */}
-            <div className="text-center border-r border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                Followers
-              </h3>
-              <motion.div
-                className="text-4xl font-bold"
-                animate={{
-                  scale:
-                    showGrowthIndicator.followers && isBoostFuryEnabled
-                      ? [1, 1.2, 1]
-                      : 1,
-                  color: isBoostFuryEnabled ? "#111827" : "#6B7280",
-                }}
-              >
-                <span id="followers-counter">0</span>
-              </motion.div>
-              <motion.p
-                className="text-sm mt-1"
-                animate={{
-                  color: isBoostFuryEnabled ? "#6B7280" : "#9CA3AF",
-                }}
-              >
-                New Followers
-              </motion.p>
-              {isBoostFuryEnabled && (
-                <motion.div
-                  className="text-green-500 flex items-center gap-1 justify-center mt-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                >
-                  <TrendingUp className="w-4 h-4" />
-                  <span className="text-sm font-medium">Growing</span>
-                </motion.div>
-              )}
-            </div>
-
-            {/* Connections Section */}
-            <div className="text-center">
-              <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                Connections
-              </h3>
-              <motion.div
-                className="text-4xl font-bold"
-                animate={{
-                  scale:
-                    showGrowthIndicator.connections && isBoostFuryEnabled
-                      ? [1, 1.2, 1]
-                      : 1,
-                  color: isBoostFuryEnabled ? "#111827" : "#6B7280",
-                }}
-              >
-                <span id="connections-counter">0</span>
-              </motion.div>
-              <motion.p
-                className="text-sm mt-1"
-                animate={{
-                  color: isBoostFuryEnabled ? "#6B7280" : "#9CA3AF",
-                }}
-              >
-                New Connections
-              </motion.p>
-              {isBoostFuryEnabled && (
-                <motion.div
-                  className="text-green-500 flex items-center gap-1 justify-center mt-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                >
-                  <TrendingUp className="w-4 h-4" />
-                  <span className="text-sm font-medium">Growing</span>
-                </motion.div>
-              )}
-            </div>
-          </motion.div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 };
