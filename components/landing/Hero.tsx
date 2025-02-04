@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Bot, Sparkles } from "lucide-react";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
-import HeroVideoDialog from "@/components/ui/hero-video-dialog";
+import { LinkedInCard } from "./LinkedInCard";
 
 const floatKeyframes = `
   @keyframes float {
@@ -53,61 +53,50 @@ export const Hero = () => {
       </div>
 
       <div className="relative max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center max-w-4xl mx-auto"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-sm font-medium mb-8">
-            <Sparkles className="w-4 h-4" />
-            10X Your LinkedIn Growth
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-left lg:max-w-2xl"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-sm font-medium mb-8">
+              <Sparkles className="w-4 h-4" />
+              10X Your LinkedIn Growth
+            </div>
 
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-neutral-900 tracking-tight mb-8">
-            Craft{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-              Viral LinkedIn Posts
-            </span>{" "}
-            in Seconds
-          </h1>
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-neutral-900 tracking-tight mb-8">
+              Craft{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+                Viral LinkedIn Posts
+              </span>{" "}
+              in Seconds
+            </h1>
 
-          <p className="text-xl text-neutral-600 mb-12 max-w-2xl mx-auto">
-            Stop spending hours on content creation. Our AI writes engaging
-            posts that attract high-value connections, generate leads, and build
-            your personal brand.
-          </p>
+            <p className="text-xl text-neutral-600 mb-12">
+              Stop spending hours on content creation. Our AI writes engaging
+              posts that attract high-value connections, generate leads, and
+              build your personal brand.
+            </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/dashboard">
-              <ShimmerButton
-                className="w-full sm:w-auto h-14 px-8 rounded-2xl text-lg font-medium"
-                background="linear-gradient(110deg, #2563eb, #4f46e5)"
-              >
-                <div className="flex items-center gap-2">
-                  <Bot className="w-5 h-5" />
-                  Start Creating for Free
-                </div>
-              </ShimmerButton>
-            </Link>
-          </div>
-        </motion.div>
+            <div className="flex items-center gap-4">
+              <Link href="/dashboard">
+                <ShimmerButton
+                  className="w-full sm:w-auto h-14 px-8 rounded-2xl text-lg font-medium"
+                  background="linear-gradient(110deg, #2563eb, #4f46e5)"
+                >
+                  <div className="flex items-center gap-2">
+                    <Bot className="w-5 h-5" />
+                    Start Creating for Free
+                  </div>
+                </ShimmerButton>
+              </Link>
+            </div>
+          </motion.div>
 
-        {/* Dashboard Preview */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="mt-16 relative"
-        >
-          <HeroVideoDialog
-            videoSrc="https://www.youtube.com/embed/your-video-id"
-            thumbnailSrc="/demo.png"
-            thumbnailAlt="BoostFury AI Demo"
-            animationStyle="from-bottom"
-            className="w-full max-w-5xl mx-auto"
-          />
-        </motion.div>
+          {/* LinkedIn Card */}
+          <LinkedInCard />
+        </div>
       </div>
     </section>
   );
