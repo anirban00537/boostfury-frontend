@@ -8,29 +8,29 @@ import { LinkedInCard } from "./LinkedInCard";
 
 export const ValueProps = () => {
   return (
-    <section className="py-20 px-4 bg-gradient-to-b from-white to-slate-50/50">
+    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-slate-50/50">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-10 sm:mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600">
               The smartest way
             </span>{" "}
-            to grow on LinkedIn
+            <span className="block sm:inline mt-1 sm:mt-0">to grow on LinkedIn</span>
           </h2>
-          <p className="mt-4 text-xl text-neutral-600 max-w-2xl mx-auto">
+          <p className="mt-3 sm:mt-4 text-lg sm:text-xl text-neutral-600 max-w-2xl mx-auto px-4 sm:px-6">
             Create content that's engineered for maximum engagement and
             professional growth
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-start lg:items-center">
           {/* Left Side - Value Props */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {[
               {
                 title: "Go viral, effortlessly",
@@ -77,21 +77,21 @@ export const ValueProps = () => {
                 className="relative group"
               >
                 <div
-                  className={`relative overflow-hidden rounded-2xl border ${item.borderColor} bg-white p-6 hover:shadow-lg transition-all duration-500`}
+                  className={`relative overflow-hidden rounded-xl sm:rounded-2xl border ${item.borderColor} bg-white p-4 sm:p-6 hover:shadow-lg transition-all duration-500`}
                 >
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-3 sm:gap-4">
                     <div className="flex-shrink-0">
                       <div
-                        className={`w-12 h-12 rounded-xl bg-gradient-to-r ${item.gradient} flex items-center justify-center`}
+                        className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-r ${item.gradient} flex items-center justify-center`}
                       >
-                        <item.icon className="w-6 h-6 text-white" />
+                        <item.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-neutral-900 mb-2">
+                      <h3 className="text-lg sm:text-xl font-semibold text-neutral-900 mb-1 sm:mb-2">
                         {item.title}
                       </h3>
-                      <p className="text-neutral-600 leading-relaxed">
+                      <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
                         {item.description}
                       </p>
                     </div>
@@ -104,7 +104,10 @@ export const ValueProps = () => {
             ))}
           </div>
 
-          <LinkedInCard />
+          {/* Right Side - LinkedIn Card */}
+          <div className="lg:sticky lg:top-8">
+            <LinkedInCard />
+          </div>
         </div>
       </div>
     </section>

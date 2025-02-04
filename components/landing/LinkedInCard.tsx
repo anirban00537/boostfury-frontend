@@ -80,9 +80,9 @@ const MetricCounter: React.FC<MetricCounterProps> = ({
   isEnabled,
 }) => {
   return (
-    <div className="text-center h-[160px] flex flex-col justify-center relative">
+    <div className="text-center h-[120px] sm:h-[160px] flex flex-col justify-center relative">
       <motion.div
-        className="text-5xl font-medium tabular-nums leading-none"
+        className="text-3xl sm:text-4xl lg:text-5xl font-medium tabular-nums leading-none"
         style={{
           color: isEnabled ? "#111827" : "#9CA3AF",
         }}
@@ -90,14 +90,14 @@ const MetricCounter: React.FC<MetricCounterProps> = ({
         {value.toLocaleString()}
       </motion.div>
       <motion.p
-        className="text-sm mt-2"
+        className="text-xs sm:text-sm mt-2"
         animate={{
           color: isEnabled ? "#6B7280" : "#D1D5DB",
         }}
       >
         {label}
       </motion.p>
-      <div className="h-6 mt-2">
+      <div className="h-4 sm:h-6 mt-1 sm:mt-2">
         {isEnabled && isGrowing && (
           <motion.div
             className="text-green-500 flex items-center gap-1 justify-center"
@@ -105,8 +105,8 @@ const MetricCounter: React.FC<MetricCounterProps> = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
           >
-            <TrendingUp className="w-4 h-4" />
-            <span className="text-sm font-medium">Growing</span>
+            <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="text-xs sm:text-sm font-medium">Growing</span>
           </motion.div>
         )}
       </div>
@@ -123,9 +123,9 @@ const ReactionButton = ({
   color: string;
   isEnabled: boolean;
 }) => (
-  <div className="w-12 h-12 relative">
+  <div className="w-8 h-8 sm:w-12 sm:h-12 relative">
     <motion.div
-      className="w-12 h-12 rounded-full border-2 border-white flex items-center justify-center shadow-lg absolute"
+      className="w-8 h-8 sm:w-12 sm:h-12 rounded-full border-2 border-white flex items-center justify-center shadow-lg absolute"
       animate={{
         backgroundColor: isEnabled ? color : "#E5E7EB",
       }}
@@ -260,11 +260,11 @@ export const LinkedInCard = () => {
   }, [isBoostFuryEnabled]);
 
   return (
-    <div className="relative flex flex-col gap-8 max-w-xl mx-auto">
+    <div className="relative flex flex-col gap-4 sm:gap-8 max-w-xl mx-auto px-4 sm:px-0">
       {/* BoostFury Toggle */}
       <motion.button
         onClick={() => setIsBoostFuryEnabled((prev) => !prev)}
-        className="group flex items-center justify-center gap-6 px-8 py-4 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-100/50 shadow-lg shadow-blue-500/5 hover:shadow-blue-500/10 transition-all duration-300 mx-auto w-full max-w-md"
+        className="group flex items-center justify-center gap-3 sm:gap-6 px-4 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-100/50 shadow-lg shadow-blue-500/5 hover:shadow-blue-500/10 transition-all duration-300 mx-auto w-full max-w-md"
         variants={cardVariants}
         initial="hidden"
         animate="visible"
@@ -272,20 +272,19 @@ export const LinkedInCard = () => {
         whileTap={{ scale: 0.99 }}
       >
         <motion.div
-          className="w-10 h-10"
+          className="w-8 h-8 sm:w-10 sm:h-10"
           animate={{ opacity: isBoostFuryEnabled ? 1 : 0.5 }}
         >
           <img
             src="/LinkedIn_icon.png"
             alt="LinkedIn Icon"
-            className="w-10 h-10"
+            className="w-8 h-8 sm:w-10 sm:h-10"
           />
         </motion.div>
 
-
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <motion.div
-            className="w-12 h-7 rounded-full relative p-1"
+            className="w-10 sm:w-12 h-6 sm:h-7 rounded-full relative p-1"
             style={{
               background: isBoostFuryEnabled
                 ? "rgba(34, 197, 94, 0.1)"
@@ -293,23 +292,23 @@ export const LinkedInCard = () => {
             }}
           >
             <motion.div
-              className="w-5 h-5 rounded-full absolute"
+              className="w-4 sm:w-5 h-4 sm:h-5 rounded-full absolute"
               animate={{
                 backgroundColor: isBoostFuryEnabled ? "#22C55E" : "#D1D5DB",
-                left: isBoostFuryEnabled ? "24px" : "4px",
+                left: isBoostFuryEnabled ? "20px" : "4px",
               }}
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
             />
           </motion.div>
           <div className="flex flex-col items-start">
             <motion.span
-              className="text-base font-medium"
+              className="text-sm sm:text-base font-medium"
               animate={{ color: isBoostFuryEnabled ? "#16A34A" : "#6B7280" }}
             >
               BoostFury {isBoostFuryEnabled ? "Enabled" : "Disabled"}
             </motion.span>
             <motion.span
-              className="text-sm"
+              className="text-xs sm:text-sm"
               animate={{ color: isBoostFuryEnabled ? "#22C55E" : "#9CA3AF" }}
             >
               {isBoostFuryEnabled
@@ -325,51 +324,51 @@ export const LinkedInCard = () => {
         variants={cardVariants}
         initial="hidden"
         animate="visible"
-        className="rounded-3xl bg-white/80 backdrop-blur-sm border border-gray-100/50 shadow-lg shadow-blue-500/5 p-8 min-h-[120px] overflow-hidden"
+        className="rounded-2xl sm:rounded-3xl bg-white/80 backdrop-blur-sm border border-gray-100/50 shadow-lg shadow-blue-500/5 p-4 sm:p-8 min-h-[100px] sm:min-h-[120px] overflow-hidden"
       >
-        <div className="flex items-center justify-between gap-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
           {/* Reactions */}
-          <div className="flex items-center gap-4 min-w-0">
-            <div className="flex -space-x-2 relative h-12">
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0 w-full sm:w-auto">
+            <div className="flex -space-x-1 sm:-space-x-2 relative h-8 sm:h-12">
               <ReactionButton
-                icon={<ThumbsUp className="w-6 h-6 text-white" />}
+                icon={<ThumbsUp className="w-4 h-4 sm:w-6 sm:h-6 text-white" />}
                 color="#0A66C2"
                 isEnabled={isBoostFuryEnabled}
               />
               <ReactionButton
-                icon={<span className="text-lg text-white">❤</span>}
+                icon={<span className="text-base sm:text-lg text-white">❤</span>}
                 color="#EF4444"
                 isEnabled={isBoostFuryEnabled}
               />
               <ReactionButton
-                icon={<span className="text-lg text-white">👏</span>}
+                icon={<span className="text-base sm:text-lg text-white">👏</span>}
                 color="#F59E0B"
                 isEnabled={isBoostFuryEnabled}
               />
             </div>
 
-            <div className="flex items-center min-w-0">
-              <span className="text-base text-gray-600 px-6 py-3 rounded-full bg-gradient-to-r from-gray-50/90 to-white/90 border border-gray-100/50 shadow-sm whitespace-nowrap">
-                <span className="font-medium text-2xl text-gray-900 tabular-nums">
+            <div className="flex items-center min-w-0 flex-1 sm:flex-none">
+              <span className="text-sm sm:text-base text-gray-600 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-gray-50/90 to-white/90 border border-gray-100/50 shadow-sm whitespace-nowrap">
+                <span className="font-medium text-lg sm:text-2xl text-gray-900 tabular-nums">
                   {metrics.likes.toLocaleString()}
                 </span>{" "}
-                others
+                <span className="hidden sm:inline">others</span>
               </span>
             </div>
           </div>
 
           {/* Engagement Metrics */}
-          <div className="flex items-center gap-4 px-6 py-3 rounded-full bg-gradient-to-r from-gray-50/90 to-white/90 border border-gray-100/50 shadow-sm whitespace-nowrap">
-            <span className="flex items-center gap-3">
-              <MessageCircle className="w-5 h-5 text-gray-400 flex-shrink-0" />
-              <span className="text-base text-gray-600 font-medium tabular-nums">
+          <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-gray-50/90 to-white/90 border border-gray-100/50 shadow-sm whitespace-nowrap w-full sm:w-auto justify-center sm:justify-start">
+            <span className="flex items-center gap-2 sm:gap-3">
+              <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" />
+              <span className="text-sm sm:text-base text-gray-600 font-medium tabular-nums">
                 {metrics.comments.toLocaleString()}
               </span>
             </span>
             <span className="text-gray-300">•</span>
-            <span className="flex items-center gap-3">
-              <Repeat2 className="w-5 h-5 text-gray-400 flex-shrink-0" />
-              <span className="text-base text-gray-600 font-medium tabular-nums">
+            <span className="flex items-center gap-2 sm:gap-3">
+              <Repeat2 className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" />
+              <span className="text-sm sm:text-base text-gray-600 font-medium tabular-nums">
                 {metrics.reposts.toLocaleString()}
               </span>
             </span>
@@ -382,10 +381,10 @@ export const LinkedInCard = () => {
         variants={cardVariants}
         initial="hidden"
         animate="visible"
-        className="rounded-3xl bg-white/80 backdrop-blur-sm border border-gray-100/50 shadow-lg shadow-blue-500/5 p-8 min-h-[200px]"
+        className="rounded-2xl sm:rounded-3xl bg-white/80 backdrop-blur-sm border border-gray-100/50 shadow-lg shadow-blue-500/5 p-4 sm:p-8 min-h-[160px] sm:min-h-[200px]"
       >
         <motion.div
-          className="grid grid-cols-2 gap-16"
+          className="grid grid-cols-2 gap-4 sm:gap-16"
           animate={{ opacity: isBoostFuryEnabled ? 1 : 0.7 }}
         >
           <div className="border-r border-gray-100/50">

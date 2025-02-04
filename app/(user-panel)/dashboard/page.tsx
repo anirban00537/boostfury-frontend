@@ -293,10 +293,10 @@ const LinkedInChatPage = () => {
                     : "text-4xl lg:text-5xl"
                 )}
               >
-                <span className="text-neutral-800">Create your next</span>{" "}
+                <span className="text-neutral-800">What would you like to </span>
                 <span className="relative inline-block">
                   <span className="relative z-10 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent font-semibold">
-                    LinkedIn post
+                    Post Today?
                   </span>
                   <span className="absolute -bottom-2 left-0 right-0 h-3 bg-blue-100/40 -skew-x-6 rounded-full blur-sm" />
                 </span>
