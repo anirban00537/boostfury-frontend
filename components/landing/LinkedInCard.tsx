@@ -296,51 +296,93 @@ export const LinkedInCard = () => {
 
   return (
     <div className="relative flex flex-col gap-4">
-      {/* BoostFury Indicator */}
+      {/* BoostFury Switch */}
       <motion.div
-        className="absolute -top-12 left-0 flex items-center gap-3 z-50"
+        className="absolute -top-12 left-0 flex items-center gap-6 z-50"
         animate={{
-          opacity: isBoostFuryEnabled ? 1 : 0.7,
+          opacity: 1,
         }}
       >
-        <motion.div
-          className="flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-sm"
-          animate={{
-            backgroundColor: isBoostFuryEnabled
-              ? "rgba(34, 197, 94, 0.1)"
-              : "rgba(107, 114, 128, 0.1)",
+        <motion.button
+          onClick={() => setIsBoostFuryEnabled((prev) => !prev)}
+          className="group flex items-center gap-4 px-6 py-3 rounded-2xl backdrop-blur-md border border-white/20 shadow-xl"
+          style={{
+            background:
+              "linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)",
           }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
-          <motion.div
-            className="w-3 h-3 rounded-full"
-            animate={{
-              backgroundColor: isBoostFuryEnabled ? "#22C55E" : "#6B7280",
-              scale: isBoostFuryEnabled ? [1, 1.2, 1] : 1,
-            }}
-            transition={{
-              repeat: isBoostFuryEnabled ? Infinity : 0,
-              duration: 1,
-            }}
-          />
-          <motion.span
-            className="text-base font-medium"
-            animate={{
-              color: isBoostFuryEnabled ? "#16A34A" : "#4B5563",
-            }}
-          >
-            {isBoostFuryEnabled ? "BoostFury Enabled" : "BoostFury Disabled"}
-          </motion.span>
-        </motion.div>
-        {isBoostFuryEnabled && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="flex items-center gap-1 text-green-500"
-          >
-            <ArrowUpRight className="w-5 h-5" />
-            <span className="font-medium">Growth Active</span>
-          </motion.div>
-        )}
+          <div className="flex items-center gap-3">
+            <motion.div
+              className="w-12 h-6 rounded-full relative p-1"
+              animate={{
+                backgroundColor: isBoostFuryEnabled
+                  ? "rgba(34, 197, 94, 0.2)"
+                  : "rgba(107, 114, 128, 0.2)",
+              }}
+            >
+              <motion.div
+                className="w-4 h-4 rounded-full absolute"
+                animate={{
+                  backgroundColor: isBoostFuryEnabled ? "#22C55E" : "#9CA3AF",
+                  left: isBoostFuryEnabled ? "24px" : "4px",
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 30,
+                }}
+              />
+            </motion.div>
+            <div className="flex flex-col items-start">
+              <motion.span
+                className="text-sm font-medium"
+                animate={{
+                  color: isBoostFuryEnabled ? "#16A34A" : "#6B7280",
+                }}
+              >
+                BoostFury {isBoostFuryEnabled ? "Enabled" : "Disabled"}
+              </motion.span>
+              <motion.span
+                className="text-xs"
+                animate={{
+                  color: isBoostFuryEnabled ? "#22C55E" : "#9CA3AF",
+                }}
+              >
+                {isBoostFuryEnabled
+                  ? "Growth mode active"
+                  : "Growth mode inactive"}
+              </motion.span>
+            </div>
+          </div>
+
+          {isBoostFuryEnabled && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              className="flex items-center gap-1 text-green-500"
+            >
+              <div className="relative">
+                <motion.div
+                  className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-green-500"
+                  animate={{
+                    scale: [1, 1.5, 1],
+                    opacity: [1, 0, 1],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+                <div className="w-2 h-2 rounded-full bg-green-500" />
+              </div>
+              <TrendingUp className="w-4 h-4" />
+            </motion.div>
+          )}
+        </motion.button>
       </motion.div>
 
       {/* Engagement Card */}
