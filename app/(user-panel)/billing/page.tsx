@@ -434,6 +434,7 @@ const SubscriptionDetails = () => {
           <TabsContent value="plans">
             <Pricing
               currentPlan={subscriptionData?.data?.subscription?.package?.name}
+              isSubscriptionActive={subscriptionData?.data?.isActive}
               className="py-4"
             />
           </TabsContent>

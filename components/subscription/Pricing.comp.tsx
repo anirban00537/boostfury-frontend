@@ -27,18 +27,21 @@ interface PricingPlanType {
 interface PricingProps {
   currentPlan?: string;
   className?: string;
+  isSubscriptionActive?: boolean;
 }
 
 const PricingPlan = ({
   plan,
   currentPlan,
+  isSubscriptionActive = false,
 }: {
   plan: PricingPlanType;
   currentPlan?: string;
+  isSubscriptionActive?: boolean;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { loggedin } = useSelector((state: RootState) => state.user);
-  const isCurrentPlan = currentPlan === plan.name;
+  const isCurrentPlan = currentPlan === plan.name && isSubscriptionActive;
   const Icon =
     plan.price === 0
       ? Sparkles
@@ -79,13 +82,21 @@ const PricingPlan = ({
       <div
         className={cn(
           "relative group rounded-xl bg-white/80 backdrop-blur-sm border border-neutral-200/60 shadow-sm transition-all duration-300 hover:shadow-lg mt-4 h-full flex flex-col",
-          plan.name === "Pro" && "ring-2 ring-primary/20 shadow-lg"
+          plan.name === "Pro" && !isCurrentPlan && "ring-2 ring-primary/20 shadow-lg",
+          isCurrentPlan && "ring-2 ring-emerald-500/30 shadow-lg"
         )}
       >
-        {plan.name === "Pro" && (
+        {plan.name === "Pro" && !isCurrentPlan && (
           <div className="absolute -top-3 right-8">
             <div className="px-4 py-1.5 bg-gradient-to-r from-violet-600 to-purple-600 text-white text-xs font-medium rounded-full shadow-lg">
               Most Popular
+            </div>
+          </div>
+        )}
+        {isCurrentPlan && (
+          <div className="absolute -top-3 right-8">
+            <div className="px-4 py-1.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-xs font-medium rounded-full shadow-lg">
+              Current Plan
             </div>
           </div>
         )}
@@ -151,7 +162,9 @@ const PricingPlan = ({
                   : ""
               )}
               background={
-                plan.name === "Pro"
+                isCurrentPlan
+                  ? "linear-gradient(110deg, #059669, #10b981)"
+                  : plan.name === "Pro"
                   ? "linear-gradient(110deg, #2563eb, #4f46e5, #7c3aed)"
                   : "linear-gradient(110deg, #0f172a, #1e293b)"
               }
@@ -162,7 +175,10 @@ const PricingPlan = ({
                   Processing...
                 </span>
               ) : isCurrentPlan ? (
-                "Current Plan"
+                <span className="flex items-center justify-center gap-2">
+                  <Check className="w-4 h-4" />
+                  Current Plan
+                </span>
               ) : (
                 `Upgrade to ${plan.name}`
               )}
@@ -174,7 +190,7 @@ const PricingPlan = ({
   );
 };
 
-const Pricing = ({ currentPlan, className }: PricingProps) => {
+const Pricing = ({ currentPlan, className, isSubscriptionActive }: PricingProps) => {
   const { data: packagesData } = useQuery(["packages"], getPackages, {
     enabled: true,
   });
@@ -201,7 +217,12 @@ const Pricing = ({ currentPlan, className }: PricingProps) => {
           "md:grid-cols-3 max-w-6xl"
         )}>
           {monthlyPlans.map((plan: PricingPlanType) => (
-            <PricingPlan key={plan.id} plan={plan} currentPlan={currentPlan} />
+            <PricingPlan 
+              key={plan.id} 
+              plan={plan} 
+              currentPlan={currentPlan} 
+              isSubscriptionActive={isSubscriptionActive}
+            />
           ))}
         </div>
       </div>
