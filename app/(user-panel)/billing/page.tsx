@@ -314,9 +314,27 @@ const SubscriptionDetails = () => {
                 {/* Subscription Details */}
                 <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-neutral-200/60 shadow-sm">
                   <div className="px-6 py-4 border-b border-neutral-100">
-                    <h2 className="text-base font-semibold text-neutral-900">
-                      Subscription Details
-                    </h2>
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-base font-semibold text-neutral-900">
+                        Subscription Details
+                      </h2>
+                      {subscriptionData?.data?.subscription?.package?.name.toLowerCase() !== 'trial' && (
+                        <button
+                          onClick={handleCancelSubscription}
+                          disabled={isCanceling}
+                          className={cn(
+                            "px-4 py-2 text-sm font-medium rounded-lg",
+                            "text-red-600 hover:text-red-700",
+                            "bg-red-50 hover:bg-red-100",
+                            "border border-red-200/50",
+                            "transition-colors duration-200",
+                            "disabled:opacity-50 disabled:cursor-not-allowed"
+                          )}
+                        >
+                          {isCanceling ? 'Canceling...' : 'Cancel Plan'}
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   <div className="divide-y divide-neutral-100">

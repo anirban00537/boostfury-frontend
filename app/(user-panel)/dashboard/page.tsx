@@ -23,6 +23,8 @@ import { useContentPosting } from "@/hooks/useContent";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { ArrowRight } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { Sparkles } from "lucide-react";
+import { useGenerateLinkedInPosts } from "@/hooks/useGenerateLinkedInPosts";
 
 const postLengthOptions = [
   {
@@ -118,8 +120,37 @@ const LinkedInChatPage = () => {
   const queryClient = useQueryClient();
   const [isEditLoading, setIsEditLoading] = useState(false);
   const [isQueueLoading, setIsQueueLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { mutateAsync: generatePost, isLoading } = useMutation(
+  const surprisePrompts = [
+    "Share an unexpected lesson from a recent project that changed your perspective on leadership",
+    "Discuss a technology trend that you believe will reshape our industry in the next 5 years",
+    "Tell us about a failure that ultimately led to your biggest professional breakthrough",
+    "Share your thoughts on work-life integration in today's digital age",
+    "Reflect on a mentor who changed your career trajectory and the key lessons they taught you",
+    "Discuss an unconventional approach that helped your team solve a complex problem",
+    "Share a personal story about adapting to change in your professional journey",
+    "What's a common industry practice that you think needs to be reimagined?",
+    "Share a moment when stepping outside your comfort zone led to unexpected growth",
+    "Discuss a skill you initially undervalued that became crucial to your success"
+  ];
+
+  const { handleGeneratePersonalized, isGeneratingPersonalized } =
+    useGenerateLinkedInPosts({
+      onContentGenerated: (content) => {
+        setGeneratedContent(content);
+        toast({
+          title: "Success",
+          description: "Your personalized LinkedIn post has been generated.",
+        });
+      }
+    });
+
+  const handleSurpriseMe = () => {
+    handleGeneratePersonalized();
+  };
+
+  const { mutateAsync: generatePost, isLoading: isGenerating } = useMutation(
     "generatePost",
     (prompt: string) =>
       superGenerate({
@@ -314,6 +345,28 @@ const LinkedInChatPage = () => {
               className="mt-16"
             >
               <div className="relative">
+                <div className="flex justify-end mb-4">
+                  <button
+                    onClick={handleSurpriseMe}
+                    disabled={isGeneratingPersonalized}
+                    className="h-10 px-4 rounded-xl text-sm font-medium flex items-center gap-2 bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-50 hover:border-blue-200 transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isGeneratingPersonalized ? (
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
+                        className="w-4 h-4 border-2 border-neutral-400/30 border-t-neutral-400 rounded-full"
+                      />
+                    ) : (
+                      <Sparkles className="w-4 h-4" />
+                    )}
+                    <span>Surprise Me</span>
+                  </button>
+                </div>
                 <div className="relative group">
                   <div className="absolute -inset-3 bg-gradient-to-r from-blue-500/5 via-indigo-500/5 to-purple-500/5 rounded-[35px] blur-2xl opacity-0 group-hover:opacity-100 transition-all duration-1000 group-hover:duration-200 animate-gradient"></div>
                   <div className="relative p-[1px] rounded-[35px] bg-gradient-to-r from-neutral-200 via-neutral-100 to-neutral-200 transition-all duration-500 group-hover:from-blue-200 group-hover:via-indigo-200 group-hover:to-purple-200">
@@ -330,25 +383,23 @@ const LinkedInChatPage = () => {
                       <div className="absolute right-4 inset-y-0 flex items-center">
                         <GradientButton
                           onClick={handleGenerate}
-                          disabled={isLoading}
+                          disabled={isGenerating}
                           variant="primary"
                           className="relative h-14 w-14 rounded-full text-sm font-medium flex items-center justify-center bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 hover:from-blue-600 hover:via-indigo-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                         >
-                          <div className="relative flex items-center justify-center">
-                            {isLoading ? (
-                              <motion.div
-                                animate={{ rotate: 360 }}
-                                transition={{
-                                  duration: 1,
-                                  repeat: Infinity,
-                                  ease: "linear",
-                                }}
-                                className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
-                              />
-                            ) : (
-                              <ArrowRight className="w-6 h-6 text-white" />
-                            )}
-                          </div>
+                          {isGenerating ? (
+                            <motion.div
+                              animate={{ rotate: 360 }}
+                              transition={{
+                                duration: 1,
+                                repeat: Infinity,
+                                ease: "linear",
+                              }}
+                              className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+                            />
+                          ) : (
+                            <ArrowRight className="w-6 h-6 text-white" />
+                          )}
                         </GradientButton>
                       </div>
                     </div>
@@ -434,7 +485,7 @@ const LinkedInChatPage = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="relative backdrop-blur-xl px-4 sm:px-8 lg:px-16 py-8 lg:py-16 overflow-y-auto bg-white/30"
+            className="relative backdrop-blur-xl px-3 py-8 lg:py-16 overflow-y-auto bg-white/30"
           >
             <div className="max-w-xl mx-auto">
               <div className="sticky top-8 space-y-8">
@@ -518,7 +569,7 @@ const LinkedInChatPage = () => {
                 >
                   <PostPreviewNotRedux
                     content={generatedContent}
-                    isGenerating={isLoading}
+                    isGenerating={isGenerating}
                     linkedInProfile={linkedinProfile}
                     user={{
                       id: userinfo?.id?.toString() || "",

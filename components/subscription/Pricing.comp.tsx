@@ -125,18 +125,6 @@ const PricingPlan = ({
 
           {/* Features */}
           <div className="mt-8 space-y-4 flex-1">
-            {/* Word limit feature */}
-            <div className="flex items-start gap-3">
-              <div className="relative mt-1">
-                <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-emerald-200/40 to-transparent rounded-full"></div>
-                <div className="relative w-4 h-4 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center border border-emerald-200/40">
-                  <Check className="w-2.5 h-2.5 text-emerald-600" />
-                </div>
-              </div>
-              <span className="text-neutral-600 text-sm">
-                {plan.features.wordGeneration.description}
-              </span>
-            </div>
             {/* Other features */}
             {plan.features.features.map((feature: string) => (
               <div key={feature} className="flex items-start gap-3">
@@ -205,10 +193,17 @@ const Pricing = ({ currentPlan, className }: PricingProps) => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
-        {monthlyPlans.map((plan: PricingPlanType) => (
-          <PricingPlan key={plan.id} plan={plan} currentPlan={currentPlan} />
-        ))}
+      <div className="flex justify-center">
+        <div className={cn(
+          "grid gap-8 px-4 w-full",
+          monthlyPlans.length === 1 ? "max-w-md" : 
+          monthlyPlans.length === 2 ? "md:grid-cols-2 max-w-3xl" : 
+          "md:grid-cols-3 max-w-6xl"
+        )}>
+          {monthlyPlans.map((plan: PricingPlanType) => (
+            <PricingPlan key={plan.id} plan={plan} currentPlan={currentPlan} />
+          ))}
+        </div>
       </div>
     </div>
   );

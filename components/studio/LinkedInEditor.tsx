@@ -173,9 +173,9 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                   {isGeneratingPersonalized ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    <Sparkles className="h-4 w-4" />
+                    <Wand2 className="h-4 w-4" />
                   )}
-                  <span>AI Personal Writer</span>
+                  <span>Magic Writer</span>
                 </div>
               </ShimmerButton>
 
@@ -195,7 +195,7 @@ export const LinkedInEditor: React.FC<LinkedInEditorProps> = ({
                     {isRewriting ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
-                      <Wand2 className="h-4 w-4" />
+                      <Sparkles className="h-4 w-4" />
                     )}
                   </ShimmerButton>
                 </DropdownMenuTrigger>
