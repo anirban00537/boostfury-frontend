@@ -2,56 +2,103 @@ import React from "react";
 
 const FullScreenLoading: React.FC = () => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/95 backdrop-blur-sm">
-      <div className="relative flex flex-col items-center">
-        {/* Loading Spinner */}
-        <div className="relative">
-          {/* Outer ring */}
-          <div className="w-12 h-12 rounded-full border-4 border-blue-100 animate-pulse" />
-
-          {/* Spinning arc */}
-          <div className="absolute top-0 left-0 w-12 h-12">
-            <div className="w-12 h-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin" />
-          </div>
-
-          {/* Inner dot */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <div className="w-2 h-2 rounded-full bg-blue-500 animate-ping" />
-          </div>
-        </div>
-
-        {/* Loading Text */}
-        <div className="mt-6 flex items-center gap-2">
-          <span className="text-sm font-medium text-gray-600">Loading</span>
-          <span className="flex space-x-1">
-            <span className="animate-bounce-dot1 h-1.5 w-1.5 rounded-full bg-blue-500" />
-            <span className="animate-bounce-dot2 h-1.5 w-1.5 rounded-full bg-blue-500" />
-            <span className="animate-bounce-dot3 h-1.5 w-1.5 rounded-full bg-blue-500" />
-          </span>
+    <div className="flex items-center justify-center h-screen">
+      <div className="containerClass">
+        <div className="loaderClass">
+          <div className="crystal"></div>
+          <div className="crystal"></div>
+          <div className="crystal"></div>
+          <div className="crystal"></div>
+          <div className="crystal"></div>
+          <div className="crystal"></div>
         </div>
       </div>
-
       <style jsx>{`
-        .animate-bounce-dot1 {
-          animation: bounceDot 1s infinite 0s;
+        .containerClass {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
         }
 
-        .animate-bounce-dot2 {
-          animation: bounceDot 1s infinite 0.2s;
+        .loaderClass {
+          position: relative;
+          width: 200px;
+          height: 200px;
+          perspective: 800px;
         }
 
-        .animate-bounce-dot3 {
-          animation: bounceDot 1s infinite 0.4s;
+        .crystal {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 60px;
+          height: 60px;
+          opacity: 0;
+          transform-origin: bottom center;
+          transform: translate(-50%, -50%) rotateX(45deg) rotateZ(0deg);
+          animation: spin 4s linear infinite, emerge 2s ease-in-out infinite alternate,
+            fadeIn 0.3s ease-out forwards;
+          border-radius: 10px;
+          visibility: hidden;
         }
 
-        @keyframes bounceDot {
+        @keyframes spin {
+          from {
+            transform: translate(-50%, -50%) rotateX(45deg) rotateZ(0deg);
+          }
+          to {
+            transform: translate(-50%, -50%) rotateX(45deg) rotateZ(360deg);
+          }
+        }
+
+        @keyframes emerge {
           0%,
           100% {
-            transform: translateY(0);
+            transform: translate(-50%, -50%) scale(0.5);
+            opacity: 0;
           }
           50% {
-            transform: translateY(-4px);
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
           }
+        }
+
+        @keyframes fadeIn {
+          to {
+            visibility: visible;
+            opacity: 0.8;
+          }
+        }
+
+        .crystal:nth-child(1) {
+          background: linear-gradient(45deg, #003366, #336699);
+          animation-delay: 0s;
+        }
+
+        .crystal:nth-child(2) {
+          background: linear-gradient(45deg, #003399, #3366cc);
+          animation-delay: 0.3s;
+        }
+
+        .crystal:nth-child(3) {
+          background: linear-gradient(45deg, #0066cc, #3399ff);
+          animation-delay: 0.6s;
+        }
+
+        .crystal:nth-child(4) {
+          background: linear-gradient(45deg, #0099ff, #66ccff);
+          animation-delay: 0.9s;
+        }
+
+        .crystal:nth-child(5) {
+          background: linear-gradient(45deg, #33ccff, #99ccff);
+          animation-delay: 1.2s;
+        }
+
+        .crystal:nth-child(6) {
+          background: linear-gradient(45deg, #66ffff, #ccffff);
+          animation-delay: 1.5s;
         }
       `}</style>
     </div>

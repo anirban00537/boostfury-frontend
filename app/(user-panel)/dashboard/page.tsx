@@ -485,7 +485,7 @@ const LinkedInChatPage = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="relative backdrop-blur-xl px-3 py-8 lg:py-16 overflow-y-auto bg-white/30"
+            className="relative backdrop-blur-xl px-3 py-3 lg:py-7 overflow-y-auto bg-white/30"
           >
             <div className="max-w-xl mx-auto">
               <div className="sticky top-8 space-y-8">
@@ -494,23 +494,20 @@ const LinkedInChatPage = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
-                  className="bg-white rounded-2xl shadow-sm border border-neutral-200/50"
+                  className=""
                 >
                   {/* Title Section */}
-                  <div className="p-5">
+                  <div className="pb-3">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                       <h2 className="text-lg font-semibold text-neutral-900">
                         Preview
                       </h2>
                     </div>
-                    <p className="text-sm text-neutral-500 ml-5">
-                      Preview how your post will appear on LinkedIn
-                    </p>
                   </div>
 
                   {/* Enhanced Buttons Section */}
-                  <div className="flex items-center gap-3 p-4 border-t border-neutral-100 bg-neutral-50/50">
+                  <div className="flex items-center gap-3  border-t border-neutral-100 bg-neutral-50/50">
                     <GradientButton
                       variant="outline"
                       onClick={handleEditInEditor}
