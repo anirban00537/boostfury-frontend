@@ -4,6 +4,7 @@ import DefaultLayout from "@/components/layout/Default.layout.comp";
 import Script from "next/script";
 import AuthCheckLayout from "@/components/layout/Auth-Check.layout.comp";
 import ClientLayout from "./client-layout";
+import { Analytics } from "@/components/utils/Analytics";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
@@ -130,20 +131,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Google Analytics */}
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_MEASUREMENT_ID}');
-          `}
-        </Script>
-        
         {/* Umami Analytics */}
         <Script
           defer
@@ -167,6 +154,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className={`antialiased`}>
+        <Analytics />
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
