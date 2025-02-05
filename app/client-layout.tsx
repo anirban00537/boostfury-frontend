@@ -6,6 +6,8 @@ import { Provider } from "react-redux";
 import { store } from "@/state/store";
 import DefaultLayout from "@/components/layout/Default.layout.comp";
 import AuthCheckLayout from "@/components/layout/Auth-Check.layout.comp";
+import LoadingSection from "@/components/utils-components/loading/LoadingSection.comp";
+import { divide } from "lodash";
 
 // Separate client component that uses client hooks
 function ClientLayoutContent({ children }: { children: React.ReactNode }) {
@@ -28,8 +30,8 @@ export default function ClientLayout({
   return (
     <Suspense
       fallback={
-        <div className="flex justify-center items-center h-screen">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <div className="flex items-center justify-center h-screen">
+        <LoadingSection/>
         </div>
       }
     >
