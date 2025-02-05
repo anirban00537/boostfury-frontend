@@ -13,6 +13,7 @@ const poppins = Poppins({
 });
 
 const defaultUrl = "https://boostfury.com";
+const GA_MEASUREMENT_ID = 'G-NS2X9MH57M';
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
@@ -129,7 +130,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Analytics Script */}
+        {/* Google Analytics */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
+        
+        {/* Umami Analytics */}
         <Script
           defer
           src="https://umami.boostfury.com/script.js"
@@ -137,6 +152,7 @@ export default function RootLayout({
           data-host-url="https://umami.boostfury.com"
           strategy="afterInteractive"
         />
+        
         {/* Preconnect to key domains */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
