@@ -7,7 +7,7 @@ import {
 import { RootState } from "@/state/store";
 import { ResponseData } from "@/types";
 import { PackageType, PackageStatus } from "@/types/packages";
-import React from "react";
+import React, { Suspense } from "react";
 import toast from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import { useSelector } from "react-redux";
@@ -93,6 +93,50 @@ const TabHeader: React.FC<TabHeaderProps> = ({ activeTab, onTabChange }) => {
 };
 
 const SubscriptionDetails = () => {
+  return (
+    <div className="min-h-screen max-w-7xl mx-auto">
+      <Suspense
+        fallback={
+          <div className="min-h-screen">
+            <div className="relative border-b border-neutral-200/60 bg-white/50 backdrop-blur-sm sticky top-0 z-10">
+              <div className="px-8 pt-8 pb-0">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-neutral-200/40 to-transparent rounded-xl"></div>
+                      <div className="absolute -inset-[1px] blur-sm bg-gradient-to-r from-transparent via-neutral-200/20 to-transparent rounded-xl"></div>
+                      <div className="relative w-12 h-12 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center border border-neutral-200/40 shadow-sm">
+                        <CreditCard className="w-5 h-5 text-neutral-900" />
+                      </div>
+                    </div>
+                    <div>
+                      <h1 className="text-2xl font-bold bg-gradient-to-b from-black to-neutral-800 bg-clip-text text-transparent">
+                        Billing & Subscription
+                      </h1>
+                      <p className="text-sm text-neutral-600 mt-1">
+                        Manage your subscription and billing details
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="px-4 sm:px-6 py-8">
+              <div className="p-6">
+                <LoadingSection className="min-h-[400px]" />
+              </div>
+            </div>
+          </div>
+        }
+      >
+        <SubscriptionContent />
+      </Suspense>
+    </div>
+  );
+};
+
+// Separate the content that uses useSearchParams
+function SubscriptionContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { userinfo, loggedin } = useSelector((state: RootState) => state.user);
@@ -193,7 +237,7 @@ const SubscriptionDetails = () => {
   }
 
   return (
-    <div className="min-h-screen max-w-7xl mx-auto">
+    <>
       {/* Header Section */}
       <div className="relative border-b border-neutral-200/60 bg-white/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="px-8 pt-8 pb-0">
@@ -440,8 +484,8 @@ const SubscriptionDetails = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </>
   );
-};
+}
 
 export default SubscriptionDetails;

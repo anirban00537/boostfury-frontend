@@ -1,11 +1,11 @@
 "use client";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import ReactGA from "react-ga4";
 import { usePathname, useSearchParams } from "next/navigation";
 
 const GA_MEASUREMENT_ID = "G-NS2X9MH57M";
 
-export function Analytics() {
+function AnalyticsContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -23,4 +23,12 @@ export function Analytics() {
   }, [pathname, searchParams]);
 
   return null;
+}
+
+export function Analytics() {
+  return (
+    <Suspense>
+      <AnalyticsContent />
+    </Suspense>
+  );
 }
