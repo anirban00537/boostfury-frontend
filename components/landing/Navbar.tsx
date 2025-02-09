@@ -119,7 +119,7 @@ export const Navbar = () => {
                 : "linear-gradient(110deg, #1d4ed8, #4338ca)"
             }
           >
-            <Link href="/register">Get Started</Link>
+            <Link href="/register">Start Free</Link>
           </ShimmerButton>
           </Link>
         </div>
@@ -190,7 +190,7 @@ export const Navbar = () => {
                     background="linear-gradient(110deg, #2563eb, #4f46e5)"
                     onClick={() => setIsOpen(false)}
                   >
-                    <Link href="/register">Get Started</Link>
+                    <Link href="/register">Start Free</Link>
                   </ShimmerButton>
                 </motion.div>
               </div>
