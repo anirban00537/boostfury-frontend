@@ -361,17 +361,108 @@ const LinkedInChatPage = () => {
                   <div className="relative group">
                     <div className="absolute -inset-3 bg-gradient-to-r from-blue-500/5 via-indigo-500/5 to-purple-500/5 rounded-[35px] blur-2xl opacity-0 group-hover:opacity-100 transition-all duration-1000 group-hover:duration-200 animate-gradient"></div>
                     <div className="relative p-[1px] rounded-[35px] bg-gradient-to-r from-neutral-200 via-neutral-100 to-neutral-200 transition-all duration-500 group-hover:from-blue-200 group-hover:via-indigo-200 group-hover:to-purple-200">
-                      <div className="relative bg-white/80 backdrop-blur-sm rounded-[35px] transition-all duration-500 group-hover:shadow-lg">
-                        <textarea
-                          value={prompt}
-                          onChange={(e) => setPrompt(e.target.value)}
-                          placeholder="What would you like to share with your network today? Describe your topic or message..."
-                          className="w-full min-h-[120px] resize-none bg-transparent text-neutral-700 placeholder:text-neutral-400 rounded-[30px] border-0 focus:outline-none focus:ring-0 p-7 pr-[140px] text-base transition-all duration-500 selection:bg-blue-50 focus:shadow-[0_0_30px_rgba(59,130,246,0.15)]"
-                          style={{
-                            boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.02)",
-                          }}
-                        />
-                        <div className="absolute right-4 inset-y-0 flex items-center">
+                      <div className="relative bg-white rounded-[35px] transition-all duration-500 group-hover:shadow-lg overflow-hidden border border-neutral-200/50">
+                        <div className="relative">
+                          <textarea
+                            value={prompt}
+                            onChange={(e) => setPrompt(e.target.value)}
+                            placeholder="What would you like to share with your network today? Describe your topic or message..."
+                            className="relative w-full min-h-[180px] resize-none bg-white text-neutral-900 placeholder:text-neutral-400 rounded-[30px] border-0 focus:outline-none focus:ring-0 p-7 pb-24 text-base transition-all duration-500 selection:bg-blue-50 focus:shadow-[0_0_30px_rgba(59,130,246,0.15)]"
+                          />
+                          <div 
+                            aria-hidden="true"
+                            className="absolute left-0 right-0 bottom-0 h-40 pointer-events-none"
+                            style={{
+                              background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%)',
+                              transform: 'translateY(2px)'
+                            }}
+                          />
+                        </div>
+                        <div className="absolute bottom-0 left-0 right-0 rounded-b-[35px] bg-white overflow-hidden border-t border-neutral-200/30">
+                          <div className="h-px bg-gradient-to-r from-transparent via-neutral-200/30 to-transparent" />
+                          <div className="relative p-4 pl-7 pr-24 flex items-center gap-3">
+                            <div className="flex items-center gap-6 w-full relative z-[2] pb-0.5">
+                              <div className="flex flex-col gap-1.5 group">
+                                <span className="text-[11px] font-medium text-neutral-400 ml-2 flex items-center gap-1.5 group-hover:text-blue-500/70 transition-colors">
+                                  <span className="w-1 h-1 rounded-full bg-gradient-to-r from-blue-400 to-blue-500 shadow-[0_0_4px_rgba(59,130,246,0.2)] group-hover:shadow-[0_0_6px_rgba(59,130,246,0.3)] transition-shadow"></span>
+                                  Writing Style
+                                </span>
+                                <Select value={tone} onValueChange={setTone}>
+                                  <SelectTrigger className="h-8 text-xs bg-white/60 backdrop-blur-sm border-neutral-200/40 text-neutral-600 hover:bg-white/80 focus:bg-white/80 transition-all duration-200 rounded-full transform hover:scale-[1.02] hover:border-neutral-300/50 focus:border-neutral-300/50 ring-0 focus:ring-0 focus:ring-offset-0">
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="truncate max-w-[80px] font-medium">{toneOptions.find(t => t.value === tone)?.label || 'Tone'}</span>
+                                    </div>
+                                  </SelectTrigger>
+                                  <SelectContent className="rounded-xl border-neutral-100 shadow-xl bg-white/90 backdrop-blur-sm after:absolute after:inset-0 after:rounded-xl after:shadow-[0_0_15px_rgba(0,0,0,0.03)] after:pointer-events-none" side="top" align="start" alignOffset={-4}>
+                                    <div className="relative z-10">
+                                      {toneOptions.map((option) => (
+                                        <SelectItem key={option.value} value={option.value} className="focus:bg-neutral-50/80 cursor-pointer transition-colors">
+                                          <div className="flex flex-col py-1">
+                                            <span className="font-medium">{option.label}</span>
+                                            <span className="text-xs text-neutral-500">{option.description}</span>
+                                          </div>
+                                        </SelectItem>
+                                      ))}
+                                    </div>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <span className="w-px h-12 bg-gradient-to-b from-neutral-200/20 via-neutral-200/40 to-neutral-200/20 self-end mb-1"></span>
+                              <div className="flex flex-col gap-1.5 group">
+                                <span className="text-[11px] font-medium text-neutral-400 ml-2 flex items-center gap-1.5 group-hover:text-indigo-500/70 transition-colors">
+                                  <span className="w-1 h-1 rounded-full bg-gradient-to-r from-indigo-400 to-indigo-500 shadow-[0_0_4px_rgba(99,102,241,0.2)] group-hover:shadow-[0_0_6px_rgba(99,102,241,0.3)] transition-shadow"></span>
+                                  Post Type
+                                </span>
+                                <Select value={category} onValueChange={setCategory}>
+                                  <SelectTrigger className="h-8 text-xs bg-white/60 backdrop-blur-sm border-neutral-200/40 text-neutral-600 hover:bg-white/80 focus:bg-white/80 transition-all duration-200 rounded-full transform hover:scale-[1.02] hover:border-neutral-300/50 focus:border-neutral-300/50 ring-0 focus:ring-0 focus:ring-offset-0">
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="truncate max-w-[100px] font-medium">{categoryOptions.find(c => c.value === category)?.label || 'Category'}</span>
+                                    </div>
+                                  </SelectTrigger>
+                                  <SelectContent className="rounded-xl border-neutral-100 shadow-xl bg-white/90 backdrop-blur-sm after:absolute after:inset-0 after:rounded-xl after:shadow-[0_0_15px_rgba(0,0,0,0.03)] after:pointer-events-none" side="top" align="start" alignOffset={-4}>
+                                    <div className="relative z-10">
+                                      {categoryOptions.map((option) => (
+                                        <SelectItem key={option.value} value={option.value} className="focus:bg-neutral-50/80 cursor-pointer transition-colors">
+                                          <div className="flex flex-col py-1">
+                                            <span className="font-medium">{option.label}</span>
+                                            <span className="text-xs text-neutral-500">{option.description}</span>
+                                          </div>
+                                        </SelectItem>
+                                      ))}
+                                    </div>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <span className="w-px h-12 bg-gradient-to-b from-neutral-200/20 via-neutral-200/40 to-neutral-200/20 self-end mb-1"></span>
+                              <div className="flex flex-col gap-1.5 group">
+                                <span className="text-[11px] font-medium text-neutral-400 ml-2 flex items-center gap-1.5 group-hover:text-purple-500/70 transition-colors">
+                                  <span className="w-1 h-1 rounded-full bg-gradient-to-r from-purple-400 to-purple-500 shadow-[0_0_4px_rgba(147,51,234,0.2)] group-hover:shadow-[0_0_6px_rgba(147,51,234,0.3)] transition-shadow"></span>
+                                  Content Length
+                                </span>
+                                <Select value={postLength} onValueChange={(value: "short" | "medium" | "long") => setPostLength(value)}>
+                                  <SelectTrigger className="h-8 text-xs bg-white/60 backdrop-blur-sm border-neutral-200/40 text-neutral-600 hover:bg-white/80 focus:bg-white/80 transition-all duration-200 rounded-full transform hover:scale-[1.02] hover:border-neutral-300/50 focus:border-neutral-300/50 ring-0 focus:ring-0 focus:ring-offset-0">
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="truncate max-w-[80px] font-medium">{postLengthOptions.find(l => l.value === postLength)?.label || 'Length'}</span>
+                                    </div>
+                                  </SelectTrigger>
+                                  <SelectContent className="rounded-xl border-neutral-100 shadow-xl bg-white/90 backdrop-blur-sm after:absolute after:inset-0 after:rounded-xl after:shadow-[0_0_15px_rgba(0,0,0,0.03)] after:pointer-events-none" side="top" align="start" alignOffset={-4}>
+                                    <div className="relative z-10">
+                                      {postLengthOptions.map((option) => (
+                                        <SelectItem key={option.value} value={option.value} className="focus:bg-neutral-50/80 cursor-pointer transition-colors">
+                                          <div className="flex flex-col py-1">
+                                            <span className="font-medium">{option.label}</span>
+                                            <span className="text-xs text-neutral-500">{option.tooltip}</span>
+                                          </div>
+                                        </SelectItem>
+                                      ))}
+                                    </div>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="absolute right-4 bottom-4 z-[3]">
                           <GradientButton
                             onClick={handleGenerate}
                             disabled={isGenerating}
@@ -396,96 +487,29 @@ const LinkedInChatPage = () => {
                       </div>
                     </div>
 
-                    {/* Enhanced Options Section */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.4 }}
-                      className="mt-10 grid grid-cols-3 gap-6"
-                    >
-                      {[
-                        {
-                          label: "Category",
-                          value: category,
-                          onChange: setCategory,
-                          options: categoryOptions,
-                          icon: "📚",
-                        },
-                        {
-                          label: "Tone",
-                          value: tone,
-                          onChange: setTone,
-                          options: toneOptions,
-                          icon: "🎭",
-                        },
-                        {
-                          label: "Length",
-                          value: postLength,
-                          onChange: (value: "short" | "medium" | "long") =>
-                            setPostLength(value),
-                          options: postLengthOptions,
-                          icon: "📏",
-                        },
-                      ].map((setting, index) => (
-                        <div
-                          key={setting.label}
-                          className="group relative"
-                        >
-                          <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.1 * index }}
-                            className="space-y-2.5 bg-white rounded-2xl p-5 border border-neutral-200/50 hover:border-blue-200/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-                          >
-                            <label className="text-sm font-medium text-neutral-600 flex items-center gap-2">
-                              <span>{setting.icon}</span>
-                              {setting.label}
-                            </label>
-                            <Select
-                              value={setting.value}
-                              onValueChange={setting.onChange}
-                            >
-                              <SelectTrigger className="w-full h-10 text-sm bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-50/50 transition-colors rounded-xl">
-                                <SelectValue placeholder={`Select ${setting.label.toLowerCase()}`} />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {setting.options.map((option) => (
-                                  <SelectItem
-                                    key={option.value}
-                                    value={option.value}
-                                    className="text-sm"
-                                  >
-                                    {option.label}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </motion.div>
-                        </div>
-                      ))}
-                    </motion.div>
+                    {/* Remove old options grid */}
                   </div>
                 </div>
               </motion.div>
             </div>
           </div>
-        </div>
 
-        {/* Right Section - Enhanced Preview */}
-        {generatedContent && (
-          <div className="hidden lg:block w-[33.33%]">
-            <LinkedInPostPreview
-              generatedContent={generatedContent}
-              isGenerating={isGenerating}
-              isEditLoading={isEditLoading}
-              isQueueLoading={isQueueLoading}
-              linkedinProfile={linkedinProfile}
-              userinfo={userinfo}
-              onEditInEditor={handleEditInEditor}
-              onAddToQueue={handleAddToQueueClick}
-            />
-          </div>
-        )}
+          {/* Right Section - Enhanced Preview */}
+          {generatedContent && (
+            <div className="hidden lg:block w-[33.33%]">
+              <LinkedInPostPreview
+                generatedContent={generatedContent}
+                isGenerating={isGenerating}
+                isEditLoading={isEditLoading}
+                isQueueLoading={isQueueLoading}
+                linkedinProfile={linkedinProfile}
+                userinfo={userinfo}
+                onEditInEditor={handleEditInEditor}
+                onAddToQueue={handleAddToQueueClick}
+              />
+            </div>
+          )}
+        </div>
       </div>
 
       <style jsx global>{`
